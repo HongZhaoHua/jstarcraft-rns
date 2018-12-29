@@ -1,0 +1,9 @@
+HibernateConvertor
+SparkConvertor(利用数据并行化方案)
+StromConvertor(实时处理)
+
+《Storm入门》中文版:
+http://ifeve.com/getting-started-with-stom-index/
+
+Apache Storm 官方文档中文版:
+http://ifeve.com/apache-storm/

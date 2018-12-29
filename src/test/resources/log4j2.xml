@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configuration的2个属性status和monitorInterval,分别是状态日志级别以及重新刷新配置文件间隔 -->
+<Configuration status="FATAL" packages="com.jstarcraft.module">
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss} [%t] %p (%F:%L) - %m%n" />
+			<ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Root level="INFO">
+			<AppenderRef ref="Console" />
+		</Root>
+		<Logger name="com.jstarcraft.module.neuralnetwork" level="INFO" />
+	</Loggers>
+</Configuration>
