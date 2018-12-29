@@ -11,9 +11,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-		<!-- Log框架版本 -->
-		<slf4j.version>1.7.25</slf4j.version>
 	</properties>
 
 	<build>
@@ -46,15 +43,23 @@
 
 		<!-- Test框架依赖 -->
 		<dependency>
-			<groupId>net.sourceforge.jdistlib</groupId>
-			<artifactId>jdistlib</artifactId>
-			<version>0.4.5</version>
-		</dependency>
-
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.sourceforge.jdistlib</groupId>
+			<artifactId>jdistlib</artifactId>
+			<version>0.4.5</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.8.2</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -73,6 +78,5 @@
 			<version>2.8.2</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 </project>
