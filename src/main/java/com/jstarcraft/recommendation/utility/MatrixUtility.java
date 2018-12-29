@@ -1,5 +1,7 @@
 package com.jstarcraft.recommendation.utility;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.jstarcraft.ai.math.algorithm.decomposition.SingularValueDecomposition;
 import com.jstarcraft.ai.math.algorithm.distribution.ContinuousProbability;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
@@ -7,7 +9,6 @@ import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.MathScalar;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MathMatrix;
-import com.jstarcraft.ai.math.structure.message.NonZeroMeanMessage;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 
@@ -48,7 +49,8 @@ public class MatrixUtility {
 				for (int inner = 0; inner < outer; inner++) {
 					sum += cholesky.getValue(diagonal, inner) * cholesky.getValue(outer, inner);
 				}
-				float value = (float) (diagonal == outer ? Math.sqrt(matrix.getValue(diagonal, diagonal) - sum) : (matrix.getValue(diagonal, outer) - sum) / cholesky.getValue(outer, outer));
+				float value = (float) (diagonal == outer ? Math.sqrt(matrix.getValue(diagonal, diagonal) - sum)
+						: (matrix.getValue(diagonal, outer) - sum) / cholesky.getValue(outer, outer));
 				cholesky.setValue(diagonal, outer, value);
 			}
 			if (Float.isNaN(cholesky.getValue(diagonal, diagonal))) {
@@ -68,7 +70,8 @@ public class MatrixUtility {
 	 * @return
 	 */
 	// 行列相同,是对角
-	public static <T extends MathMatrix> T covariance(final MathMatrix matrix, MathVector outerMeans, MathVector innerMeans, T covariance) {
+	public static <T extends MathMatrix> T covariance(final MathMatrix matrix, MathVector outerMeans,
+			MathVector innerMeans, T covariance) {
 		assert matrix.getRowSize() == outerMeans.getElementSize();
 		assert matrix.getRowSize() == innerMeans.getElementSize();
 		int size = matrix.getColumnSize();
@@ -78,11 +81,16 @@ public class MatrixUtility {
 		for (int outer = 0; outer < size; outer++) {
 			MathScalar scalar = DefaultScalar.getInstance();
 			outerMeans.copyVector(matrix.getColumnVector(outer));
-			NonZeroMeanMessage outerMeanMessage = new NonZeroMeanMessage();
+			MathScalar outerSum = DefaultScalar.getInstance();
+			outerSum.setValue(0F);
+			AtomicInteger outerCount = new AtomicInteger();
 			outerMeans.iterateElement(MathCalculator.SERIAL, (element) -> {
-				outerMeanMessage.accumulateValue(element.getValue());
+				if (element.getValue() != 0F) {
+					outerSum.shiftValue(element.getValue());
+					outerCount.incrementAndGet();
+				}
 			});
-			float outerMean = outerMeanMessage.getValue();
+			float outerMean = outerSum.getValue() / outerCount.get();
 			outerMeans.iterateElement(MathCalculator.SERIAL, (element) -> {
 				element.setValue(element.getValue() - outerMean);
 			});
@@ -90,11 +98,16 @@ public class MatrixUtility {
 			covariance.setValue(outer, outer, scalar.getValue() / (outerMeans.getElementSize() - 1));
 			for (int inner = outer + 1; inner < size; inner++) {
 				innerMeans.copyVector(matrix.getColumnVector(inner));
-				NonZeroMeanMessage innerMeanMessage = new NonZeroMeanMessage();
+				MathScalar innerSum = DefaultScalar.getInstance();
+				innerSum.setValue(0F);
+				AtomicInteger innerCount = new AtomicInteger();
 				innerMeans.iterateElement(MathCalculator.SERIAL, (element) -> {
-					innerMeanMessage.accumulateValue(element.getValue());
+					if (element.getValue() != 0F) {
+						innerSum.shiftValue(element.getValue());
+						innerCount.incrementAndGet();
+					}
 				});
-				float innerMean = innerMeanMessage.getValue();
+				float innerMean = innerSum.getValue() / innerCount.get();
 				innerMeans.iterateElement(MathCalculator.SERIAL, (element) -> {
 					element.setValue(element.getValue() - innerMean);
 				});
@@ -183,7 +196,8 @@ public class MatrixUtility {
 					if (column >= index) {
 						copy.setValue(row, column, copy.getValue(row, column) - mag * copy.getValue(index, column));
 					}
-					inverse.setValue(row, column, inverse.getValue(row, column) - mag * inverse.getValue(index, column));
+					inverse.setValue(row, column,
+							inverse.getValue(row, column) - mag * inverse.getValue(index, column));
 				}
 			}
 		}
@@ -203,7 +217,8 @@ public class MatrixUtility {
 	 * @return
 	 */
 	// 行列可能不相同也可能相同,非对角
-	public static <T extends MathMatrix> T pseudoinverse(final MathMatrix matrix, MathMatrix singular, T pseudoinverse) {
+	public static <T extends MathMatrix> T pseudoinverse(final MathMatrix matrix, MathMatrix singular,
+			T pseudoinverse) {
 		assert matrix.getRowSize() == pseudoinverse.getColumnSize();
 		assert matrix.getColumnSize() == pseudoinverse.getRowSize();
 
@@ -237,7 +252,10 @@ public class MatrixUtility {
 	 * @return
 	 */
 	// 行列相同,非对称矩阵
-	public static <T extends MathMatrix> T wishart(final MathMatrix matrix, final ContinuousProbability normalDistribution, final ContinuousProbability[] gammaDistributions, MathVector randoms, MathMatrix cholesky, MathMatrix gaussian, MathMatrix gamma, MathMatrix transpose, T wishart) {
+	public static <T extends MathMatrix> T wishart(final MathMatrix matrix,
+			final ContinuousProbability normalDistribution, final ContinuousProbability[] gammaDistributions,
+			MathVector randoms, MathMatrix cholesky, MathMatrix gaussian, MathMatrix gamma, MathMatrix transpose,
+			T wishart) {
 		cholesky = cholesky(matrix, cholesky);
 		if (cholesky == null) {
 			// 考虑改为抛异常.
@@ -279,7 +297,8 @@ public class MatrixUtility {
 					for (int inner = 0; inner <= outer - 1; inner++) {
 						value += gaussian.getValue(inner, outer) * gaussian.getValue(inner, diagonal);
 					}
-					gamma.setValue(outer, diagonal, (float) (gaussian.getValue(outer, diagonal) * Math.sqrt(randoms.getValue(outer)) + value));
+					gamma.setValue(outer, diagonal,
+							(float) (gaussian.getValue(outer, diagonal) * Math.sqrt(randoms.getValue(outer)) + value));
 					gamma.setValue(diagonal, outer, gamma.getValue(outer, diagonal)); // mirror
 				}
 			}
