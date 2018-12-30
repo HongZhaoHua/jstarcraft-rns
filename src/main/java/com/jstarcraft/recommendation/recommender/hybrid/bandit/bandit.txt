@@ -1,0 +1,10 @@
+Bandit算法与推荐系统:
+https://blog.csdn.net/heyc861221/article/details/80129310
+
+https://github.com/wealthfront/thompson-sampling
+
+https://github.com/danisola/bandit
+
+https://github.com/johnmyleswhite/BanditsBook
+
+https://github.com/huazhengwang/BanditLib

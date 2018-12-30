@@ -1,0 +1,5 @@
+浅谈神经网络中的bias:
+http://www.cnblogs.com/shuaishuaidefeizhu/p/6832541.html
+
+Deep Learning(深度学习)学习笔记整理系列:
+http://blog.csdn.net/zouxy09/article/details/8775360

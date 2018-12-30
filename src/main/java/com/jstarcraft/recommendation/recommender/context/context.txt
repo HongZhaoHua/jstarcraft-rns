@@ -1,0 +1,6 @@
+http://www.ntu.edu.sg/home/gaocong/
+
+http://www.vldb.org/pvldb/vol10/p1010-liu.pdf
+
+十二种POI算法.
+http://spatialkeyword.sce.ntu.edu.sg/eval-vldb17/

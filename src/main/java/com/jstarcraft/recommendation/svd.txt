@@ -1,0 +1,2 @@
+奇异值分解(SVD) --- 几何意义:
+http://blog.sciencenet.cn/blog-696950-699432.html

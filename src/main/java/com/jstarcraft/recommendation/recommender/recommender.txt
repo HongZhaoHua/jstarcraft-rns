@@ -1,0 +1,43 @@
+总结的一个观点是：在两大类预测任务中。
+预测Ranking对于点击率有帮助,预测Rating对于满意度有帮助.
+比如虽然人们经常会点击(排名)一些文章，但是实际读完文章却觉得没啥营养(评分).
+虽然很多观点都认为Ranking比Rating重要,但是我认为完全是商业系统角度.
+
+例如：
+对于电商和广告商,点击率是赚钱的命脉,所以它们会更偏重Ranking.
+对于音乐商和电影商,它们跟注重口碑和满意度,所以它们会更偏重Rating.
+
+所以早期Netflix举办推荐比赛,才会以Rating作为基础.
+
+注意:
+没有负样本不代表不能做推荐.
+基于邻域的算法,比如基于Item的协同过滤(ItemCF)就可以在只有正样本的数据集推荐.
+因为它的基本思想是在正样本集合外画个比正样本集合稍微大一点的圈,然后推荐给用户那些看过的视频相似的视频.
+但没有负样本却代表机器学习算法基本无法工作.
+因为机器学习算法基本是在正样本和负样本中间画一个分类面,没有负样本也就没有分类面.
+
+从数据能够直接获取正负样本的叫做显式（多类）数据.
+只有正样本的叫隐式（单类）数据.
+例如:
+有数据(1,2,3,4,5) 能够明确知道喜欢-厌恶程度.
+只有用户浏览过哪些商品
+
+不平衡数据
+https://flyxu.github.io/2016/07/28/2016-7-28/
+
+One Class Collaborative Filtering(OCCF)的思想就是要构造负样本. 
+单类协同过滤
+https://www.52ml.net/10234.html
+
+排序学习实践---RankNet方法:
+根据不同类型的训练数据可以将排序学习方法分为以下三类:a)单点标注(point wise);b)两两标注(pair wise);c)列表标注(list wise).
+https://yq.aliyun.com/articles/18
+
+Learning to Rank入门小结 + 漫谈
+http://www.cnblogs.com/wentingtu/archive/2012/03/13/2393993.html
+
+学习排序 Learning to Rank 小结
+http://blog.csdn.net/nanjunxiao/article/details/8976195
+
+随机采样和随机模拟:吉布斯采样Gibbs Sampling
+http://blog.csdn.net/pipisorry/article/details/51373090

@@ -1,0 +1,2 @@
+协同过滤推荐算法总结:
+http://www.cnblogs.com/pinard/p/6349233.html
