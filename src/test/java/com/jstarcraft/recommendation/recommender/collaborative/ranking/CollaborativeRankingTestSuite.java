@@ -48,17 +48,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 		RankALSTestCase.class,
 
-		RankCDTestCase.class,
-
 		RankSGDTestCase.class,
-
-		RankVFCDTestCase.class,
 
 		SLIMTestCase.class,
 
 		UserKNNRankingTestCase.class,
-
-		VBPRTestCase.class,
 
 		WBPRTestCase.class,
 
