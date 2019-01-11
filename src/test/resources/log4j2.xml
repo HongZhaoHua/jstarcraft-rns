@@ -7,10 +7,10 @@
 			<ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
 		</Console>
 	</Appenders>
+	
 	<Loggers>
 		<Root level="INFO">
 			<AppenderRef ref="Console" />
 		</Root>
-		<Logger name="com.jstarcraft.module.neuralnetwork" level="INFO" />
 	</Loggers>
 </Configuration>
