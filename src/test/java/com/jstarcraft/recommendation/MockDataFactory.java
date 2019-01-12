@@ -115,7 +115,7 @@ public class MockDataFactory {
 		try (FileWriter writer = new FileWriter(file); BufferedWriter out = new BufferedWriter(writer);) {
 			for (int leftIndex = 0; leftIndex < userSize; leftIndex++) {
 				for (int rightIndex = 0; rightIndex < itemSize; rightIndex++) {
-					// 此处故意造选择的数据
+					// 此处故意选择特定的数据(TODO 考虑改为利用正态分布)
 					if (rightIndex < 10 || RandomUtility.randomFloat(1F) < ratio) {
 						// 得分
 						float score = RandomUtility.randomFloat(scoreScope);
