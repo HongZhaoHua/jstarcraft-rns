@@ -36,3 +36,21 @@ JStarCraft Recommendation
 ## 推荐的上下文:社交,时间,位置与情感
 
 *****
+
+## 推荐的数据集
+
+* [Movielens Dataset](https://grouplens.org/datasets/movielens/)
+* [Wikilens Dataset](https://grouplens.org/datasets/wikilens/)
+* [BookCrossing Dataset](https://grouplens.org/datasets/book-crossing/)
+* [Jest Joker Dataset](https://grouplens.org/datasets/jester/)
+* [Eachmovie Dataset](https://grouplens.org/datasets/eachmovie/)
+* [HetRec2011 Dataset](https://grouplens.org/datasets/hetrec-2011/)
+* [Serendipity 2018 Dataset](https://grouplens.org/datasets/serendipity-2018/)
+* [Flixster Dataset](http://socialcomputing.asu.edu/datasets/Flixster)
+* [Epinions Dataset](http://www.trustlet.org/epinions.html)
+* [Yelp Dataset](https://www.yelp.com/dataset)
+* [Bibsonomy Dataset](https://www.kde.cs.uni-kassel.de/wp-content/uploads/bibsonomy/)
+* [Foursquare Dataset](https://sites.google.com/site/yangdingqi/home/foursquare-dataset)
+* [Epinions and Ciao Dataset](https://www.cse.msu.edu/~tangjili/datasetcode/truststudy.htm)
+
+*****
