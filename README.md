@@ -25,32 +25,34 @@ JStarCraft Recommendation
 
 *****
 
-## 推荐的基本问题:排序(Ranking)与评分(Rating)
+## 基本问题:排序(Ranking)与评分(Rating)
 
 *****
 
-## 推荐的算法分类:基于协同与基于内容
+## 算法分类:基于协同与基于内容
 
 *****
 
-## 推荐的上下文:社交,时间,位置与情感
+## 上下文:社交,时间,位置与情感
 
 *****
 
-## 推荐的数据集
+## 数据集
 
-* [Movielens Dataset](https://grouplens.org/datasets/movielens/)
-* [Wikilens Dataset](https://grouplens.org/datasets/wikilens/)
-* [BookCrossing Dataset](https://grouplens.org/datasets/book-crossing/)
-* [Jest Joker Dataset](https://grouplens.org/datasets/jester/)
-* [Eachmovie Dataset](https://grouplens.org/datasets/eachmovie/)
-* [HetRec2011 Dataset](https://grouplens.org/datasets/hetrec-2011/)
-* [Serendipity 2018 Dataset](https://grouplens.org/datasets/serendipity-2018/)
-* [Flixster Dataset](http://socialcomputing.asu.edu/datasets/Flixster)
-* [Epinions Dataset](http://www.trustlet.org/epinions.html)
-* [Yelp Dataset](https://www.yelp.com/dataset)
+* [Amazon Product Dataset](http://jmcauley.ucsd.edu/data/amazon/)
 * [Bibsonomy Dataset](https://www.kde.cs.uni-kassel.de/wp-content/uploads/bibsonomy/)
+* [BookCrossing Dataset](https://grouplens.org/datasets/book-crossing/)
+* [Ciao Dataset](https://www.cse.msu.edu/~tangjili/datasetcode/truststudy.htm)
+* [Eachmovie Dataset](https://grouplens.org/datasets/eachmovie/)
+* [Epinions Dataset](http://www.trustlet.org/epinions.html)
+* [Flixster Dataset](http://socialcomputing.asu.edu/datasets/Flixster)
 * [Foursquare Dataset](https://sites.google.com/site/yangdingqi/home/foursquare-dataset)
-* [Epinions and Ciao Dataset](https://www.cse.msu.edu/~tangjili/datasetcode/truststudy.htm)
+* [Jest Joker Dataset](https://grouplens.org/datasets/jester/)
+* [HetRec2011 Dataset](https://grouplens.org/datasets/hetrec-2011/)
+* [Movielens Dataset](https://grouplens.org/datasets/movielens/)
+* [Serendipity 2018 Dataset](https://grouplens.org/datasets/serendipity-2018/)
+* [Wikilens Dataset](https://grouplens.org/datasets/wikilens/)
+* [Yelp Dataset](https://www.yelp.com/dataset)
+* [Yongfeng Zhang Dataset](http://yongfeng.me/dataset/)
 
 *****
