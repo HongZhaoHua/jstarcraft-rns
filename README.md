@@ -43,6 +43,7 @@ JStarCraft Recommendation
 * [Bibsonomy Dataset](https://www.kde.cs.uni-kassel.de/wp-content/uploads/bibsonomy/)
 * [BookCrossing Dataset](https://grouplens.org/datasets/book-crossing/)
 * [Ciao Dataset](https://www.cse.msu.edu/~tangjili/datasetcode/truststudy.htm)
+* [Douban Dataset](http://socialcomputing.asu.edu/datasets/Douban)
 * [Eachmovie Dataset](https://grouplens.org/datasets/eachmovie/)
 * [Epinions Dataset](http://www.trustlet.org/epinions.html)
 * [Flixster Dataset](http://socialcomputing.asu.edu/datasets/Flixster)
