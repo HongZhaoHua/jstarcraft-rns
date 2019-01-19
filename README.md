@@ -29,11 +29,12 @@ JStarCraft Recommendation
 ## 基本问题:排序(Ranking)与评分(Rating)
 
 ```
-在推荐算法中,预测任务根据基本问题的不同(目标函数的区别),划分为Ranking预测与Rating预测.
+推荐算法根据基本问题的不同(即目标函数的区别)划分为Ranking预测与Rating预测.
+```
+
 通俗点的解释:
 - Ranking预测基于隐式反馈与关注度
 - Rating预测基于显示反馈与满意度
-```
 
 ### Ranking指标
 - AUC
