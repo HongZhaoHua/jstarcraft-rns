@@ -27,7 +27,6 @@ JStarCraft Recommendation
 *****
 
 ## 基本问题:排序(Ranking)与评分(Rating)
-
     在推荐算法中,预测任务根据基本问题不同,划分为两类.
 
 ### Ranking预测
