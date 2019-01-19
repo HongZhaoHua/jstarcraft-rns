@@ -15,7 +15,8 @@ JStarCraft Recommendation
 
 *****
 
-## JStarCraft Recommendation主要特性如下:
+## JStarCraft Recommendation主要特性如下
+
 * 1.支持并行计算
 * 2.支持硬件加速
 * 3.支持模型保存与装载
@@ -26,6 +27,14 @@ JStarCraft Recommendation
 *****
 
 ## 基本问题:排序(Ranking)与评分(Rating)
+
+在推荐算法中,根据基本问题的不同,划分为两类预测任务.
+* Ranking预测
+
+    基于隐式反馈与关注度
+* Rating预测
+
+    基于显示反馈与满意度
 
 *****
 
