@@ -28,10 +28,29 @@ JStarCraft Recommendation
 
 ## 基本问题:排序(Ranking)与评分(Rating)
 
-在推荐算法中,预测任务根据基本问题不同,划分为两类.
+在推荐算法中,预测任务根据基本问题的不同(目标函数的区别),划分为Ranking预测与Rating预测.
 
-- 基于隐式反馈与关注度的Ranking预测
-- 基于显示反馈与满意度的Rating预测
+#### 通俗点的解释:
+- Ranking预测基于隐式反馈与关注度
+- Rating预测基于显示反馈与满意度
+
+### Ranking指标
+- AUC
+- Diversity
+- MAP
+- MRR
+- NDCG
+- Novelty
+- Precision
+- Recall
+
+### Rating指标
+- MAE
+- MPE
+- MSE/RMSE
+
+    需要注意:
+    因为关注度与满意度并不总是一致的,所以Rating预测的分数并不总能用于Ranking指标.
 
 *****
 
