@@ -29,11 +29,9 @@ JStarCraft Recommendation
 ## 基本问题:排序(Ranking)与评分(Rating)
 
 在推荐算法中,根据基本问题的不同,划分为两类预测任务.
-* Ranking预测
-
+### Ranking预测
     基于隐式反馈与关注度
-* Rating预测
-
+### Rating预测
     基于显示反馈与满意度
 
 *****
