@@ -29,14 +29,10 @@ JStarCraft Recommendation
 ## 基本问题:排序(Ranking)与评分(Rating)
 
 ```
-推荐算法根据基本问题的不同(即目标函数的区别)划分为Ranking预测与Rating预测.
+推荐算法与评估指标,根据解决基本问题的不同,划分为排序(Ranking)与评分(Rating).
 ```
 
-#### 通俗点的解释
-- Ranking预测基于隐式反馈与关注度
-- Rating预测基于显示反馈与满意度
-
-#### Ranking指标
+### Ranking指标
 - AUC
 - Diversity
 - MAP
@@ -46,13 +42,26 @@ JStarCraft Recommendation
 - Precision
 - Recall
 
-#### Rating指标
+### Rating指标
 - MAE
 - MPE
 - MSE/RMSE
 
 ```
-注意:因为关注度与满意度并不总是一致的,所以Rating预测的分数并不总能用于Ranking指标.
+问:Ranking与Rating之间的区别是什么?
+
+答:两者之间的区别在于目标函数的不同.
+通俗点的解释
+- Ranking预测基于隐式反馈数据,趋向于拟合用户的排序.(关注度)
+- Rating预测基于显示反馈数据,趋向于拟合用户的评分.(满意度)
+```
+
+```
+问:为什么Rating预测的分数并不总是能用于Ranking指标?
+
+答:因为关注度与满意度并不总是一致的.
+通俗点解释
+- 人们关注的东西,并不一定是满意的东西.(例如:个人所得税)
 ```
 
 *****
