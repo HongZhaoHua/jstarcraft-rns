@@ -3,7 +3,7 @@ package com.jstarcraft.recommendation.utility;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.jstarcraft.ai.math.algorithm.decomposition.SingularValueDecomposition;
-import com.jstarcraft.ai.math.algorithm.distribution.ContinuousProbability;
+import com.jstarcraft.ai.math.algorithm.distribution.QuantityProbability;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.MathScalar;
@@ -253,7 +253,7 @@ public class MatrixUtility {
 	 */
 	// 行列相同,非对称矩阵
 	public static <T extends MathMatrix> T wishart(final MathMatrix matrix,
-			final ContinuousProbability normalDistribution, final ContinuousProbability[] gammaDistributions,
+			final QuantityProbability normalDistribution, final QuantityProbability[] gammaDistributions,
 			MathVector randoms, MathMatrix cholesky, MathMatrix gaussian, MathMatrix gamma, MathMatrix transpose,
 			T wishart) {
 		cholesky = cholesky(matrix, cholesky);

@@ -13,7 +13,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.algorithm.decomposition.SingularValueDecomposition;
-import com.jstarcraft.ai.math.algorithm.distribution.ContinuousProbability;
+import com.jstarcraft.ai.math.algorithm.distribution.QuantityProbability;
 import com.jstarcraft.ai.math.structure.MathAccessor;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -34,7 +34,7 @@ import com.jstarcraft.core.utility.RandomUtility;
  */
 public class MatrixUtilityTestCase {
 
-	private ContinuousProbability probability = new ContinuousProbability(new NormalDistribution(1D, 4D));
+	private QuantityProbability probability = new QuantityProbability(new NormalDistribution(1D, 4D));
 
 	@Test
 	public void test() throws Exception {

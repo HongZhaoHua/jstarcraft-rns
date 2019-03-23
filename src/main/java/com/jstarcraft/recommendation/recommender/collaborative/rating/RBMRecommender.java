@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 
-import com.jstarcraft.ai.math.algorithm.distribution.ContinuousProbability;
+import com.jstarcraft.ai.math.algorithm.distribution.QuantityProbability;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
@@ -109,7 +109,7 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
 				itemScoreCount[term.getIndex()][scoreIndex]++;
 			}
 		}
-		ContinuousProbability distribution = new ContinuousProbability(new NormalDistribution(new JDKRandomGenerator(0), 0D, 0.01D));
+		QuantityProbability distribution = new QuantityProbability(new NormalDistribution(new JDKRandomGenerator(0), 0D, 0.01D));
 		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
 			for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
 				for (int scoreIndex = 0; scoreIndex < numberOfScores; scoreIndex++) {

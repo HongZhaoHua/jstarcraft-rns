@@ -5,7 +5,7 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 
-import com.jstarcraft.ai.math.algorithm.distribution.ContinuousProbability;
+import com.jstarcraft.ai.math.algorithm.distribution.QuantityProbability;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -49,9 +49,9 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
 
 	private DenseMatrix[] itemMatrixes;
 
-	private ContinuousProbability normalDistribution;
-	private ContinuousProbability[] userGammaDistributions;
-	private ContinuousProbability[] itemGammaDistributions;
+	private QuantityProbability normalDistribution;
+	private QuantityProbability[] userGammaDistributions;
+	private QuantityProbability[] itemGammaDistributions;
 
 	private class HyperParameter {
 
@@ -115,7 +115,7 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
 		 * @return
 		 * @throws RecommendationException
 		 */
-		private void sampleParameter(ContinuousProbability[] gammaDistributions, DenseMatrix factors, float normalMu, float normalBeta, float wishartScale) throws RecommendationException {
+		private void sampleParameter(QuantityProbability[] gammaDistributions, DenseMatrix factors, float normalMu, float normalBeta, float wishartScale) throws RecommendationException {
 			int rowSize = factors.getRowSize();
 			int columnSize = factors.getColumnSize();
 			// 重复利用内存.
@@ -228,13 +228,13 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
 		userMatrixes = new DenseMatrix[numberOfEpoches - 1];
 		itemMatrixes = new DenseMatrix[numberOfEpoches - 1];
 
-		normalDistribution = new ContinuousProbability(new NormalDistribution(new JDKRandomGenerator(numberOfFactors), 0D, 1D));
-		userGammaDistributions = new ContinuousProbability[numberOfFactors];
-		itemGammaDistributions = new ContinuousProbability[numberOfFactors];
+		normalDistribution = new QuantityProbability(new NormalDistribution(new JDKRandomGenerator(numberOfFactors), 0D, 1D));
+		userGammaDistributions = new QuantityProbability[numberOfFactors];
+		itemGammaDistributions = new QuantityProbability[numberOfFactors];
 		for (int index = 0; index < numberOfFactors; index++) {
 			RandomGenerator random = new JDKRandomGenerator(index);
-			userGammaDistributions[index] = new ContinuousProbability(new GammaDistribution(random, (numberOfUsers + numberOfFactors - (index + 1D)) / 2D, 2D));
-			itemGammaDistributions[index] = new ContinuousProbability(new GammaDistribution(random, (numberOfItems + numberOfFactors - (index + 1D)) / 2D, 2D));
+			userGammaDistributions[index] = new QuantityProbability(new GammaDistribution(random, (numberOfUsers + numberOfFactors - (index + 1D)) / 2D, 2D));
+			itemGammaDistributions[index] = new QuantityProbability(new GammaDistribution(random, (numberOfItems + numberOfFactors - (index + 1D)) / 2D, 2D));
 		}
 	}
 

@@ -3,7 +3,7 @@ package com.jstarcraft.recommendation.recommender;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 
-import com.jstarcraft.ai.math.algorithm.distribution.ContinuousProbability;
+import com.jstarcraft.ai.math.algorithm.distribution.QuantityProbability;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -71,7 +71,7 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
 	 */
 	protected float initStd;
 
-	protected ContinuousProbability distribution;
+	protected QuantityProbability distribution;
 
 	@Override
 	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
@@ -104,7 +104,7 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
 		initMean = configuration.getFloat("rec.init.mean", 0F);
 		initStd = configuration.getFloat("rec.init.std", 0.1F);
 
-		distribution = new ContinuousProbability(new NormalDistribution(new JDKRandomGenerator(0), initMean, initStd));
+		distribution = new QuantityProbability(new NormalDistribution(new JDKRandomGenerator(0), initMean, initStd));
 		featureFactors = DenseMatrix.valueOf(numberOfFeatures, numberOfFactors);
 		featureFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			scalar.setValue(distribution.sample().floatValue());
