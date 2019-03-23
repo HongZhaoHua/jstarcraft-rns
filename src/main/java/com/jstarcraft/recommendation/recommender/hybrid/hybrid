@@ -1,17 +1,3 @@
-Combining Models - Boosting, Bagging, Stacking and Voting:
-https://www.youtube.com/watch?v=062w-dGDRr0
-https://github.com/nsadawi/WEKA-API/blob/master/src/CombineModels.java
-
-Weka算法及源码分析:
-http://blog.csdn.net/roger__wong/article/category/2533491
-
-Weka开发系列pdf版- quweiprotoss的日志:
-http://quweiprotoss.blog.163.com/blog/#m=0&t=1&c=fks_087064082095085064093081086095080086089075086094094064
-http://koalaquwei.ucoz.com/search/?q=weka
-
-Weka中数据挖掘与机器学习:
-http://www.cnblogs.com/zlslch/category/999872.html
-
 集成学习综述:
 http://rec-sys.net/plugin.php?id=freeaddon_pdf_preview:pdf&pid=697&aid=101&md5hash=2591efd25fffc39ab95630f1d5bc536b
 集成学习分为异态集成学习和同态集成学习.
