@@ -4,13 +4,13 @@ import java.util.Iterator;
 
 import com.jstarcraft.ai.math.algorithm.similarity.CosineSimilarity;
 import com.jstarcraft.ai.math.algorithm.similarity.Similarity;
+import com.jstarcraft.ai.math.algorithm.text.InverseDocumentFrequency;
+import com.jstarcraft.ai.math.algorithm.text.NaturalInverseDocumentFrequency;
+import com.jstarcraft.ai.math.algorithm.text.NaturalTermFrequency;
+import com.jstarcraft.ai.math.algorithm.text.TermFrequency;
 import com.jstarcraft.ai.math.structure.matrix.RowArrayMatrix;
 import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.ai.text.InverseDocumentFrequency;
-import com.jstarcraft.ai.text.NaturalInverseDocumentFrequency;
-import com.jstarcraft.ai.text.NaturalTermFrequency;
-import com.jstarcraft.ai.text.TermFrequency;
 import com.jstarcraft.core.utility.ReflectionUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
