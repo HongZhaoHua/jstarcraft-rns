@@ -74,6 +74,37 @@ Rating算法的分数能不能用于Ranking指标?
 
 *****
 
+## 算法列表
+
+#### 基准算法
+
+| 名称 | 问题 | 类名 |
+| :----: | :----: | :----: |
+| 随机猜测 | 排序/评分 | RandomGuessRecommender |
+| 最受欢迎 | 排序 | MostPopularRecommender |
+| 常量猜测 | 评分 | ConstantGuessRecommender |
+| 全局平均 | 评分 | GlobalAverageRecommender |
+| 物品平均 | 评分 | ItemAverageRecommender |
+| 物品聚类 | 评分 | ItemClusterRecommender |
+| 用户平均 | 评分 | UserAverageRecommender |
+| 用户聚类 | 评分 | UserClusterRecommender |
+
+#### 协同算法
+
+
+
+#### 内容算法
+
+
+
+
+
+*****
+
+
+
+
+
 ## 数据集
 
 * [Amazon Product Dataset](http://jmcauley.ucsd.edu/data/amazon/)
