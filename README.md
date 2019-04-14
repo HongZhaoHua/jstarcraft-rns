@@ -5,7 +5,7 @@ JStarCraft Recommendation
 
 *****
 
-#### JStarCraft Recommendation是一个推荐算法引擎,目标是为推荐系统领域的学术界与工业界提供推荐算法参考实现.遵循Apache 2.0协议.
+**JStarCraft Recommendation是一个推荐算法引擎,目标是为推荐系统领域的学术界与工业界提供推荐算法参考实现.遵循Apache 2.0协议.**
 
 JStarCraft Recommendation引擎基于JStarCraft AI框架重构了所有LibRec引擎的推荐算法.
 
