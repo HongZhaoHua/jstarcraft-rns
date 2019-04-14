@@ -7,9 +7,9 @@ JStarCraft Recommendation
 
 **JStarCraft Recommendation是一个推荐算法引擎,目标是为推荐系统领域的学术界与工业界提供推荐算法参考实现.遵循Apache 2.0协议.**
 
-JStarCraft Recommendation引擎基于JStarCraft AI框架重构了所有LibRec引擎的推荐算法.
+JStarCraft Recommendation引擎基于[JStarCraft AI框架](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)重构了所有[LibRec引擎]((https://github.com/guoguibing/librec))的推荐算法.
 
-在此特别感谢[LibRec团队](https://github.com/guoguibing/librec),也特别感谢推荐系统QQ群(274750470)提供的支持与帮助.
+在此特别感谢**LibRec团队**,也特别感谢**推荐系统QQ群**(274750470)提供的支持与帮助.
 
 |作者|洪钊桦|
 |---|---
@@ -101,13 +101,7 @@ Rating算法的分数能不能用于Ranking指标?
 
 
 
-
-
 *****
-
-
-
-
 
 ## 数据集
 
