@@ -23,8 +23,8 @@ JStarCraft Recommendation引擎基于[JStarCraft AI框架](https://github.com/Ho
 * 2.串行与并行计算
 * 3.CPU与GPU硬件加速
 * 4.模型保存与装载
-* 5.多种推荐算法
-* 6.多种评估指标
+* 5.丰富的推荐算法
+* 6.丰富的评估指标
 * 7.独立的环境配置与算法配置
 * 8.完整的单元测试
 
