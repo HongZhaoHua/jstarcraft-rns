@@ -3,7 +3,7 @@ package com.jstarcraft.recommendation.data;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import com.jstarcraft.core.utility.ConversionUtility;
+import com.jstarcraft.core.common.conversion.csv.ConversionUtility;
 
 /**
  * 离散属性
