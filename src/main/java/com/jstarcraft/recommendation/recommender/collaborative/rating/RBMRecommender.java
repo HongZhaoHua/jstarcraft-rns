@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 
-import com.jstarcraft.ai.math.algorithm.distribution.QuantityProbability;
+import com.jstarcraft.ai.math.algorithm.probability.QuantityProbability;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;

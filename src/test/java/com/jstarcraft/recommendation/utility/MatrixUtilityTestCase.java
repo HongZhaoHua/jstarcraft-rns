@@ -13,7 +13,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.algorithm.decomposition.SingularValueDecomposition;
-import com.jstarcraft.ai.math.algorithm.distribution.QuantityProbability;
+import com.jstarcraft.ai.math.algorithm.probability.QuantityProbability;
 import com.jstarcraft.ai.math.structure.MathAccessor;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;

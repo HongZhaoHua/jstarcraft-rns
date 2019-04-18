@@ -3,7 +3,7 @@ package com.jstarcraft.recommendation.utility;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.jstarcraft.ai.math.algorithm.decomposition.SingularValueDecomposition;
-import com.jstarcraft.ai.math.algorithm.distribution.QuantityProbability;
+import com.jstarcraft.ai.math.algorithm.probability.QuantityProbability;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.MathScalar;
