@@ -10,9 +10,9 @@ import com.jstarcraft.ai.math.structure.MathCache;
 import com.jstarcraft.ai.math.structure.matrix.MathMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.Nd4jMatrix;
-import com.jstarcraft.ai.neuralnetwork.activation.ActivationFunction;
-import com.jstarcraft.ai.neuralnetwork.layer.ParameterConfigurator;
-import com.jstarcraft.ai.neuralnetwork.layer.WeightLayer;
+import com.jstarcraft.ai.model.neuralnetwork.activation.ActivationFunction;
+import com.jstarcraft.ai.model.neuralnetwork.layer.ParameterConfigurator;
+import com.jstarcraft.ai.model.neuralnetwork.layer.WeightLayer;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.StringUtility;
 
