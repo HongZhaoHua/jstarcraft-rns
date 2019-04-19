@@ -14,7 +14,7 @@ import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 
 /**
  * 
- * Random Guess推荐器
+ * Asymmetric SVD++推荐器
  * 
  * <pre>
  * Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model.
