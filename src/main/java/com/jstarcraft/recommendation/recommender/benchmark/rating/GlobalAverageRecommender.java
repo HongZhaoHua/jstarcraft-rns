@@ -1,6 +1,6 @@
 package com.jstarcraft.recommendation.recommender.benchmark.rating;
 
-import com.jstarcraft.ai.model.ModelDefinition;
+import com.jstarcraft.ai.modem.ModemDefinition;
 import com.jstarcraft.recommendation.recommender.AbstractRecommender;
 
 /**
@@ -14,7 +14,7 @@ import com.jstarcraft.recommendation.recommender.AbstractRecommender;
  * @author Birdy
  *
  */
-@ModelDefinition(value = { "meanOfScore" })
+@ModemDefinition(value = { "meanOfScore" })
 public class GlobalAverageRecommender extends AbstractRecommender {
 
 	@Override

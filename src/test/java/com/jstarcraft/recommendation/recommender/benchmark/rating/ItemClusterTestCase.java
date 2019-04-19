@@ -6,7 +6,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.jstarcraft.ai.model.ModelCodec;
+import com.jstarcraft.ai.modem.ModemCodec;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.evaluator.rating.MAEEvaluator;
 import com.jstarcraft.recommendation.evaluator.rating.MPEEvaluator;
@@ -25,7 +25,7 @@ public class ItemClusterTestCase {
 		Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.7722535F));
 		Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.8372418F));
 
-		for (ModelCodec codec : ModelCodec.values()) {
+		for (ModemCodec codec : ModemCodec.values()) {
 			Recommender oldModel = job.getRecommender();
 			byte[] data = codec.encodeModel(oldModel);
 			Recommender newModel = (Recommender) codec.decodeModel(data);

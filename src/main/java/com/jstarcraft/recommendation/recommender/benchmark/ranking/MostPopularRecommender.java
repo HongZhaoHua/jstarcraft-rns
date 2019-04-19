@@ -1,6 +1,6 @@
 package com.jstarcraft.recommendation.recommender.benchmark.ranking;
 
-import com.jstarcraft.ai.model.ModelDefinition;
+import com.jstarcraft.ai.modem.ModemDefinition;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
 import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
@@ -18,7 +18,7 @@ import com.jstarcraft.recommendation.recommender.AbstractRecommender;
  * @author Birdy
  *
  */
-@ModelDefinition(value = { "itemDimension", "populars" })
+@ModemDefinition(value = { "itemDimension", "populars" })
 public class MostPopularRecommender extends AbstractRecommender {
 
 	private int[] populars;

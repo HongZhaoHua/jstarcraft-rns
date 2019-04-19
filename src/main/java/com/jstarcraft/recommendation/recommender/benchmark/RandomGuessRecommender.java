@@ -1,6 +1,6 @@
 package com.jstarcraft.recommendation.recommender.benchmark;
 
-import com.jstarcraft.ai.model.ModelDefinition;
+import com.jstarcraft.ai.modem.ModemDefinition;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.recommender.AbstractRecommender;
 
@@ -15,7 +15,7 @@ import com.jstarcraft.recommendation.recommender.AbstractRecommender;
  * @author Birdy
  *
  */
-@ModelDefinition(value = { "userDimension", "itemDimension", "numberOfItems", "minimumOfScore", "maximumOfScore" })
+@ModemDefinition(value = { "userDimension", "itemDimension", "numberOfItems", "minimumOfScore", "maximumOfScore" })
 public class RandomGuessRecommender extends AbstractRecommender {
 
 	@Override

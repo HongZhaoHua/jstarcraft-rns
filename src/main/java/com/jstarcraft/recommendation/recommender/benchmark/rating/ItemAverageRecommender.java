@@ -1,7 +1,7 @@
 package com.jstarcraft.recommendation.recommender.benchmark.rating;
 
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
-import com.jstarcraft.ai.model.ModelDefinition;
+import com.jstarcraft.ai.modem.ModemDefinition;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
 import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
@@ -19,7 +19,7 @@ import com.jstarcraft.recommendation.recommender.AbstractRecommender;
  * @author Birdy
  *
  */
-@ModelDefinition(value = { "itemDimension", "itemMeans" })
+@ModemDefinition(value = { "itemDimension", "itemMeans" })
 public class ItemAverageRecommender extends AbstractRecommender {
 
 	/** 物品平均分数 */

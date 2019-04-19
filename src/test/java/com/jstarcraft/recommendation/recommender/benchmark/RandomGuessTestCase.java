@@ -6,7 +6,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.jstarcraft.ai.model.ModelCodec;
+import com.jstarcraft.ai.modem.ModemCodec;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.evaluator.ranking.AUCEvaluator;
 import com.jstarcraft.recommendation.evaluator.ranking.MAPEvaluator;
@@ -37,7 +37,7 @@ public class RandomGuessTestCase {
 		Assert.assertThat(measures.get(PrecisionEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.005825241F));
 		Assert.assertThat(measures.get(RecallEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.011579763F));
 		
-		for (ModelCodec codec : ModelCodec.values()) {
+		for (ModemCodec codec : ModemCodec.values()) {
 			Recommender oldModel = job.getRecommender();
 			byte[] data = codec.encodeModel(oldModel);
 			Recommender newModel = (Recommender) codec.decodeModel(data);
@@ -54,7 +54,7 @@ public class RandomGuessTestCase {
 		Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9947887F));
 		Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(2.425075F));
 
-		for (ModelCodec codec : ModelCodec.values()) {
+		for (ModemCodec codec : ModemCodec.values()) {
 			Recommender oldModel = job.getRecommender();
 			byte[] data = codec.encodeModel(oldModel);
 			Recommender newModel = (Recommender) codec.decodeModel(data);

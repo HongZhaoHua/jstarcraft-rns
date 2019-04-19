@@ -9,7 +9,7 @@ import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.ai.model.ModelDefinition;
+import com.jstarcraft.ai.modem.ModemDefinition;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
@@ -28,7 +28,7 @@ import com.jstarcraft.recommendation.recommender.ProbabilisticGraphicalRecommend
  * @author Birdy
  *
  */
-@ModelDefinition(value = { "userDimension", "itemDimension", "itemTopicProbabilities", "numberOfFactors", "scoreIndexes", "topicScoreMatrix" })
+@ModemDefinition(value = { "userDimension", "itemDimension", "itemTopicProbabilities", "numberOfFactors", "scoreIndexes", "topicScoreMatrix" })
 public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
 
 	/** 物品的每评分次数 */
