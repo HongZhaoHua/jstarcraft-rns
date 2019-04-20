@@ -24,7 +24,7 @@ JStarCraft Recommendation引擎基于[JStarCraft AI框架](https://github.com/Ho
 * 3.[CPU与GPU硬件加速](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)
 * 4.[模型保存与装载](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)
 * 5.丰富的推荐算法
-* 6.丰富的评估指标
+* 6.丰富的评估指标(#评估指标)
 * 7.独立的环境配置与算法配置
 * 8.完整的单元测试
 
@@ -35,6 +35,10 @@ JStarCraft Recommendation引擎基于[JStarCraft AI框架](https://github.com/Ho
 ```
 根据解决基本问题的不同,将推荐算法与评估指标划分为排序(Ranking)与评分(Rating).
 ```
+
+*****
+
+## 评估指标
 
 #### Ranking指标
 - AUC
