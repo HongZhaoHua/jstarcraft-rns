@@ -5,7 +5,7 @@ JStarCraft Recommendation
 
 *****
 
-**JStarCraft Recommendation是一个推荐算法引擎,目标是为推荐系统领域的研究人员提供推荐算法参考实现.遵循Apache 2.0协议.**
+**JStarCraft Recommendation是一个面向推荐系统的轻量级引擎.遵循Apache 2.0协议.**
 
 JStarCraft Recommendation引擎基于[JStarCraft AI框架](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)重构了所有[LibRec引擎](https://github.com/guoguibing/librec)的推荐算法.
 
@@ -20,9 +20,9 @@ JStarCraft Recommendation引擎基于[JStarCraft AI框架](https://github.com/Ho
 ## JStarCraft Recommendation特性
 
 * 1.跨平台
-* 2.[串行与并行计算](https://github.com/HongZhaoHua/jstarcraft-ai-1.0 "JStarCraft AI框架")
-* 3.[CPU与GPU硬件加速](https://github.com/HongZhaoHua/jstarcraft-ai-1.0 "JStarCraft AI框架")
-* 4.[模型保存与装载](https://github.com/HongZhaoHua/jstarcraft-ai-1.0 "JStarCraft AI框架")
+* 2.[串行与并行计算](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)
+* 3.[CPU与GPU硬件加速](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)
+* 4.[模型保存与装载](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)
 * 5.丰富的推荐算法
 * 6.丰富的评估指标
 * 7.独立的环境配置与算法配置
