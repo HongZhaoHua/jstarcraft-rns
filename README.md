@@ -20,9 +20,9 @@ JStarCraft Recommendation引擎基于[JStarCraft AI框架](https://github.com/Ho
 ## JStarCraft Recommendation特性
 
 * 1.跨平台
-* 2.[串行与并行计算](https://github.com/HongZhaoHua/jstarcraft-ai-1.0 JStarCraft AI框架)
-* 3.[CPU与GPU硬件加速](https://github.com/HongZhaoHua/jstarcraft-ai-1.0 JStarCraft AI框架)
-* 4.[模型保存与装载](https://github.com/HongZhaoHua/jstarcraft-ai-1.0 JStarCraft AI框架)
+* 2.[串行与并行计算](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)
+* 3.[CPU与GPU硬件加速](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)
+* 4.[模型保存与装载](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)
 * 5.丰富的推荐算法
 * 6.丰富的评估指标
 * 7.独立的环境配置与算法配置
