@@ -15,7 +15,9 @@ import com.jstarcraft.recommendation.exception.RecommendationException;
  * @author Birdy
  *
  */
+@Deprecated
 // TODO 准备分离数据配置与算法配置
+// TODO 准备重构为基于jstarcraft-core-storage
 public class Configuration {
 
 	/** 类容器(用于获取Properties配置) */
