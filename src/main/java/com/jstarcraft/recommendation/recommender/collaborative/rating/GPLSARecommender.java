@@ -8,8 +8,8 @@ import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
+import com.jstarcraft.ai.utility.Float2FloatKeyValue;
 import com.jstarcraft.ai.utility.MathUtility;
-import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
@@ -74,7 +74,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 			probabilityVector.scaleValues(1F / probabilityVector.getSum(false));
 		}
 
-		KeyValue<Float, Float> keyValue = trainMatrix.getVariance();
+		Float2FloatKeyValue keyValue = trainMatrix.getVariance();
 		float mean = keyValue.getKey();
 		float variance = keyValue.getValue() / trainMatrix.getElementSize();
 

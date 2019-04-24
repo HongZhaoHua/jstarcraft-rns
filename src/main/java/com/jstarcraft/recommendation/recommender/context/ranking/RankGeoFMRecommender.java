@@ -14,6 +14,7 @@ import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
+import com.jstarcraft.ai.utility.Float2FloatKeyValue;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
@@ -51,7 +52,7 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
 
 	protected int knn;
 
-	protected KeyValue<Float, Float>[] itemLocations;
+	protected Float2FloatKeyValue[] itemLocations;
 
 	@Override
 	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
@@ -76,11 +77,11 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
 			scalar.setValue(distribution.sample().floatValue());
 		});
 
-		itemLocations = new KeyValue[numberOfItems];
+		itemLocations = new Float2FloatKeyValue[numberOfItems];
 		InstanceAccessor locationModel = space.getModule("location");
 		for (DataInstance instance : locationModel) {
 			int itemIndex = instance.getDiscreteFeature(0);
-			KeyValue<Float, Float> itemLocation = new KeyValue<>(instance.getContinuousFeature(0), instance.getContinuousFeature(1));
+			Float2FloatKeyValue itemLocation = new Float2FloatKeyValue(instance.getContinuousFeature(0), instance.getContinuousFeature(1));
 			itemLocations[itemIndex] = itemLocation;
 		}
 		calculateNeighborWeightMatrix(knn);
@@ -231,10 +232,10 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
 		Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
 		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
 			List<KeyValue<Integer, Float>> locationNeighbors = new ArrayList<>(numberOfItems);
-			KeyValue<Float, Float> location = itemLocations[itemIndex];
+			Float2FloatKeyValue location = itemLocations[itemIndex];
 			for (int neighborIndex = 0; neighborIndex < numberOfItems; neighborIndex++) {
 				if (itemIndex != neighborIndex) {
-					KeyValue<Float, Float> neighborLocation = itemLocations[neighborIndex];
+					Float2FloatKeyValue neighborLocation = itemLocations[neighborIndex];
 					float distance = getDistance(location.getKey(), location.getValue(), neighborLocation.getKey(), neighborLocation.getValue());
 					locationNeighbors.add(new KeyValue<>(neighborIndex, distance));
 				}
