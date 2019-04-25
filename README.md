@@ -126,7 +126,12 @@ Rating算法的分数能不能用于Ranking指标?
 
 #### 内容算法
 
-
+| 名称 | 问题 | 说明/论文 |
+| :----: | :----: | :----: |
+| EFM | 排序/评分 | Explicit factor models for explainable recommendation based on phrase-level sentiment analysis |
+| TF-IDF | 排序 | 词频-逆文档频率 |
+| HFT | 评分 | Hidden factors and hidden topics: understanding rating dimensions with review text |
+| TopicMF | 评分 | TopicMF: Simultaneously Exploiting Ratings and Reviews for Recommendation |
 
 *****
 

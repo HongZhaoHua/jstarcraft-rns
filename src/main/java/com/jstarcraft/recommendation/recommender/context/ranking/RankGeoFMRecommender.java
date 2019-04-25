@@ -31,7 +31,7 @@ import com.jstarcraft.recommendation.utility.LogisticUtility;
  * Rank GeoFM推荐器
  * 
  * <pre>
- * Rank-GeoFM: A ranking based geographical factorization method for point of interest recommendation.
+ * Rank-GeoFM: A ranking based geographical factorization method for point of interest recommendation
  * 参考LibRec团队
  * </pre>
  * 
