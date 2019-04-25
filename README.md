@@ -86,20 +86,25 @@ Rating算法的分数能不能用于Ranking指标?
 
 #### 基准算法
 
-| 名称 | 问题 | 类名 |
+| 名称 | 问题 | 说明/论文 |
 | :----: | :----: | :----: |
-| 随机猜测 | 排序/评分 | RandomGuessRecommender |
-| 最受欢迎 | 排序 | MostPopularRecommender |
-| 常量猜测 | 评分 | ConstantGuessRecommender |
-| 全局平均 | 评分 | GlobalAverageRecommender |
-| 物品平均 | 评分 | ItemAverageRecommender |
-| 物品聚类 | 评分 | ItemClusterRecommender |
-| 用户平均 | 评分 | UserAverageRecommender |
-| 用户聚类 | 评分 | UserClusterRecommender |
+| RandomGuess | 排序/评分 | 随机猜测 |
+| MostPopular | 排序 | 最受欢迎 |
+| ConstantGuess | 评分 | 常量猜测 |
+| GlobalAverage | 评分 | 全局平均 |
+| ItemAverage | 评分 | 物品平均 |
+| ItemCluster | 评分 | 物品聚类 |
+| UserAverage | 评分 | 用户平均 |
+| UserCluster | 评分 | 用户聚类 |
 
 #### 协同算法
 
-
+| 名称 | 问题 | 说明/论文 |
+| :----: | :----: | :----: |
+| BHFree | 排序/评分 | Balancing Prediction and Recommendation Accuracy: Hierarchical Latent Factors for Preference Data |
+| BUCM | 排序/评分 | Modeling Item Selection and Relevance for Accurate Recommendations |
+| ItemKNN | 排序/评分 | 基于物品的协同过滤 |
+| UserKNN | 排序/评分 | 基于用户的协同过滤 |
 
 #### 内容算法
 
