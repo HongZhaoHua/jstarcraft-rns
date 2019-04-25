@@ -41,8 +41,6 @@ JStarCraft Recommendation引擎基于[JStarCraft AI框架](https://github.com/Ho
 根据解决基本问题的不同,将推荐算法与评估指标划分为排序(Ranking)与评分(Rating).
 ```
 
-*****
-
 ```
 Ranking与Rating之间的区别是什么?
 
