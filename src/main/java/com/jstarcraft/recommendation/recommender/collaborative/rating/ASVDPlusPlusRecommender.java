@@ -17,7 +17,7 @@ import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
  * Asymmetric SVD++推荐器
  * 
  * <pre>
- * Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model.
+ * Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model
  * 参考LibRec团队
  * </pre>
  * 

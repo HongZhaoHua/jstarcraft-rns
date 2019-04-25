@@ -15,7 +15,7 @@ import com.jstarcraft.recommendation.recommender.FactorizationMachineRecommender
  * FM SGD推荐器
  * 
  * <pre>
- * Stochastic Gradient Descent with Square Loss
+ * Factorization Machines via Stochastic Gradient Descent with Square Loss
  * 参考LibRec团队
  * </pre>
  * 

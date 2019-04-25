@@ -24,7 +24,7 @@ import com.jstarcraft.recommendation.recommender.ProbabilisticGraphicalRecommend
  * RBM推荐器
  * 
  * <pre>
- * Restricted BoltzmanMachines for Collaborative Filtering
+ * Restricted Boltzman Machines for Collaborative Filtering
  * 参考LibRec团队
  * </pre>
  * 

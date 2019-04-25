@@ -19,16 +19,11 @@ import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.NeuralNetworkRecommender;
 
 /**
- * Suvash et al., <strong>AutoRec: Autoencoders Meet Collaborative
- * Filtering</strong>, WWW Companion 2015.
- *
- * @author Ma Chen
- */
-/**
  * 
- * Random Guess推荐器
+ * AutoRec学习器
  * 
  * <pre>
+ * AutoRec: Autoencoders Meet Collaborative Filtering
  * 参考LibRec团队
  * </pre>
  * 

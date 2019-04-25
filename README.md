@@ -109,6 +109,20 @@ Rating算法的分数能不能用于Ranking指标?
 | SLIM | 排序 | SLIM: Sparse Linear Methods for Top-N Recommender Systems |
 | WBPR | 排序 | Bayesian Personalized Ranking for Non-Uniformly Sampled Items |
 | WRMF | 排序 | Collaborative filtering for implicit feedback datasets |
+| AsymmetricSVD++ | 评分 | Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model |
+| AutoRec | 评分 | AutoRec: Autoencoders Meet Collaborative Filtering |
+| BPMF | 评分 | Bayesian Probabilistic Matrix Factorization using Markov Chain Monte Carlo |
+| CCD | 评分 | Large-Scale Parallel Collaborative Filtering for the Netflix Prize |
+| FFM | 评分 | Field Aware Factorization Machines for CTR Prediction |
+| GPLSA | 评分 | Collaborative Filtering via Gaussian Probabilistic Latent Semantic Analysis |
+| IRRG | 评分 | Exploiting Implicit Item Relationships for Recommender Systems |
+| MFALS | 评分 | Large-Scale Parallel Collaborative Filtering for the Netflix Prize |
+| NMF | 评分 | Algorithms for Non-negative Matrix Factorization |
+| PMF | 评分 | PMF: Probabilistic Matrix Factorization |
+| RBM | 评分 | Restricted Boltzman Machines for Collaborative Filtering |
+| RF-Rec | 评分 | RF-Rec: Fast and Accurate Computation of Recommendations based on Rating Frequencies |
+| SVD++ | 评分 | Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model |
+| URP | 评分 | User Rating Profile: a LDA model for rating prediction |
 
 #### 内容算法
 

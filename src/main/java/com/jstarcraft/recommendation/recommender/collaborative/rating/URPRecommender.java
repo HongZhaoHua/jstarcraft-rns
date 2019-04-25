@@ -24,7 +24,7 @@ import com.jstarcraft.recommendation.utility.SampleUtility;
  * URP推荐器
  * 
  * <pre>
- * User Rating Profile: a LDA model for rating prediction.
+ * User Rating Profile: a LDA model for rating prediction
  * 参考LibRec团队
  * </pre>
  * 

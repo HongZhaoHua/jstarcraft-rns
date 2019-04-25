@@ -19,7 +19,7 @@ import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
  * CCD推荐器
  * 
  * <pre>
- * Large-Scale Parallel Collaborative Filtering for the Netflix Prize.
+ * Large-Scale Parallel Collaborative Filtering for the Netflix Prize
  * http://www.hpl.hp.com/personal/Robert_Schreiber/papers/2008%20AAIM%20Netflix/
  * 参考LibRec团队
  * </pre>

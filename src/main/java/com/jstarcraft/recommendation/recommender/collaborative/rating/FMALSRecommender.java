@@ -21,7 +21,7 @@ import com.jstarcraft.recommendation.recommender.FactorizationMachineRecommender
  * FM ALS推荐器
  * 
  * <pre>
- * Factorization Machine Recommender via Alternating Least Square
+ * Factorization Machines via Alternating Least Square
  * 参考LibRec团队
  * </pre>
  * 
