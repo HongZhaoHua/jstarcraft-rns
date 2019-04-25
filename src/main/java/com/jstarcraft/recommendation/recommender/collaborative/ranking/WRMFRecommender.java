@@ -23,7 +23,8 @@ import com.jstarcraft.recommendation.utility.MatrixUtility;
  * WRMF推荐器
  * 
  * <pre>
- * WRMF: Weighted Regularized Matrix Factorization.
+ * WRMF: Weighted Regularized Matrix Factorization
+ * Collaborative filtering for implicit feedback datasets
  * 参考LibRec团队
  * </pre>
  * 

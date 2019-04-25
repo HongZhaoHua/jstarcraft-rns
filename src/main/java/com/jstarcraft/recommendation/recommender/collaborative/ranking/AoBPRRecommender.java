@@ -26,6 +26,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
  * 
  * <pre>
  * AoBPR: BPR with Adaptive Oversampling
+ * Improving pairwise learning for item recommendation from implicit feedback
  * 参考LibRec团队
  * </pre>
  * 

@@ -16,7 +16,7 @@ import com.jstarcraft.recommendation.recommender.ProbabilisticGraphicalRecommend
 
 /**
  * 
- * Random Guess推荐器
+ * PLSA推荐器
  * 
  * <pre>
  * Latent semantic models for collaborative filtering

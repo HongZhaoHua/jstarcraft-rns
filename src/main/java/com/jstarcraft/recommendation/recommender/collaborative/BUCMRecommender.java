@@ -21,7 +21,8 @@ import com.jstarcraft.recommendation.utility.SampleUtility;
  * BUCM推荐器
  * 
  * <pre>
- * Bayesian User Community Model: Modeling Item Selection and Relevance for Accurate Recommendations
+ * Bayesian User Community Model
+ * Modeling Item Selection and Relevance for Accurate Recommendations
  * 参考LibRec团队
  * </pre>
  * 

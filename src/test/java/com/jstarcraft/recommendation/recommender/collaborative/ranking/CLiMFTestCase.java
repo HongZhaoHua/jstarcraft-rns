@@ -16,12 +16,12 @@ import com.jstarcraft.recommendation.evaluator.ranking.PrecisionEvaluator;
 import com.jstarcraft.recommendation.evaluator.ranking.RecallEvaluator;
 import com.jstarcraft.recommendation.task.RankingTask;
 
-public class CLIMFTestCase {
+public class CLiMFTestCase {
 
 	@Test
 	public void testRecommender() throws Exception {
 		Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/climf-test.properties");
-		RankingTask job = new RankingTask(CLIMFRecommender.class, configuration);
+		RankingTask job = new RankingTask(CLiMFRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9179061F));
 		Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.43487352F));

@@ -20,7 +20,7 @@ import com.jstarcraft.recommendation.utility.SampleUtility;
 
 /**
  * 
- * Random Guess推荐器
+ * LDA推荐器
  * 
  * <pre>
  * Latent Dirichlet Allocation for implicit feedback

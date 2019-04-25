@@ -28,9 +28,10 @@ import com.jstarcraft.recommendation.utility.GammaUtility;
 
 /**
  * 
- * Hidden Markov Model推荐器
+ * HMMForCF推荐器
  * 
  * <pre>
+ * A Hidden Markov Model Purpose: A class for the model, including parameters
  * 参考LibRec团队
  * </pre>
  * 

@@ -101,10 +101,28 @@ Rating算法的分数能不能用于Ranking指标?
 
 | 名称 | 问题 | 说明/论文 |
 | :----: | :----: | :----: |
+| AspectModel | 排序/评分 | Latent class models for collaborative filtering |
 | BHFree | 排序/评分 | Balancing Prediction and Recommendation Accuracy: Hierarchical Latent Factors for Preference Data |
 | BUCM | 排序/评分 | Modeling Item Selection and Relevance for Accurate Recommendations |
 | ItemKNN | 排序/评分 | 基于物品的协同过滤 |
 | UserKNN | 排序/评分 | 基于用户的协同过滤 |
+| AoBPR | 排序 | Improving pairwise learning for item recommendation from implicit feedback |
+| BPR | 排序 | BPR: Bayesian Personalized Ranking from Implicit Feedback |
+| CLiMF | 排序 | CLiMF: learning to maximize reciprocal rank with collaborative less-is-more filtering |
+| EALS | 排序 | Collaborative filtering for implicit feedback dataset |
+| FISM | 排序 | FISM: Factored Item Similarity Models for Top-N Recommender Systems |
+| GBPR | 排序 | GBPR: Group Preference Based Bayesian Personalized Ranking for One-Class Collaborative Filtering |
+| HMMForCF | 排序 | A Hidden Markov Model Purpose: A class for the model, including parameters |
+| ItemBigram | 排序 | Topic Modeling: Beyond Bag-of-Words |
+| LambdaFM | 排序 | LambdaFM: Learning Optimal Ranking with Factorization Machines Using Lambda Surrogates |
+| LDA | 排序 | Latent Dirichlet Allocation for implicit feedback |
+| ListwiseMF | 排序 | List-wise learning to rank with matrix factorization for collaborative filtering |
+| PLSA | 排序 | Latent semantic models for collaborative filtering |
+| RankALS | 排序 | Alternating Least Squares for Personalized Ranking |
+| RankSGD | 排序 | Collaborative Filtering Ensemble for Ranking |
+| SLIM | 排序 | SLIM: Sparse Linear Methods for Top-N Recommender Systems |
+| WBPR | 排序 | Bayesian Personalized Ranking for Non-Uniformly Sampled Items |
+| WRMF | 排序 | Collaborative filtering for implicit feedback datasets |
 
 #### 内容算法
 

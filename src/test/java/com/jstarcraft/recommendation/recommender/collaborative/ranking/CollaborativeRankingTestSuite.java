@@ -20,7 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 		CDAETestCase.class,
 
-		CLIMFTestCase.class,
+		CLiMFTestCase.class,
 
 		DeepFMTestCase.class,
 

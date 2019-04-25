@@ -32,7 +32,7 @@ import com.jstarcraft.recommendation.utility.SampleUtility;
  * Item Bigram推荐器
  * 
  * <pre>
- * Topic Modeling: Beyond Bag-of-Words
+ * Topic modeling: beyond bag-of-words
  * 参考LibRec团队
  * </pre>
  * 

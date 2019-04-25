@@ -9,7 +9,8 @@ import com.jstarcraft.recommendation.recommender.collaborative.BUCMRecommender;
  * BUCM推荐器
  * 
  * <pre>
- * Bayesian UCM: Modeling Item Selection and Relevance for Accurate Recommendations
+ * Bayesian User Community Model
+ * Modeling Item Selection and Relevance for Accurate Recommendations
  * 参考LibRec团队
  * </pre>
  * 

@@ -22,7 +22,8 @@ import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
  * EALS推荐器
  * 
  * <pre>
- * EALS: efficient Alternating Least Square for Weighted Regularized Matrix Factorization.
+ * EALS: efficient Alternating Least Square for Weighted Regularized Matrix Factorization
+ * Collaborative filtering for implicit feedback dataset
  * 参考LibRec团队
  * </pre>
  * 

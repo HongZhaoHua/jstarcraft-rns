@@ -13,7 +13,7 @@ import com.jstarcraft.recommendation.utility.LogisticUtility;
 
 /**
  * 
- * Random Guess推荐器
+ * ListwiseMF推荐器
  * 
  * <pre>
  * List-wise learning to rank with matrix factorization for collaborative filtering

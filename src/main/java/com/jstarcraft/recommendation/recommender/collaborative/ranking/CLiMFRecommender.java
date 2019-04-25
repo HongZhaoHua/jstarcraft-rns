@@ -6,30 +6,24 @@ import java.util.List;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
-import com.jstarcraft.ai.utility.MathUtility;
 import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 import com.jstarcraft.recommendation.utility.LogisticUtility;
 
 import it.unimi.dsi.fastutil.ints.IntSet;
 
 /**
- * Shi et al., <strong>Climf: learning to maximize reciprocal rank with
- * collaborative less-is-more filtering.</strong>, RecSys 2012.
- *
- * @author Guibing Guo, Chen Ma and Keqiang Wang
- */
-/**
  * 
  * Random Guess推荐器
  * 
  * <pre>
+ * CLiMF: learning to maximize reciprocal rank with collaborative less-is-more filtering
  * 参考LibRec团队
  * </pre>
  * 
  * @author Birdy
  *
  */
-public class CLIMFRecommender extends MatrixFactorizationRecommender {
+public class CLiMFRecommender extends MatrixFactorizationRecommender {
 
 	@Override
 	protected void doPractice() {
