@@ -24,7 +24,12 @@ JStarCraft Recommendation引擎基于[JStarCraft AI框架](https://github.com/Ho
 * [3.CPU与GPU硬件加速](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)
 * [4.模型保存与装载](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)
 * [5.丰富的推荐算法](#算法列表)
+    * [基准算法](#基准算法)
+    * [协同算法](#协同算法)
+    * [内容算法](#内容算法)
 * [6.丰富的评估指标](#评估指标)
+    * [排序指标](#排序指标)
+    * [评分指标](#评分指标)
 * 7.独立的环境配置与算法配置
 * 8.完整的单元测试
 
@@ -37,23 +42,6 @@ JStarCraft Recommendation引擎基于[JStarCraft AI框架](https://github.com/Ho
 ```
 
 *****
-
-## 评估指标
-
-#### Ranking指标
-- AUC
-- Diversity
-- MAP
-- MRR
-- NDCG
-- Novelty
-- Precision
-- Recall
-
-#### Rating指标
-- MAE
-- MPE
-- MSE/RMSE
 
 ```
 Ranking与Rating之间的区别是什么?
@@ -127,6 +115,25 @@ Rating算法的分数能不能用于Ranking指标?
 #### 内容算法
 
 
+
+*****
+
+## 评估指标
+
+#### 排序指标
+- AUC
+- Diversity
+- MAP
+- MRR
+- NDCG
+- Novelty
+- Precision
+- Recall
+
+#### 评分指标
+- MAE
+- MPE
+- MSE/RMSE
 
 *****
 
