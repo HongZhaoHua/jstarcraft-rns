@@ -17,16 +17,11 @@ import com.jstarcraft.recommendation.recommender.SocialRecommender;
 import com.jstarcraft.recommendation.utility.LogisticUtility;
 
 /**
- * Jamali and Ester, <strong>A matrix factorization technique with trust
- * propagation for recommendation in social networks</strong>, RecSys 2010.
- *
- * @author guoguibing and Keqiang Wang
- */
-/**
  * 
- * User KNN推荐器
+ * SoRec推荐器
  * 
  * <pre>
+ * SoRec: Social recommendation using probabilistic matrix factorization
  * 参考LibRec团队
  * </pre>
  * 

@@ -26,6 +26,7 @@ import com.jstarcraft.recommendation.recommender.collaborative.rating.BiasedMFRe
  * TimeSVD++推荐器
  * 
  * <pre>
+ * Collaborative Filtering with Temporal Dynamics
  * 参考LibRec团队
  * </pre>
  * 

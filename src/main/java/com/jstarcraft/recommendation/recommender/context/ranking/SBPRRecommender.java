@@ -24,7 +24,8 @@ import it.unimi.dsi.fastutil.ints.IntSet;
  * SBPR推荐器
  * 
  * <pre>
- * Social Bayesian Personalized Ranking (SBPR): Leveraging Social Connections to Improve Personalized Ranking for Collaborative Filtering
+ * Social Bayesian Personalized Ranking (SBPR)
+ * Leveraging Social Connections to Improve Personalized Ranking for Collaborative Filtering
  * 参考LibRec团队
  * </pre>
  * 

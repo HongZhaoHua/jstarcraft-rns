@@ -20,7 +20,7 @@ import com.jstarcraft.recommendation.utility.LogisticUtility;
  * SocialMF推荐器
  * 
  * <pre>
- *  matrix factorization technique with trust propagation for recommendation in social networks
+ * A matrix factorization technique with trust propagation for recommendation in social networks
  * 参考LibRec团队
  * </pre>
  * 

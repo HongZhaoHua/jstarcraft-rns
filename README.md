@@ -109,6 +109,10 @@ Rating算法的分数能不能用于Ranking指标?
 | SLIM | 排序 | SLIM: Sparse Linear Methods for Top-N Recommender Systems |
 | WBPR | 排序 | Bayesian Personalized Ranking for Non-Uniformly Sampled Items |
 | WRMF | 排序 | Collaborative filtering for implicit feedback datasets |
+| Rank-GeoFM | 排序 | Rank-GeoFM: A ranking based geographical factorization method for point of interest recommendation |
+| SBPR | 排序 | Leveraging Social Connections to Improve Personalized Ranking for Collaborative Filtering |
+| AssociationRule | 排序 | A Recommendation Algorithm Using Multi-Level Association Rules |
+| PRankD | 排序 | Personalised ranking with diversity |
 | AsymmetricSVD++ | 评分 | Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model |
 | AutoRec | 评分 | AutoRec: Autoencoders Meet Collaborative Filtering |
 | BPMF | 评分 | Bayesian Probabilistic Matrix Factorization using Markov Chain Monte Carlo |
@@ -123,6 +127,15 @@ Rating算法的分数能不能用于Ranking指标?
 | RF-Rec | 评分 | RF-Rec: Fast and Accurate Computation of Recommendations based on Rating Frequencies |
 | SVD++ | 评分 | Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model |
 | URP | 评分 | User Rating Profile: a LDA model for rating prediction |
+| RSTE | 评分 | Learning to Recommend with Social Trust Ensemble |
+| SocialMF | 评分 | A matrix factorization technique with trust propagation for recommendation in social networks |
+| SoRec | 评分 | SoRec: Social recommendation using probabilistic matrix factorization |
+| SoReg | 评分 | Recommender systems with social regularization |
+| TimeSVD++ | 评分 | Collaborative Filtering with Temporal Dynamics |
+| TrustMF | 评分 | Social Collaborative Filtering by Trust |
+| TrustSVD | 评分 | TrustSVD: Collaborative Filtering with Both the Explicit and Implicit Influence of User Trust and of Item Ratings |
+| PersonalityDiagnosis | 评分 | A brief introduction to Personality Diagnosis |
+| SlopeOne | 评分 | Slope One Predictors for Online Rating-Based Collaborative Filtering |
 
 #### 内容算法
 
