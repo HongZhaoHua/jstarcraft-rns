@@ -109,7 +109,7 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
 				itemScoreCount[term.getIndex()][scoreIndex]++;
 			}
 		}
-		QuantityProbability distribution = new QuantityProbability(new NormalDistribution(new JDKRandomGenerator(0), 0D, 0.01D));
+		QuantityProbability distribution = new QuantityProbability(NormalDistribution.class, new JDKRandomGenerator(0), 0D, 0.01D);
 		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
 			for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
 				for (int scoreIndex = 0; scoreIndex < numberOfScores; scoreIndex++) {

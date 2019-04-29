@@ -4,6 +4,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.random.Well19937c;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,7 +35,7 @@ import com.jstarcraft.core.utility.RandomUtility;
  */
 public class MatrixUtilityTestCase {
 
-	private QuantityProbability probability = new QuantityProbability(new NormalDistribution(1D, 4D));
+	private QuantityProbability probability = new QuantityProbability(NormalDistribution.class, new Well19937c(), 1D, 4D);
 
 	@Test
 	public void test() throws Exception {

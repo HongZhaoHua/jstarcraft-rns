@@ -228,13 +228,13 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
 		userMatrixes = new DenseMatrix[numberOfEpoches - 1];
 		itemMatrixes = new DenseMatrix[numberOfEpoches - 1];
 
-		normalDistribution = new QuantityProbability(new NormalDistribution(new JDKRandomGenerator(numberOfFactors), 0D, 1D));
+		normalDistribution = new QuantityProbability(NormalDistribution.class, new JDKRandomGenerator(numberOfFactors), 0D, 1D);
 		userGammaDistributions = new QuantityProbability[numberOfFactors];
 		itemGammaDistributions = new QuantityProbability[numberOfFactors];
 		for (int index = 0; index < numberOfFactors; index++) {
 			RandomGenerator random = new JDKRandomGenerator(index);
-			userGammaDistributions[index] = new QuantityProbability(new GammaDistribution(random, (numberOfUsers + numberOfFactors - (index + 1D)) / 2D, 2D));
-			itemGammaDistributions[index] = new QuantityProbability(new GammaDistribution(random, (numberOfItems + numberOfFactors - (index + 1D)) / 2D, 2D));
+			userGammaDistributions[index] = new QuantityProbability(GammaDistribution.class, random, (numberOfUsers + numberOfFactors - (index + 1D)) / 2D, 2D);
+			itemGammaDistributions[index] = new QuantityProbability(GammaDistribution.class, random, (numberOfItems + numberOfFactors - (index + 1D)) / 2D, 2D);
 		}
 	}
 

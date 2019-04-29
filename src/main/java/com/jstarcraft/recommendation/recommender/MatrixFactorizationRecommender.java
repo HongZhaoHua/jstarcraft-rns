@@ -95,7 +95,7 @@ public abstract class MatrixFactorizationRecommender extends ModelRecommender {
 		initMean = configuration.getFloat("rec.init.mean", 0F);
 		initStd = configuration.getFloat("rec.init.std", 0.1F);
 
-		distribution = new QuantityProbability(new NormalDistribution(new JDKRandomGenerator(0), initMean, initStd));
+		distribution = new QuantityProbability(NormalDistribution.class, new JDKRandomGenerator(0), initMean, initStd);
 		userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
 		userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			scalar.setValue(distribution.sample().floatValue());
@@ -132,8 +132,7 @@ public abstract class MatrixFactorizationRecommender extends ModelRecommender {
 	 * http://www.willamette.edu/~gorr/classes/cs449/momrate.html</li>
 	 * </ol>
 	 * 
-	 * @param iteration
-	 *            the current iteration
+	 * @param iteration the current iteration
 	 */
 	protected void isLearned(int iteration) {
 		if (learnRate < 0F) {
