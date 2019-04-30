@@ -9,6 +9,8 @@ import java.util.Map;
 import com.jstarcraft.ai.data.DataAttribute;
 import com.jstarcraft.ai.data.attribute.QualityAttribute;
 import com.jstarcraft.ai.data.attribute.QuantityAttribute;
+import com.jstarcraft.ai.utility.FloatArray;
+import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.recommendation.data.DataModule;
 import com.jstarcraft.recommendation.data.QualityFeature;
 import com.jstarcraft.recommendation.data.QuantityFeature;
@@ -33,10 +35,10 @@ public class DenseModule implements DataModule<DataInstance> {
 	QuantityAttribute[] quantityAttributes;
 
 	/** 离散特征 */
-	int[][] qualityFeatures;
+	IntegerArray[] qualityFeatures;
 
 	/** 连续特征 */
-	float[][] quantityFeatures;
+	FloatArray[] quantityFeatures;
 
 	/** 离散维度 */
 	private Map<String, Integer> qualityDimensions;
@@ -50,8 +52,8 @@ public class DenseModule implements DataModule<DataInstance> {
 	public DenseModule(List<QualityFeature> qualityFeatures, List<QuantityFeature> quantityFeatures) {
 		this.qualityAttributes = new QualityAttribute[qualityFeatures.size()];
 		this.quantityAttributes = new QuantityAttribute[quantityFeatures.size()];
-		this.qualityFeatures = new int[qualityFeatures.size()][];
-		this.quantityFeatures = new float[quantityFeatures.size()][];
+		this.qualityFeatures = new IntegerArray[qualityFeatures.size()];
+		this.quantityFeatures = new FloatArray[quantityFeatures.size()];
 		this.qualityDimensions = new LinkedHashMap<>();
 		this.quantityDimensions = new LinkedHashMap<>();
 		this.size = qualityFeatures.get(0).getSize();
@@ -60,10 +62,9 @@ public class DenseModule implements DataModule<DataInstance> {
 			if (feature.getSize() != this.size) {
 				throw new IllegalArgumentException("特征大小不一致");
 			}
-			int[] data = new int[this.size];
-			int cursor = 0;
+			IntegerArray data = new IntegerArray(this.size, this.size);
 			for (int value : feature) {
-				data[cursor++] = value;
+				data.associateData(value);
 			}
 			this.qualityAttributes[index] = feature.getAttribute();
 			this.qualityFeatures[index] = data;
@@ -74,10 +75,9 @@ public class DenseModule implements DataModule<DataInstance> {
 			if (feature.getSize() != this.size) {
 				throw new IllegalArgumentException("特征大小不一致");
 			}
-			float[] data = new float[this.size];
-			int cursor = 0;
+			FloatArray data = new FloatArray(this.size, this.size);
 			for (float value : feature) {
-				data[cursor++] = value;
+				data.associateData(value);
 			}
 			this.quantityAttributes[index] = feature.getAttribute();
 			this.quantityFeatures[index] = data;
@@ -195,12 +195,12 @@ public class DenseModule implements DataModule<DataInstance> {
 
 	@Override
 	public int getQualityFeature(int dimension, int position) {
-		return qualityFeatures[dimension][position];
+		return qualityFeatures[dimension].getData(position);
 	}
 
 	@Override
 	public float getQuantityFeature(int dimension, int position) {
-		return quantityFeatures[dimension][position];
+		return quantityFeatures[dimension].getData(position);
 	}
 
 	@Override

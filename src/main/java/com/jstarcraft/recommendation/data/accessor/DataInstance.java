@@ -1,5 +1,8 @@
 package com.jstarcraft.recommendation.data.accessor;
 
+import com.jstarcraft.ai.utility.FloatArray;
+import com.jstarcraft.ai.utility.IntegerArray;
+
 /**
  * 数据实例
  * 
@@ -12,12 +15,12 @@ public class DataInstance {
 	private Integer cursor;
 
 	/** 离散特征 */
-	private int[][] discreteFeatures;
+	private IntegerArray[] discreteFeatures;
 
 	/** 连续特征 */
-	private float[][] continuousFeatures;
+	private FloatArray[] continuousFeatures;
 
-	DataInstance(int[][] discreteFeatures, float[][] continuousFeatures) {
+	DataInstance(IntegerArray[] discreteFeatures, FloatArray[] continuousFeatures) {
 		this.discreteFeatures = discreteFeatures;
 		this.continuousFeatures = continuousFeatures;
 	}
@@ -33,7 +36,7 @@ public class DataInstance {
 	 * @return
 	 */
 	public int getDiscreteFeature(int dimension) {
-		return discreteFeatures[dimension][cursor];
+		return discreteFeatures[dimension].getData(cursor);
 	}
 
 	/**
@@ -43,7 +46,7 @@ public class DataInstance {
 	 * @return
 	 */
 	public float getContinuousFeature(int dimension) {
-		return continuousFeatures[dimension][cursor];
+		return continuousFeatures[dimension].getData(cursor);
 	}
 
 }

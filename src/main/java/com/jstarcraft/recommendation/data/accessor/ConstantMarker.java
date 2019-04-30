@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 
 import com.jstarcraft.ai.data.attribute.QualityAttribute;
 import com.jstarcraft.ai.data.attribute.QuantityAttribute;
+import com.jstarcraft.ai.utility.FloatArray;
 import com.jstarcraft.ai.utility.IntegerArray;
 
 /**
@@ -19,8 +20,8 @@ public class ConstantMarker extends SampleAccessor {
 	public ConstantMarker(IntegerArray positions, DenseModule model, float constant) {
 		this.discreteAttributes = new QualityAttribute[model.qualityAttributes.length];
 		this.continuousAttributes = new QuantityAttribute[model.quantityAttributes.length];
-		this.discreteFeatures = new int[model.qualityAttributes.length][];
-		this.continuousFeatures = new float[model.quantityAttributes.length][];
+		this.discreteFeatures = new IntegerArray[model.qualityAttributes.length];
+		this.continuousFeatures = new FloatArray[model.quantityAttributes.length];
 		for (int index = 0, size = model.qualityAttributes.length; index < size; index++) {
 			this.discreteAttributes[index] = model.qualityAttributes[index];
 			this.discreteFeatures[index] = model.qualityFeatures[index];

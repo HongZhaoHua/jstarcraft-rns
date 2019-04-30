@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.jstarcraft.ai.data.attribute.QualityAttribute;
 import com.jstarcraft.ai.data.attribute.QuantityAttribute;
+import com.jstarcraft.ai.utility.FloatArray;
 import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.recommendation.data.DataModule;
 
@@ -24,10 +25,10 @@ public abstract class SampleAccessor implements DataModule<DataSample> {
 	protected QuantityAttribute[] continuousAttributes;
 
 	/** 离散特征 */
-	protected int[][] discreteFeatures;
+	protected IntegerArray[] discreteFeatures;
 
 	/** 连续特征 */
-	protected float[][] continuousFeatures;
+	protected FloatArray[] continuousFeatures;
 
 	/** 离散维度 */
 	protected Map<String, Integer> discreteDimensions;
@@ -60,12 +61,12 @@ public abstract class SampleAccessor implements DataModule<DataSample> {
 
 	@Override
 	public int getQualityFeature(int dimension, int position) {
-		return discreteFeatures[dimension][positions.getData(position)];
+		return discreteFeatures[dimension].getData(positions.getData(position));
 	}
 
 	@Override
 	public float getQuantityFeature(int dimension, int position) {
-		return continuousFeatures[dimension][positions.getData(position)];
+		return continuousFeatures[dimension].getData(positions.getData(position));
 	}
 
 	@Override
