@@ -12,7 +12,7 @@ import com.jstarcraft.core.common.conversion.csv.ConversionUtility;
  *
  */
 // TODO 准备实现支持分布式的indexes
-public class DiscreteAttribute implements DataAttribute<Integer> {
+public class QualityAttribute implements DataAttribute<Integer> {
 
 	/** 属性名称 */
 	private String name;
@@ -23,7 +23,7 @@ public class DiscreteAttribute implements DataAttribute<Integer> {
 	/** 外部键-内部索引映射 */
 	private HashMap<Object, Integer> indexes = new HashMap<>();
 
-	DiscreteAttribute(String name, Class<?> type) {
+	QualityAttribute(String name, Class<?> type) {
 		this.name = name;
 		this.type = type;
 	}

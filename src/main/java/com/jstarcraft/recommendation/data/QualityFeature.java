@@ -3,28 +3,29 @@ package com.jstarcraft.recommendation.data;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class ContinuousFeature implements DataFeature<Float> {
+
+public class QualityFeature implements DataFeature<Integer> {
 
 	public final static int DEFAULT_CAPACITY = 10000;
 
-	private ContinuousAttribute attribute;
+	private QualityAttribute attribute;
 
 	/** 容量 */
 	private int capacity;
 
 	/** 数组 */
-	private float[] current;
+	private int[] current;
 
 	/** 特征名 */
 	private String name;
 
 	/** 特征值 */
-	private LinkedList<float[]> values;
+	private LinkedList<int[]> values;
 
 	/** 大小 */
 	private int size;
 
-	public ContinuousFeature(String name, ContinuousAttribute attribute) {
+	public QualityFeature(String name, QualityAttribute attribute) {
 		this.attribute = attribute;
 		this.capacity = DEFAULT_CAPACITY;
 		this.name = name;
@@ -36,14 +37,14 @@ public class ContinuousFeature implements DataFeature<Float> {
 	public void associate(Object data) {
 		int position = size++ % capacity;
 		if (position == 0) {
-			current = new float[capacity];
+			current = new int[capacity];
 			values.add(current);
 		}
 		current[position] = attribute.makeValue(data);
 	}
 
 	@Override
-	public ContinuousAttribute getAttribute() {
+	public QualityAttribute getAttribute() {
 		return attribute;
 	}
 
@@ -58,17 +59,17 @@ public class ContinuousFeature implements DataFeature<Float> {
 	}
 
 	@Override
-	public Iterator<Float> iterator() {
-		return new ContinuousFeatureIterator();
+	public Iterator<Integer> iterator() {
+		return new DiscreteFeatureIterator();
 	}
 
-	private class ContinuousFeatureIterator implements Iterator<Float> {
+	private class DiscreteFeatureIterator implements Iterator<Integer> {
 
 		private int cursor = 0;
 
-		private float[] current;
+		private int[] current;
 
-		private final Iterator<float[]> iterator = values.iterator();
+		private final Iterator<int[]> iterator = values.iterator();
 
 		@Override
 		public boolean hasNext() {
@@ -76,7 +77,7 @@ public class ContinuousFeature implements DataFeature<Float> {
 		}
 
 		@Override
-		public Float next() {
+		public Integer next() {
 			int position = cursor++ % capacity;
 			if (position == 0) {
 				current = iterator.next();

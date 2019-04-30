@@ -3,29 +3,28 @@ package com.jstarcraft.recommendation.data;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-
-public class DiscreteFeature implements DataFeature<Integer> {
+public class QuantityFeature implements DataFeature<Float> {
 
 	public final static int DEFAULT_CAPACITY = 10000;
 
-	private DiscreteAttribute attribute;
+	private QuantityAttribute attribute;
 
 	/** 容量 */
 	private int capacity;
 
 	/** 数组 */
-	private int[] current;
+	private float[] current;
 
 	/** 特征名 */
 	private String name;
 
 	/** 特征值 */
-	private LinkedList<int[]> values;
+	private LinkedList<float[]> values;
 
 	/** 大小 */
 	private int size;
 
-	public DiscreteFeature(String name, DiscreteAttribute attribute) {
+	public QuantityFeature(String name, QuantityAttribute attribute) {
 		this.attribute = attribute;
 		this.capacity = DEFAULT_CAPACITY;
 		this.name = name;
@@ -37,14 +36,14 @@ public class DiscreteFeature implements DataFeature<Integer> {
 	public void associate(Object data) {
 		int position = size++ % capacity;
 		if (position == 0) {
-			current = new int[capacity];
+			current = new float[capacity];
 			values.add(current);
 		}
 		current[position] = attribute.makeValue(data);
 	}
 
 	@Override
-	public DiscreteAttribute getAttribute() {
+	public QuantityAttribute getAttribute() {
 		return attribute;
 	}
 
@@ -59,17 +58,17 @@ public class DiscreteFeature implements DataFeature<Integer> {
 	}
 
 	@Override
-	public Iterator<Integer> iterator() {
-		return new DiscreteFeatureIterator();
+	public Iterator<Float> iterator() {
+		return new ContinuousFeatureIterator();
 	}
 
-	private class DiscreteFeatureIterator implements Iterator<Integer> {
+	private class ContinuousFeatureIterator implements Iterator<Float> {
 
 		private int cursor = 0;
 
-		private int[] current;
+		private float[] current;
 
-		private final Iterator<int[]> iterator = values.iterator();
+		private final Iterator<float[]> iterator = values.iterator();
 
 		@Override
 		public boolean hasNext() {
@@ -77,7 +76,7 @@ public class DiscreteFeature implements DataFeature<Integer> {
 		}
 
 		@Override
-		public Integer next() {
+		public Float next() {
 			int position = cursor++ % capacity;
 			if (position == 0) {
 				current = iterator.next();

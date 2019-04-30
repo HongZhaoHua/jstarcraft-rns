@@ -6,12 +6,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.jstarcraft.recommendation.data.ContinuousAttribute;
-import com.jstarcraft.recommendation.data.ContinuousFeature;
+import com.jstarcraft.recommendation.data.QuantityAttribute;
+import com.jstarcraft.recommendation.data.QuantityFeature;
 import com.jstarcraft.recommendation.data.DataAccessor;
 import com.jstarcraft.recommendation.data.DataAttribute;
-import com.jstarcraft.recommendation.data.DiscreteAttribute;
-import com.jstarcraft.recommendation.data.DiscreteFeature;
+import com.jstarcraft.recommendation.data.QualityAttribute;
+import com.jstarcraft.recommendation.data.QualityFeature;
 
 /**
  * 数据模型
@@ -27,10 +27,10 @@ import com.jstarcraft.recommendation.data.DiscreteFeature;
 public class InstanceAccessor implements DataAccessor<DataInstance> {
 
 	/** 离散属性 */
-	DiscreteAttribute[] discreteAttributes;
+	QualityAttribute[] discreteAttributes;
 
 	/** 连续属性 */
-	ContinuousAttribute[] continuousAttributes;
+	QuantityAttribute[] continuousAttributes;
 
 	/** 离散特征 */
 	int[][] discreteFeatures;
@@ -47,16 +47,16 @@ public class InstanceAccessor implements DataAccessor<DataInstance> {
 	/** 大小 */
 	private int size = 0;
 
-	public InstanceAccessor(List<DiscreteFeature> discreteFeatures, List<ContinuousFeature> continuousFeatures) {
-		this.discreteAttributes = new DiscreteAttribute[discreteFeatures.size()];
-		this.continuousAttributes = new ContinuousAttribute[continuousFeatures.size()];
+	public InstanceAccessor(List<QualityFeature> discreteFeatures, List<QuantityFeature> continuousFeatures) {
+		this.discreteAttributes = new QualityAttribute[discreteFeatures.size()];
+		this.continuousAttributes = new QuantityAttribute[continuousFeatures.size()];
 		this.discreteFeatures = new int[discreteFeatures.size()][];
 		this.continuousFeatures = new float[continuousFeatures.size()][];
 		this.discreteDimensions = new LinkedHashMap<>();
 		this.continuousDimensions = new LinkedHashMap<>();
 		this.size = discreteFeatures.get(0).getSize();
 		for (int index = 0; index < discreteFeatures.size(); index++) {
-			DiscreteFeature feature = discreteFeatures.get(index);
+			QualityFeature feature = discreteFeatures.get(index);
 			if (feature.getSize() != this.size) {
 				throw new IllegalArgumentException("特征大小不一致");
 			}
@@ -70,7 +70,7 @@ public class InstanceAccessor implements DataAccessor<DataInstance> {
 			this.discreteDimensions.put(feature.getName(), index);
 		}
 		for (int index = 0; index < continuousFeatures.size(); index++) {
-			ContinuousFeature feature = continuousFeatures.get(index);
+			QuantityFeature feature = continuousFeatures.get(index);
 			if (feature.getSize() != this.size) {
 				throw new IllegalArgumentException("特征大小不一致");
 			}
@@ -174,12 +174,12 @@ public class InstanceAccessor implements DataAccessor<DataInstance> {
 	// }
 
 	@Override
-	public DiscreteAttribute getDiscreteAttribute(int dimension) {
+	public QualityAttribute getDiscreteAttribute(int dimension) {
 		return discreteAttributes[dimension];
 	}
 
 	@Override
-	public ContinuousAttribute getContinuousAttribute(int dimension) {
+	public QuantityAttribute getContinuousAttribute(int dimension) {
 		return continuousAttributes[dimension];
 	}
 

@@ -1,7 +1,7 @@
 package com.jstarcraft.recommendation.data.processor;
 
 import com.jstarcraft.recommendation.data.DataAccessor;
-import com.jstarcraft.recommendation.data.DiscreteAttribute;
+import com.jstarcraft.recommendation.data.QualityAttribute;
 
 /**
  * 数据匹配器
@@ -12,7 +12,7 @@ import com.jstarcraft.recommendation.data.DiscreteAttribute;
 public interface DataMatcher {
 
 	public static DataMatcher discreteOf(DataAccessor<?> accessor, int dimension) {
-		DiscreteAttribute attribute = accessor.getDiscreteAttribute(dimension);
+		QualityAttribute attribute = accessor.getDiscreteAttribute(dimension);
 		int size = accessor.getSize();
 		return (paginations, positions) -> {
 			if (paginations.length != attribute.getSize() + 1) {

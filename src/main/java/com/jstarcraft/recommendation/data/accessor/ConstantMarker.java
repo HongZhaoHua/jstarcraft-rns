@@ -3,8 +3,8 @@ package com.jstarcraft.recommendation.data.accessor;
 import java.util.LinkedHashMap;
 
 import com.jstarcraft.ai.utility.IntegerArray;
-import com.jstarcraft.recommendation.data.ContinuousAttribute;
-import com.jstarcraft.recommendation.data.DiscreteAttribute;
+import com.jstarcraft.recommendation.data.QuantityAttribute;
+import com.jstarcraft.recommendation.data.QualityAttribute;
 
 /**
  * 常量标记器
@@ -17,8 +17,8 @@ public class ConstantMarker extends SampleAccessor {
 	private float constant;
 
 	public ConstantMarker(IntegerArray positions, InstanceAccessor model, float constant) {
-		this.discreteAttributes = new DiscreteAttribute[model.discreteAttributes.length];
-		this.continuousAttributes = new ContinuousAttribute[model.continuousAttributes.length];
+		this.discreteAttributes = new QualityAttribute[model.discreteAttributes.length];
+		this.continuousAttributes = new QuantityAttribute[model.continuousAttributes.length];
 		this.discreteFeatures = new int[model.discreteAttributes.length][];
 		this.continuousFeatures = new float[model.continuousAttributes.length][];
 		for (int index = 0, size = model.discreteAttributes.length; index < size; index++) {

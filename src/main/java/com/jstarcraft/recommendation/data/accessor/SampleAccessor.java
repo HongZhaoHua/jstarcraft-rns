@@ -5,9 +5,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.jstarcraft.ai.utility.IntegerArray;
-import com.jstarcraft.recommendation.data.ContinuousAttribute;
+import com.jstarcraft.recommendation.data.QuantityAttribute;
 import com.jstarcraft.recommendation.data.DataAccessor;
-import com.jstarcraft.recommendation.data.DiscreteAttribute;
+import com.jstarcraft.recommendation.data.QualityAttribute;
 
 /**
  * 数据标记器
@@ -18,10 +18,10 @@ import com.jstarcraft.recommendation.data.DiscreteAttribute;
 public abstract class SampleAccessor implements DataAccessor<DataSample> {
 
 	/** 离散属性 */
-	protected DiscreteAttribute[] discreteAttributes;
+	protected QualityAttribute[] discreteAttributes;
 
 	/** 连续属性 */
-	protected ContinuousAttribute[] continuousAttributes;
+	protected QuantityAttribute[] continuousAttributes;
 
 	/** 离散特征 */
 	protected int[][] discreteFeatures;
@@ -39,12 +39,12 @@ public abstract class SampleAccessor implements DataAccessor<DataSample> {
 	protected IntegerArray positions;
 
 	@Override
-	public DiscreteAttribute getDiscreteAttribute(int dimension) {
+	public QualityAttribute getDiscreteAttribute(int dimension) {
 		return discreteAttributes[dimension];
 	}
 
 	@Override
-	public ContinuousAttribute getContinuousAttribute(int dimension) {
+	public QuantityAttribute getContinuousAttribute(int dimension) {
 		return continuousAttributes[dimension];
 	}
 

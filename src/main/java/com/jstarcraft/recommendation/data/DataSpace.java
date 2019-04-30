@@ -22,10 +22,10 @@ import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
 public class DataSpace {
 
 	/** 离散属性映射 */
-	private Map<String, DiscreteAttribute> discreteAttributes = new HashMap<>();
+	private Map<String, QualityAttribute> discreteAttributes = new HashMap<>();
 
 	/** 连续属性映射 */
-	private Map<String, ContinuousAttribute> continuousAttributes = new HashMap<>();
+	private Map<String, QuantityAttribute> continuousAttributes = new HashMap<>();
 
 	/** 特征映射 */
 	private Map<String, DataFeature<?>> features = new HashMap<>();
@@ -38,23 +38,23 @@ public class DataSpace {
 			if (continuousAttributes.containsKey(keyValue.getKey())) {
 				throw new IllegalArgumentException("属性冲突");
 			}
-			DiscreteAttribute attribute = new DiscreteAttribute(keyValue.getKey(), keyValue.getValue());
+			QualityAttribute attribute = new QualityAttribute(keyValue.getKey(), keyValue.getValue());
 			discreteAttributes.put(attribute.getName(), attribute);
 		}
 		for (String feature : continuousDifinitions) {
 			if (discreteAttributes.containsKey(feature)) {
 				throw new IllegalArgumentException("属性冲突");
 			}
-			ContinuousAttribute attribute = new ContinuousAttribute(feature);
+			QuantityAttribute attribute = new QuantityAttribute(feature);
 			continuousAttributes.put(attribute.getName(), attribute);
 		}
 	}
 
-	public DiscreteAttribute getDiscreteAttribute(String attributeName) {
+	public QualityAttribute getDiscreteAttribute(String attributeName) {
 		return discreteAttributes.get(attributeName);
 	}
 
-	public ContinuousAttribute getContinuousAttribute(String attributeName) {
+	public QuantityAttribute getContinuousAttribute(String attributeName) {
 		return continuousAttributes.get(attributeName);
 	}
 
@@ -67,14 +67,14 @@ public class DataSpace {
 	 */
 	public DataFeature<?> makeFeature(String featureName, String attributeName) {
 		if (discreteAttributes.containsKey(attributeName)) {
-			DiscreteAttribute attribute = discreteAttributes.get(attributeName);
-			DataFeature<?> feature = new DiscreteFeature(featureName, attribute);
+			QualityAttribute attribute = discreteAttributes.get(attributeName);
+			DataFeature<?> feature = new QualityFeature(featureName, attribute);
 			features.put(featureName, feature);
 			return feature;
 		}
 		if (continuousAttributes.containsKey(attributeName)) {
-			ContinuousAttribute attribute = continuousAttributes.get(attributeName);
-			DataFeature<?> feature = new ContinuousFeature(featureName, attribute);
+			QuantityAttribute attribute = continuousAttributes.get(attributeName);
+			DataFeature<?> feature = new QuantityFeature(featureName, attribute);
 			features.put(featureName, feature);
 			return feature;
 		}
@@ -96,16 +96,16 @@ public class DataSpace {
 	public InstanceAccessor makeModule(String moduleName, String... featureNames) {
 		InstanceAccessor model = modules.get(moduleName);
 		if (model == null) {
-			LinkedList<DiscreteFeature> discreteProperties = new LinkedList<>();
-			LinkedList<ContinuousFeature> continuousProperties = new LinkedList<>();
+			LinkedList<QualityFeature> discreteProperties = new LinkedList<>();
+			LinkedList<QuantityFeature> continuousProperties = new LinkedList<>();
 			for (String featureName : featureNames) {
 				DataFeature<?> feature = features.get(featureName);
-				if (feature instanceof DiscreteFeature) {
-					discreteProperties.add(DiscreteFeature.class.cast(feature));
+				if (feature instanceof QualityFeature) {
+					discreteProperties.add(QualityFeature.class.cast(feature));
 					continue;
 				}
-				if (feature instanceof ContinuousFeature) {
-					continuousProperties.add(ContinuousFeature.class.cast(feature));
+				if (feature instanceof QuantityFeature) {
+					continuousProperties.add(QuantityFeature.class.cast(feature));
 					continue;
 				}
 				throw new IllegalArgumentException("特征缺失");

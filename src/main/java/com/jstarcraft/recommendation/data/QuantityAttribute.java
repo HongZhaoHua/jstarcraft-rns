@@ -8,7 +8,7 @@ import com.jstarcraft.core.common.conversion.csv.ConversionUtility;
  * @author Birdy
  *
  */
-public class ContinuousAttribute implements DataAttribute<Float> {
+public class QuantityAttribute implements DataAttribute<Float> {
 
 	/** 属性名称 */
 	private String name;
@@ -20,7 +20,7 @@ public class ContinuousAttribute implements DataAttribute<Float> {
 
 	private float minimum;
 
-	ContinuousAttribute(String name) {
+	QuantityAttribute(String name) {
 		this.name = name;
 		this.type = Float.class;
 		this.maximum = Float.NEGATIVE_INFINITY;

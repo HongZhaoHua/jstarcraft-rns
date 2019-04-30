@@ -17,7 +17,7 @@ public interface DataAccessor<T> extends Iterable<T> {
 	 * @param dimension
 	 * @return
 	 */
-	public DiscreteAttribute getDiscreteAttribute(int dimension);
+	public QualityAttribute getDiscreteAttribute(int dimension);
 
 	/**
 	 * 获取指定维度的连续属性
@@ -25,7 +25,7 @@ public interface DataAccessor<T> extends Iterable<T> {
 	 * @param dimension
 	 * @return
 	 */
-	public ContinuousAttribute getContinuousAttribute(int dimension);
+	public QuantityAttribute getContinuousAttribute(int dimension);
 
 	/**
 	 * 获取指定离散字段的维度
