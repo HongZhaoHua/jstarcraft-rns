@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
-import com.jstarcraft.core.utility.KeyValue;
+import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.evaluator.Evaluator;
 import com.jstarcraft.recommendation.evaluator.rating.MAEEvaluator;
@@ -14,13 +14,17 @@ import com.jstarcraft.recommendation.evaluator.rating.MPEEvaluator;
 import com.jstarcraft.recommendation.evaluator.rating.MSEEvaluator;
 import com.jstarcraft.recommendation.recommender.Recommender;
 
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.floats.FloatCollection;
+import it.unimi.dsi.fastutil.floats.FloatList;
+
 /**
  * 评分任务
  * 
  * @author Birdy
  *
  */
-public class RatingTask extends AbstractTask {
+public class RatingTask extends AbstractTask<FloatCollection> {
 
 	public RatingTask(Class<? extends Recommender> clazz, Configuration configuration) {
 		super(clazz, configuration);
@@ -36,9 +40,9 @@ public class RatingTask extends AbstractTask {
 	}
 
 	@Override
-	protected Collection<Float> check(int userIndex) {
+	protected FloatCollection check(int userIndex) {
 		int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
-		List<Float> scoreList = new ArrayList<>(to - from);
+		FloatList scoreList = new FloatArrayList(to - from);
 		for (int index = from, size = to; index < size; index++) {
 			int position = testPositions[index];
 			scoreList.add(testMarker.getMark(position));
@@ -47,11 +51,11 @@ public class RatingTask extends AbstractTask {
 	}
 
 	@Override
-	protected List<KeyValue<Integer, Float>> recommend(Recommender recommender, int userIndex) {
+	protected List<Int2FloatKeyValue> recommend(Recommender recommender, int userIndex) {
 		int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
 		int[] discreteFeatures = new int[testMarker.getQualityOrder()];
 		float[] continuousFeatures = new float[testMarker.getQuantityOrder()];
-		List<KeyValue<Integer, Float>> recommendList = new ArrayList<>(to - from);
+		List<Int2FloatKeyValue> recommendList = new ArrayList<>(to - from);
 		for (int index = from, size = to; index < size; index++) {
 			int position = testPositions[index];
 			for (int dimension = 0; dimension < testMarker.getQualityOrder(); dimension++) {
@@ -60,7 +64,7 @@ public class RatingTask extends AbstractTask {
 			for (int dimension = 0; dimension < testMarker.getQuantityOrder(); dimension++) {
 				continuousFeatures[dimension] = testMarker.getQuantityFeature(dimension, position);
 			}
-			recommendList.add(new KeyValue<>(discreteFeatures[itemDimension], recommender.predict(discreteFeatures, continuousFeatures)));
+			recommendList.add(new Int2FloatKeyValue(discreteFeatures[itemDimension], recommender.predict(discreteFeatures, continuousFeatures)));
 		}
 		return recommendList;
 	}

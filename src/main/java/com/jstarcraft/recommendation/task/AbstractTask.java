@@ -102,17 +102,22 @@ public abstract class AbstractTask<T> {
 		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
 			int index = userIndex;
 			executor.submit(() -> {
-				if (testPaginations[index + 1] - testPaginations[index] != 0) {
-					// 校验集合
-					T checkCollection = check(index);
-					// 推荐列表
-					List<Int2FloatKeyValue> recommendList = recommend(recommender, index);
-					// 测量列表
-					for (Evaluator<T> evaluator : evaluators) {
-						Int2FloatKeyValue[] measures = values.get(evaluator.getClass());
-						Int2FloatKeyValue measure = evaluator.evaluate(checkCollection, recommendList);
-						measures[index] = measure;
+				try {
+					if (testPaginations[index + 1] - testPaginations[index] != 0) {
+						// 校验集合
+						T checkCollection = check(index);
+						// 推荐列表
+						List<Int2FloatKeyValue> recommendList = recommend(recommender, index);
+						// 测量列表
+						for (Evaluator<T> evaluator : evaluators) {
+							Int2FloatKeyValue[] measures = values.get(evaluator.getClass());
+							Int2FloatKeyValue measure = evaluator.evaluate(checkCollection, recommendList);
+							measures[index] = measure;
+						}
 					}
+					
+				}catch (Exception exception) {
+					logger.error("任务异常", exception);
 				}
 				latch.countDown();
 			});
@@ -246,63 +251,67 @@ public abstract class AbstractTask<T> {
 
 		EnvironmentContext context = Nd4j.getAffinityManager().getClass().getSimpleName().equals("CpuAffinityManager") ? EnvironmentContext.CPU : EnvironmentContext.GPU;
 		Future<?> task = context.doTask(() -> {
-			for (int index = 0; index < splitter.getSize(); index++) {
-				IntegerArray trainReference = splitter.getTrainReference(index);
-				IntegerArray testReference = splitter.getTestReference(index);
-				trainMarker = new AttributeMarker(trainReference, space.getModule(splitterDifinition.model), scoreField);
-				testMarker = new AttributeMarker(testReference, space.getModule(splitterDifinition.model), scoreField);
+			try {
+				for (int index = 0; index < splitter.getSize(); index++) {
+					IntegerArray trainReference = splitter.getTrainReference(index);
+					IntegerArray testReference = splitter.getTestReference(index);
+					trainMarker = new AttributeMarker(trainReference, space.getModule(splitterDifinition.model), scoreField);
+					testMarker = new AttributeMarker(testReference, space.getModule(splitterDifinition.model), scoreField);
 
-				IntegerArray positions = new IntegerArray();
-				for (int position = 0, size = model.getSize(); position < size; position++) {
-					positions.associateData(position);
-				}
-				dataMarker = new AttributeMarker(positions, model, scoreField);
+					IntegerArray positions = new IntegerArray();
+					for (int position = 0, size = model.getSize(); position < size; position++) {
+						positions.associateData(position);
+					}
+					dataMarker = new AttributeMarker(positions, model, scoreField);
 
-				userDimension = model.getQualityDimension(userField);
-				itemDimension = model.getQualityDimension(itemField);
-				numberOfUsers = model.getQualityAttribute(userDimension).getSize();
-				numberOfItems = model.getQualityAttribute(itemDimension).getSize();
+					userDimension = model.getQualityDimension(userField);
+					itemDimension = model.getQualityDimension(itemField);
+					numberOfUsers = model.getQualityAttribute(userDimension).getSize();
+					numberOfItems = model.getQualityAttribute(itemDimension).getSize();
 
-				trainPaginations = new int[numberOfUsers + 1];
-				trainPositions = new int[trainMarker.getSize()];
-				for (int position = 0, size = trainMarker.getSize(); position < size; position++) {
-					trainPositions[position] = position;
-				}
-				DataMatcher trainMatcher = DataMatcher.discreteOf(trainMarker, userDimension);
-				trainMatcher.match(trainPaginations, trainPositions);
+					trainPaginations = new int[numberOfUsers + 1];
+					trainPositions = new int[trainMarker.getSize()];
+					for (int position = 0, size = trainMarker.getSize(); position < size; position++) {
+						trainPositions[position] = position;
+					}
+					DataMatcher trainMatcher = DataMatcher.discreteOf(trainMarker, userDimension);
+					trainMatcher.match(trainPaginations, trainPositions);
 
-				testPaginations = new int[numberOfUsers + 1];
-				testPositions = new int[testMarker.getSize()];
-				for (int position = 0, size = testMarker.getSize(); position < size; position++) {
-					testPositions[position] = position;
-				}
-				DataMatcher testMatcher = DataMatcher.discreteOf(testMarker, userDimension);
-				testMatcher.match(testPaginations, testPositions);
+					testPaginations = new int[numberOfUsers + 1];
+					testPositions = new int[testMarker.getSize()];
+					for (int position = 0, size = testMarker.getSize(); position < size; position++) {
+						testPositions[position] = position;
+					}
+					DataMatcher testMatcher = DataMatcher.discreteOf(testMarker, userDimension);
+					testMatcher.match(testPaginations, testPositions);
 
-				int[] dataPaginations = new int[numberOfUsers + 1];
-				int[] dataPositions = new int[dataMarker.getSize()];
-				for (int position = 0; position < dataMarker.getSize(); position++) {
-					dataPositions[position] = position;
-				}
-				DataMatcher dataMatcher = DataMatcher.discreteOf(dataMarker, userDimension);
-				dataMatcher.match(dataPaginations, dataPositions);
-				DataSorter dataSorter = DataSorter.featureOf(dataMarker);
-				dataSorter.sort(dataPaginations, dataPositions);
-				Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
-				for (int position : dataPositions) {
-					int rowIndex = dataMarker.getQualityFeature(userDimension, position);
-					int columnIndex = dataMarker.getQualityFeature(itemDimension, position);
-					// TODO 处理冲突
-					dataTable.put(rowIndex, columnIndex, dataMarker.getMark(position));
-				}
-				SparseMatrix featureMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfItems, dataTable);
+					int[] dataPaginations = new int[numberOfUsers + 1];
+					int[] dataPositions = new int[dataMarker.getSize()];
+					for (int position = 0; position < dataMarker.getSize(); position++) {
+						dataPositions[position] = position;
+					}
+					DataMatcher dataMatcher = DataMatcher.discreteOf(dataMarker, userDimension);
+					dataMatcher.match(dataPaginations, dataPositions);
+					DataSorter dataSorter = DataSorter.featureOf(dataMarker);
+					dataSorter.sort(dataPaginations, dataPositions);
+					Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
+					for (int position : dataPositions) {
+						int rowIndex = dataMarker.getQualityFeature(userDimension, position);
+						int columnIndex = dataMarker.getQualityFeature(itemDimension, position);
+						// TODO 处理冲突
+						dataTable.put(rowIndex, columnIndex, dataMarker.getMark(position));
+					}
+					SparseMatrix featureMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfItems, dataTable);
 
-				recommender.prepare(configuration, trainMarker, model, space);
-				recommender.practice();
-				for (Entry<Class<? extends Evaluator>, Int2FloatKeyValue> measure : evaluate(getEvaluators(featureMatrix), recommender).entrySet()) {
-					Float value = measure.getValue().getValue() / measure.getValue().getKey();
-					measures.put(measure.getKey().getSimpleName(), value);
+					recommender.prepare(configuration, trainMarker, model, space);
+					recommender.practice();
+					for (Entry<Class<? extends Evaluator>, Int2FloatKeyValue> measure : evaluate(getEvaluators(featureMatrix), recommender).entrySet()) {
+						Float value = measure.getValue().getValue() / measure.getValue().getKey();
+						measures.put(measure.getKey().getSimpleName(), value);
+					}
 				}
+			} catch (Exception exception) {
+				logger.error("任务异常", exception);
 			}
 		});
 		task.get();
