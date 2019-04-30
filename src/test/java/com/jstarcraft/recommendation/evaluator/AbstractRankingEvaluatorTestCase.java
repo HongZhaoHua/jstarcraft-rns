@@ -1,7 +1,6 @@
 package com.jstarcraft.recommendation.evaluator;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -10,11 +9,15 @@ import java.util.Set;
 import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 import com.jstarcraft.recommendation.recommender.Recommender;
 
-public abstract class AbstractRankingEvaluatorTestCase extends AbstractEvaluatorTestCase<Integer> {
+import it.unimi.dsi.fastutil.ints.IntCollection;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+
+public abstract class AbstractRankingEvaluatorTestCase extends AbstractEvaluatorTestCase<IntCollection> {
 
 	@Override
-	protected Collection<Integer> check(int userIndex) {
-		Set<Integer> itemSet = new HashSet<>();
+	protected IntCollection check(int userIndex) {
+		IntSet itemSet = new IntOpenHashSet();
 		int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
 		for (int index = from, size = to; index < size; index++) {
 			int position = testPositions[index];

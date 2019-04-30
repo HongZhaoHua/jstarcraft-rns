@@ -1,12 +1,13 @@
 package com.jstarcraft.recommendation.evaluator.ranking;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 import com.jstarcraft.recommendation.evaluator.RankingEvaluator;
+
+import it.unimi.dsi.fastutil.ints.IntCollection;
 
 /**
  * ROC曲线下的面积评估器
@@ -25,7 +26,7 @@ public class AUCEvaluator extends RankingEvaluator {
 	}
 
 	@Override
-	protected float measure(Collection<Integer> checkCollection, List<Int2FloatKeyValue> recommendList) {
+	protected float measure(IntCollection checkCollection, List<Int2FloatKeyValue> recommendList) {
 		// 推荐物品集合(大小不能超过TopN)
 		int evaluateSize = recommendList.size();
 		if (evaluateSize > size) {

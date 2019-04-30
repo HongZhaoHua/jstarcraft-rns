@@ -20,7 +20,7 @@ public abstract class AbstractEvaluator<T> implements Evaluator<T> {
 	 * @param recommendList
 	 * @return
 	 */
-	protected abstract int count(Collection<T> checkCollection, List<Int2FloatKeyValue> recommendList);
+	protected abstract int count(T checkCollection, List<Int2FloatKeyValue> recommendList);
 
 	/**
 	 * 测量列表
@@ -29,10 +29,10 @@ public abstract class AbstractEvaluator<T> implements Evaluator<T> {
 	 * @param recommendList
 	 * @return
 	 */
-	protected abstract float measure(Collection<T> checkCollection, List<Int2FloatKeyValue> recommendList);
+	protected abstract float measure(T checkCollection, List<Int2FloatKeyValue> recommendList);
 
 	@Override
-	public final Int2FloatKeyValue evaluate(Collection<T> checkCollection, List<Int2FloatKeyValue> recommendList) {
+	public final Int2FloatKeyValue evaluate(T checkCollection, List<Int2FloatKeyValue> recommendList) {
 		return new Int2FloatKeyValue(count(checkCollection, recommendList), measure(checkCollection, recommendList));
 	}
 

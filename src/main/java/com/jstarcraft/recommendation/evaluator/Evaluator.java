@@ -1,6 +1,5 @@
 package com.jstarcraft.recommendation.evaluator;
 
-import java.util.Collection;
 import java.util.List;
 
 import com.jstarcraft.ai.utility.Int2FloatKeyValue;
@@ -20,6 +19,6 @@ public interface Evaluator<T> {
 	 * @param recommendList
 	 * @return
 	 */
-	Int2FloatKeyValue evaluate(Collection<T> checkCollection, List<Int2FloatKeyValue> recommendList);
+	Int2FloatKeyValue evaluate(T checkCollection, List<Int2FloatKeyValue> recommendList);
 
 }

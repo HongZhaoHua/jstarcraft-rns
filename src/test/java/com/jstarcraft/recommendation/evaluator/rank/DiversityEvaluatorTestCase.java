@@ -8,10 +8,12 @@ import com.jstarcraft.recommendation.evaluator.AbstractRankingEvaluatorTestCase;
 import com.jstarcraft.recommendation.evaluator.Evaluator;
 import com.jstarcraft.recommendation.evaluator.ranking.DiversityEvaluator;
 
+import it.unimi.dsi.fastutil.ints.IntCollection;
+
 public class DiversityEvaluatorTestCase extends AbstractRankingEvaluatorTestCase {
 
 	@Override
-	protected Evaluator<?> getEvaluator(SparseMatrix featureMatrix) {
+	protected Evaluator<IntCollection> getEvaluator(SparseMatrix featureMatrix) {
 		// Item Similarity Matrix
 		Similarity similarity = new CosineSimilarity();
 		SymmetryMatrix similarityMatrix = similarity.makeSimilarityMatrix(featureMatrix, true, 0F);

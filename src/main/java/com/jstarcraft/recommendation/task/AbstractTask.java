@@ -86,7 +86,7 @@ public abstract class AbstractTask<T> {
 
 	protected abstract Collection<Evaluator> getEvaluators(SparseMatrix featureMatrix);
 
-	protected abstract Collection<T> check(int userIndex);
+	protected abstract T check(int userIndex);
 
 	protected abstract List<Int2FloatKeyValue> recommend(Recommender recommender, int userIndex);
 
@@ -104,11 +104,11 @@ public abstract class AbstractTask<T> {
 			executor.submit(() -> {
 				if (testPaginations[index + 1] - testPaginations[index] != 0) {
 					// 校验集合
-					Collection checkCollection = check(index);
+					T checkCollection = check(index);
 					// 推荐列表
 					List<Int2FloatKeyValue> recommendList = recommend(recommender, index);
 					// 测量列表
-					for (Evaluator<?> evaluator : evaluators) {
+					for (Evaluator<T> evaluator : evaluators) {
 						Int2FloatKeyValue[] measures = values.get(evaluator.getClass());
 						Int2FloatKeyValue measure = evaluator.evaluate(checkCollection, recommendList);
 						measures[index] = measure;

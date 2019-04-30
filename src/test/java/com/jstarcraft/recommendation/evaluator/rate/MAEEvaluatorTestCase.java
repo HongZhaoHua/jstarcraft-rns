@@ -5,10 +5,12 @@ import com.jstarcraft.recommendation.evaluator.AbstractRatingEvaluatorTestCase;
 import com.jstarcraft.recommendation.evaluator.Evaluator;
 import com.jstarcraft.recommendation.evaluator.rating.MAEEvaluator;
 
+import it.unimi.dsi.fastutil.floats.FloatCollection;
+
 public class MAEEvaluatorTestCase extends AbstractRatingEvaluatorTestCase {
 
 	@Override
-	protected Evaluator<?> getEvaluator(SparseMatrix featureMatrix) {
+	protected Evaluator<FloatCollection> getEvaluator(SparseMatrix featureMatrix) {
 		return new MAEEvaluator();
 	}
 

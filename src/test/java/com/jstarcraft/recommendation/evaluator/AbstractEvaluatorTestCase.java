@@ -1,6 +1,5 @@
 package com.jstarcraft.recommendation.evaluator;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +15,6 @@ import com.google.common.collect.Table;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 import com.jstarcraft.ai.utility.IntegerArray;
-import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.recommendation.data.DataSpace;
 import com.jstarcraft.recommendation.data.accessor.AttributeMarker;
 import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
@@ -38,7 +36,7 @@ public abstract class AbstractEvaluatorTestCase<T> {
 
 	protected SampleAccessor trainMarker, testMarker;
 
-	protected abstract Evaluator<?> getEvaluator(SparseMatrix featureMatrix);
+	protected abstract Evaluator<T> getEvaluator(SparseMatrix featureMatrix);
 
 	protected abstract float getMeasure();
 
@@ -149,24 +147,24 @@ public abstract class AbstractEvaluatorTestCase<T> {
 		SparseMatrix featureMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfItems, dataTable);
 
 		Recommender recommender = new MockRecommender(itemDimension, trainMatrix);
-		Evaluator<?> evaluator = getEvaluator(featureMatrix);
-		KeyValue<Integer, Float> sum = evaluate(evaluator, recommender);
+		Evaluator<T> evaluator = getEvaluator(featureMatrix);
+		Int2FloatKeyValue sum = evaluate(evaluator, recommender);
 		Assert.assertThat(sum.getValue() / sum.getKey(), CoreMatchers.equalTo(getMeasure()));
 	}
 
-	protected abstract Collection<T> check(int userIndex);
+	protected abstract T check(int userIndex);
 
 	protected abstract List<Int2FloatKeyValue> recommend(Recommender recommender, int userIndex);
 
-	private KeyValue<Integer, Float> evaluate(Evaluator<?> evaluator, Recommender recommender) {
-		KeyValue<Integer, Float> sum = new KeyValue<>(0, 0F);
+	private Int2FloatKeyValue evaluate(Evaluator<T> evaluator, Recommender recommender) {
+		Int2FloatKeyValue sum = new Int2FloatKeyValue(0, 0F);
 		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
 			// 测试映射
 			if (testPaginations[userIndex + 1] - testPaginations[userIndex] == 0) {
 				continue;
 			}
 			// 训练映射
-			Collection checkCollection = check(userIndex);
+			T checkCollection = check(userIndex);
 			// 推荐列表
 			List<Int2FloatKeyValue> recommendList = recommend(recommender, userIndex);
 			// 测量列表

@@ -1,11 +1,12 @@
 package com.jstarcraft.recommendation.evaluator.ranking;
 
-import java.util.Collection;
 import java.util.List;
 
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 import com.jstarcraft.recommendation.evaluator.RankingEvaluator;
+
+import it.unimi.dsi.fastutil.ints.IntCollection;
 
 /**
  * NoveltyEvaluator
@@ -39,7 +40,7 @@ public class NoveltyEvaluator extends RankingEvaluator {
 	 * @return evaluate result
 	 */
 	@Override
-	protected float measure(Collection<Integer> checkCollection, List<Int2FloatKeyValue> recommendList) {
+	protected float measure(IntCollection checkCollection, List<Int2FloatKeyValue> recommendList) {
 		if (recommendList.size() > size) {
 			recommendList = recommendList.subList(0, size);
 		}
