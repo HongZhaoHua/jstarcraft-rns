@@ -1,6 +1,5 @@
 package com.jstarcraft.recommendation.evaluator;
 
-import java.util.Collection;
 import java.util.List;
 
 import com.jstarcraft.ai.utility.Int2FloatKeyValue;
