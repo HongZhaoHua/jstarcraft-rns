@@ -1,5 +1,7 @@
 package com.jstarcraft.recommendation.data;
 
+import com.jstarcraft.ai.data.DataAttribute;
+
 /**
  * 数据特征
  * 

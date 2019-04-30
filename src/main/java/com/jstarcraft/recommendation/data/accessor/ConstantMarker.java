@@ -2,9 +2,9 @@ package com.jstarcraft.recommendation.data.accessor;
 
 import java.util.LinkedHashMap;
 
+import com.jstarcraft.ai.data.attribute.QualityAttribute;
+import com.jstarcraft.ai.data.attribute.QuantityAttribute;
 import com.jstarcraft.ai.utility.IntegerArray;
-import com.jstarcraft.recommendation.data.QuantityAttribute;
-import com.jstarcraft.recommendation.data.QualityAttribute;
 
 /**
  * 常量标记器

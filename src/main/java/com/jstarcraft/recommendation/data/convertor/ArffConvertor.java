@@ -9,9 +9,9 @@ import java.util.Map.Entry;
 
 import org.apache.commons.csv.CSVFormat;
 
+import com.jstarcraft.ai.data.attribute.QualityAttribute;
 import com.jstarcraft.ai.data.exception.DataException;
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.recommendation.data.DataAttribute;
 import com.jstarcraft.recommendation.data.DataFeature;
 import com.jstarcraft.recommendation.data.DataSpace;
 
@@ -59,12 +59,12 @@ public class ArffConvertor extends CsvConvertor {
 								break;
 							}
 							case "@ATTRIBUTE": {
-								DataAttribute<?> attribute = features.get(attributeIndex++).getAttribute();
 								String attributeType = datas[2];
 								if (attributeType.startsWith("{") && attributeType.endsWith("}")) {
+									QualityAttribute<String> attribute = (QualityAttribute) features.get(attributeIndex++).getAttribute();
 									String nominals = attributeType.substring(1, attributeType.length() - 1);
 									for (String nominal : nominals.split(",")) {
-										attribute.makeValue(nominal);
+										attribute.convertData(nominal);
 									}
 								}
 								break;

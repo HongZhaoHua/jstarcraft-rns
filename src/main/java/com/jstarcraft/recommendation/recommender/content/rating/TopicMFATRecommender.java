@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.jstarcraft.ai.data.attribute.MemoryQualityAttribute;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -69,7 +70,8 @@ public class TopicMFATRecommender extends MatrixFactorizationRecommender {
 
 		commentField = configuration.getString("data.model.fields.comment");
 		commentDimension = model.getDiscreteDimension(commentField);
-		Object[] documentValues = model.getDiscreteAttribute(commentDimension).getDatas();
+		MemoryQualityAttribute attribute = (MemoryQualityAttribute) model.getDiscreteAttribute(commentDimension);
+		Object[] documentValues = attribute.getDatas();
 
 		// init hyper-parameters
 		lambda = configuration.getFloat("rec.regularization.lambda", 0.001F);

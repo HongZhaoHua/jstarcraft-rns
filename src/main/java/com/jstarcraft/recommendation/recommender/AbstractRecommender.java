@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.jstarcraft.ai.data.attribute.QuantityAttribute;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
@@ -95,9 +96,9 @@ public abstract class AbstractRecommender implements Recommender {
 		for (Float value : values) {
 			scoreIndexes.put(value, index++);
 		}
-		Object[] scoreDatas = model.getContinuousAttribute(model.getContinuousDimension(scoreField)).getDatas();
-		minimumOfScore = (Float) scoreDatas[0];
-		maximumOfScore = (Float) scoreDatas[1];
+		QuantityAttribute attribute = model.getContinuousAttribute(model.getContinuousDimension(scoreField));
+		minimumOfScore = (Float) attribute.getMinimum();
+		maximumOfScore = (Float) attribute.getMaximum();
 		meanOfScore = trainMatrix.getSum(false);
 		meanOfScore /= numberOfActions;
 	}

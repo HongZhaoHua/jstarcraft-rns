@@ -1,7 +1,7 @@
 package com.jstarcraft.recommendation.data.processor;
 
+import com.jstarcraft.ai.data.attribute.QualityAttribute;
 import com.jstarcraft.recommendation.data.DataAccessor;
-import com.jstarcraft.recommendation.data.QualityAttribute;
 
 /**
  * 数据匹配器

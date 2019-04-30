@@ -6,12 +6,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.jstarcraft.recommendation.data.QuantityAttribute;
-import com.jstarcraft.recommendation.data.QuantityFeature;
+import com.jstarcraft.ai.data.DataAttribute;
+import com.jstarcraft.ai.data.attribute.QualityAttribute;
+import com.jstarcraft.ai.data.attribute.QuantityAttribute;
 import com.jstarcraft.recommendation.data.DataAccessor;
-import com.jstarcraft.recommendation.data.DataAttribute;
-import com.jstarcraft.recommendation.data.QualityAttribute;
 import com.jstarcraft.recommendation.data.QualityFeature;
+import com.jstarcraft.recommendation.data.QuantityFeature;
 
 /**
  * 数据模型

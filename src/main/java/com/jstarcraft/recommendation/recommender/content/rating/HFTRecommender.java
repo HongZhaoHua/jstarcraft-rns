@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.jstarcraft.ai.data.attribute.MemoryQualityAttribute;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -131,7 +132,8 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
 
 		commentField = configuration.getString("data.model.fields.comment");
 		commentDimension = model.getDiscreteDimension(commentField);
-		Object[] wordValues = model.getDiscreteAttribute(commentDimension).getDatas();
+		MemoryQualityAttribute attribute = (MemoryQualityAttribute) model.getDiscreteAttribute(commentDimension);
+		Object[] wordValues = attribute.getDatas();
 
 		biasRegularization = configuration.getFloat("rec.bias.regularization", 0.01F);
 		userRegularization = configuration.getFloat("rec.user.regularization", 0.01F);

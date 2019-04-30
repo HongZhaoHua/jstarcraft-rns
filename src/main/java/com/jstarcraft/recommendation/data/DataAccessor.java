@@ -2,6 +2,9 @@ package com.jstarcraft.recommendation.data;
 
 import java.util.Collection;
 
+import com.jstarcraft.ai.data.attribute.QualityAttribute;
+import com.jstarcraft.ai.data.attribute.QuantityAttribute;
+
 /**
  * 数据访问器
  * 

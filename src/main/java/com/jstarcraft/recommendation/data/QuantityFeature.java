@@ -3,6 +3,9 @@ package com.jstarcraft.recommendation.data;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import com.jstarcraft.ai.data.attribute.QuantityAttribute;
+import com.jstarcraft.core.common.conversion.csv.ConversionUtility;
+
 public class QuantityFeature implements DataFeature<Float> {
 
 	public final static int DEFAULT_CAPACITY = 10000;
@@ -39,7 +42,7 @@ public class QuantityFeature implements DataFeature<Float> {
 			current = new float[capacity];
 			values.add(current);
 		}
-		current[position] = attribute.makeValue(data);
+		current[position] = attribute.convertData(ConversionUtility.convert(data, Number.class));
 	}
 
 	@Override

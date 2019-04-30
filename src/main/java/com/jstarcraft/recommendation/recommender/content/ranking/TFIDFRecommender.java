@@ -2,7 +2,7 @@ package com.jstarcraft.recommendation.recommender.content.ranking;
 
 import java.util.Iterator;
 
-import com.jstarcraft.ai.math.algorithm.similarity.CosineSimilarity;
+import com.jstarcraft.ai.data.attribute.MemoryQualityAttribute;
 import com.jstarcraft.ai.math.algorithm.similarity.Similarity;
 import com.jstarcraft.ai.math.algorithm.text.InverseDocumentFrequency;
 import com.jstarcraft.ai.math.algorithm.text.NaturalInverseDocumentFrequency;
@@ -184,7 +184,8 @@ public class TFIDFRecommender extends MatrixFactorizationRecommender {
 
 		commentField = configuration.getString("data.model.fields.comment");
 		commentDimension = model.getDiscreteDimension(commentField);
-		Object[] documentValues = model.getDiscreteAttribute(commentDimension).getDatas();
+		MemoryQualityAttribute attribute = (MemoryQualityAttribute) model.getDiscreteAttribute(commentDimension);
+		Object[] documentValues = attribute.getDatas();
 
 		DocumentIterator iterator = new DocumentIterator(marker.iterator(), documentValues);
 		Int2FloatSortedMap keyValues = new Int2FloatAVLTreeMap();

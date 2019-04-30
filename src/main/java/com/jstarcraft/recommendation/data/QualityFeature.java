@@ -3,6 +3,7 @@ package com.jstarcraft.recommendation.data;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import com.jstarcraft.ai.data.attribute.QualityAttribute;
 
 public class QualityFeature implements DataFeature<Integer> {
 
@@ -40,7 +41,7 @@ public class QualityFeature implements DataFeature<Integer> {
 			current = new int[capacity];
 			values.add(current);
 		}
-		current[position] = attribute.makeValue(data);
+		current[position] = attribute.convertData((Comparable) data);
 	}
 
 	@Override

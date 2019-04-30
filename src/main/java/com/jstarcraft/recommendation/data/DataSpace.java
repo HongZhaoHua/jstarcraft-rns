@@ -7,6 +7,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.jstarcraft.ai.data.DataAttribute;
+import com.jstarcraft.ai.data.attribute.MemoryQualityAttribute;
+import com.jstarcraft.ai.data.attribute.MemoryQuantityAttribute;
+import com.jstarcraft.ai.data.attribute.QualityAttribute;
+import com.jstarcraft.ai.data.attribute.QuantityAttribute;
 import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
 
 /**
@@ -38,14 +43,14 @@ public class DataSpace {
 			if (continuousAttributes.containsKey(keyValue.getKey())) {
 				throw new IllegalArgumentException("属性冲突");
 			}
-			QualityAttribute attribute = new QualityAttribute(keyValue.getKey(), keyValue.getValue());
+			QualityAttribute attribute = new MemoryQualityAttribute(keyValue.getKey(), keyValue.getValue());
 			discreteAttributes.put(attribute.getName(), attribute);
 		}
 		for (String feature : continuousDifinitions) {
 			if (discreteAttributes.containsKey(feature)) {
 				throw new IllegalArgumentException("属性冲突");
 			}
-			QuantityAttribute attribute = new QuantityAttribute(feature);
+			QuantityAttribute attribute = new MemoryQuantityAttribute(feature, Float.class);
 			continuousAttributes.put(attribute.getName(), attribute);
 		}
 	}

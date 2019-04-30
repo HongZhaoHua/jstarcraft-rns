@@ -8,6 +8,7 @@ import java.util.concurrent.CountDownLatch;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.util.concurrent.AtomicDouble;
+import com.jstarcraft.ai.data.attribute.MemoryQualityAttribute;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -381,7 +382,8 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
 		dataMatrixes = new SparseMatrix[numberOfUsers];
 		contextSize = 0;
 
-		Object[] levels = marker.getDiscreteAttribute(contextDimension).getDatas();
+		MemoryQualityAttribute attribute = (MemoryQualityAttribute) marker.getDiscreteAttribute(contextDimension);
+		Object[] levels = attribute.getDatas();
 		Table<Integer, Integer, Float> table = HashBasedTable.create();
 		Table<Integer, Integer, Float> data = HashBasedTable.create();
 

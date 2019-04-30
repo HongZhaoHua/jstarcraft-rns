@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.jstarcraft.ai.data.attribute.QualityAttribute;
+import com.jstarcraft.ai.data.attribute.QuantityAttribute;
 import com.jstarcraft.ai.utility.IntegerArray;
-import com.jstarcraft.recommendation.data.QuantityAttribute;
 import com.jstarcraft.recommendation.data.DataAccessor;
-import com.jstarcraft.recommendation.data.QualityAttribute;
 
 /**
  * 数据标记器

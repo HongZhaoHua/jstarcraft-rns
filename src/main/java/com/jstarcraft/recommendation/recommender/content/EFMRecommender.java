@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.jstarcraft.ai.data.attribute.MemoryQualityAttribute;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -63,7 +64,8 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 
 		commentField = configuration.getString("data.model.fields.comment");
 		commentDimension = model.getDiscreteDimension(commentField);
-		Object[] wordValues = model.getDiscreteAttribute(commentDimension).getDatas();
+		MemoryQualityAttribute attribute = (MemoryQualityAttribute) model.getDiscreteAttribute(commentDimension);
+		Object[] wordValues = attribute.getDatas();
 
 		scoreScale = maximumOfScore - minimumOfScore;
 		numberOfExplicitFeatures = configuration.getInteger("rec.factor.explicit", 5);
