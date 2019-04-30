@@ -55,11 +55,11 @@ public class DataSpace {
 		}
 	}
 
-	public QualityAttribute getDiscreteAttribute(String attributeName) {
+	public QualityAttribute getQualityAttribute(String attributeName) {
 		return discreteAttributes.get(attributeName);
 	}
 
-	public QuantityAttribute getContinuousAttribute(String attributeName) {
+	public QuantityAttribute getQuantityAttribute(String attributeName) {
 		return continuousAttributes.get(attributeName);
 	}
 
