@@ -17,20 +17,20 @@ public class AttributeMarker extends SampleAccessor {
 	private float[] scores;
 
 	public AttributeMarker(IntegerArray positions, DenseModule model, String scoreField) {
-		this.discreteAttributes = new QualityAttribute[model.discreteAttributes.length];
-		this.continuousAttributes = new QuantityAttribute[model.continuousAttributes.length - 1];
-		this.discreteFeatures = new int[model.discreteAttributes.length][];
-		this.continuousFeatures = new float[model.continuousAttributes.length - 1][];
-		for (int index = 0, size = model.discreteAttributes.length; index < size; index++) {
-			this.discreteAttributes[index] = model.discreteAttributes[index];
-			this.discreteFeatures[index] = model.discreteFeatures[index];
+		this.discreteAttributes = new QualityAttribute[model.qualityAttributes.length];
+		this.continuousAttributes = new QuantityAttribute[model.quantityAttributes.length - 1];
+		this.discreteFeatures = new int[model.qualityAttributes.length][];
+		this.continuousFeatures = new float[model.quantityAttributes.length - 1][];
+		for (int index = 0, size = model.qualityAttributes.length; index < size; index++) {
+			this.discreteAttributes[index] = model.qualityAttributes[index];
+			this.discreteFeatures[index] = model.qualityFeatures[index];
 		}
 		int scoreDimension = model.getQuantityDimension(scoreField);
 		int featureDimension = 0;
-		for (int index = 0, size = model.continuousAttributes.length; index < size; index++) {
+		for (int index = 0, size = model.quantityAttributes.length; index < size; index++) {
 			if (scoreDimension != index) {
-				this.continuousAttributes[featureDimension] = model.continuousAttributes[index];
-				this.continuousFeatures[featureDimension] = model.continuousFeatures[index];
+				this.continuousAttributes[featureDimension] = model.quantityAttributes[index];
+				this.continuousFeatures[featureDimension] = model.quantityFeatures[index];
 				featureDimension++;
 			}
 		}
@@ -48,7 +48,7 @@ public class AttributeMarker extends SampleAccessor {
 			this.continuousDimensions.put(field, featureDimension++);
 		}
 		this.positions = positions;
-		this.scores = model.continuousFeatures[scoreDimension];
+		this.scores = model.quantityFeatures[scoreDimension];
 	}
 
 	@Override

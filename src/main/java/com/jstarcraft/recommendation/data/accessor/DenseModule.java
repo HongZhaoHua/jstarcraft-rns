@@ -27,36 +27,36 @@ import com.jstarcraft.recommendation.data.QuantityFeature;
 public class DenseModule implements DataModule<DataInstance> {
 
 	/** 离散属性 */
-	QualityAttribute[] discreteAttributes;
+	QualityAttribute[] qualityAttributes;
 
 	/** 连续属性 */
-	QuantityAttribute[] continuousAttributes;
+	QuantityAttribute[] quantityAttributes;
 
 	/** 离散特征 */
-	int[][] discreteFeatures;
+	int[][] qualityFeatures;
 
 	/** 连续特征 */
-	float[][] continuousFeatures;
+	float[][] quantityFeatures;
 
 	/** 离散维度 */
-	private Map<String, Integer> discreteDimensions;
+	private Map<String, Integer> qualityDimensions;
 
 	/** 连续维度 */
-	private Map<String, Integer> continuousDimensions;
+	private Map<String, Integer> quantityDimensions;
 
 	/** 大小 */
 	private int size = 0;
 
-	public DenseModule(List<QualityFeature> discreteFeatures, List<QuantityFeature> continuousFeatures) {
-		this.discreteAttributes = new QualityAttribute[discreteFeatures.size()];
-		this.continuousAttributes = new QuantityAttribute[continuousFeatures.size()];
-		this.discreteFeatures = new int[discreteFeatures.size()][];
-		this.continuousFeatures = new float[continuousFeatures.size()][];
-		this.discreteDimensions = new LinkedHashMap<>();
-		this.continuousDimensions = new LinkedHashMap<>();
-		this.size = discreteFeatures.get(0).getSize();
-		for (int index = 0; index < discreteFeatures.size(); index++) {
-			QualityFeature feature = discreteFeatures.get(index);
+	public DenseModule(List<QualityFeature> qualityFeatures, List<QuantityFeature> quantityFeatures) {
+		this.qualityAttributes = new QualityAttribute[qualityFeatures.size()];
+		this.quantityAttributes = new QuantityAttribute[quantityFeatures.size()];
+		this.qualityFeatures = new int[qualityFeatures.size()][];
+		this.quantityFeatures = new float[quantityFeatures.size()][];
+		this.qualityDimensions = new LinkedHashMap<>();
+		this.quantityDimensions = new LinkedHashMap<>();
+		this.size = qualityFeatures.get(0).getSize();
+		for (int index = 0; index < qualityFeatures.size(); index++) {
+			QualityFeature feature = qualityFeatures.get(index);
 			if (feature.getSize() != this.size) {
 				throw new IllegalArgumentException("特征大小不一致");
 			}
@@ -65,12 +65,12 @@ public class DenseModule implements DataModule<DataInstance> {
 			for (int value : feature) {
 				data[cursor++] = value;
 			}
-			this.discreteAttributes[index] = feature.getAttribute();
-			this.discreteFeatures[index] = data;
-			this.discreteDimensions.put(feature.getName(), index);
+			this.qualityAttributes[index] = feature.getAttribute();
+			this.qualityFeatures[index] = data;
+			this.qualityDimensions.put(feature.getName(), index);
 		}
-		for (int index = 0; index < continuousFeatures.size(); index++) {
-			QuantityFeature feature = continuousFeatures.get(index);
+		for (int index = 0; index < quantityFeatures.size(); index++) {
+			QuantityFeature feature = quantityFeatures.get(index);
 			if (feature.getSize() != this.size) {
 				throw new IllegalArgumentException("特征大小不一致");
 			}
@@ -79,9 +79,9 @@ public class DenseModule implements DataModule<DataInstance> {
 			for (float value : feature) {
 				data[cursor++] = value;
 			}
-			this.continuousAttributes[index] = feature.getAttribute();
-			this.continuousFeatures[index] = data;
-			this.continuousDimensions.put(feature.getName(), index);
+			this.quantityAttributes[index] = feature.getAttribute();
+			this.quantityFeatures[index] = data;
+			this.quantityDimensions.put(feature.getName(), index);
 		}
 	}
 
@@ -175,52 +175,52 @@ public class DenseModule implements DataModule<DataInstance> {
 
 	@Override
 	public QualityAttribute getQualityAttribute(int dimension) {
-		return discreteAttributes[dimension];
+		return qualityAttributes[dimension];
 	}
 
 	@Override
 	public QuantityAttribute getQuantityAttribute(int dimension) {
-		return continuousAttributes[dimension];
+		return quantityAttributes[dimension];
 	}
 
 	@Override
 	public Integer getQualityDimension(String name) {
-		return discreteDimensions.get(name);
+		return qualityDimensions.get(name);
 	}
 
 	@Override
 	public Integer getQuantityDimension(String name) {
-		return continuousDimensions.get(name);
+		return quantityDimensions.get(name);
 	}
 
 	@Override
 	public int getQualityFeature(int dimension, int position) {
-		return discreteFeatures[dimension][position];
+		return qualityFeatures[dimension][position];
 	}
 
 	@Override
 	public float getQuantityFeature(int dimension, int position) {
-		return continuousFeatures[dimension][position];
+		return quantityFeatures[dimension][position];
 	}
 
 	@Override
 	public Collection<String> getQualityFields() {
-		return discreteDimensions.keySet();
+		return qualityDimensions.keySet();
 	}
 
 	@Override
 	public Collection<String> getQuantityFields() {
-		return continuousDimensions.keySet();
+		return quantityDimensions.keySet();
 	}
 
 	@Override
 	public int getQualityOrder() {
-		return discreteAttributes.length;
+		return qualityAttributes.length;
 	}
 
 	@Override
 	public int getQuantityOrder() {
-		return continuousAttributes.length;
+		return quantityAttributes.length;
 	}
 
 	@Override
@@ -280,7 +280,7 @@ public class DenseModule implements DataModule<DataInstance> {
 
 		private int cursor = 0;
 
-		private DataInstance instance = new DataInstance(discreteFeatures, continuousFeatures);
+		private DataInstance instance = new DataInstance(qualityFeatures, quantityFeatures);
 
 		@Override
 		public boolean hasNext() {
