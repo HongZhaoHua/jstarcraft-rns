@@ -23,6 +23,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
+import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.core.utility.JsonUtility;
 import com.jstarcraft.core.utility.KeyValue;
@@ -87,14 +88,14 @@ public abstract class AbstractTask<T> {
 
 	protected abstract Collection<T> check(int userIndex);
 
-	protected abstract List<KeyValue<Integer, Float>> recommend(Recommender recommender, int userIndex);
+	protected abstract List<Int2FloatKeyValue> recommend(Recommender recommender, int userIndex);
 
 	private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-	private Map<Class<? extends Evaluator>, KeyValue<Integer, Float>> evaluate(Collection<Evaluator> evaluators, Recommender recommender) {
-		Map<Class<? extends Evaluator>, KeyValue<Integer, Float>[]> values = new HashMap<>();
+	private Map<Class<? extends Evaluator>, Int2FloatKeyValue> evaluate(Collection<Evaluator> evaluators, Recommender recommender) {
+		Map<Class<? extends Evaluator>, Int2FloatKeyValue[]> values = new HashMap<>();
 		for (Evaluator evaluator : evaluators) {
-			values.put(evaluator.getClass(), new KeyValue[numberOfUsers]);
+			values.put(evaluator.getClass(), new Int2FloatKeyValue[numberOfUsers]);
 		}
 		// 按照用户切割任务.
 		CountDownLatch latch = new CountDownLatch(numberOfUsers);
@@ -105,11 +106,11 @@ public abstract class AbstractTask<T> {
 					// 校验集合
 					Collection checkCollection = check(index);
 					// 推荐列表
-					List<KeyValue<Integer, Float>> recommendList = recommend(recommender, index);
+					List<Int2FloatKeyValue> recommendList = recommend(recommender, index);
 					// 测量列表
 					for (Evaluator<?> evaluator : evaluators) {
-						KeyValue<Integer, Float>[] measures = values.get(evaluator.getClass());
-						KeyValue<Integer, Float> measure = evaluator.evaluate(checkCollection, recommendList);
+						Int2FloatKeyValue[] measures = values.get(evaluator.getClass());
+						Int2FloatKeyValue measure = evaluator.evaluate(checkCollection, recommendList);
 						measures[index] = measure;
 					}
 				}
@@ -122,9 +123,9 @@ public abstract class AbstractTask<T> {
 			throw new RecommendationException(exception);
 		}
 
-		Map<Class<? extends Evaluator>, KeyValue<Integer, Float>> measures = new HashMap<>();
-		for (Entry<Class<? extends Evaluator>, KeyValue<Integer, Float>[]> term : values.entrySet()) {
-			KeyValue<Integer, Float> measure = new KeyValue<>(0, 0F);
+		Map<Class<? extends Evaluator>, Int2FloatKeyValue> measures = new HashMap<>();
+		for (Entry<Class<? extends Evaluator>, Int2FloatKeyValue[]> term : values.entrySet()) {
+			Int2FloatKeyValue measure = new Int2FloatKeyValue(0, 0F);
 			// if (term.getKey() == RecallEvaluator.class) {
 			// for (KeyValue<Integer, Double> element : term.getValue()) {
 			// if (element == null) {
@@ -133,7 +134,7 @@ public abstract class AbstractTask<T> {
 			// System.out.println(element.getKey() + " " + element.getValue());
 			// }
 			// }
-			for (KeyValue<Integer, Float> element : term.getValue()) {
+			for (Int2FloatKeyValue element : term.getValue()) {
 				if (element == null) {
 					continue;
 				}
@@ -298,7 +299,7 @@ public abstract class AbstractTask<T> {
 
 				recommender.prepare(configuration, trainMarker, model, space);
 				recommender.practice();
-				for (Entry<Class<? extends Evaluator>, KeyValue<Integer, Float>> measure : evaluate(getEvaluators(featureMatrix), recommender).entrySet()) {
+				for (Entry<Class<? extends Evaluator>, Int2FloatKeyValue> measure : evaluate(getEvaluators(featureMatrix), recommender).entrySet()) {
 					Float value = measure.getValue().getValue() / measure.getValue().getKey();
 					measures.put(measure.getKey().getSimpleName(), value);
 				}

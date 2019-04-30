@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.jstarcraft.core.utility.KeyValue;
+import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 import com.jstarcraft.recommendation.recommender.Recommender;
 
 public abstract class AbstractRankingEvaluatorTestCase extends AbstractEvaluatorTestCase<Integer> {
@@ -24,7 +24,7 @@ public abstract class AbstractRankingEvaluatorTestCase extends AbstractEvaluator
 	}
 
 	@Override
-	protected List<KeyValue<Integer, Float>> recommend(Recommender recommender, int userIndex) {
+	protected List<Int2FloatKeyValue> recommend(Recommender recommender, int userIndex) {
 		Set<Integer> itemSet = new HashSet<>();
 		int from = trainPaginations[userIndex], to = trainPaginations[userIndex + 1];
 		for (int index = from, size = to; index < size; index++) {
@@ -42,16 +42,16 @@ public abstract class AbstractRankingEvaluatorTestCase extends AbstractEvaluator
 				continuousFeatures[dimension] = trainMarker.getContinuousFeature(dimension, position);
 			}
 		}
-		List<KeyValue<Integer, Float>> recommendList = new ArrayList<>(numberOfItems - itemSet.size());
+		List<Int2FloatKeyValue> recommendList = new ArrayList<>(numberOfItems - itemSet.size());
 		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
 			if (itemSet.contains(itemIndex)) {
 				continue;
 			}
 			discreteFeatures[itemDimension] = itemIndex;
-			recommendList.add(new KeyValue<>(itemIndex, recommender.predict(discreteFeatures, continuousFeatures)));
+			recommendList.add(new Int2FloatKeyValue(itemIndex, recommender.predict(discreteFeatures, continuousFeatures)));
 		}
 		Collections.sort(recommendList, (left, right) -> {
-			return right.getValue().compareTo(left.getValue());
+			return Float.compare(right.getValue(), left.getValue());
 		});
 		return recommendList;
 	}

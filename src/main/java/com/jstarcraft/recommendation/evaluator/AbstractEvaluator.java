@@ -3,7 +3,7 @@ package com.jstarcraft.recommendation.evaluator;
 import java.util.Collection;
 import java.util.List;
 
-import com.jstarcraft.core.utility.KeyValue;
+import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 
 /**
  * 抽象评估器
@@ -20,7 +20,7 @@ public abstract class AbstractEvaluator<T> implements Evaluator<T> {
 	 * @param recommendList
 	 * @return
 	 */
-	protected abstract int count(Collection<T> checkCollection, List<KeyValue<Integer, Float>> recommendList);
+	protected abstract int count(Collection<T> checkCollection, List<Int2FloatKeyValue> recommendList);
 
 	/**
 	 * 测量列表
@@ -29,11 +29,11 @@ public abstract class AbstractEvaluator<T> implements Evaluator<T> {
 	 * @param recommendList
 	 * @return
 	 */
-	protected abstract float measure(Collection<T> checkCollection, List<KeyValue<Integer, Float>> recommendList);
+	protected abstract float measure(Collection<T> checkCollection, List<Int2FloatKeyValue> recommendList);
 
 	@Override
-	public final KeyValue<Integer, Float> evaluate(Collection<T> checkCollection, List<KeyValue<Integer, Float>> recommendList) {
-		return new KeyValue<>(count(checkCollection, recommendList), measure(checkCollection, recommendList));
+	public final Int2FloatKeyValue evaluate(Collection<T> checkCollection, List<Int2FloatKeyValue> recommendList) {
+		return new Int2FloatKeyValue(count(checkCollection, recommendList), measure(checkCollection, recommendList));
 	}
 
 }

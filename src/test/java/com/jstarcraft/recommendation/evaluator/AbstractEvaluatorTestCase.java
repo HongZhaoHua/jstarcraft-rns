@@ -14,6 +14,7 @@ import org.junit.Test;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
+import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.recommendation.data.DataSpace;
@@ -155,7 +156,7 @@ public abstract class AbstractEvaluatorTestCase<T> {
 
 	protected abstract Collection<T> check(int userIndex);
 
-	protected abstract List<KeyValue<Integer, Float>> recommend(Recommender recommender, int userIndex);
+	protected abstract List<Int2FloatKeyValue> recommend(Recommender recommender, int userIndex);
 
 	private KeyValue<Integer, Float> evaluate(Evaluator<?> evaluator, Recommender recommender) {
 		KeyValue<Integer, Float> sum = new KeyValue<>(0, 0F);
@@ -167,9 +168,9 @@ public abstract class AbstractEvaluatorTestCase<T> {
 			// 训练映射
 			Collection checkCollection = check(userIndex);
 			// 推荐列表
-			List<KeyValue<Integer, Float>> recommendList = recommend(recommender, userIndex);
+			List<Int2FloatKeyValue> recommendList = recommend(recommender, userIndex);
 			// 测量列表
-			KeyValue<Integer, Float> measure = evaluator.evaluate(checkCollection, recommendList);
+			Int2FloatKeyValue measure = evaluator.evaluate(checkCollection, recommendList);
 			sum.setKey(sum.getKey() + measure.getKey());
 			sum.setValue(sum.getValue() + measure.getValue());
 		}

@@ -3,7 +3,7 @@ package com.jstarcraft.recommendation.evaluator;
 import java.util.Collection;
 import java.util.List;
 
-import com.jstarcraft.core.utility.KeyValue;
+import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 
 /**
  * 评估器
@@ -20,6 +20,6 @@ public interface Evaluator<T> {
 	 * @param recommendList
 	 * @return
 	 */
-	KeyValue<Integer, Float> evaluate(Collection<T> checkCollection, List<KeyValue<Integer, Float>> recommendList);
+	Int2FloatKeyValue evaluate(Collection<T> checkCollection, List<Int2FloatKeyValue> recommendList);
 
 }

@@ -3,7 +3,7 @@ package com.jstarcraft.recommendation.evaluator;
 import java.util.Collection;
 import java.util.List;
 
-import com.jstarcraft.core.utility.KeyValue;
+import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 
 /**
  * 面向评分预测的评估器
@@ -14,7 +14,7 @@ import com.jstarcraft.core.utility.KeyValue;
 public abstract class RatingEvaluator extends AbstractEvaluator<Float> {
 
 	@Override
-	protected int count(Collection<Float> checkCollection, List<KeyValue<Integer, Float>> recommendList) {
+	protected int count(Collection<Float> checkCollection, List<Int2FloatKeyValue> recommendList) {
 		return checkCollection.size();
 	}
 

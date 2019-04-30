@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import com.jstarcraft.core.utility.KeyValue;
+import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 import com.jstarcraft.recommendation.evaluator.RatingEvaluator;
 
 /**
@@ -25,10 +25,10 @@ public class MPEEvaluator extends RatingEvaluator {
 	}
 
 	@Override
-	protected float measure(Collection<Float> checkCollection, List<KeyValue<Integer, Float>> recommendList) {
+	protected float measure(Collection<Float> checkCollection, List<Int2FloatKeyValue> recommendList) {
 		float value = 0F;
 		Iterator<Float> iterator = checkCollection.iterator();
-		for (KeyValue<Integer, Float> keyValue : recommendList) {
+		for (Int2FloatKeyValue keyValue : recommendList) {
 			float score = iterator.next();
 			float estimate = keyValue.getValue();
 			if (Math.abs(score - estimate) > mpe) {

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
-import com.jstarcraft.core.utility.KeyValue;
+import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 import com.jstarcraft.recommendation.evaluator.RankingEvaluator;
 
 /**
@@ -39,13 +39,13 @@ public class NoveltyEvaluator extends RankingEvaluator {
 	 * @return evaluate result
 	 */
 	@Override
-	protected float measure(Collection<Integer> checkCollection, List<KeyValue<Integer, Float>> recommendList) {
+	protected float measure(Collection<Integer> checkCollection, List<Int2FloatKeyValue> recommendList) {
 		if (recommendList.size() > size) {
 			recommendList = recommendList.subList(0, size);
 		}
 
 		float sum = 0F;
-		for (KeyValue<Integer, Float> keyValue : recommendList) {
+		for (Int2FloatKeyValue keyValue : recommendList) {
 			int itemIndex = keyValue.getKey();
 			int count = itemCounts[itemIndex];
 			if (count > 0) {

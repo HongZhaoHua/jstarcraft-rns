@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.jstarcraft.core.utility.KeyValue;
+import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 import com.jstarcraft.recommendation.evaluator.RankingEvaluator;
 
 /**
@@ -25,7 +25,7 @@ public class AUCEvaluator extends RankingEvaluator {
 	}
 
 	@Override
-	protected float measure(Collection<Integer> checkCollection, List<KeyValue<Integer, Float>> recommendList) {
+	protected float measure(Collection<Integer> checkCollection, List<Int2FloatKeyValue> recommendList) {
 		// 推荐物品集合(大小不能超过TopN)
 		int evaluateSize = recommendList.size();
 		if (evaluateSize > size) {
@@ -33,7 +33,7 @@ public class AUCEvaluator extends RankingEvaluator {
 		}
 		int hitCount = 0, missCount = 0;
 		Set<Integer> recommendItems = new HashSet<>();
-		for (KeyValue<Integer, Float> keyValue : recommendList) {
+		for (Int2FloatKeyValue keyValue : recommendList) {
 			recommendItems.add(keyValue.getKey());
 			if (checkCollection.contains(keyValue.getKey())) {
 				hitCount++;

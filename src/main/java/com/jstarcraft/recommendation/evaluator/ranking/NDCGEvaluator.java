@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 import com.jstarcraft.ai.utility.MathUtility;
-import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.recommendation.evaluator.RankingEvaluator;
 
 /**
@@ -30,7 +30,7 @@ public class NDCGEvaluator extends RankingEvaluator {
 	}
 
 	@Override
-	protected float measure(Collection<Integer> checkCollection, List<KeyValue<Integer, Float>> recommendList) {
+	protected float measure(Collection<Integer> checkCollection, List<Int2FloatKeyValue> recommendList) {
 		if (recommendList.size() > size) {
 			recommendList = recommendList.subList(0, size);
 		}
