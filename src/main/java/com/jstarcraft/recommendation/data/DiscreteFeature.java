@@ -3,7 +3,7 @@ package com.jstarcraft.recommendation.data;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-@Deprecated
+
 public class DiscreteFeature implements DataFeature<Integer> {
 
 	public final static int DEFAULT_CAPACITY = 10000;

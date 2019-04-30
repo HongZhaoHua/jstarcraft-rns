@@ -6,7 +6,6 @@ package com.jstarcraft.recommendation.data.accessor;
  * @author Birdy
  *
  */
-@Deprecated
 public class DataInstance {
 
 	/** 游标 */

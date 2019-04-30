@@ -9,7 +9,6 @@ import java.util.Collection;
  *
  */
 // TODO 考虑改名为DataModule
-@Deprecated
 public interface DataAccessor<T> extends Iterable<T> {
 
 	/**

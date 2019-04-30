@@ -12,7 +12,6 @@ import com.jstarcraft.recommendation.data.DiscreteAttribute;
  * @author Birdy
  *
  */
-@Deprecated
 public class AttributeMarker extends SampleAccessor {
 
 	private float[] scores;

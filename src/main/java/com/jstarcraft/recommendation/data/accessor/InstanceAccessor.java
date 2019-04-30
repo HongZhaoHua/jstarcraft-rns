@@ -24,7 +24,6 @@ import com.jstarcraft.recommendation.data.DiscreteFeature;
  * @author Birdy
  *
  */
-@Deprecated
 public class InstanceAccessor implements DataAccessor<DataInstance> {
 
 	/** 离散属性 */

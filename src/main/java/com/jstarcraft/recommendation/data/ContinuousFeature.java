@@ -3,7 +3,6 @@ package com.jstarcraft.recommendation.data;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-@Deprecated
 public class ContinuousFeature implements DataFeature<Float> {
 
 	public final static int DEFAULT_CAPACITY = 10000;

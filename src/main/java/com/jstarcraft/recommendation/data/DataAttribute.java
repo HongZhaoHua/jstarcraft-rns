@@ -6,7 +6,6 @@ package com.jstarcraft.recommendation.data;
  * @author Birdy
  *
  */
-@Deprecated
 public interface DataAttribute<T> {
 
 	/**

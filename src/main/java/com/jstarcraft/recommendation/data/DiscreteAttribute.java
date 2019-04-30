@@ -12,7 +12,6 @@ import com.jstarcraft.core.common.conversion.csv.ConversionUtility;
  *
  */
 // TODO 准备实现支持分布式的indexes
-@Deprecated
 public class DiscreteAttribute implements DataAttribute<Integer> {
 
 	/** 属性名称 */

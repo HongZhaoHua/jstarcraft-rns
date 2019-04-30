@@ -11,7 +11,6 @@ package com.jstarcraft.recommendation.data;
  *
  * @param <T>
  */
-@Deprecated
 public interface DataFeature<T> extends Iterable<T> {
 
 	/**

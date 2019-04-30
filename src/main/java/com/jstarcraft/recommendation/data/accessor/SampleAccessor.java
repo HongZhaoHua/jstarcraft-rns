@@ -15,7 +15,6 @@ import com.jstarcraft.recommendation.data.DiscreteAttribute;
  * @author Birdy
  *
  */
-@Deprecated
 public abstract class SampleAccessor implements DataAccessor<DataSample> {
 
 	/** 离散属性 */

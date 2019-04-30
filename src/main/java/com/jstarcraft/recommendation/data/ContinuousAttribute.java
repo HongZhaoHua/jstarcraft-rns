@@ -8,7 +8,6 @@ import com.jstarcraft.core.common.conversion.csv.ConversionUtility;
  * @author Birdy
  *
  */
-@Deprecated
 public class ContinuousAttribute implements DataAttribute<Float> {
 
 	/** 属性名称 */
