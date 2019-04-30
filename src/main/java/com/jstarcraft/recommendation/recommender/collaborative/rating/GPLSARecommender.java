@@ -13,7 +13,7 @@ import com.jstarcraft.ai.utility.MathUtility;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.ProbabilisticGraphicalRecommender;
 import com.jstarcraft.recommendation.utility.GaussianUtility;
@@ -62,7 +62,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 	protected static float smallValue = MathUtility.EPSILON;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		// Initialize users' conditional probabilities
 		userTopicProbabilities = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);

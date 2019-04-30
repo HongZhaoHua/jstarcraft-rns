@@ -2,7 +2,7 @@ package com.jstarcraft.recommendation.data.splitter;
 
 import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.recommendation.data.accessor.DataInstance;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.processor.DataSelector;
 
 /**
@@ -14,13 +14,13 @@ import com.jstarcraft.recommendation.data.processor.DataSelector;
 // TODO 准备改名为SpecificInstanceSplitter
 public class GivenInstanceSplitter implements DataSplitter {
 
-	private InstanceAccessor dataModel;
+	private DenseModule dataModel;
 
 	private IntegerArray trainReference;
 
 	private IntegerArray testReference;
 
-	public GivenInstanceSplitter(InstanceAccessor model, DataSelector selector) {
+	public GivenInstanceSplitter(DenseModule model, DataSelector selector) {
 		this.dataModel = model;
 
 		this.trainReference = new IntegerArray();
@@ -41,7 +41,7 @@ public class GivenInstanceSplitter implements DataSplitter {
 	}
 
 	@Override
-	public InstanceAccessor getDataModel() {
+	public DenseModule getDataModel() {
 		return dataModel;
 	}
 

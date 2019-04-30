@@ -5,7 +5,7 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.utility.LogisticUtility;
 
@@ -28,7 +28,7 @@ public class LambdaFMWeightRecommender extends LambdaFMRecommender {
 	private int Y, N;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		epsilon = configuration.getFloat("epsilon");
 		orderLosses = new float[numberOfItems - 1];
@@ -59,7 +59,7 @@ public class LambdaFMWeightRecommender extends LambdaFMRecommender {
 			int from = dataPaginations[userIndex], to = dataPaginations[userIndex + 1];
 			int positivePosition = dataPositions[RandomUtility.randomInteger(from, to)];
 			for (int index = 0; index < negativeKeys.length; index++) {
-				positiveKeys[index] = marker.getDiscreteFeature(index, positivePosition);
+				positiveKeys[index] = marker.getQualityFeature(index, positivePosition);
 			}
 			positiveVector = getFeatureVector(positiveKeys);
 			positiveScore = predict(scalar, positiveVector);
@@ -77,7 +77,7 @@ public class LambdaFMWeightRecommender extends LambdaFMRecommender {
 				int negativePosition = dataPositions[RandomUtility.randomInteger(from, to)];
 				// TODO 注意,此处为了故意制造负面特征.
 				for (int index = 0; index < negativeKeys.length; index++) {
-					negativeKeys[index] = marker.getDiscreteFeature(index, negativePosition);
+					negativeKeys[index] = marker.getQualityFeature(index, negativePosition);
 				}
 				negativeKeys[itemDimension] = negativeItemIndex;
 				negativeVector = getFeatureVector(negativeKeys);

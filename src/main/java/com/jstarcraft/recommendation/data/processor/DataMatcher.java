@@ -1,7 +1,7 @@
 package com.jstarcraft.recommendation.data.processor;
 
 import com.jstarcraft.ai.data.attribute.QualityAttribute;
-import com.jstarcraft.recommendation.data.DataAccessor;
+import com.jstarcraft.recommendation.data.DataModule;
 
 /**
  * 数据匹配器
@@ -11,8 +11,8 @@ import com.jstarcraft.recommendation.data.DataAccessor;
  */
 public interface DataMatcher {
 
-	public static DataMatcher discreteOf(DataAccessor<?> accessor, int dimension) {
-		QualityAttribute attribute = accessor.getDiscreteAttribute(dimension);
+	public static DataMatcher discreteOf(DataModule<?> accessor, int dimension) {
+		QualityAttribute attribute = accessor.getQualityAttribute(dimension);
 		int size = accessor.getSize();
 		return (paginations, positions) -> {
 			if (paginations.length != attribute.getSize() + 1) {
@@ -22,7 +22,7 @@ public interface DataMatcher {
 				throw new IllegalArgumentException();
 			}
 			for (int index = 0; index < size; index++) {
-				int feature = accessor.getDiscreteFeature(dimension, index);
+				int feature = accessor.getQualityFeature(dimension, index);
 				paginations[feature + 1]++;
 			}
 			int cursor = size;
@@ -31,7 +31,7 @@ public interface DataMatcher {
 				paginations[index] = cursor;
 			}
 			for (int index = 0; index < size; index++) {
-				int feature = accessor.getDiscreteFeature(dimension, index);
+				int feature = accessor.getQualityFeature(dimension, index);
 				positions[paginations[feature + 1]++] = index;
 			}
 		};

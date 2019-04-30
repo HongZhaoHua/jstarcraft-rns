@@ -9,7 +9,7 @@ import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.data.processor.DataMatcher;
 import com.jstarcraft.recommendation.recommender.FactorizationMachineRecommender;
@@ -44,7 +44,7 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
 	protected MathVector positiveVector, negativeVector;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		// TODO 此处代码可以消除(使用常量Marker代替或者使用binarize.threshold)
 		for (MatrixScalar term : trainMatrix) {
@@ -62,8 +62,8 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
 		weightRegularization = configuration.getFloat("rec.fm.regW", 0.1F);
 		factorRegularization = configuration.getFloat("rec.fm.regF", 0.001F);
 
-		positiveKeys = new int[marker.getDiscreteOrder()];
-		negativeKeys = new int[marker.getDiscreteOrder()];
+		positiveKeys = new int[marker.getQualityOrder()];
+		negativeKeys = new int[marker.getQualityOrder()];
 	}
 
 	protected abstract float getGradientValue(DefaultScalar scalar, int[] dataPaginations, int[] dataPositions);
@@ -79,7 +79,7 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
 		}
 		DataMatcher dataMatcher = (paginations, positions) -> {
 			for (int index = 0; index < size; index++) {
-				int feature = marker.getDiscreteFeature(userDimension, index);
+				int feature = marker.getQualityFeature(userDimension, index);
 				paginations[feature + 1]++;
 			}
 			int cursor = size;
@@ -88,7 +88,7 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
 				paginations[index] = cursor;
 			}
 			for (int index = 0; index < size; index++) {
-				int feature = marker.getDiscreteFeature(userDimension, index);
+				int feature = marker.getQualityFeature(userDimension, index);
 				positions[paginations[feature + 1]++] = index;
 			}
 		};
@@ -110,7 +110,7 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
 				int leftIndex = 0, rightIndex = 0;
 				Iterator<VectorScalar> leftIterator = positiveVector.iterator();
 				Iterator<VectorScalar> rightIterator = negativeVector.iterator();
-				for (int index = 0; index < marker.getDiscreteOrder(); index++) {
+				for (int index = 0; index < marker.getQualityOrder(); index++) {
 					VectorScalar leftTerm = leftIterator.next();
 					VectorScalar rightTerm = rightIterator.next();
 					leftIndex = leftTerm.getIndex();

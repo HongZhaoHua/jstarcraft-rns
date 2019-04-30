@@ -35,7 +35,7 @@ import com.jstarcraft.ai.model.neuralnetwork.vertex.transformation.HorizontalAtt
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.ModelRecommender;
 
@@ -81,7 +81,7 @@ public class DeepCrossRecommender extends ModelRecommender {
 	protected SampleAccessor marker;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		learnRate = configuration.getFloat("rec.iterator.learnrate");
 		momentum = configuration.getFloat("rec.iterator.momentum");
@@ -176,9 +176,9 @@ public class DeepCrossRecommender extends ModelRecommender {
 
 	@Override
 	protected void doPractice() {
-		int[] dimensionSizes = new int[marker.getDiscreteOrder()];
+		int[] dimensionSizes = new int[marker.getQualityOrder()];
 		for (int orderIndex = 0; orderIndex < dimensionSizes.length; orderIndex++) {
-			dimensionSizes[orderIndex] = marker.getDiscreteAttribute(orderIndex).getSize();
+			dimensionSizes[orderIndex] = marker.getQualityAttribute(orderIndex).getSize();
 		}
 		int[] positiveKeys = new int[dimensionSizes.length], negativeKeys = new int[dimensionSizes.length];
 
@@ -209,7 +209,7 @@ public class DeepCrossRecommender extends ModelRecommender {
 				// 获取正样本
 				int positivePosition = dataPositions[RandomUtility.randomInteger(from, to)];
 				for (int index = 0; index < positiveKeys.length; index++) {
-					positiveKeys[index] = marker.getDiscreteFeature(index, positivePosition);
+					positiveKeys[index] = marker.getQualityFeature(index, positivePosition);
 				}
 
 				// 获取负样本
@@ -224,7 +224,7 @@ public class DeepCrossRecommender extends ModelRecommender {
 				// TODO 注意,此处为了故意制造负面特征.
 				int negativePosition = dataPositions[RandomUtility.randomInteger(from, to)];
 				for (int index = 0; index < negativeKeys.length; index++) {
-					negativeKeys[index] = marker.getDiscreteFeature(index, negativePosition);
+					negativeKeys[index] = marker.getQualityFeature(index, negativePosition);
 				}
 				negativeKeys[itemDimension] = negativeItemIndex;
 
@@ -278,7 +278,7 @@ public class DeepCrossRecommender extends ModelRecommender {
 			if (dimension != itemDimension) {
 				for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
 					int position = dataPositions[dataPaginations[userIndex + 1] - 1];
-					int feature = marker.getDiscreteFeature(dimension, position);
+					int feature = marker.getQualityFeature(dimension, position);
 					// inputData[dimension].putScalar(userIndex, 0,
 					// keys[dimension]);
 					// inputData[dimensionSizes.length].setValue(userIndex, dimension, feature);

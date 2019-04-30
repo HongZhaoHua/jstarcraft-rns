@@ -17,7 +17,7 @@ import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.recommendation.data.DataSpace;
 import com.jstarcraft.recommendation.data.accessor.AttributeMarker;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.data.convertor.CsvConvertor;
 import com.jstarcraft.recommendation.data.processor.DataMatcher;
@@ -66,7 +66,7 @@ public abstract class AbstractEvaluatorTestCase<T> {
 		int count = csvConvertor.convert(space);
 
 		// 制造数据模型
-		InstanceAccessor model = space.makeModule("model", "user", "item", "instant", "score");
+		DenseModule model = space.makeModule("model", "user", "item", "instant", "score");
 
 		DataSplitter splitter = new LeaveOneCrossValidationSplitter(model, "user", "instant");
 		IntegerArray trainReference = splitter.getTrainReference(0);
@@ -85,12 +85,12 @@ public abstract class AbstractEvaluatorTestCase<T> {
 		}
 		SampleAccessor dataMarker = new AttributeMarker(positions, model, scoreField);
 
-		userDimension = model.getDiscreteDimension(userField);
-		itemDimension = model.getDiscreteDimension(itemField);
-		instantDimension = model.getDiscreteDimension(instantField);
-		numberOfUsers = model.getDiscreteAttribute(userDimension).getSize();
-		numberOfItems = model.getDiscreteAttribute(itemDimension).getSize();
-		numberOfInstants = model.getDiscreteAttribute(instantDimension).getSize();
+		userDimension = model.getQualityDimension(userField);
+		itemDimension = model.getQualityDimension(itemField);
+		instantDimension = model.getQualityDimension(instantField);
+		numberOfUsers = model.getQualityAttribute(userDimension).getSize();
+		numberOfItems = model.getQualityAttribute(itemDimension).getSize();
+		numberOfInstants = model.getQualityAttribute(instantDimension).getSize();
 
 		trainPaginations = new int[numberOfUsers + 1];
 		trainPositions = new int[trainMarker.getSize()];
@@ -103,8 +103,8 @@ public abstract class AbstractEvaluatorTestCase<T> {
 		trainSorter.sort(trainPaginations, trainPositions);
 		Table<Integer, Integer, Float> trainTable = HashBasedTable.create();
 		for (int position : trainPositions) {
-			int rowIndex = trainMarker.getDiscreteFeature(userDimension, position);
-			int columnIndex = trainMarker.getDiscreteFeature(itemDimension, position);
+			int rowIndex = trainMarker.getQualityFeature(userDimension, position);
+			int columnIndex = trainMarker.getQualityFeature(itemDimension, position);
 			// TODO 处理冲突
 			trainTable.put(rowIndex, columnIndex, trainMarker.getMark(position));
 		}
@@ -121,8 +121,8 @@ public abstract class AbstractEvaluatorTestCase<T> {
 		testSorter.sort(testPaginations, testPositions);
 		Table<Integer, Integer, Float> testTable = HashBasedTable.create();
 		for (int position : testPositions) {
-			int rowIndex = testMarker.getDiscreteFeature(userDimension, position);
-			int columnIndex = testMarker.getDiscreteFeature(itemDimension, position);
+			int rowIndex = testMarker.getQualityFeature(userDimension, position);
+			int columnIndex = testMarker.getQualityFeature(itemDimension, position);
 			// TODO 处理冲突
 			testTable.put(rowIndex, columnIndex, testMarker.getMark(position));
 		}
@@ -139,8 +139,8 @@ public abstract class AbstractEvaluatorTestCase<T> {
 		dataSorter.sort(dataPaginations, dataPositions);
 		Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
 		for (int position : dataPositions) {
-			int rowIndex = dataMarker.getDiscreteFeature(userDimension, position);
-			int columnIndex = dataMarker.getDiscreteFeature(itemDimension, position);
+			int rowIndex = dataMarker.getQualityFeature(userDimension, position);
+			int columnIndex = dataMarker.getQualityFeature(itemDimension, position);
 			// TODO 处理冲突
 			dataTable.put(rowIndex, columnIndex, dataMarker.getMark(position));
 		}

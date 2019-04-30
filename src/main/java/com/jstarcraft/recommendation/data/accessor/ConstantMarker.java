@@ -16,7 +16,7 @@ public class ConstantMarker extends SampleAccessor {
 
 	private float constant;
 
-	public ConstantMarker(IntegerArray positions, InstanceAccessor model, float constant) {
+	public ConstantMarker(IntegerArray positions, DenseModule model, float constant) {
 		this.discreteAttributes = new QualityAttribute[model.discreteAttributes.length];
 		this.continuousAttributes = new QuantityAttribute[model.continuousAttributes.length];
 		this.discreteFeatures = new int[model.discreteAttributes.length][];
@@ -30,12 +30,12 @@ public class ConstantMarker extends SampleAccessor {
 			this.continuousFeatures[index++] = model.continuousFeatures[index];
 		}
 		this.discreteDimensions = new LinkedHashMap<>();
-		for (String field : model.getDiscreteFields()) {
-			this.discreteDimensions.put(field, model.getDiscreteDimension(field));
+		for (String field : model.getQualityFields()) {
+			this.discreteDimensions.put(field, model.getQualityDimension(field));
 		}
 		this.continuousDimensions = new LinkedHashMap<>();
-		for (String field : model.getContinuousFields()) {
-			this.continuousDimensions.put(field, model.getContinuousDimension(field));
+		for (String field : model.getQuantityFields()) {
+			this.continuousDimensions.put(field, model.getQuantityDimension(field));
 		}
 		this.positions = positions;
 		this.constant = constant;

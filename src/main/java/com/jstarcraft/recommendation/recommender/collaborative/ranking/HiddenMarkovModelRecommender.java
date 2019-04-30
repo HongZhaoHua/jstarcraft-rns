@@ -21,7 +21,7 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 import com.jstarcraft.recommendation.recommender.ProbabilisticGraphicalRecommender;
@@ -363,11 +363,11 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
 	}
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		// 上下文维度
 		contextField = configuration.getString("data.model.fields.context");
-		contextDimension = marker.getDiscreteDimension(contextField);
+		contextDimension = marker.getQualityDimension(contextField);
 		numberOfStates = configuration.getInteger("rec.hmm.state.number");
 		probabilityRegularization = configuration.getFloat("rec.probability.regularization", 100F);
 		stateRegularization = configuration.getFloat("rec.state.regularization", 100F);
@@ -382,15 +382,15 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
 		dataMatrixes = new SparseMatrix[numberOfUsers];
 		contextSize = 0;
 
-		MemoryQualityAttribute attribute = (MemoryQualityAttribute) marker.getDiscreteAttribute(contextDimension);
+		MemoryQualityAttribute attribute = (MemoryQualityAttribute) marker.getQualityAttribute(contextDimension);
 		Object[] levels = attribute.getDatas();
 		Table<Integer, Integer, Float> table = HashBasedTable.create();
 		Table<Integer, Integer, Float> data = HashBasedTable.create();
 
 		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
 			for (int from = dataPaginations[userIndex], to = dataPaginations[userIndex + 1]; from < to; from++) {
-				int rowKey = (Integer) levels[marker.getDiscreteFeature(contextDimension, from)];
-				int columnKey = marker.getDiscreteFeature(itemDimension, from);
+				int rowKey = (Integer) levels[marker.getQualityFeature(contextDimension, from)];
+				int columnKey = marker.getQualityFeature(itemDimension, from);
 				Float count = table.get(rowKey, columnKey);
 				table.put(rowKey, columnKey, count == null ? 1 : ++count);
 			}

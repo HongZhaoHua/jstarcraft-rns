@@ -21,7 +21,7 @@ import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
 import com.jstarcraft.recommendation.data.accessor.DataSample;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.ProbabilisticGraphicalRecommender;
 import com.jstarcraft.recommendation.utility.GammaUtility;
@@ -102,13 +102,13 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
 	private DenseVector randomProbabilities;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		initAlpha = configuration.getFloat("rec.user.dirichlet.prior", 0.01F);
 		initBeta = configuration.getFloat("rec.topic.dirichlet.prior", 0.01F);
 
 		instantField = configuration.getString("data.model.fields.instant");
-		instantDimension = marker.getDiscreteDimension(instantField);
+		instantDimension = marker.getQualityDimension(instantField);
 		Table<Integer, Integer, Integer> instantTabel = HashBasedTable.create();
 		for (DataSample sample : marker) {
 			Integer instant = instantTabel.get(sample.getDiscreteFeature(userDimension), sample.getDiscreteFeature(itemDimension));

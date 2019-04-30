@@ -1,7 +1,7 @@
 package com.jstarcraft.recommendation.data.splitter;
 
 import com.jstarcraft.ai.utility.IntegerArray;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.processor.DataMatcher;
 import com.jstarcraft.recommendation.data.processor.DataSorter;
 
@@ -14,13 +14,13 @@ import com.jstarcraft.recommendation.data.processor.DataSorter;
 // TODO 准备改名为SpecificNumberSplitter
 public class GivenNumberSplitter implements DataSplitter {
 
-	private InstanceAccessor dataModel;
+	private DenseModule dataModel;
 
 	private IntegerArray trainReference;
 
 	private IntegerArray testReference;
 
-	public GivenNumberSplitter(InstanceAccessor model, String matchField, String sortField, int number) {
+	public GivenNumberSplitter(DenseModule model, String matchField, String sortField, int number) {
 		dataModel = model;
 		int size = model.getSize();
 		int[] paginations;
@@ -31,17 +31,17 @@ public class GivenNumberSplitter implements DataSplitter {
 		if (matchField == null) {
 			paginations = new int[] { 0, size };
 		} else {
-			int matchDimension = model.getDiscreteDimension(matchField);
-			paginations = new int[model.getDiscreteAttribute(matchDimension).getSize() + 1];
+			int matchDimension = model.getQualityDimension(matchField);
+			paginations = new int[model.getQualityAttribute(matchDimension).getSize() + 1];
 			DataMatcher matcher = DataMatcher.discreteOf(model, matchDimension);
 			matcher.match(paginations, positions);
 		}
-		if (model.getDiscreteFields().contains(sortField)) {
-			int sortDimension = model.getDiscreteDimension(sortField);
+		if (model.getQualityFields().contains(sortField)) {
+			int sortDimension = model.getQualityDimension(sortField);
 			DataSorter sorter = DataSorter.discreteOf(model, sortDimension);
 			sorter.sort(paginations, positions);
-		} else if (model.getContinuousFields().contains(sortField)) {
-			int sortDimension = model.getContinuousDimension(sortField);
+		} else if (model.getQuantityFields().contains(sortField)) {
+			int sortDimension = model.getQuantityDimension(sortField);
 			DataSorter sorter = DataSorter.continuousOf(model, sortDimension);
 			sorter.sort(paginations, positions);
 		} else {
@@ -70,7 +70,7 @@ public class GivenNumberSplitter implements DataSplitter {
 	}
 
 	@Override
-	public InstanceAccessor getDataModel() {
+	public DenseModule getDataModel() {
 		return dataModel;
 	}
 

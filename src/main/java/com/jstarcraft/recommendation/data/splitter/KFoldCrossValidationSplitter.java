@@ -2,7 +2,7 @@ package com.jstarcraft.recommendation.data.splitter;
 
 import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 
 /**
  * K折叠交叉验证处理器
@@ -11,13 +11,13 @@ import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
  */
 public class KFoldCrossValidationSplitter implements DataSplitter {
 
-	private InstanceAccessor dataModel;
+	private DenseModule dataModel;
 
 	private Integer[] folds;
 
 	private int number;
 
-	public KFoldCrossValidationSplitter(InstanceAccessor model, int number) {
+	public KFoldCrossValidationSplitter(DenseModule model, int number) {
 		dataModel = model;
 		this.number = number;
 		folds = new Integer[dataModel.getSize()];
@@ -34,7 +34,7 @@ public class KFoldCrossValidationSplitter implements DataSplitter {
 	}
 
 	@Override
-	public InstanceAccessor getDataModel() {
+	public DenseModule getDataModel() {
 		return dataModel;
 	}
 

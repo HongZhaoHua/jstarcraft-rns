@@ -12,7 +12,7 @@ import com.jstarcraft.ai.data.attribute.QuantityAttribute;
  *
  */
 // TODO 考虑改名为DataModule
-public interface DataAccessor<T> extends Iterable<T> {
+public interface DataModule<T> extends Iterable<T> {
 
 	/**
 	 * 获取指定维度的离散属性
@@ -20,7 +20,7 @@ public interface DataAccessor<T> extends Iterable<T> {
 	 * @param dimension
 	 * @return
 	 */
-	public QualityAttribute getDiscreteAttribute(int dimension);
+	public QualityAttribute getQualityAttribute(int dimension);
 
 	/**
 	 * 获取指定维度的连续属性
@@ -28,7 +28,7 @@ public interface DataAccessor<T> extends Iterable<T> {
 	 * @param dimension
 	 * @return
 	 */
-	public QuantityAttribute getContinuousAttribute(int dimension);
+	public QuantityAttribute getQuantityAttribute(int dimension);
 
 	/**
 	 * 获取指定离散字段的维度
@@ -36,7 +36,7 @@ public interface DataAccessor<T> extends Iterable<T> {
 	 * @param field
 	 * @return
 	 */
-	public Integer getDiscreteDimension(String field);
+	public Integer getQualityDimension(String field);
 
 	/**
 	 * 获取指定连续字段的维度
@@ -44,7 +44,7 @@ public interface DataAccessor<T> extends Iterable<T> {
 	 * @param field
 	 * @return
 	 */
-	public Integer getContinuousDimension(String field);
+	public Integer getQuantityDimension(String field);
 
 	/**
 	 * 获取指定维度与位置的离散特征
@@ -53,7 +53,7 @@ public interface DataAccessor<T> extends Iterable<T> {
 	 * @param position
 	 * @return
 	 */
-	public int getDiscreteFeature(int dimension, int position);
+	public int getQualityFeature(int dimension, int position);
 
 	/**
 	 * 获取指定维度与位置的连续特征
@@ -62,35 +62,35 @@ public interface DataAccessor<T> extends Iterable<T> {
 	 * @param position
 	 * @return
 	 */
-	public float getContinuousFeature(int dimension, int position);
+	public float getQuantityFeature(int dimension, int position);
 
 	/**
 	 * 获取离散字段(名称)
 	 * 
 	 * @return
 	 */
-	public Collection<String> getDiscreteFields();
+	public Collection<String> getQualityFields();
 
 	/**
 	 * 获取连续字段(名称)
 	 * 
 	 * @return
 	 */
-	public Collection<String> getContinuousFields();
+	public Collection<String> getQuantityFields();
 
 	/**
 	 * 获取稀疏秩的大小
 	 * 
 	 * @return
 	 */
-	int getDiscreteOrder();
+	int getQualityOrder();
 
 	/**
 	 * 获取连续秩的大小
 	 * 
 	 * @return
 	 */
-	int getContinuousOrder();
+	int getQuantityOrder();
 
 	/**
 	 * 获取大小

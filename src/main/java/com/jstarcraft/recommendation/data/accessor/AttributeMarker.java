@@ -16,7 +16,7 @@ public class AttributeMarker extends SampleAccessor {
 
 	private float[] scores;
 
-	public AttributeMarker(IntegerArray positions, InstanceAccessor model, String scoreField) {
+	public AttributeMarker(IntegerArray positions, DenseModule model, String scoreField) {
 		this.discreteAttributes = new QualityAttribute[model.discreteAttributes.length];
 		this.continuousAttributes = new QuantityAttribute[model.continuousAttributes.length - 1];
 		this.discreteFeatures = new int[model.discreteAttributes.length][];
@@ -25,7 +25,7 @@ public class AttributeMarker extends SampleAccessor {
 			this.discreteAttributes[index] = model.discreteAttributes[index];
 			this.discreteFeatures[index] = model.discreteFeatures[index];
 		}
-		int scoreDimension = model.getContinuousDimension(scoreField);
+		int scoreDimension = model.getQuantityDimension(scoreField);
 		int featureDimension = 0;
 		for (int index = 0, size = model.continuousAttributes.length; index < size; index++) {
 			if (scoreDimension != index) {
@@ -36,12 +36,12 @@ public class AttributeMarker extends SampleAccessor {
 		}
 		this.discreteDimensions = new LinkedHashMap<>();
 		featureDimension = 0;
-		for (String field : model.getDiscreteFields()) {
+		for (String field : model.getQualityFields()) {
 			this.discreteDimensions.put(field, featureDimension++);
 		}
 		this.continuousDimensions = new LinkedHashMap<>();
 		featureDimension = 0;
-		for (String field : model.getContinuousFields()) {
+		for (String field : model.getQuantityFields()) {
 			if (field.equals(scoreField)) {
 				continue;
 			}

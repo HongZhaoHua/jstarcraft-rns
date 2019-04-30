@@ -2,7 +2,7 @@ package com.jstarcraft.recommendation.data.splitter;
 
 import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.processor.DataMatcher;
 
 /**
@@ -13,13 +13,13 @@ import com.jstarcraft.recommendation.data.processor.DataMatcher;
  */
 public class RandomSplitter implements DataSplitter {
 
-	private InstanceAccessor dataModel;
+	private DenseModule dataModel;
 
 	private IntegerArray trainReference;
 
 	private IntegerArray testReference;
 
-	public RandomSplitter(InstanceAccessor model, String matchField, double random) {
+	public RandomSplitter(DenseModule model, String matchField, double random) {
 		dataModel = model;
 		int size = model.getSize();
 		int[] paginations;
@@ -27,8 +27,8 @@ public class RandomSplitter implements DataSplitter {
 		for (int index = 0; index < size; index++) {
 			positions[index] = index;
 		}
-		int matchDimension = model.getDiscreteDimension(matchField);
-		paginations = new int[model.getDiscreteAttribute(matchDimension).getSize() + 1];
+		int matchDimension = model.getQualityDimension(matchField);
+		paginations = new int[model.getQualityAttribute(matchDimension).getSize() + 1];
 		DataMatcher matcher = DataMatcher.discreteOf(model, matchDimension);
 		matcher.match(paginations, positions);
 
@@ -52,7 +52,7 @@ public class RandomSplitter implements DataSplitter {
 	}
 
 	@Override
-	public InstanceAccessor getDataModel() {
+	public DenseModule getDataModel() {
 		return dataModel;
 	}
 

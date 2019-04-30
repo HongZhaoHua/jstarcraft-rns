@@ -12,13 +12,13 @@ import com.jstarcraft.ai.data.attribute.MemoryQualityAttribute;
 import com.jstarcraft.ai.data.attribute.MemoryQuantityAttribute;
 import com.jstarcraft.ai.data.attribute.QualityAttribute;
 import com.jstarcraft.ai.data.attribute.QuantityAttribute;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 
 /**
  * 数据空间
  * 
  * <pre>
- * 配合{@link DataAttribute},{@link DataFeature}与{@link InstanceAccessor}实现数据管理.
+ * 配合{@link DataAttribute},{@link DataFeature}与{@link DenseModule}实现数据管理.
  * </pre>
  * 
  * @author Birdy
@@ -36,7 +36,7 @@ public class DataSpace {
 	private Map<String, DataFeature<?>> features = new HashMap<>();
 
 	/** 模型映射 */
-	private Map<String, InstanceAccessor> modules = new HashMap<>();
+	private Map<String, DenseModule> modules = new HashMap<>();
 
 	public DataSpace(Map<String, Class<?>> discreteDifinitions, Set<String> continuousDifinitions) {
 		for (Entry<String, Class<?>> keyValue : discreteDifinitions.entrySet()) {
@@ -98,8 +98,8 @@ public class DataSpace {
 	 * @param featureNames
 	 * @return
 	 */
-	public InstanceAccessor makeModule(String moduleName, String... featureNames) {
-		InstanceAccessor model = modules.get(moduleName);
+	public DenseModule makeModule(String moduleName, String... featureNames) {
+		DenseModule model = modules.get(moduleName);
 		if (model == null) {
 			LinkedList<QualityFeature> discreteProperties = new LinkedList<>();
 			LinkedList<QuantityFeature> continuousProperties = new LinkedList<>();
@@ -115,7 +115,7 @@ public class DataSpace {
 				}
 				throw new IllegalArgumentException("特征缺失");
 			}
-			model = new InstanceAccessor(new ArrayList<>(discreteProperties), new ArrayList<>(continuousProperties));
+			model = new DenseModule(new ArrayList<>(discreteProperties), new ArrayList<>(continuousProperties));
 			modules.put(moduleName, model);
 			return model;
 		} else {
@@ -129,7 +129,7 @@ public class DataSpace {
 	 * @param moduleName
 	 * @return
 	 */
-	public InstanceAccessor getModule(String moduleName) {
+	public DenseModule getModule(String moduleName) {
 		return modules.get(moduleName);
 	}
 

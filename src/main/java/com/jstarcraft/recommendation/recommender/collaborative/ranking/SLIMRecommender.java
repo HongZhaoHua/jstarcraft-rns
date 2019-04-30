@@ -19,7 +19,7 @@ import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.ReflectionUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 import com.jstarcraft.recommendation.recommender.ModelRecommender;
@@ -85,7 +85,7 @@ public class SLIMRecommender extends ModelRecommender {
 	 *             if error occurs
 	 */
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		neighborSize = configuration.getInteger("rec.neighbors.knn.number", 50);
 		regL1Norm = configuration.getFloat("rec.slim.regularization.l1", 1.0F);

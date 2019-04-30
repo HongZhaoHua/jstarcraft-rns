@@ -3,7 +3,7 @@ package com.jstarcraft.recommendation.recommender;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 
@@ -44,7 +44,7 @@ public abstract class ProbabilisticGraphicalRecommender extends ModelRecommender
 	 *             if error occurs during setting up
 	 */
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		numberOfFactors = configuration.getInteger("rec.topic.number", 10);
 		numberOfScores = scoreIndexes.size();

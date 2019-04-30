@@ -9,7 +9,7 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 
 /**
@@ -29,7 +29,7 @@ public class ASVDPlusPlusRecommender extends BiasedMFRecommender {
 	private DenseMatrix positiveFactors, negativeFactors;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		positiveFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
 		positiveFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {

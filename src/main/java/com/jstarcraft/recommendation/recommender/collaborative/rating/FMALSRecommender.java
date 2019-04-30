@@ -12,7 +12,7 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
 import com.jstarcraft.recommendation.data.accessor.DataSample;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.FactorizationMachineRecommender;
 
@@ -36,7 +36,7 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
 	private SparseMatrix featureMatrix;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		// init Q
 		// TODO 此处为rateFactors
@@ -45,12 +45,12 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
 		// construct training appender matrix
 		Table<Integer, Integer, Float> table = HashBasedTable.create();
 		int index = 0;
-		int order = marker.getDiscreteOrder();
+		int order = marker.getQualityOrder();
 		for (DataSample sample : marker) {
 			int count = 0;
 			for (int dimension = 0; dimension < order; dimension++) {
 				table.put(index, count + sample.getDiscreteFeature(dimension), 1F);
-				count += marker.getDiscreteAttribute(dimension).getSize();
+				count += marker.getQualityAttribute(dimension).getSize();
 			}
 			index++;
 		}
@@ -64,7 +64,7 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
 		// precomputing Q and errors, for efficiency
 		DenseVector errorVector = DenseVector.valueOf(numberOfActions);
 		int index = 0;
-		int order = marker.getDiscreteOrder();
+		int order = marker.getQualityOrder();
 		int[] keys = new int[order];
 		for (DataSample sample : marker) {
 			for (int dimension = 0; dimension < order; dimension++) {

@@ -13,7 +13,7 @@ import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 
@@ -74,12 +74,12 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
 	protected QuantityProbability distribution;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		// TODO 暂时不支持连续特征,考虑将连续特征离散化.
-		int[] dimensions = new int[marker.getDiscreteOrder()];
-		for (int order = 0; order < marker.getDiscreteOrder(); order++) {
-			dimensions[order] = marker.getDiscreteAttribute(order).getSize();
+		int[] dimensions = new int[marker.getQualityOrder()];
+		for (int order = 0; order < marker.getQualityOrder(); order++) {
+			dimensions[order] = marker.getQualityAttribute(order).getSize();
 		}
 		this.marker = marker;
 
@@ -89,8 +89,8 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
 		minimumOfScore = configuration.getFloat("rec.recommender.minrate", 0F);
 
 		// initialize the parameters of FM
-		for (int dimension = 0; dimension < marker.getDiscreteOrder(); dimension++) {
-			numberOfFeatures += marker.getDiscreteAttribute(dimension).getSize();
+		for (int dimension = 0; dimension < marker.getQualityOrder(); dimension++) {
+			numberOfFeatures += marker.getQualityAttribute(dimension).getSize();
 		}
 
 		numberOfFactors = configuration.getInteger("rec.factor.number");
@@ -132,7 +132,7 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
 		int cursor = 0;
 		for (int index = 0; index < size; index++) {
 			keys[index] += cursor + featureIndexes[index];
-			cursor += marker.getDiscreteAttribute(index).getSize();
+			cursor += marker.getQualityAttribute(index).getSize();
 		}
 		ArrayVector vector = new ArrayVector(numberOfFeatures, keys);
 		vector.setValues(1F);

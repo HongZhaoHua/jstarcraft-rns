@@ -6,7 +6,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 
 /**
@@ -69,7 +69,7 @@ public abstract class NeuralNetworkRecommender extends ModelRecommender {
 	protected abstract MultiLayerConfiguration getNetworkConfiguration();
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		inputDimension = getInputDimension();
 		hiddenDimension = configuration.getInteger("rec.hidden.dimension");

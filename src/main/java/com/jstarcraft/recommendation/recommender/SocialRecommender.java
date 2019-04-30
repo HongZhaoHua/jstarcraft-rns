@@ -6,7 +6,7 @@ import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
 import com.jstarcraft.recommendation.data.accessor.DataInstance;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 
 /**
@@ -38,19 +38,19 @@ public abstract class SocialRecommender extends MatrixFactorizationRecommender {
 	protected float socialRegularization;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 
 		socialRegularization = configuration.getFloat("rec.social.regularization", 0.01f);
 		// social path for the socialMatrix
 		// TODO 此处是不是应该使用context.getSimilarity().getSimilarityMatrix();代替?
-		InstanceAccessor socialModel = space.getModule("social");
+		DenseModule socialModel = space.getModule("social");
 		trusterField = configuration.getString("data.model.fields.truster");
 		trusteeField = configuration.getString("data.model.fields.trustee");
 		coefficientField = configuration.getString("data.model.fields.coefficient");
-		trusterDimension = socialModel.getDiscreteDimension(trusterField);
-		trusteeDimension = socialModel.getDiscreteDimension(trusteeField);
-		coefficientDimension = socialModel.getContinuousDimension(coefficientField);
+		trusterDimension = socialModel.getQualityDimension(trusterField);
+		trusteeDimension = socialModel.getQualityDimension(trusteeField);
+		coefficientDimension = socialModel.getQuantityDimension(coefficientField);
 		Table<Integer, Integer, Float> socialTabel = HashBasedTable.create();
 		for (DataInstance instance : socialModel) {
 			socialTabel.put(instance.getDiscreteFeature(trusterDimension), instance.getDiscreteFeature(trusteeDimension), instance.getContinuousFeature(coefficientDimension));

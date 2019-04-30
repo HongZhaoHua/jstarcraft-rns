@@ -20,7 +20,7 @@ import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
 import com.jstarcraft.recommendation.data.accessor.DataInstance;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
@@ -55,7 +55,7 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
 	protected Float2FloatKeyValue[] itemLocations;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		margin = configuration.getFloat("rec.ranking.margin", 0.3F);
 		radius = configuration.getFloat("rec.regularization.radius", 1F);
@@ -78,7 +78,7 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
 		});
 
 		itemLocations = new Float2FloatKeyValue[numberOfItems];
-		InstanceAccessor locationModel = space.getModule("location");
+		DenseModule locationModel = space.getModule("location");
 		for (DataInstance instance : locationModel) {
 			int itemIndex = instance.getDiscreteFeature(0);
 			Float2FloatKeyValue itemLocation = new Float2FloatKeyValue(instance.getContinuousFeature(0), instance.getContinuousFeature(1));

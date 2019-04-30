@@ -8,7 +8,7 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
 import com.jstarcraft.recommendation.data.accessor.DataSample;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.FactorizationMachineRecommender;
 
@@ -35,12 +35,12 @@ public class FFMRecommender extends FactorizationMachineRecommender {
 	private int[] featureOrders;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 
 		// Matrix for p * (factor * filed)
 		// TODO 此处应该还是稀疏
-		featureFactors = DenseMatrix.valueOf(numberOfFeatures, numberOfFactors * marker.getDiscreteOrder());
+		featureFactors = DenseMatrix.valueOf(numberOfFeatures, numberOfFactors * marker.getQualityOrder());
 		featureFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			scalar.setValue(distribution.sample().floatValue());
 		});
@@ -48,8 +48,8 @@ public class FFMRecommender extends FactorizationMachineRecommender {
 		// init the map for feature of filed
 		featureOrders = new int[numberOfFeatures];
 		int count = 0;
-		for (int dimension = 0; dimension < marker.getDiscreteOrder(); dimension++) {
-			int size = marker.getDiscreteAttribute(dimension).getSize();
+		for (int dimension = 0; dimension < marker.getQualityOrder(); dimension++) {
+			int size = marker.getQualityAttribute(dimension).getSize();
 			for (int index = 0; index < size; index++) {
 				featureOrders[count + index] = dimension;
 			}
@@ -72,7 +72,7 @@ public class FFMRecommender extends FactorizationMachineRecommender {
 			float newWeight = 0F;
 			float oldFactor = 0F;
 			float newFactor = 0F;
-			int order = marker.getDiscreteOrder();
+			int order = marker.getQualityOrder();
 			int[] keys = new int[order];
 			for (DataSample sample : marker) {
 				for (int dimension = 0; dimension < order; dimension++) {

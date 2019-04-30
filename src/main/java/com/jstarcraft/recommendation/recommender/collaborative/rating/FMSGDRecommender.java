@@ -6,7 +6,7 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
 import com.jstarcraft.recommendation.data.accessor.DataSample;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.FactorizationMachineRecommender;
 
@@ -29,7 +29,7 @@ public class FMSGDRecommender extends FactorizationMachineRecommender {
 	private float learnRate;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		learnRate = configuration.getFloat("rec.iterator.learnRate");
 	}
@@ -39,7 +39,7 @@ public class FMSGDRecommender extends FactorizationMachineRecommender {
 		DefaultScalar scalar = DefaultScalar.getInstance();
 		for (int iterationStep = 0; iterationStep < numberOfEpoches; iterationStep++) {
 			totalLoss = 0F;
-			int order = marker.getDiscreteOrder();
+			int order = marker.getQualityOrder();
 			int[] keys = new int[order];
 			for (DataSample sample : marker) {
 				for (int dimension = 0; dimension < order; dimension++) {

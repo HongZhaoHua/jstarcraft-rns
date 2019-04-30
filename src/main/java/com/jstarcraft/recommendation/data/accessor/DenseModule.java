@@ -9,7 +9,7 @@ import java.util.Map;
 import com.jstarcraft.ai.data.DataAttribute;
 import com.jstarcraft.ai.data.attribute.QualityAttribute;
 import com.jstarcraft.ai.data.attribute.QuantityAttribute;
-import com.jstarcraft.recommendation.data.DataAccessor;
+import com.jstarcraft.recommendation.data.DataModule;
 import com.jstarcraft.recommendation.data.QualityFeature;
 import com.jstarcraft.recommendation.data.QuantityFeature;
 
@@ -18,13 +18,13 @@ import com.jstarcraft.recommendation.data.QuantityFeature;
  * 
  * <pre>
  * 负责数据实例管理(分组与排序)
- * 配合{@link DataStorage},{@link DataAttribute}与{@link DataAccessor}实现数据管理.
+ * 配合{@link DataStorage},{@link DataAttribute}与{@link DataModule}实现数据管理.
  * </pre>
  * 
  * @author Birdy
  *
  */
-public class InstanceAccessor implements DataAccessor<DataInstance> {
+public class DenseModule implements DataModule<DataInstance> {
 
 	/** 离散属性 */
 	QualityAttribute[] discreteAttributes;
@@ -47,7 +47,7 @@ public class InstanceAccessor implements DataAccessor<DataInstance> {
 	/** 大小 */
 	private int size = 0;
 
-	public InstanceAccessor(List<QualityFeature> discreteFeatures, List<QuantityFeature> continuousFeatures) {
+	public DenseModule(List<QualityFeature> discreteFeatures, List<QuantityFeature> continuousFeatures) {
 		this.discreteAttributes = new QualityAttribute[discreteFeatures.size()];
 		this.continuousAttributes = new QuantityAttribute[continuousFeatures.size()];
 		this.discreteFeatures = new int[discreteFeatures.size()][];
@@ -174,52 +174,52 @@ public class InstanceAccessor implements DataAccessor<DataInstance> {
 	// }
 
 	@Override
-	public QualityAttribute getDiscreteAttribute(int dimension) {
+	public QualityAttribute getQualityAttribute(int dimension) {
 		return discreteAttributes[dimension];
 	}
 
 	@Override
-	public QuantityAttribute getContinuousAttribute(int dimension) {
+	public QuantityAttribute getQuantityAttribute(int dimension) {
 		return continuousAttributes[dimension];
 	}
 
 	@Override
-	public Integer getDiscreteDimension(String name) {
+	public Integer getQualityDimension(String name) {
 		return discreteDimensions.get(name);
 	}
 
 	@Override
-	public Integer getContinuousDimension(String name) {
+	public Integer getQuantityDimension(String name) {
 		return continuousDimensions.get(name);
 	}
 
 	@Override
-	public int getDiscreteFeature(int dimension, int position) {
+	public int getQualityFeature(int dimension, int position) {
 		return discreteFeatures[dimension][position];
 	}
 
 	@Override
-	public float getContinuousFeature(int dimension, int position) {
+	public float getQuantityFeature(int dimension, int position) {
 		return continuousFeatures[dimension][position];
 	}
 
 	@Override
-	public Collection<String> getDiscreteFields() {
+	public Collection<String> getQualityFields() {
 		return discreteDimensions.keySet();
 	}
 
 	@Override
-	public Collection<String> getContinuousFields() {
+	public Collection<String> getQuantityFields() {
 		return continuousDimensions.keySet();
 	}
 
 	@Override
-	public int getDiscreteOrder() {
+	public int getQualityOrder() {
 		return discreteAttributes.length;
 	}
 
 	@Override
-	public int getContinuousOrder() {
+	public int getQuantityOrder() {
 		return continuousAttributes.length;
 	}
 

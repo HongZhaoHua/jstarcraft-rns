@@ -13,7 +13,7 @@ import com.jstarcraft.ai.modem.ModemDefinition;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.ProbabilisticGraphicalRecommender;
 
@@ -77,7 +77,7 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
 	}
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		topicScoreMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfScores);
 		for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {

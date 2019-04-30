@@ -15,7 +15,7 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.core.utility.ReflectionUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.AbstractRecommender;
 
@@ -59,7 +59,7 @@ public abstract class ItemKNNRecommender extends AbstractRecommender {
 	};
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		neighborSize = configuration.getInteger("rec.neighbors.knn.number", 50);
 		// TODO 修改为配置枚举

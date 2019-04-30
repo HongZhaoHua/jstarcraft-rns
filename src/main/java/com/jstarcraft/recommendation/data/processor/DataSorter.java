@@ -1,7 +1,7 @@
 package com.jstarcraft.recommendation.data.processor;
 
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.recommendation.data.DataAccessor;
+import com.jstarcraft.recommendation.data.DataModule;
 
 /**
  * 数据排序器
@@ -24,7 +24,7 @@ public interface DataSorter {
 	 * @param accessor
 	 * @return
 	 */
-	public static DataSorter featureOf(DataAccessor<?> accessor) {
+	public static DataSorter featureOf(DataModule<?> accessor) {
 		return (paginations, positions) -> {
 			for (int index = 0, size = paginations.length - 1; index < size; index++) {
 				int from = paginations[index], to = paginations[index + 1];
@@ -32,9 +32,9 @@ public interface DataSorter {
 					for (int right = left + 1; right < to; right++) {
 						// TODO 注意:此处存在0的情况.
 						boolean change = false;
-						for (int dimension = 0, order = accessor.getDiscreteOrder(); dimension < order; dimension++) {
-							int leftValue = accessor.getDiscreteFeature(dimension, positions[left]);
-							int rightValue = accessor.getDiscreteFeature(dimension, positions[right]);
+						for (int dimension = 0, order = accessor.getQualityOrder(); dimension < order; dimension++) {
+							int leftValue = accessor.getQualityFeature(dimension, positions[left]);
+							int rightValue = accessor.getQualityFeature(dimension, positions[right]);
 							int value = leftValue - rightValue;
 							if (value != 0) {
 								if (leftValue > rightValue) {
@@ -49,9 +49,9 @@ public interface DataSorter {
 						if (change) {
 							continue;
 						}
-						for (int dimension = 0, order = accessor.getContinuousOrder(); dimension < order; dimension++) {
-							double leftValue = accessor.getContinuousFeature(dimension, positions[left]);
-							double rightValue = accessor.getContinuousFeature(dimension, positions[right]);
+						for (int dimension = 0, order = accessor.getQuantityOrder(); dimension < order; dimension++) {
+							double leftValue = accessor.getQuantityFeature(dimension, positions[left]);
+							double rightValue = accessor.getQuantityFeature(dimension, positions[right]);
 							double value = leftValue - rightValue;
 							if (value != 0D) {
 								if (leftValue > rightValue) {
@@ -79,15 +79,15 @@ public interface DataSorter {
 	 * @param dimension
 	 * @return
 	 */
-	public static DataSorter discreteOf(DataAccessor<?> accessor, int dimension) {
+	public static DataSorter discreteOf(DataModule<?> accessor, int dimension) {
 		return (paginations, positions) -> {
 			for (int index = 0, size = paginations.length - 1; index < size; index++) {
 				int from = paginations[index], to = paginations[index + 1];
 				for (int left = from; left < to; left++) {
 					for (int right = left + 1; right < to; right++) {
 						// TODO 注意:此处存在0的情况.
-						int leftValue = accessor.getDiscreteFeature(dimension, positions[left]);
-						int rightValue = accessor.getDiscreteFeature(dimension, positions[right]);
+						int leftValue = accessor.getQualityFeature(dimension, positions[left]);
+						int rightValue = accessor.getQualityFeature(dimension, positions[right]);
 						if (leftValue > rightValue) {
 							positions[left] ^= positions[right];
 							positions[right] ^= positions[left];
@@ -106,15 +106,15 @@ public interface DataSorter {
 	 * @param dimension
 	 * @return
 	 */
-	public static DataSorter continuousOf(DataAccessor<?> accessor, int dimension) {
+	public static DataSorter continuousOf(DataModule<?> accessor, int dimension) {
 		return (paginations, positions) -> {
 			for (int index = 0, size = paginations.length - 1; index < size; index++) {
 				int from = paginations[index], to = paginations[index + 1];
 				for (int left = from; left < to; left++) {
 					for (int right = left + 1; right < to; right++) {
 						// TODO 注意:此处存在0的情况.
-						double leftValue = accessor.getContinuousFeature(dimension, positions[left]);
-						double rightValue = accessor.getContinuousFeature(dimension, positions[right]);
+						double leftValue = accessor.getQuantityFeature(dimension, positions[left]);
+						double rightValue = accessor.getQuantityFeature(dimension, positions[right]);
 						if (leftValue > rightValue) {
 							positions[left] ^= positions[right];
 							positions[right] ^= positions[left];

@@ -10,7 +10,7 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 
@@ -30,7 +30,7 @@ import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 public class CCDRecommender extends MatrixFactorizationRecommender {
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
 		userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {

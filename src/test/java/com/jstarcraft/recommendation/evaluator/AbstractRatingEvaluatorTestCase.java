@@ -26,16 +26,16 @@ public abstract class AbstractRatingEvaluatorTestCase extends AbstractEvaluatorT
 	@Override
 	protected List<Int2FloatKeyValue> recommend(Recommender recommender, int userIndex) {
 		int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
-		int[] discreteFeatures = new int[testMarker.getDiscreteOrder()];
-		float[] continuousFeatures = new float[testMarker.getContinuousOrder()];
+		int[] discreteFeatures = new int[testMarker.getQualityOrder()];
+		float[] continuousFeatures = new float[testMarker.getQuantityOrder()];
 		List<Int2FloatKeyValue> recommendList = new ArrayList<>(to - from);
 		for (int index = from, size = to; index < size; index++) {
 			int position = testPositions[index];
-			for (int dimension = 0; dimension < testMarker.getDiscreteOrder(); dimension++) {
-				discreteFeatures[dimension] = testMarker.getDiscreteFeature(dimension, position);
+			for (int dimension = 0; dimension < testMarker.getQualityOrder(); dimension++) {
+				discreteFeatures[dimension] = testMarker.getQualityFeature(dimension, position);
 			}
-			for (int dimension = 0; dimension < testMarker.getContinuousOrder(); dimension++) {
-				continuousFeatures[dimension] = testMarker.getContinuousFeature(dimension, position);
+			for (int dimension = 0; dimension < testMarker.getQuantityOrder(); dimension++) {
+				continuousFeatures[dimension] = testMarker.getQuantityFeature(dimension, position);
 			}
 			recommendList.add(new Int2FloatKeyValue(discreteFeatures[itemDimension], recommender.predict(discreteFeatures, continuousFeatures)));
 		}

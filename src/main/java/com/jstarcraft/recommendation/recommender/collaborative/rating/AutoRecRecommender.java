@@ -14,7 +14,7 @@ import org.nd4j.linalg.learning.config.Nesterovs;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.NeuralNetworkRecommender;
 
@@ -52,7 +52,7 @@ public class AutoRecRecommender extends NeuralNetworkRecommender {
 	}
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		// transform the sparse matrix to INDArray
 		int[] matrixShape = new int[] { numberOfItems, numberOfUsers };

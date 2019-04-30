@@ -34,7 +34,7 @@ import com.jstarcraft.core.utility.TypeUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
 import com.jstarcraft.recommendation.data.accessor.AttributeMarker;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.data.convertor.ArffConvertor;
 import com.jstarcraft.recommendation.data.convertor.CsvConvertor;
@@ -199,7 +199,7 @@ public abstract class AbstractTask<T> {
 
 		// TODO 数据切割器部分
 		SplitConfiguration splitterDifinition = JsonUtility.string2Object(configuration.getString("data.splitter"), SplitConfiguration.class);
-		InstanceAccessor model = space.getModule(splitterDifinition.model);
+		DenseModule model = space.getModule(splitterDifinition.model);
 		DataSplitter splitter;
 		switch (splitterDifinition.type) {
 		case "kcv": {
@@ -258,10 +258,10 @@ public abstract class AbstractTask<T> {
 				}
 				dataMarker = new AttributeMarker(positions, model, scoreField);
 
-				userDimension = model.getDiscreteDimension(userField);
-				itemDimension = model.getDiscreteDimension(itemField);
-				numberOfUsers = model.getDiscreteAttribute(userDimension).getSize();
-				numberOfItems = model.getDiscreteAttribute(itemDimension).getSize();
+				userDimension = model.getQualityDimension(userField);
+				itemDimension = model.getQualityDimension(itemField);
+				numberOfUsers = model.getQualityAttribute(userDimension).getSize();
+				numberOfItems = model.getQualityAttribute(itemDimension).getSize();
 
 				trainPaginations = new int[numberOfUsers + 1];
 				trainPositions = new int[trainMarker.getSize()];
@@ -290,8 +290,8 @@ public abstract class AbstractTask<T> {
 				dataSorter.sort(dataPaginations, dataPositions);
 				Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
 				for (int position : dataPositions) {
-					int rowIndex = dataMarker.getDiscreteFeature(userDimension, position);
-					int columnIndex = dataMarker.getDiscreteFeature(itemDimension, position);
+					int rowIndex = dataMarker.getQualityFeature(userDimension, position);
+					int columnIndex = dataMarker.getQualityFeature(itemDimension, position);
 					// TODO 处理冲突
 					dataTable.put(rowIndex, columnIndex, dataMarker.getMark(position));
 				}

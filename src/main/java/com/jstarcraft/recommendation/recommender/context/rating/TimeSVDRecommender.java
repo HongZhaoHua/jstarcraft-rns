@@ -16,7 +16,7 @@ import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
 import com.jstarcraft.recommendation.data.accessor.DataSample;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 import com.jstarcraft.recommendation.recommender.collaborative.rating.BiasedMFRecommender;
@@ -120,13 +120,13 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
 	 * @see net.librec.recommender.cf.rating.BiasedMFRecommender#setup()
 	 */
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		decay = configuration.getFloat("rec.learnrate.decay", 0.015F);
 		numSections = configuration.getInteger("rec.numBins", 6);
 
 		instantField = configuration.getString("data.model.fields.instant");
-		instantDimension = marker.getDiscreteDimension(instantField);
+		instantDimension = marker.getQualityDimension(instantField);
 
 		instantTabel = HashBasedTable.create();
 		for (DataSample sample : marker) {

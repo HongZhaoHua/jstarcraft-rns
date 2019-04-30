@@ -20,7 +20,7 @@ import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
 import com.jstarcraft.recommendation.data.accessor.DataSample;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 import com.jstarcraft.recommendation.utility.SampleUtility;
@@ -127,12 +127,12 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
 	protected ActivationFunction function;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 
 		commentField = configuration.getString("data.model.fields.comment");
-		commentDimension = model.getDiscreteDimension(commentField);
-		MemoryQualityAttribute attribute = (MemoryQualityAttribute) model.getDiscreteAttribute(commentDimension);
+		commentDimension = model.getQualityDimension(commentField);
+		MemoryQualityAttribute attribute = (MemoryQualityAttribute) model.getQualityAttribute(commentDimension);
 		Object[] wordValues = attribute.getDatas();
 
 		biasRegularization = configuration.getFloat("rec.bias.regularization", 0.01F);

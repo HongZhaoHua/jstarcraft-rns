@@ -11,7 +11,7 @@ import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.ReflectionUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.SocialRecommender;
 
@@ -32,7 +32,7 @@ public class SoRegRecommender extends SocialRecommender {
 	private SymmetryMatrix socialCorrelations;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
 		userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {

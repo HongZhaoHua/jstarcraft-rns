@@ -11,7 +11,7 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.utility.LogisticUtility;
 import com.jstarcraft.recommendation.utility.SampleUtility;
@@ -38,7 +38,7 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
 	private Integer[] orderIndexes;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		dynamicRho = configuration.getFloat("rec.item.distribution.parameter");
 		numberOfOrders = configuration.getInteger("rec.number.orders", 10);
@@ -52,7 +52,7 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
 			sum.shiftValue(value);
 			scalar.setValue(sum.getValue());
 		});
-		negativeIndexes = new int[numberOfOrders][marker.getDiscreteOrder()];
+		negativeIndexes = new int[numberOfOrders][marker.getQualityOrder()];
 		negativeValues = new float[numberOfOrders];
 		orderIndexes = new Integer[numberOfOrders];
 		for (int index = 0; index < numberOfOrders; index++) {
@@ -73,7 +73,7 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
 			int from = dataPaginations[userIndex], to = dataPaginations[userIndex + 1];
 			int positivePosition = dataPositions[RandomUtility.randomInteger(from, to)];
 			for (int index = 0; index < negativeKeys.length; index++) {
-				positiveKeys[index] = marker.getDiscreteFeature(index, positivePosition);
+				positiveKeys[index] = marker.getQualityFeature(index, positivePosition);
 			}
 			// TODO negativeGroup.size()可能永远达不到numberOfNegatives,需要处理
 			for (int orderIndex = 0; orderIndex < numberOfOrders; orderIndex++) {
@@ -89,7 +89,7 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
 				// TODO 注意,此处为了故意制造负面特征.
 				int negativePosition = dataPositions[RandomUtility.randomInteger(from, to)];
 				for (int index = 0; index < negativeKeys.length; index++) {
-					negativeKeys[index] = marker.getDiscreteFeature(index, negativePosition);
+					negativeKeys[index] = marker.getQualityFeature(index, negativePosition);
 				}
 				negativeKeys[itemDimension] = negativeItemIndex;
 				MathVector vector = getFeatureVector(negativeKeys);

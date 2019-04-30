@@ -14,7 +14,7 @@ import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.data.processor.DataMatcher;
 import com.jstarcraft.recommendation.data.processor.DataSorter;
@@ -57,15 +57,15 @@ public abstract class AbstractRecommender implements Recommender {
 	protected int[] dataPositions;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		userField = configuration.getString("data.model.fields.user", "user");
 		itemField = configuration.getString("data.model.fields.item", "item");
 		scoreField = configuration.getString("data.model.fields.score", "score");
 
-		userDimension = model.getDiscreteDimension(userField);
-		itemDimension = model.getDiscreteDimension(itemField);
-		numberOfUsers = model.getDiscreteAttribute(userDimension).getSize();
-		numberOfItems = model.getDiscreteAttribute(itemDimension).getSize();
+		userDimension = model.getQualityDimension(userField);
+		itemDimension = model.getQualityDimension(itemField);
+		numberOfUsers = model.getQualityAttribute(userDimension).getSize();
+		numberOfItems = model.getQualityAttribute(itemDimension).getSize();
 
 		dataPaginations = new int[numberOfUsers + 1];
 		dataPositions = new int[marker.getSize()];
@@ -78,8 +78,8 @@ public abstract class AbstractRecommender implements Recommender {
 		sorter.sort(dataPaginations, dataPositions);
 		Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
 		for (int position : dataPositions) {
-			int rowIndex = marker.getDiscreteFeature(userDimension, position);
-			int columnIndex = marker.getDiscreteFeature(itemDimension, position);
+			int rowIndex = marker.getQualityFeature(userDimension, position);
+			int columnIndex = marker.getQualityFeature(itemDimension, position);
 			dataTable.put(rowIndex, columnIndex, marker.getMark(position));
 		}
 		trainMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfItems, dataTable);
@@ -96,7 +96,7 @@ public abstract class AbstractRecommender implements Recommender {
 		for (Float value : values) {
 			scoreIndexes.put(value, index++);
 		}
-		QuantityAttribute attribute = model.getContinuousAttribute(model.getContinuousDimension(scoreField));
+		QuantityAttribute attribute = model.getQuantityAttribute(model.getQuantityDimension(scoreField));
 		minimumOfScore = (Float) attribute.getMinimum();
 		maximumOfScore = (Float) attribute.getMaximum();
 		meanOfScore = trainMatrix.getSum(false);

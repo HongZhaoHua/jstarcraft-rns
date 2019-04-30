@@ -21,7 +21,7 @@ public abstract class AbstractRankingEvaluatorTestCase extends AbstractEvaluator
 		int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
 		for (int index = from, size = to; index < size; index++) {
 			int position = testPositions[index];
-			itemSet.add(testMarker.getDiscreteFeature(itemDimension, position));
+			itemSet.add(testMarker.getQualityFeature(itemDimension, position));
 		}
 		return itemSet;
 	}
@@ -32,17 +32,17 @@ public abstract class AbstractRankingEvaluatorTestCase extends AbstractEvaluator
 		int from = trainPaginations[userIndex], to = trainPaginations[userIndex + 1];
 		for (int index = from, size = to; index < size; index++) {
 			int position = trainPositions[index];
-			itemSet.add(trainMarker.getDiscreteFeature(itemDimension, position));
+			itemSet.add(trainMarker.getQualityFeature(itemDimension, position));
 		}
-		int[] discreteFeatures = new int[trainMarker.getDiscreteOrder()];
-		float[] continuousFeatures = new float[trainMarker.getContinuousOrder()];
+		int[] discreteFeatures = new int[trainMarker.getQualityOrder()];
+		float[] continuousFeatures = new float[trainMarker.getQuantityOrder()];
 		if (from < to) {
 			int position = trainPositions[to - 1];
-			for (int dimension = 0, size = trainMarker.getDiscreteOrder(); dimension < size; dimension++) {
-				discreteFeatures[dimension] = trainMarker.getDiscreteFeature(dimension, position);
+			for (int dimension = 0, size = trainMarker.getQualityOrder(); dimension < size; dimension++) {
+				discreteFeatures[dimension] = trainMarker.getQualityFeature(dimension, position);
 			}
-			for (int dimension = 0, size = trainMarker.getContinuousOrder(); dimension < size; dimension++) {
-				continuousFeatures[dimension] = trainMarker.getContinuousFeature(dimension, position);
+			for (int dimension = 0, size = trainMarker.getQuantityOrder(); dimension < size; dimension++) {
+				continuousFeatures[dimension] = trainMarker.getQuantityFeature(dimension, position);
 			}
 		}
 		List<Int2FloatKeyValue> recommendList = new ArrayList<>(numberOfItems - itemSet.size());

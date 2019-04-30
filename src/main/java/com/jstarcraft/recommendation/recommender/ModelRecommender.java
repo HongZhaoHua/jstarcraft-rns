@@ -3,7 +3,7 @@ package com.jstarcraft.recommendation.recommender;
 import com.jstarcraft.ai.utility.MathUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 import com.jstarcraft.recommendation.utility.LogisticUtility;
@@ -30,7 +30,7 @@ public abstract class ModelRecommender extends AbstractRecommender {
 	protected float totalLoss, currentLoss = 0F;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		// 参数部分
 		numberOfEpoches = configuration.getInteger("rec.iterator.maximum", 100);

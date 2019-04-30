@@ -12,7 +12,7 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.SocialRecommender;
 import com.jstarcraft.recommendation.utility.LogisticUtility;
@@ -53,7 +53,7 @@ public class SBPRRecommender extends SocialRecommender {
 	private List<IntSet> userItemSet;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, InstanceAccessor model, DataSpace space) {
+	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
 		super.prepare(configuration, marker, model, space);
 		regBias = configuration.getFloat("rec.bias.regularization", 0.01F);
 		// cacheSpec = conf.get("guava.cache.spec",

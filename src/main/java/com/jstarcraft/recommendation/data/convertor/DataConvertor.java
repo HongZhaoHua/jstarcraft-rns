@@ -1,13 +1,13 @@
 package com.jstarcraft.recommendation.data.convertor;
 
 import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.InstanceAccessor;
+import com.jstarcraft.recommendation.data.accessor.DenseModule;
 
 /**
  * 数据转换器
  * 
  * <pre>
- * 负责将某种数据格式转换到数据模型{@link InstanceAccessor}中.
+ * 负责将某种数据格式转换到数据模型{@link DenseModule}中.
  * </pre>
  * 
  * @author Birdy
