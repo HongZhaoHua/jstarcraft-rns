@@ -73,6 +73,7 @@ Configuration configuration = Configuration.valueOf(path);
 ```
 
 #### 排序推荐器
+
 ```java
 RankingTask job = new RankingTask(RandomGuessRecommender.class, configuration);
 // 训练与测试推荐器
@@ -81,6 +82,7 @@ Recommender recommender = job.getRecommender();
 ```
 
 #### 评分推荐器
+
 ```java
 RatingTask job = new RatingTask(RandomGuessRecommender.class, configuration);
 // 训练与测试推荐器
