@@ -37,7 +37,72 @@ JStarCraft Recommendation引擎基于[JStarCraft AI框架](https://github.com/Ho
 
 ## JStarCraft Recommendation教程
 
+* 1.设置依赖
+    * [Maven依赖](#Maven依赖)
+    * [Gradle依赖](#Gradle依赖)
+* 2.配置推荐器
+    * [设置配置](#设置配置)
+    * [排序推荐器](#排序推荐器)
+    * [评分推荐器](#评分推荐器)
+* 3.编码解码推荐器
+    * [设置调制解调器](#设置调制解调器)
+    * [编码推荐器](#编码推荐器)
+    * [解码推荐器](#解码推荐器)
 
+#### Maven依赖
+
+```maven
+<dependency>
+    <groupId>com.jstarcraft</groupId>
+    <artifactId>ai</artifactId>
+    <version>1.0</version>
+</dependency>
+```
+
+#### Gradle依赖
+
+```gradle
+compile group: 'com.jstarcraft', name: 'ai', version: '1.0'
+```
+
+#### 设置配置
+
+```java
+String path = "recommendation/benchmark/randomguess-test.properties";
+Configuration configuration = Configuration.valueOf(path);
+```
+
+#### 排序推荐器
+```java
+RankingTask rankingJob = new RankingTask(RandomGuessRecommender.class, configuration);
+Recommender randomRecommender = rankingJob.execute();
+```
+
+#### 评分推荐器
+```java
+RatingTask ratingJob = new RatingTask(RandomGuessRecommender.class, configuration);
+Recommender randomRecommender = ratingJob.execute();
+```
+
+#### 设置调制解调器
+
+```java
+ModemCodec codec = ModemCodec.JSON;
+```
+
+#### 编码推荐器
+
+```java
+byte[] data = codec.encodeModel(recommender);
+```
+
+#### 解码推荐器
+
+```java
+Recommender recommender = (Recommender) codec.decodeModel(data);
+```
+
+*****
 
 ## 上下文:社交,时间,位置与情感
 
