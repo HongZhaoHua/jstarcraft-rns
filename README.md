@@ -54,7 +54,7 @@ JStarCraft Recommendation引擎基于[JStarCraft AI框架](https://github.com/Ho
 ```maven
 <dependency>
     <groupId>com.jstarcraft</groupId>
-    <artifactId>ai</artifactId>
+    <artifactId>recommendation</artifactId>
     <version>1.0</version>
 </dependency>
 ```
@@ -62,7 +62,7 @@ JStarCraft Recommendation引擎基于[JStarCraft AI框架](https://github.com/Ho
 #### Gradle依赖
 
 ```gradle
-compile group: 'com.jstarcraft', name: 'ai', version: '1.0'
+compile group: 'com.jstarcraft', name: 'recommendation', version: '1.0'
 ```
 
 #### 设置配置
