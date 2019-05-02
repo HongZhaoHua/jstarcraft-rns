@@ -75,13 +75,15 @@ Configuration configuration = Configuration.valueOf(path);
 #### 排序推荐器
 ```java
 RankingTask rankingJob = new RankingTask(RandomGuessRecommender.class, configuration);
-Recommender randomRecommender = rankingJob.execute();
+rankingJob.execute();
+Recommender randomRecommender = rankingJob.getRecommender();
 ```
 
 #### 评分推荐器
 ```java
 RatingTask ratingJob = new RatingTask(RandomGuessRecommender.class, configuration);
-Recommender randomRecommender = ratingJob.execute();
+ratingJob.execute();
+Recommender randomRecommender = rankingJob.getRecommender();
 ```
 
 #### 设置调制解调器
