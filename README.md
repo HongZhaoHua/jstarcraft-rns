@@ -74,16 +74,18 @@ Configuration configuration = Configuration.valueOf(path);
 
 #### 排序推荐器
 ```java
-RankingTask rankingJob = new RankingTask(RandomGuessRecommender.class, configuration);
-rankingJob.execute();
-Recommender randomRecommender = rankingJob.getRecommender();
+RankingTask job = new RankingTask(RandomGuessRecommender.class, configuration);
+// 训练与测试推荐器
+job.execute();
+Recommender recommender = job.getRecommender();
 ```
 
 #### 评分推荐器
 ```java
-RatingTask ratingJob = new RatingTask(RandomGuessRecommender.class, configuration);
-ratingJob.execute();
-Recommender randomRecommender = rankingJob.getRecommender();
+RatingTask job = new RatingTask(RandomGuessRecommender.class, configuration);
+// 训练与测试推荐器
+job.execute();
+Recommender recommender = job.getRecommender();
 ```
 
 #### 设置调制解调器
@@ -95,12 +97,14 @@ ModemCodec codec = ModemCodec.JSON;
 #### 编码推荐器
 
 ```java
+// 将推荐器编码为字节数组
 byte[] data = codec.encodeModel(recommender);
 ```
 
 #### 解码推荐器
 
 ```java
+// 将字节数组解码为推荐器
 Recommender recommender = (Recommender) codec.decodeModel(data);
 ```
 
