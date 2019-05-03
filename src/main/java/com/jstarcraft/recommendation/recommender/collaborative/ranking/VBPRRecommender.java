@@ -100,9 +100,9 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
 		featureTable = HashBasedTable.create();
 		DenseModule featureModel = space.getModule("article");
 		for (DataInstance instance : featureModel) {
-			int itemIndex = instance.getDiscreteFeature(0);
-			int featureIndex = instance.getDiscreteFeature(1);
-			Float featureValue = instance.getContinuousFeature(0);
+			int itemIndex = instance.getQualityFeature(0);
+			int featureIndex = instance.getQualityFeature(1);
+			Float featureValue = instance.getQuantityFeature(0);
 			if (featureValue < minimumValue) {
 				minimumValue = featureValue;
 			}

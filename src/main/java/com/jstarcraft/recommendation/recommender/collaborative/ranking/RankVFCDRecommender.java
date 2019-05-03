@@ -78,8 +78,8 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
         DenseModule relationModel = space.getModule("relation");
         HashMatrix relationTable =  HashMatrix.valueOf(true, numberOfItems, numberOfItems, new Int2FloatRBTreeMap());
         for (DataInstance instance : relationModel) {
-            int itemIndex = instance.getDiscreteFeature(0);
-            int neighborIndex = instance.getDiscreteFeature(1);
+            int itemIndex = instance.getQualityFeature(0);
+            int neighborIndex = instance.getQualityFeature(1);
             relationTable.setValue(itemIndex, neighborIndex, 1F);
         }
         relationMatrix = SparseMatrix.valueOf(numberOfItems, numberOfItems, relationTable);
@@ -91,9 +91,9 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
         HashMatrix visualTable = HashMatrix.valueOf(true, numberOfFeatures, numberOfItems, new Int2FloatRBTreeMap());
         DenseModule featureModel = space.getModule("article");
         for (DataInstance instance : featureModel) {
-            int itemIndex = instance.getDiscreteFeature(0);
-            int featureIndex = instance.getDiscreteFeature(1);
-            float featureValue = instance.getContinuousFeature(0);
+            int itemIndex = instance.getQualityFeature(0);
+            int featureIndex = instance.getQualityFeature(1);
+            float featureValue = instance.getQuantityFeature(0);
             if (featureValue < minimumValue) {
                 minimumValue = featureValue;
             }

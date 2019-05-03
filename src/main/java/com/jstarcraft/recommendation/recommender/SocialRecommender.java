@@ -53,7 +53,7 @@ public abstract class SocialRecommender extends MatrixFactorizationRecommender {
 		coefficientDimension = socialModel.getQuantityDimension(coefficientField);
 		Table<Integer, Integer, Float> socialTabel = HashBasedTable.create();
 		for (DataInstance instance : socialModel) {
-			socialTabel.put(instance.getDiscreteFeature(trusterDimension), instance.getDiscreteFeature(trusteeDimension), instance.getContinuousFeature(coefficientDimension));
+			socialTabel.put(instance.getQualityFeature(trusterDimension), instance.getQualityFeature(trusteeDimension), instance.getQuantityFeature(coefficientDimension));
 		}
 		socialMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfUsers, socialTabel);
 	}

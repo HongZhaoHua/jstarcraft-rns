@@ -25,7 +25,7 @@ public class DataInstance {
 		this.continuousFeatures = continuousFeatures;
 	}
 
-	void update(int cursor) {
+	void setCursor(int cursor) {
 		this.cursor = cursor;
 	}
 
@@ -35,7 +35,7 @@ public class DataInstance {
 	 * @param dimension
 	 * @return
 	 */
-	public int getDiscreteFeature(int dimension) {
+	public int getQualityFeature(int dimension) {
 		return discreteFeatures[dimension].getData(cursor);
 	}
 
@@ -45,7 +45,7 @@ public class DataInstance {
 	 * @param dimension
 	 * @return
 	 */
-	public float getContinuousFeature(int dimension) {
+	public float getQuantityFeature(int dimension) {
 		return continuousFeatures[dimension].getData(cursor);
 	}
 

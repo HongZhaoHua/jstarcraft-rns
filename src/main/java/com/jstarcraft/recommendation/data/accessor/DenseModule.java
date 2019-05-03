@@ -289,7 +289,7 @@ public class DenseModule implements DataModule<DataInstance> {
 
 		@Override
 		public DataInstance next() {
-			instance.update(cursor++);
+			instance.setCursor(cursor++);
 			return instance;
 		}
 

@@ -80,8 +80,8 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
 		itemLocations = new Float2FloatKeyValue[numberOfItems];
 		DenseModule locationModel = space.getModule("location");
 		for (DataInstance instance : locationModel) {
-			int itemIndex = instance.getDiscreteFeature(0);
-			Float2FloatKeyValue itemLocation = new Float2FloatKeyValue(instance.getContinuousFeature(0), instance.getContinuousFeature(1));
+			int itemIndex = instance.getQualityFeature(0);
+			Float2FloatKeyValue itemLocation = new Float2FloatKeyValue(instance.getQuantityFeature(0), instance.getQuantityFeature(1));
 			itemLocations[itemIndex] = itemLocation;
 		}
 		calculateNeighborWeightMatrix(knn);
