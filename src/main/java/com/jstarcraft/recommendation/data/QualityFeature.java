@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import com.jstarcraft.ai.data.attribute.QualityAttribute;
+import com.jstarcraft.core.common.conversion.csv.ConversionUtility;
 
 public class QualityFeature implements DataFeature<Integer> {
 
@@ -41,6 +42,7 @@ public class QualityFeature implements DataFeature<Integer> {
 			current = new int[capacity];
 			values.add(current);
 		}
+		data = ConversionUtility.convert(data, attribute.getType());
 		current[position] = attribute.convertData((Comparable) data);
 	}
 

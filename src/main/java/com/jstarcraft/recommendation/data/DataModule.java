@@ -14,21 +14,21 @@ import com.jstarcraft.ai.data.attribute.QuantityAttribute;
 // TODO 考虑改名为DataModule
 public interface DataModule<T> extends Iterable<T> {
 
-	/**
-	 * 获取指定维度的离散属性
-	 * 
-	 * @param dimension
-	 * @return
-	 */
-	public QualityAttribute getQualityAttribute(int dimension);
-
-	/**
-	 * 获取指定维度的连续属性
-	 * 
-	 * @param dimension
-	 * @return
-	 */
-	public QuantityAttribute getQuantityAttribute(int dimension);
+//	/**
+//	 * 获取指定维度的离散属性
+//	 * 
+//	 * @param dimension
+//	 * @return
+//	 */
+//	public QualityAttribute getQualityAttribute(int dimension);
+//
+//	/**
+//	 * 获取指定维度的连续属性
+//	 * 
+//	 * @param dimension
+//	 * @return
+//	 */
+//	public QuantityAttribute getQuantityAttribute(int dimension);
 
 	/**
 	 * 获取指定离散字段的维度

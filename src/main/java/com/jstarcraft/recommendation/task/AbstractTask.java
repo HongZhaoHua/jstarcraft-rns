@@ -61,284 +61,284 @@ import com.jstarcraft.recommendation.recommender.Recommender;
  */
 public abstract class AbstractTask<T> {
 
-	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	protected Configuration configuration;
+    protected Configuration configuration;
 
-	protected String userField, itemField, scoreField;
+    protected String userField, itemField, scoreField;
 
-	protected int userDimension, itemDimension, numberOfUsers, numberOfItems;
+    protected int userDimension, itemDimension, numberOfUsers, numberOfItems;
 
-	protected int[] trainPaginations, trainPositions, testPaginations, testPositions;
+    protected int[] trainPaginations, trainPositions, testPaginations, testPositions;
 
-	protected SampleAccessor dataMarker, trainMarker, testMarker;
+    protected SampleAccessor dataMarker, trainMarker, testMarker;
 
-	protected Recommender recommender;
+    protected Recommender recommender;
 
-	protected AbstractTask(Class<? extends Recommender> clazz, Configuration configuration) {
-		this.configuration = configuration;
-		Long seed = configuration.getLong("rec.random.seed");
-		if (seed != null) {
-			RandomUtility.setSeed(seed);
-		}
-		this.recommender = (Recommender) ReflectionUtility.getInstance(clazz);
-	}
+    protected AbstractTask(Class<? extends Recommender> clazz, Configuration configuration) {
+        this.configuration = configuration;
+        Long seed = configuration.getLong("rec.random.seed");
+        if (seed != null) {
+            RandomUtility.setSeed(seed);
+        }
+        this.recommender = (Recommender) ReflectionUtility.getInstance(clazz);
+    }
 
-	protected abstract Collection<Evaluator> getEvaluators(SparseMatrix featureMatrix);
+    protected abstract Collection<Evaluator> getEvaluators(SparseMatrix featureMatrix);
 
-	protected abstract T check(int userIndex);
+    protected abstract T check(int userIndex);
 
-	protected abstract List<Int2FloatKeyValue> recommend(Recommender recommender, int userIndex);
+    protected abstract List<Int2FloatKeyValue> recommend(Recommender recommender, int userIndex);
 
-	private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-	private Map<Class<? extends Evaluator>, Int2FloatKeyValue> evaluate(Collection<Evaluator> evaluators, Recommender recommender) {
-		Map<Class<? extends Evaluator>, Int2FloatKeyValue[]> values = new HashMap<>();
-		for (Evaluator evaluator : evaluators) {
-			values.put(evaluator.getClass(), new Int2FloatKeyValue[numberOfUsers]);
-		}
-		// 按照用户切割任务.
-		CountDownLatch latch = new CountDownLatch(numberOfUsers);
-		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-			int index = userIndex;
-			executor.submit(() -> {
-				try {
-					if (testPaginations[index + 1] - testPaginations[index] != 0) {
-						// 校验集合
-						T checkCollection = check(index);
-						// 推荐列表
-						List<Int2FloatKeyValue> recommendList = recommend(recommender, index);
-						// 测量列表
-						for (Evaluator<T> evaluator : evaluators) {
-							Int2FloatKeyValue[] measures = values.get(evaluator.getClass());
-							Int2FloatKeyValue measure = evaluator.evaluate(checkCollection, recommendList);
-							measures[index] = measure;
-						}
-					}
-					
-				}catch (Exception exception) {
-					logger.error("任务异常", exception);
-				}
-				latch.countDown();
-			});
-		}
-		try {
-			latch.await();
-		} catch (Exception exception) {
-			throw new RecommendationException(exception);
-		}
+    private Map<Class<? extends Evaluator>, Int2FloatKeyValue> evaluate(Collection<Evaluator> evaluators, Recommender recommender) {
+        Map<Class<? extends Evaluator>, Int2FloatKeyValue[]> values = new HashMap<>();
+        for (Evaluator evaluator : evaluators) {
+            values.put(evaluator.getClass(), new Int2FloatKeyValue[numberOfUsers]);
+        }
+        // 按照用户切割任务.
+        CountDownLatch latch = new CountDownLatch(numberOfUsers);
+        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            int index = userIndex;
+            executor.submit(() -> {
+                try {
+                    if (testPaginations[index + 1] - testPaginations[index] != 0) {
+                        // 校验集合
+                        T checkCollection = check(index);
+                        // 推荐列表
+                        List<Int2FloatKeyValue> recommendList = recommend(recommender, index);
+                        // 测量列表
+                        for (Evaluator<T> evaluator : evaluators) {
+                            Int2FloatKeyValue[] measures = values.get(evaluator.getClass());
+                            Int2FloatKeyValue measure = evaluator.evaluate(checkCollection, recommendList);
+                            measures[index] = measure;
+                        }
+                    }
 
-		Map<Class<? extends Evaluator>, Int2FloatKeyValue> measures = new HashMap<>();
-		for (Entry<Class<? extends Evaluator>, Int2FloatKeyValue[]> term : values.entrySet()) {
-			Int2FloatKeyValue measure = new Int2FloatKeyValue(0, 0F);
-			// if (term.getKey() == RecallEvaluator.class) {
-			// for (KeyValue<Integer, Double> element : term.getValue()) {
-			// if (element == null) {
-			// continue;
-			// }
-			// System.out.println(element.getKey() + " " + element.getValue());
-			// }
-			// }
-			for (Int2FloatKeyValue element : term.getValue()) {
-				if (element == null) {
-					continue;
-				}
-				measure.setKey(measure.getKey() + element.getKey());
-				measure.setValue(measure.getValue() + element.getValue());
-			}
-			measures.put(term.getKey(), measure);
-		}
-		return measures;
-	}
+                } catch (Exception exception) {
+                    logger.error("任务异常", exception);
+                }
+                latch.countDown();
+            });
+        }
+        try {
+            latch.await();
+        } catch (Exception exception) {
+            throw new RecommendationException(exception);
+        }
 
-	public Map<String, Float> execute() throws Exception {
-		// TODO 数据属性部分
-		// 离散属性
-		Type dicreteConfiguration = TypeUtility.parameterize(HashMap.class, String.class, Class.class);
-		Map<String, Class<?>> dicreteDifinitions = JsonUtility.string2Object(configuration.getString("data.space.attributes.dicrete"), dicreteConfiguration);
-		// 连续属性
-		Type continuousConfiguration = TypeUtility.parameterize(HashSet.class, String.class);
-		Set<String> continuousDifinitions = JsonUtility.string2Object(configuration.getString("data.space.attributes.continuous"), continuousConfiguration);
+        Map<Class<? extends Evaluator>, Int2FloatKeyValue> measures = new HashMap<>();
+        for (Entry<Class<? extends Evaluator>, Int2FloatKeyValue[]> term : values.entrySet()) {
+            Int2FloatKeyValue measure = new Int2FloatKeyValue(0, 0F);
+            // if (term.getKey() == RecallEvaluator.class) {
+            // for (KeyValue<Integer, Double> element : term.getValue()) {
+            // if (element == null) {
+            // continue;
+            // }
+            // System.out.println(element.getKey() + " " + element.getValue());
+            // }
+            // }
+            for (Int2FloatKeyValue element : term.getValue()) {
+                if (element == null) {
+                    continue;
+                }
+                measure.setKey(measure.getKey() + element.getKey());
+                measure.setValue(measure.getValue() + element.getValue());
+            }
+            measures.put(term.getKey(), measure);
+        }
+        return measures;
+    }
 
-		// TODO 数据特征部分
-		Type featureConfiguration = TypeUtility.parameterize(HashMap.class, String.class, String.class);
-		Map<String, String> featureDifinitions = JsonUtility.string2Object(configuration.getString("data.space.features"), featureConfiguration);
+    public Map<String, Float> execute() throws Exception {
+        // TODO 数据属性部分
+        // 离散属性
+        Type dicreteConfiguration = TypeUtility.parameterize(HashMap.class, String.class, Class.class);
+        Map<String, Class<?>> dicreteDifinitions = JsonUtility.string2Object(configuration.getString("data.space.attributes.dicrete"), dicreteConfiguration);
+        // 连续属性
+        Type continuousConfiguration = TypeUtility.parameterize(HashSet.class, String.class);
+        Set<String> continuousDifinitions = JsonUtility.string2Object(configuration.getString("data.space.attributes.continuous"), continuousConfiguration);
 
-		// 数据空间部分
-		DataSpace space = new DataSpace(dicreteDifinitions, continuousDifinitions);
-		for (Entry<String, String> term : featureDifinitions.entrySet()) {
-			space.makeFeature(term.getKey(), term.getValue());
-		}
+        // TODO 数据特征部分
+        Type featureConfiguration = TypeUtility.parameterize(HashMap.class, String.class, String.class);
+        Map<String, String> featureDifinitions = JsonUtility.string2Object(configuration.getString("data.space.features"), featureConfiguration);
 
-		// TODO 数据转换器部分
-		Map<String, Integer> counts = new HashMap<>();
-		String format = configuration.getString("data.format");
-		Type convertorConfiguration = TypeUtility.parameterize(LinkedHashMap.class, String.class, TypeUtility.parameterize(KeyValue.class, String.class, HashMap.class));
-		Map<String, KeyValue<String, HashMap<String, ?>>> convertorDifinitions = JsonUtility.string2Object(configuration.getString("data.convertors"), convertorConfiguration);
-		for (Entry<String, KeyValue<String, HashMap<String, ?>>> term : convertorDifinitions.entrySet()) {
-			String name = term.getKey();
-			KeyValue<String, HashMap<String, ?>> keyValue = term.getValue();
-			DataConvertor convertor = null;
-			switch (format) {
-			case "arff": {
-				convertor = ReflectionUtility.getInstance(ArffConvertor.class, name, keyValue.getKey(), keyValue.getValue());
-				break;
-			}
-			case "csv": {
-				convertor = ReflectionUtility.getInstance(CsvConvertor.class, name, configuration.getCharacter("data.splitter.delimiter", ' '), keyValue.getKey(), keyValue.getValue());
-				break;
-			}
-			default: {
-				throw new RecommendationException("不支持的转换格式");
-			}
-			}
-			counts.put(name, convertor.convert(space));
-		}
+        // 数据空间部分
+        DataSpace space = new DataSpace(dicreteDifinitions, continuousDifinitions);
+        for (Entry<String, String> term : featureDifinitions.entrySet()) {
+            space.makeFeature(term.getKey(), term.getValue());
+        }
 
-		// TODO 数据模型部分
-		Type modelConfiguration = TypeUtility.parameterize(HashMap.class, String.class, String[].class);
-		Map<String, String[]> modelDifinitions = JsonUtility.string2Object(configuration.getString("data.models"), modelConfiguration);
-		for (Entry<String, String[]> term : modelDifinitions.entrySet()) {
-			space.makeModule(term.getKey(), term.getValue());
-		}
+        // TODO 数据转换器部分
+        Map<String, Integer> counts = new HashMap<>();
+        String format = configuration.getString("data.format");
+        Type convertorConfiguration = TypeUtility.parameterize(LinkedHashMap.class, String.class, TypeUtility.parameterize(KeyValue.class, String.class, HashMap.class));
+        Map<String, KeyValue<String, HashMap<String, ?>>> convertorDifinitions = JsonUtility.string2Object(configuration.getString("data.convertors"), convertorConfiguration);
+        for (Entry<String, KeyValue<String, HashMap<String, ?>>> term : convertorDifinitions.entrySet()) {
+            String name = term.getKey();
+            KeyValue<String, HashMap<String, ?>> keyValue = term.getValue();
+            DataConvertor convertor = null;
+            switch (format) {
+            case "arff": {
+                convertor = ReflectionUtility.getInstance(ArffConvertor.class, name, keyValue.getKey(), keyValue.getValue());
+                break;
+            }
+            case "csv": {
+                convertor = ReflectionUtility.getInstance(CsvConvertor.class, name, configuration.getCharacter("data.splitter.delimiter", ' '), keyValue.getKey(), keyValue.getValue());
+                break;
+            }
+            default: {
+                throw new RecommendationException("不支持的转换格式");
+            }
+            }
+            counts.put(name, convertor.convert(space));
+        }
 
-		// TODO 数据切割器部分
-		SplitConfiguration splitterDifinition = JsonUtility.string2Object(configuration.getString("data.splitter"), SplitConfiguration.class);
-		DenseModule model = space.getModule(splitterDifinition.model);
-		DataSplitter splitter;
-		switch (splitterDifinition.type) {
-		case "kcv": {
-			int size = configuration.getInteger("data.splitter.kcv.number", 1);
-			splitter = new KFoldCrossValidationSplitter(model, size);
-			break;
-		}
-		case "loocv": {
-			splitter = new LeaveOneCrossValidationSplitter(model, splitterDifinition.matchField, splitterDifinition.sortField);
-			break;
-		}
-		case "testset": {
-			String name = configuration.getString("data.splitter.given-data.name");
-			splitter = new GivenDataSplitter(model, counts.get(name));
-			break;
-		}
-		case "givenn": {
-			int number = configuration.getInteger("data.splitter.given-number.number");
-			splitter = new GivenNumberSplitter(model, splitterDifinition.matchField, splitterDifinition.sortField, number);
-			break;
-		}
-		case "random": {
-			double random = configuration.getDouble("data.splitter.random.value", 0.8D);
-			splitter = new RandomSplitter(model, splitterDifinition.matchField, random);
-			break;
-		}
-		case "ratio": {
-			double ratio = configuration.getDouble("data.splitter.ratio.value", 0.8D);
-			splitter = new RatioSplitter(model, splitterDifinition.matchField, splitterDifinition.sortField, ratio);
-			break;
-		}
-		default: {
-			throw new RecommendationException("不支持的划分类型");
-		}
-		}
+        // TODO 数据模型部分
+        Type modelConfiguration = TypeUtility.parameterize(HashMap.class, String.class, String[].class);
+        Map<String, String[]> modelDifinitions = JsonUtility.string2Object(configuration.getString("data.models"), modelConfiguration);
+        for (Entry<String, String[]> term : modelDifinitions.entrySet()) {
+            space.makeModule(term.getKey(), term.getValue());
+        }
 
-		// 评估部分
-		userField = configuration.getString("data.model.fields.user", "user");
-		itemField = configuration.getString("data.model.fields.item", "item");
-		scoreField = configuration.getString("data.model.fields.score", "score");
+        // TODO 数据切割器部分
+        SplitConfiguration splitterDifinition = JsonUtility.string2Object(configuration.getString("data.splitter"), SplitConfiguration.class);
+        DenseModule model = space.getModule(splitterDifinition.model);
+        DataSplitter splitter;
+        switch (splitterDifinition.type) {
+        case "kcv": {
+            int size = configuration.getInteger("data.splitter.kcv.number", 1);
+            splitter = new KFoldCrossValidationSplitter(model, size);
+            break;
+        }
+        case "loocv": {
+            splitter = new LeaveOneCrossValidationSplitter(space, model, splitterDifinition.matchField, splitterDifinition.sortField);
+            break;
+        }
+        case "testset": {
+            String name = configuration.getString("data.splitter.given-data.name");
+            splitter = new GivenDataSplitter(model, counts.get(name));
+            break;
+        }
+        case "givenn": {
+            int number = configuration.getInteger("data.splitter.given-number.number");
+            splitter = new GivenNumberSplitter(space, model, splitterDifinition.matchField, splitterDifinition.sortField, number);
+            break;
+        }
+        case "random": {
+            double random = configuration.getDouble("data.splitter.random.value", 0.8D);
+            splitter = new RandomSplitter(space, model, splitterDifinition.matchField, random);
+            break;
+        }
+        case "ratio": {
+            double ratio = configuration.getDouble("data.splitter.ratio.value", 0.8D);
+            splitter = new RatioSplitter(space, model, splitterDifinition.matchField, splitterDifinition.sortField, ratio);
+            break;
+        }
+        default: {
+            throw new RecommendationException("不支持的划分类型");
+        }
+        }
 
-		Double binarize = configuration.getDouble("data.convert.binarize.threshold");
-		Map<String, Float> measures = new TreeMap<>();
+        // 评估部分
+        userField = configuration.getString("data.model.fields.user", "user");
+        itemField = configuration.getString("data.model.fields.item", "item");
+        scoreField = configuration.getString("data.model.fields.score", "score");
 
-		EnvironmentContext context = Nd4j.getAffinityManager().getClass().getSimpleName().equals("CpuAffinityManager") ? EnvironmentContext.CPU : EnvironmentContext.GPU;
-		Future<?> task = context.doTask(() -> {
-			try {
-				for (int index = 0; index < splitter.getSize(); index++) {
-					IntegerArray trainReference = splitter.getTrainReference(index);
-					IntegerArray testReference = splitter.getTestReference(index);
-					trainMarker = new AttributeMarker(trainReference, space.getModule(splitterDifinition.model), scoreField);
-					testMarker = new AttributeMarker(testReference, space.getModule(splitterDifinition.model), scoreField);
+        Double binarize = configuration.getDouble("data.convert.binarize.threshold");
+        Map<String, Float> measures = new TreeMap<>();
 
-					IntegerArray positions = new IntegerArray();
-					for (int position = 0, size = model.getSize(); position < size; position++) {
-						positions.associateData(position);
-					}
-					dataMarker = new AttributeMarker(positions, model, scoreField);
+        EnvironmentContext context = Nd4j.getAffinityManager().getClass().getSimpleName().equals("CpuAffinityManager") ? EnvironmentContext.CPU : EnvironmentContext.GPU;
+        Future<?> task = context.doTask(() -> {
+            try {
+                for (int index = 0; index < splitter.getSize(); index++) {
+                    IntegerArray trainReference = splitter.getTrainReference(index);
+                    IntegerArray testReference = splitter.getTestReference(index);
+                    trainMarker = new AttributeMarker(trainReference, space.getModule(splitterDifinition.model), scoreField);
+                    testMarker = new AttributeMarker(testReference, space.getModule(splitterDifinition.model), scoreField);
 
-					userDimension = model.getQualityInner(userField);
-					itemDimension = model.getQualityInner(itemField);
-					numberOfUsers = model.getQualityAttribute(userDimension).getSize();
-					numberOfItems = model.getQualityAttribute(itemDimension).getSize();
+                    IntegerArray positions = new IntegerArray();
+                    for (int position = 0, size = model.getSize(); position < size; position++) {
+                        positions.associateData(position);
+                    }
+                    dataMarker = new AttributeMarker(positions, model, scoreField);
 
-					trainPaginations = new int[numberOfUsers + 1];
-					trainPositions = new int[trainMarker.getSize()];
-					for (int position = 0, size = trainMarker.getSize(); position < size; position++) {
-						trainPositions[position] = position;
-					}
-					DataMatcher trainMatcher = DataMatcher.discreteOf(trainMarker, userDimension);
-					trainMatcher.match(trainPaginations, trainPositions);
+                    userDimension = model.getQualityInner(userField);
+                    itemDimension = model.getQualityInner(itemField);
+                    numberOfUsers = space.getQualityAttribute(userField).getSize();
+                    numberOfItems = space.getQualityAttribute(itemField).getSize();
 
-					testPaginations = new int[numberOfUsers + 1];
-					testPositions = new int[testMarker.getSize()];
-					for (int position = 0, size = testMarker.getSize(); position < size; position++) {
-						testPositions[position] = position;
-					}
-					DataMatcher testMatcher = DataMatcher.discreteOf(testMarker, userDimension);
-					testMatcher.match(testPaginations, testPositions);
+                    trainPaginations = new int[numberOfUsers + 1];
+                    trainPositions = new int[trainMarker.getSize()];
+                    for (int position = 0, size = trainMarker.getSize(); position < size; position++) {
+                        trainPositions[position] = position;
+                    }
+                    DataMatcher trainMatcher = DataMatcher.discreteOf(trainMarker, userDimension);
+                    trainMatcher.match(trainPaginations, trainPositions);
 
-					int[] dataPaginations = new int[numberOfUsers + 1];
-					int[] dataPositions = new int[dataMarker.getSize()];
-					for (int position = 0; position < dataMarker.getSize(); position++) {
-						dataPositions[position] = position;
-					}
-					DataMatcher dataMatcher = DataMatcher.discreteOf(dataMarker, userDimension);
-					dataMatcher.match(dataPaginations, dataPositions);
-					DataSorter dataSorter = DataSorter.featureOf(dataMarker);
-					dataSorter.sort(dataPaginations, dataPositions);
-					Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
-					for (int position : dataPositions) {
-						int rowIndex = dataMarker.getQualityFeature(userDimension, position);
-						int columnIndex = dataMarker.getQualityFeature(itemDimension, position);
-						// TODO 处理冲突
-						dataTable.put(rowIndex, columnIndex, dataMarker.getMark(position));
-					}
-					SparseMatrix featureMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfItems, dataTable);
+                    testPaginations = new int[numberOfUsers + 1];
+                    testPositions = new int[testMarker.getSize()];
+                    for (int position = 0, size = testMarker.getSize(); position < size; position++) {
+                        testPositions[position] = position;
+                    }
+                    DataMatcher testMatcher = DataMatcher.discreteOf(testMarker, userDimension);
+                    testMatcher.match(testPaginations, testPositions);
 
-					recommender.prepare(configuration, trainMarker, model, space);
-					recommender.practice();
-					for (Entry<Class<? extends Evaluator>, Int2FloatKeyValue> measure : evaluate(getEvaluators(featureMatrix), recommender).entrySet()) {
-						Float value = measure.getValue().getValue() / measure.getValue().getKey();
-						measures.put(measure.getKey().getSimpleName(), value);
-					}
-				}
-			} catch (Exception exception) {
-				logger.error("任务异常", exception);
-			}
-		});
-		task.get();
+                    int[] dataPaginations = new int[numberOfUsers + 1];
+                    int[] dataPositions = new int[dataMarker.getSize()];
+                    for (int position = 0; position < dataMarker.getSize(); position++) {
+                        dataPositions[position] = position;
+                    }
+                    DataMatcher dataMatcher = DataMatcher.discreteOf(dataMarker, userDimension);
+                    dataMatcher.match(dataPaginations, dataPositions);
+                    DataSorter dataSorter = DataSorter.featureOf(dataMarker);
+                    dataSorter.sort(dataPaginations, dataPositions);
+                    Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
+                    for (int position : dataPositions) {
+                        int rowIndex = dataMarker.getQualityFeature(userDimension, position);
+                        int columnIndex = dataMarker.getQualityFeature(itemDimension, position);
+                        // TODO 处理冲突
+                        dataTable.put(rowIndex, columnIndex, dataMarker.getMark(position));
+                    }
+                    SparseMatrix featureMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfItems, dataTable);
 
-		for (Entry<String, Float> term : measures.entrySet()) {
-			term.setValue(term.getValue() / splitter.getSize());
-			if (logger.isInfoEnabled()) {
-				logger.info(StringUtility.format("measure of {} is {}", term.getKey(), term.getValue()));
-			}
-		}
-		return measures;
-	}
+                    recommender.prepare(configuration, trainMarker, model, space);
+                    recommender.practice();
+                    for (Entry<Class<? extends Evaluator>, Int2FloatKeyValue> measure : evaluate(getEvaluators(featureMatrix), recommender).entrySet()) {
+                        Float value = measure.getValue().getValue() / measure.getValue().getKey();
+                        measures.put(measure.getKey().getSimpleName(), value);
+                    }
+                }
+            } catch (Exception exception) {
+                logger.error("任务异常", exception);
+            }
+        });
+        task.get();
 
-	public Recommender getRecommender() {
-		return recommender;
-	}
+        for (Entry<String, Float> term : measures.entrySet()) {
+            term.setValue(term.getValue() / splitter.getSize());
+            if (logger.isInfoEnabled()) {
+                logger.info(StringUtility.format("measure of {} is {}", term.getKey(), term.getValue()));
+            }
+        }
+        return measures;
+    }
 
-	private static class SplitConfiguration {
+    public Recommender getRecommender() {
+        return recommender;
+    }
 
-		private String model;
+    private static class SplitConfiguration {
 
-		private String type;
+        private String model;
 
-		private String matchField;
+        private String type;
 
-		private String sortField;
+        private String matchField;
 
-	}
+        private String sortField;
+
+    }
 
 }

@@ -64,7 +64,7 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 
 		commentField = configuration.getString("data.model.fields.comment");
 		commentDimension = model.getQualityInner(commentField);
-		MemoryQualityAttribute attribute = (MemoryQualityAttribute) model.getQualityAttribute(commentDimension);
+		MemoryQualityAttribute attribute = (MemoryQualityAttribute) space.getQualityAttribute(commentField);
 		Object[] wordValues = attribute.getDatas();
 
 		scoreScale = maximumOfScore - minimumOfScore;

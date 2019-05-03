@@ -6,63 +6,65 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-		// 推荐器测试集
-		// recommender.cf.ranking
-		AOBPRTestCase.class,
+        // 推荐器测试集
+        // recommender.cf.ranking
+        AOBPRTestCase.class,
 
-		AspectModelRankingTestCase.class,
+        AspectModelRankingTestCase.class,
 
-		BHFreeRankingTestCase.class,
+        BHFreeRankingTestCase.class,
 
-		BPRTestCase.class,
+        BPRTestCase.class,
 
-		BUCMRankingTestCase.class,
+        BUCMRankingTestCase.class,
 
-		CDAETestCase.class,
+        CDAETestCase.class,
 
-		CLiMFTestCase.class,
+        CLiMFTestCase.class,
 
-		DeepFMTestCase.class,
+        DeepCrossTestCase.class,
 
-		EALSTestCase.class,
+        DeepFMTestCase.class,
 
-		FISMAUCTestCase.class,
+        EALSTestCase.class,
 
-		FISMRMSETestCase.class,
+        FISMAUCTestCase.class,
 
-		GBPRTestCase.class,
+        FISMRMSETestCase.class,
 
-		HMMTestCase.class,
+        GBPRTestCase.class,
 
-		ItemBigramTestCase.class,
+        HMMTestCase.class,
 
-		ItemKNNRankingTestCase.class,
+        ItemBigramTestCase.class,
 
-		LDATestCase.class,
+        ItemKNNRankingTestCase.class,
 
-		LambdaFMTestCase.class,
+        LDATestCase.class,
 
-		ListwiseMFTestCase.class,
+        LambdaFMTestCase.class,
 
-		PLSATestCase.class,
+        ListwiseMFTestCase.class,
 
-		RankALSTestCase.class,
-		
-		RankCDTestCase.class,
+        PLSATestCase.class,
 
-		RankSGDTestCase.class,
-		
-		RankVFCDTestCase.class,
+        RankALSTestCase.class,
 
-		SLIMTestCase.class,
+        RankCDTestCase.class,
 
-		UserKNNRankingTestCase.class,
-		
-		VBPRTestCase.class,
+        RankSGDTestCase.class,
 
-		WBPRTestCase.class,
+        RankVFCDTestCase.class,
 
-		WRMFTestCase.class, })
+        SLIMTestCase.class,
+
+        UserKNNRankingTestCase.class,
+
+        VBPRTestCase.class,
+
+        WBPRTestCase.class,
+
+        WRMFTestCase.class, })
 public class CollaborativeRankingTestSuite {
 
 }

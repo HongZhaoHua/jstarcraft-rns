@@ -1,6 +1,7 @@
 package com.jstarcraft.recommendation.data.splitter;
 
 import com.jstarcraft.ai.utility.IntegerArray;
+import com.jstarcraft.recommendation.data.DataSpace;
 import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.processor.DataMatcher;
 import com.jstarcraft.recommendation.data.processor.DataSorter;
@@ -19,7 +20,7 @@ public class LeaveOneCrossValidationSplitter implements DataSplitter {
 
 	private IntegerArray testReference;
 
-	public LeaveOneCrossValidationSplitter(DenseModule model, String matchField, String sortField) {
+	public LeaveOneCrossValidationSplitter(DataSpace space, DenseModule model, String matchField, String sortField) {
 		dataModel = model;
 		int size = model.getSize();
 		int[] paginations;
@@ -31,7 +32,7 @@ public class LeaveOneCrossValidationSplitter implements DataSplitter {
 			paginations = new int[] { 0, size };
 		} else {
 			int matchDimension = model.getQualityInner(matchField);
-			paginations = new int[model.getQualityAttribute(matchDimension).getSize() + 1];
+			paginations = new int[space.getQualityAttribute(matchField).getSize() + 1];
 			DataMatcher matcher = DataMatcher.discreteOf(model, matchDimension);
 			matcher.match(paginations, positions);
 		}

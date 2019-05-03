@@ -39,15 +39,15 @@ public abstract class SampleAccessor implements DataModule<DataSample> {
 	/** 位置 */
 	protected IntegerArray positions;
 
-	@Override
-	public QualityAttribute getQualityAttribute(int dimension) {
-		return discreteAttributes[dimension];
-	}
-
-	@Override
-	public QuantityAttribute getQuantityAttribute(int dimension) {
-		return continuousAttributes[dimension];
-	}
+//	@Override
+//	public QualityAttribute getQualityAttribute(int dimension) {
+//		return discreteAttributes[dimension];
+//	}
+//
+//	@Override
+//	public QuantityAttribute getQuantityAttribute(int dimension) {
+//		return continuousAttributes[dimension];
+//	}
 
 	@Override
 	public Integer getQualityInner(String name) {

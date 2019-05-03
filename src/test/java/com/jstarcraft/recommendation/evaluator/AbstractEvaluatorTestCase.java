@@ -68,7 +68,7 @@ public abstract class AbstractEvaluatorTestCase<T> {
 		// 制造数据模型
 		DenseModule model = space.makeModule("model", "user", "item", "instant", "score");
 
-		DataSplitter splitter = new LeaveOneCrossValidationSplitter(model, "user", "instant");
+		DataSplitter splitter = new LeaveOneCrossValidationSplitter(space, model, "user", "instant");
 		IntegerArray trainReference = splitter.getTrainReference(0);
 		IntegerArray testReference = splitter.getTestReference(0);
 
@@ -88,9 +88,9 @@ public abstract class AbstractEvaluatorTestCase<T> {
 		userDimension = model.getQualityInner(userField);
 		itemDimension = model.getQualityInner(itemField);
 		instantDimension = model.getQualityInner(instantField);
-		numberOfUsers = model.getQualityAttribute(userDimension).getSize();
-		numberOfItems = model.getQualityAttribute(itemDimension).getSize();
-		numberOfInstants = model.getQualityAttribute(instantDimension).getSize();
+		numberOfUsers = space.getQualityAttribute(userField).getSize();
+		numberOfItems = space.getQualityAttribute(itemField).getSize();
+		numberOfInstants = space.getQualityAttribute(instantField).getSize();
 
 		trainPaginations = new int[numberOfUsers + 1];
 		trainPositions = new int[trainMarker.getSize()];

@@ -93,15 +93,15 @@ public class DenseModule implements DataModule<DataInstance> {
         return quantityFeatures;
     }
 
-	@Override
-	public QualityAttribute getQualityAttribute(int dimension) {
-		return qualityAttributes[dimension];
-	}
-
-	@Override
-	public QuantityAttribute getQuantityAttribute(int dimension) {
-		return quantityAttributes[dimension];
-	}
+//	@Override
+//	public QualityAttribute getQualityAttribute(int dimension) {
+//		return qualityAttributes[dimension];
+//	}
+//
+//	@Override
+//	public QuantityAttribute getQuantityAttribute(int dimension) {
+//		return quantityAttributes[dimension];
+//	}
 
 	@Override
 	public Integer getQualityInner(String name) {

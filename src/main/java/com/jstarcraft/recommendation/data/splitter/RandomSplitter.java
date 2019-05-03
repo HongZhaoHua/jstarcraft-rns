@@ -2,6 +2,7 @@ package com.jstarcraft.recommendation.data.splitter;
 
 import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.core.utility.RandomUtility;
+import com.jstarcraft.recommendation.data.DataSpace;
 import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.processor.DataMatcher;
 
@@ -19,7 +20,7 @@ public class RandomSplitter implements DataSplitter {
 
 	private IntegerArray testReference;
 
-	public RandomSplitter(DenseModule model, String matchField, double random) {
+	public RandomSplitter(DataSpace space, DenseModule model, String matchField, double random) {
 		dataModel = model;
 		int size = model.getSize();
 		int[] paginations;
@@ -28,7 +29,7 @@ public class RandomSplitter implements DataSplitter {
 			positions[index] = index;
 		}
 		int matchDimension = model.getQualityInner(matchField);
-		paginations = new int[model.getQualityAttribute(matchDimension).getSize() + 1];
+		paginations = new int[space.getQualityAttribute(matchField).getSize() + 1];
 		DataMatcher matcher = DataMatcher.discreteOf(model, matchDimension);
 		matcher.match(paginations, positions);
 

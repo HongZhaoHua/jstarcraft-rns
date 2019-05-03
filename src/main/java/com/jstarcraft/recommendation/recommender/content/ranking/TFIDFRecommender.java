@@ -184,7 +184,7 @@ public class TFIDFRecommender extends MatrixFactorizationRecommender {
 
 		commentField = configuration.getString("data.model.fields.comment");
 		commentDimension = model.getQualityInner(commentField);
-		MemoryQualityAttribute attribute = (MemoryQualityAttribute) model.getQualityAttribute(commentDimension);
+		MemoryQualityAttribute attribute = (MemoryQualityAttribute) space.getQualityAttribute(commentField);
 		Object[] documentValues = attribute.getDatas();
 
 		DocumentIterator iterator = new DocumentIterator(marker.iterator(), documentValues);
