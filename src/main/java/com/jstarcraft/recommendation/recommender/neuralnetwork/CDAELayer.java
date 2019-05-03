@@ -5,8 +5,8 @@ import java.util.Map;
 import org.apache.commons.math3.util.FastMath;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
-import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.MathCache;
+import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.MathMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.Nd4jMatrix;
@@ -34,8 +34,8 @@ public class CDAELayer extends WeightLayer {
 
 	private int numberOfUsers;
 
-	public CDAELayer(int numberOfUsers, int numberOfInputs, int numberOfOutputs, MathCache factory, Map<String, ParameterConfigurator> configurators, Mode mode, ActivationFunction function) {
-		super(numberOfInputs, numberOfOutputs, factory, configurators, mode, function);
+	public CDAELayer(int numberOfUsers, int numberOfInputs, int numberOfOutputs, MathCache factory, Map<String, ParameterConfigurator> configurators, ActivationFunction function) {
+		super(numberOfInputs, numberOfOutputs, factory, configurators, function);
 
 		this.numberOfUsers = numberOfUsers;
 		if (!this.configurators.containsKey(USER_KEY)) {

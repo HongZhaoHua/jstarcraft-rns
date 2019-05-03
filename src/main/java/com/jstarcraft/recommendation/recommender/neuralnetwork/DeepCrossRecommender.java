@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.nd4j.linalg.factory.Nd4j;
 
-import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.DenseCache;
 import com.jstarcraft.ai.math.structure.MathCache;
+import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.model.neuralnetwork.Graph;
@@ -105,7 +105,7 @@ public class DeepCrossRecommender extends ModelRecommender {
 		String[] embedVertexNames = new String[dimensionSizes.length];
 		for (int fieldIndex = 0; fieldIndex < dimensionSizes.length; fieldIndex++) {
 			embedVertexNames[fieldIndex] = "Embed" + fieldIndex;
-			Layer embedLayer = new EmbedLayer(dimensionSizes[fieldIndex], numberOfFactors, factory, configurators, Layer.Mode.TRAIN, new IdentityActivationFunction());
+			Layer embedLayer = new EmbedLayer(dimensionSizes[fieldIndex], numberOfFactors, factory, configurators, new IdentityActivationFunction());
 			configurator.connect(new LayerVertex(embedVertexNames[fieldIndex], factory, embedLayer, new SgdLearner(schedule), new IgnoreNormalizer()));
 		}
 
@@ -113,7 +113,7 @@ public class DeepCrossRecommender extends ModelRecommender {
 		int numberOfHiddens = 20;
 		configurator.connect(new HorizontalAttachVertex("EmbedStack", factory), embedVertexNames);
 		configurator.connect(new ShiftVertex("EmbedStack0", factory, 0F), "EmbedStack");
-		Layer netLayer = new WeightLayer(dimensionSizes.length * numberOfFactors, numberOfHiddens, factory, configurators, Layer.Mode.TRAIN, new ReLUActivationFunction());
+		Layer netLayer = new WeightLayer(dimensionSizes.length * numberOfFactors, numberOfHiddens, factory, configurators, new ReLUActivationFunction());
 		configurator.connect(new LayerVertex("NetInput", factory, netLayer, new SgdLearner(schedule), new IgnoreNormalizer()), "EmbedStack");
 
 		// cross net
@@ -146,7 +146,7 @@ public class DeepCrossRecommender extends ModelRecommender {
 			// configurator.connect(new
 			// HorizontalStackVertex("OuterProductShareStack"+crossLayerIndex,factory),outerProductShare);
 
-			Layer crossLayer = new WeightLayer(dimensionSizes.length * numberOfFactors, 1, factory, configurators, Layer.Mode.TRAIN, new IdentityActivationFunction());
+			Layer crossLayer = new WeightLayer(dimensionSizes.length * numberOfFactors, 1, factory, configurators, new IdentityActivationFunction());
 			configurator.connect(new ShareVertex("OutProduct_cross" + crossLayerIndex, factory, dimensionSizes.length * numberOfFactors, crossLayer), "OuterProduct" + crossLayerIndex); // (n,fk)
 
 			if (crossLayerIndex == 0) {
@@ -160,14 +160,14 @@ public class DeepCrossRecommender extends ModelRecommender {
 		int numberOfLayers = 5;
 		String currentLayer = "NetInput";
 		for (int layerIndex = 0; layerIndex < numberOfLayers; layerIndex++) {
-			Layer hiddenLayer = new WeightLayer(numberOfHiddens, numberOfHiddens, factory, configurators, Layer.Mode.TRAIN, new SigmoidActivationFunction());
+			Layer hiddenLayer = new WeightLayer(numberOfHiddens, numberOfHiddens, factory, configurators, new SigmoidActivationFunction());
 			configurator.connect(new LayerVertex("NetHidden" + layerIndex, factory, hiddenLayer, new SgdLearner(schedule), new IgnoreNormalizer()), currentLayer);
 			currentLayer = "NetHidden" + layerIndex;
 		}
 
 		// 构建Deep Output节点
 		configurator.connect(new HorizontalAttachVertex("DeepStack", factory), currentLayer, "EmbedStack" + numberOfCrossLayers);
-		Layer deepLayer = new WeightLayer(dimensionSizes.length * numberOfFactors + numberOfHiddens, 1, factory, configurators, Layer.Mode.TRAIN, new SigmoidActivationFunction());
+		Layer deepLayer = new WeightLayer(dimensionSizes.length * numberOfFactors + numberOfHiddens, 1, factory, configurators, new SigmoidActivationFunction());
 		configurator.connect(new LayerVertex("DeepOutput", factory, deepLayer, new SgdLearner(schedule), new IgnoreNormalizer()), "DeepStack");
 
 		Graph graph = new Graph(configurator, new StochasticGradientOptimizer(), new BinaryXENTLossFunction(false));

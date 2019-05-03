@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.nd4j.linalg.factory.Nd4j;
 
-import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.DenseCache;
 import com.jstarcraft.ai.math.structure.MathCache;
+import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.model.neuralnetwork.Graph;
@@ -19,7 +19,6 @@ import com.jstarcraft.ai.model.neuralnetwork.layer.EmbedLayer;
 import com.jstarcraft.ai.model.neuralnetwork.layer.Layer;
 import com.jstarcraft.ai.model.neuralnetwork.layer.ParameterConfigurator;
 import com.jstarcraft.ai.model.neuralnetwork.layer.WeightLayer;
-import com.jstarcraft.ai.model.neuralnetwork.layer.Layer.Mode;
 import com.jstarcraft.ai.model.neuralnetwork.learn.SgdLearner;
 import com.jstarcraft.ai.model.neuralnetwork.loss.BinaryXENTLossFunction;
 import com.jstarcraft.ai.model.neuralnetwork.normalization.IgnoreNormalizer;
@@ -113,7 +112,7 @@ public class DeepFMRecommender extends ModelRecommender {
 		String[] embedVertexNames = new String[dimensionSizes.length];
 		for (int fieldIndex = 0; fieldIndex < dimensionSizes.length; fieldIndex++) {
 			embedVertexNames[fieldIndex] = "Embed" + fieldIndex;
-			Layer embedLayer = new EmbedLayer(dimensionSizes[fieldIndex], numberOfFactors, factory, configurators, Mode.TRAIN, new IdentityActivationFunction());
+			Layer embedLayer = new EmbedLayer(dimensionSizes[fieldIndex], numberOfFactors, factory, configurators, new IdentityActivationFunction());
 			configurator.connect(new LayerVertex(embedVertexNames[fieldIndex], factory, embedLayer, new SgdLearner(schedule), new IgnoreNormalizer()));
 		}
 
@@ -124,7 +123,7 @@ public class DeepFMRecommender extends ModelRecommender {
 			numberOfFeatures += dimensionSizes[fieldIndex];
 		}
 		// TODO 注意,由于EmbedLayer不支持与其它Layer共享输入,所以FM Plus节点构建自己的One Hot输入.
-		Layer fmLayer = new FMLayer(dimensionSizes, numberOfFeatures, 1, factory, configurators, Mode.TRAIN, new IdentityActivationFunction());
+		Layer fmLayer = new FMLayer(dimensionSizes, numberOfFeatures, 1, factory, configurators, new IdentityActivationFunction());
 		configurator.connect(new LayerVertex("FMPlus", factory, fmLayer, new SgdLearner(schedule), new IgnoreNormalizer()));
 
 		// 构建FM Product节点
@@ -153,14 +152,14 @@ public class DeepFMRecommender extends ModelRecommender {
 		// TODO 应该调整为配置项.
 		int numberOfHiddens = 20;
 		configurator.connect(new HorizontalAttachVertex("EmbedStack", factory), embedVertexNames);
-		Layer netLayer = new WeightLayer(dimensionSizes.length * numberOfFactors, numberOfHiddens, factory, configurators, Mode.TRAIN, new ReLUActivationFunction());
+		Layer netLayer = new WeightLayer(dimensionSizes.length * numberOfFactors, numberOfHiddens, factory, configurators, new ReLUActivationFunction());
 		configurator.connect(new LayerVertex("NetInput", factory, netLayer, new SgdLearner(schedule), new IgnoreNormalizer()), "EmbedStack");
 
 		// TODO 应该调整为配置项.
 		int numberOfLayers = 5;
 		String currentLayer = "NetInput";
 		for (int layerIndex = 0; layerIndex < numberOfLayers; layerIndex++) {
-			Layer hiddenLayer = new WeightLayer(numberOfHiddens, numberOfHiddens, factory, configurators, Mode.TRAIN, new ReLUActivationFunction());
+			Layer hiddenLayer = new WeightLayer(numberOfHiddens, numberOfHiddens, factory, configurators, new ReLUActivationFunction());
 			configurator.connect(new LayerVertex("NetHidden" + layerIndex, factory, hiddenLayer, new SgdLearner(schedule), new IgnoreNormalizer()), currentLayer);
 			currentLayer = "NetHidden" + layerIndex;
 		}
@@ -168,7 +167,7 @@ public class DeepFMRecommender extends ModelRecommender {
 
 		// 构建Deep Output节点
 		configurator.connect(new HorizontalAttachVertex("DeepStack", factory), names);
-		Layer deepLayer = new WeightLayer(productVertexNames.length + 1 + numberOfHiddens, 1, factory, configurators, Mode.TRAIN, new SigmoidActivationFunction());
+		Layer deepLayer = new WeightLayer(productVertexNames.length + 1 + numberOfHiddens, 1, factory, configurators, new SigmoidActivationFunction());
 		configurator.connect(new LayerVertex("DeepOutput", factory, deepLayer, new SgdLearner(schedule), new IgnoreNormalizer()), "DeepStack");
 
 		Graph graph = new Graph(configurator, new StochasticGradientOptimizer(), new BinaryXENTLossFunction(false));

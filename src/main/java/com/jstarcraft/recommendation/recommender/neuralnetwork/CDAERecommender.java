@@ -18,7 +18,6 @@ import com.jstarcraft.ai.model.neuralnetwork.activation.SigmoidActivationFunctio
 import com.jstarcraft.ai.model.neuralnetwork.layer.Layer;
 import com.jstarcraft.ai.model.neuralnetwork.layer.ParameterConfigurator;
 import com.jstarcraft.ai.model.neuralnetwork.layer.WeightLayer;
-import com.jstarcraft.ai.model.neuralnetwork.layer.Layer.Mode;
 import com.jstarcraft.ai.model.neuralnetwork.learn.NesterovLearner;
 import com.jstarcraft.ai.model.neuralnetwork.loss.MSELossFunction;
 import com.jstarcraft.ai.model.neuralnetwork.normalization.IgnoreNormalizer;
@@ -141,8 +140,8 @@ public class CDAERecommender extends ModelRecommender {
 		configurators.put(CDAELayer.BIAS_KEY, new ParameterConfigurator(0F, 0F));
 		configurators.put(CDAELayer.USER_KEY, parameterConfigurator);
 		MathCache factory = new Nd4jCache();
-		Layer cdaeLayer = new CDAELayer(numberOfUsers, numberOfItems, hiddenDimension, factory, configurators, Mode.TRAIN, new SigmoidActivationFunction());
-		Layer outputLayer = new WeightLayer(hiddenDimension, numberOfItems, factory, configurators, Mode.TRAIN, new IdentityActivationFunction());
+		Layer cdaeLayer = new CDAELayer(numberOfUsers, numberOfItems, hiddenDimension, factory, configurators, new SigmoidActivationFunction());
+		Layer outputLayer = new WeightLayer(hiddenDimension, numberOfItems, factory, configurators, new IdentityActivationFunction());
 
 		configurator.connect(new LayerVertex("cdae", factory, cdaeLayer, new NesterovLearner(new ConstantSchedule(momentum), new ConstantSchedule(learnRate)), new IgnoreNormalizer()));
 		configurator.connect(new LayerVertex("output", factory, outputLayer, new NesterovLearner(new ConstantSchedule(momentum), new ConstantSchedule(learnRate)), new IgnoreNormalizer()), "cdae");
