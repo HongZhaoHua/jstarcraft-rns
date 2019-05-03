@@ -1,7 +1,5 @@
 package com.jstarcraft.recommendation.recommender.collaborative.ranking;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -78,11 +76,11 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
 
         // 相关矩阵
         DenseModule relationModel = space.getModule("relation");
-        Table<Integer, Integer, Float> relationTable = HashBasedTable.create();
+        HashMatrix relationTable =  HashMatrix.valueOf(true, numberOfItems, numberOfItems, new Int2FloatRBTreeMap());
         for (DataInstance instance : relationModel) {
             int itemIndex = instance.getDiscreteFeature(0);
             int neighborIndex = instance.getDiscreteFeature(1);
-            relationTable.put(itemIndex, neighborIndex, 1F);
+            relationTable.setValue(itemIndex, neighborIndex, 1F);
         }
         relationMatrix = SparseMatrix.valueOf(numberOfItems, numberOfItems, relationTable);
         relationTable = null;
