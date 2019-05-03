@@ -36,7 +36,7 @@ public interface DataModule<T> extends Iterable<T> {
 	 * @param field
 	 * @return
 	 */
-	public Integer getQualityDimension(String field);
+	public Integer getQualityInner(String field);
 
 	/**
 	 * 获取指定连续字段的维度
@@ -44,7 +44,7 @@ public interface DataModule<T> extends Iterable<T> {
 	 * @param field
 	 * @return
 	 */
-	public Integer getQuantityDimension(String field);
+	public Integer getQuantityInner(String field);
 
 	/**
 	 * 获取指定维度与位置的离散特征

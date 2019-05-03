@@ -131,7 +131,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
 		super.prepare(configuration, marker, model, space);
 
 		commentField = configuration.getString("data.model.fields.comment");
-		commentDimension = model.getQualityDimension(commentField);
+		commentDimension = model.getQualityInner(commentField);
 		MemoryQualityAttribute attribute = (MemoryQualityAttribute) model.getQualityAttribute(commentDimension);
 		Object[] wordValues = attribute.getDatas();
 

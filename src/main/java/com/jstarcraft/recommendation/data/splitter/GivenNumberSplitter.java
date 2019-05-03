@@ -31,17 +31,17 @@ public class GivenNumberSplitter implements DataSplitter {
 		if (matchField == null) {
 			paginations = new int[] { 0, size };
 		} else {
-			int matchDimension = model.getQualityDimension(matchField);
+			int matchDimension = model.getQualityInner(matchField);
 			paginations = new int[model.getQualityAttribute(matchDimension).getSize() + 1];
 			DataMatcher matcher = DataMatcher.discreteOf(model, matchDimension);
 			matcher.match(paginations, positions);
 		}
 		if (model.getQualityFields().contains(sortField)) {
-			int sortDimension = model.getQualityDimension(sortField);
+			int sortDimension = model.getQualityInner(sortField);
 			DataSorter sorter = DataSorter.discreteOf(model, sortDimension);
 			sorter.sort(paginations, positions);
 		} else if (model.getQuantityFields().contains(sortField)) {
-			int sortDimension = model.getQuantityDimension(sortField);
+			int sortDimension = model.getQuantityInner(sortField);
 			DataSorter sorter = DataSorter.continuousOf(model, sortDimension);
 			sorter.sort(paginations, positions);
 		} else {

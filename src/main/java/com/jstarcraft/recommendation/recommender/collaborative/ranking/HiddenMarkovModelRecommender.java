@@ -367,7 +367,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
 		super.prepare(configuration, marker, model, space);
 		// 上下文维度
 		contextField = configuration.getString("data.model.fields.context");
-		contextDimension = marker.getQualityDimension(contextField);
+		contextDimension = marker.getQualityInner(contextField);
 		numberOfStates = configuration.getInteger("rec.hmm.state.number");
 		probabilityRegularization = configuration.getFloat("rec.probability.regularization", 100F);
 		stateRegularization = configuration.getFloat("rec.state.regularization", 100F);

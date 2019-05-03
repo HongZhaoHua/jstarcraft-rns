@@ -50,12 +50,12 @@ public abstract class SampleAccessor implements DataModule<DataSample> {
 	}
 
 	@Override
-	public Integer getQualityDimension(String name) {
+	public Integer getQualityInner(String name) {
 		return discreteDimensions.get(name);
 	}
 
 	@Override
-	public Integer getQuantityDimension(String name) {
+	public Integer getQuantityInner(String name) {
 		return continuousDimensions.get(name);
 	}
 

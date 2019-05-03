@@ -85,9 +85,9 @@ public abstract class AbstractEvaluatorTestCase<T> {
 		}
 		SampleAccessor dataMarker = new AttributeMarker(positions, model, scoreField);
 
-		userDimension = model.getQualityDimension(userField);
-		itemDimension = model.getQualityDimension(itemField);
-		instantDimension = model.getQualityDimension(instantField);
+		userDimension = model.getQualityInner(userField);
+		itemDimension = model.getQualityInner(itemField);
+		instantDimension = model.getQualityInner(instantField);
 		numberOfUsers = model.getQualityAttribute(userDimension).getSize();
 		numberOfItems = model.getQualityAttribute(itemDimension).getSize();
 		numberOfInstants = model.getQualityAttribute(instantDimension).getSize();

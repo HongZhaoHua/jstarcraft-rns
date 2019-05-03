@@ -12,7 +12,7 @@ import com.jstarcraft.ai.utility.IntegerArray;
 public class DataInstance {
 
 	/** 游标 */
-	private Integer cursor;
+	private int cursor;
 
 	/** 离散特征 */
 	private IntegerArray[] discreteFeatures;
@@ -20,9 +20,9 @@ public class DataInstance {
 	/** 连续特征 */
 	private FloatArray[] continuousFeatures;
 
-	DataInstance(IntegerArray[] discreteFeatures, FloatArray[] continuousFeatures) {
-		this.discreteFeatures = discreteFeatures;
-		this.continuousFeatures = continuousFeatures;
+	DataInstance(int cursor, DenseModule module) {
+		this.discreteFeatures = module.getQualityValues();
+		this.continuousFeatures = module.getQuantityValues();
 	}
 
 	void setCursor(int cursor) {

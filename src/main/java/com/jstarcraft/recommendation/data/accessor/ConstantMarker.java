@@ -32,11 +32,11 @@ public class ConstantMarker extends SampleAccessor {
 		}
 		this.discreteDimensions = new LinkedHashMap<>();
 		for (String field : model.getQualityFields()) {
-			this.discreteDimensions.put(field, model.getQualityDimension(field));
+			this.discreteDimensions.put(field, model.getQualityInner(field));
 		}
 		this.continuousDimensions = new LinkedHashMap<>();
 		for (String field : model.getQuantityFields()) {
-			this.continuousDimensions.put(field, model.getQuantityDimension(field));
+			this.continuousDimensions.put(field, model.getQuantityInner(field));
 		}
 		this.positions = positions;
 		this.constant = constant;

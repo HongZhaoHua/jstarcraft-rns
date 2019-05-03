@@ -64,8 +64,8 @@ public abstract class AbstractRecommender implements Recommender {
 		itemField = configuration.getString("data.model.fields.item", "item");
 		scoreField = configuration.getString("data.model.fields.score", "score");
 
-		userDimension = model.getQualityDimension(userField);
-		itemDimension = model.getQualityDimension(itemField);
+		userDimension = model.getQualityInner(userField);
+		itemDimension = model.getQualityInner(itemField);
 		numberOfUsers = model.getQualityAttribute(userDimension).getSize();
 		numberOfItems = model.getQualityAttribute(itemDimension).getSize();
 
@@ -98,7 +98,7 @@ public abstract class AbstractRecommender implements Recommender {
 		for (Float value : values) {
 			scoreIndexes.put(value, index++);
 		}
-		QuantityAttribute attribute = model.getQuantityAttribute(model.getQuantityDimension(scoreField));
+		QuantityAttribute attribute = model.getQuantityAttribute(model.getQuantityInner(scoreField));
 		minimumOfScore = (Float) attribute.getMinimum();
 		maximumOfScore = (Float) attribute.getMaximum();
 		meanOfScore = trainMatrix.getSum(false);

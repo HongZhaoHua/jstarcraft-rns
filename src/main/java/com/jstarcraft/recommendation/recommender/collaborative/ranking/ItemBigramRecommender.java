@@ -108,7 +108,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
 		initBeta = configuration.getFloat("rec.topic.dirichlet.prior", 0.01F);
 
 		instantField = configuration.getString("data.model.fields.instant");
-		instantDimension = marker.getQualityDimension(instantField);
+		instantDimension = marker.getQualityInner(instantField);
 		Table<Integer, Integer, Integer> instantTabel = HashBasedTable.create();
 		for (DataSample sample : marker) {
 			Integer instant = instantTabel.get(sample.getDiscreteFeature(userDimension), sample.getDiscreteFeature(itemDimension));

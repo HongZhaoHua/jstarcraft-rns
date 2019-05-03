@@ -264,8 +264,8 @@ public abstract class AbstractTask<T> {
 					}
 					dataMarker = new AttributeMarker(positions, model, scoreField);
 
-					userDimension = model.getQualityDimension(userField);
-					itemDimension = model.getQualityDimension(itemField);
+					userDimension = model.getQualityInner(userField);
+					itemDimension = model.getQualityInner(itemField);
 					numberOfUsers = model.getQualityAttribute(userDimension).getSize();
 					numberOfItems = model.getQualityAttribute(itemDimension).getSize();
 

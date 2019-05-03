@@ -85,93 +85,13 @@ public class DenseModule implements DataModule<DataInstance> {
 		}
 	}
 
-	// /**
-	// * 制作实例
-	// *
-	// * @param values
-	// * @return
-	// */
-	// public int makeFeatures(String... values) {
-	// if (discreteAttributes.size() + continuousAttributes.size() !=
-	// values.length) {
-	// throw new IllegalArgumentException();
-	// }
-	// int position = size % capacity;
-	// if (position == 0) {
-	// discreteFeatures = new int[discreteAttributes.size()][capacity];
-	// discreteDatas.add(discreteFeatures);
-	// continuousFeatures = new double[continuousAttributes.size()][capacity];
-	// continuousDatas.add(continuousFeatures);
-	// }
-	// for (int dimension = 0; dimension < discreteAttributes.size();
-	// dimension++) {
-	// KeyValue<DiscreteAttribute, Integer> keyValue =
-	// discreteAttributes.get(dimension);
-	// DiscreteAttribute discreteAttribute = keyValue.getKey();
-	// String value = values[keyValue.getValue()];
-	// discreteFeatures[dimension][position] =
-	// discreteAttribute.makeFeature(value);
-	// }
-	// for (int dimension = 0; dimension < continuousAttributes.size();
-	// dimension++) {
-	// KeyValue<ContinuousAttribute, Integer> keyValue =
-	// continuousAttributes.get(dimension);
-	// ContinuousAttribute continuousAttribute = keyValue.getKey();
-	// String value = values[keyValue.getValue()];
-	// continuousFeatures[dimension][position] =
-	// continuousAttribute.makeFeature(value);
-	// }
-	// return size++;
-	// }
-	//
-	// /**
-	// * 获取数据属性
-	// *
-	// * @return
-	// */
-	// public List<DataAttribute<?>> getDataAttributes() {
-	// int size = discreteAttributes.size() + continuousAttributes.size();
-	// List<DataAttribute<?>> attributes = new ArrayList<>(size);
-	// for (KeyValue<DiscreteAttribute, Integer> keyValue : discreteAttributes)
-	// {
-	// attributes.add(keyValue.getKey());
-	// }
-	// for (KeyValue<ContinuousAttribute, Integer> keyValue :
-	// continuousAttributes) {
-	// attributes.add(keyValue.getKey());
-	// }
-	// return attributes;
-	// }
-	//
-	// /**
-	// * 获取离散属性
-	// *
-	// * @return
-	// */
-	// public List<DiscreteAttribute> getDiscreteAttributes() {
-	// int size = discreteAttributes.size();
-	// List<DiscreteAttribute> attributes = new ArrayList<>(size);
-	// for (KeyValue<DiscreteAttribute, Integer> keyValue : discreteAttributes)
-	// {
-	// attributes.add(keyValue.getKey());
-	// }
-	// return attributes;
-	// }
-	//
-	// /**
-	// * 获取连续属性
-	// *
-	// * @return
-	// */
-	// public List<ContinuousAttribute> getContinuousAttributes() {
-	// int size = continuousAttributes.size();
-	// List<ContinuousAttribute> attributes = new ArrayList<>(size);
-	// for (KeyValue<ContinuousAttribute, Integer> keyValue :
-	// continuousAttributes) {
-	// attributes.add(keyValue.getKey());
-	// }
-	// return attributes;
-	// }
+	IntegerArray[] getQualityValues() {
+        return qualityFeatures;
+    }
+
+    FloatArray[] getQuantityValues() {
+        return quantityFeatures;
+    }
 
 	@Override
 	public QualityAttribute getQualityAttribute(int dimension) {
@@ -184,12 +104,12 @@ public class DenseModule implements DataModule<DataInstance> {
 	}
 
 	@Override
-	public Integer getQualityDimension(String name) {
+	public Integer getQualityInner(String name) {
 		return qualityDimensions.get(name);
 	}
 
 	@Override
-	public Integer getQuantityDimension(String name) {
+	public Integer getQuantityInner(String name) {
 		return quantityDimensions.get(name);
 	}
 
@@ -280,7 +200,7 @@ public class DenseModule implements DataModule<DataInstance> {
 
 		private int cursor = 0;
 
-		private DataInstance instance = new DataInstance(qualityFeatures, quantityFeatures);
+		private DataInstance instance = new DataInstance(cursor, DenseModule.this);
 
 		@Override
 		public boolean hasNext() {

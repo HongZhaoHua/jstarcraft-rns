@@ -126,7 +126,7 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
 		numSections = configuration.getInteger("rec.numBins", 6);
 
 		instantField = configuration.getString("data.model.fields.instant");
-		instantDimension = marker.getQualityDimension(instantField);
+		instantDimension = marker.getQualityInner(instantField);
 
 		instantTabel = HashBasedTable.create();
 		for (DataSample sample : marker) {

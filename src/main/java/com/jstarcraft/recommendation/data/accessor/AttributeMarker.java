@@ -26,7 +26,7 @@ public class AttributeMarker extends SampleAccessor {
 			this.discreteAttributes[index] = model.qualityAttributes[index];
 			this.discreteFeatures[index] = model.qualityFeatures[index];
 		}
-		int scoreDimension = model.getQuantityDimension(scoreField);
+		int scoreDimension = model.getQuantityInner(scoreField);
 		int featureDimension = 0;
 		for (int index = 0, size = model.quantityAttributes.length; index < size; index++) {
 			if (scoreDimension != index) {

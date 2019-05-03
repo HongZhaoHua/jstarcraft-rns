@@ -27,7 +27,7 @@ public class RandomSplitter implements DataSplitter {
 		for (int index = 0; index < size; index++) {
 			positions[index] = index;
 		}
-		int matchDimension = model.getQualityDimension(matchField);
+		int matchDimension = model.getQualityInner(matchField);
 		paginations = new int[model.getQualityAttribute(matchDimension).getSize() + 1];
 		DataMatcher matcher = DataMatcher.discreteOf(model, matchDimension);
 		matcher.match(paginations, positions);
