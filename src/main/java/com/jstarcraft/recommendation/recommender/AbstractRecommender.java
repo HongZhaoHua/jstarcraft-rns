@@ -6,10 +6,10 @@ import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
+
 import com.jstarcraft.ai.data.attribute.QuantityAttribute;
 import com.jstarcraft.ai.environment.EnvironmentContext;
+import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.recommendation.configure.Configuration;
@@ -18,6 +18,8 @@ import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.data.processor.DataMatcher;
 import com.jstarcraft.recommendation.data.processor.DataSorter;
+
+import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
 
 /**
  * 抽象推荐器
@@ -76,11 +78,11 @@ public abstract class AbstractRecommender implements Recommender {
 		matcher.match(dataPaginations, dataPositions);
 		DataSorter sorter = DataSorter.featureOf(marker);
 		sorter.sort(dataPaginations, dataPositions);
-		Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
+		HashMatrix dataTable = HashMatrix.valueOf(true, numberOfUsers, numberOfItems, new Int2FloatRBTreeMap());
 		for (int position : dataPositions) {
 			int rowIndex = marker.getQualityFeature(userDimension, position);
 			int columnIndex = marker.getQualityFeature(itemDimension, position);
-			dataTable.put(rowIndex, columnIndex, marker.getMark(position));
+			dataTable.setValue(rowIndex, columnIndex, marker.getMark(position));
 		}
 		trainMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfItems, dataTable);
 		numberOfActions = trainMatrix.getElementSize();
