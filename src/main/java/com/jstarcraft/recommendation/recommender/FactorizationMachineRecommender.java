@@ -108,7 +108,7 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
         initMean = configuration.getFloat("rec.init.mean", 0F);
         initStd = configuration.getFloat("rec.init.std", 0.1F);
 
-        distribution = new QuantityProbability(NormalDistribution.class, new JDKRandomGenerator(0), initMean, initStd);
+        distribution = new QuantityProbability(JDKRandomGenerator.class, 0L, NormalDistribution.class, initMean, initStd);
         featureFactors = DenseMatrix.valueOf(numberOfFeatures, numberOfFactors);
         featureFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
