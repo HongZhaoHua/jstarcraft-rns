@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.algorithm.probability.QuantityProbability;
@@ -94,7 +95,7 @@ public abstract class MatrixFactorizationRecommender extends ModelRecommender {
         initMean = configuration.getFloat("rec.init.mean", 0F);
         initStd = configuration.getFloat("rec.init.std", 0.1F);
 
-        distribution = new QuantityProbability(JDKRandomGenerator.class, 0L, NormalDistribution.class, initMean, initStd);
+        distribution = new QuantityProbability(JDKRandomGenerator.class, 0, NormalDistribution.class, initMean, initStd);
         userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
@@ -113,9 +114,9 @@ public abstract class MatrixFactorizationRecommender extends ModelRecommender {
     }
 
     @Override
-    public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-        int userIndex = dicreteFeatures[userDimension];
-        int itemIndex = dicreteFeatures[itemDimension];
+    public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
         return predict(userIndex, itemIndex);
     }
 

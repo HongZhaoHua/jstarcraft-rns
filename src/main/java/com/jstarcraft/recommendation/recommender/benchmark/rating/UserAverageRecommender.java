@@ -1,5 +1,6 @@
 package com.jstarcraft.recommendation.recommender.benchmark.rating;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
@@ -21,27 +22,27 @@ import com.jstarcraft.recommendation.recommender.AbstractRecommender;
 @ModemDefinition(value = { "userDimension", "userMeans" })
 public class UserAverageRecommender extends AbstractRecommender {
 
-	/** 用户平均分数 */
-	private float[] userMeans;
+    /** 用户平均分数 */
+    private float[] userMeans;
 
-	@Override
-	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
-		super.prepare(configuration, model, space);
-		userMeans = new float[numberOfUsers];
-	}
+    @Override
+    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+        super.prepare(configuration, model, space);
+        userMeans = new float[numberOfUsers];
+    }
 
-	@Override
-	protected void doPractice() {
-		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-			SparseVector userVector = trainMatrix.getRowVector(userIndex);
-			userMeans[userIndex] = userVector.getElementSize() == 0 ? meanOfScore : userVector.getSum(false) / userVector.getElementSize();
-		}
-	}
+    @Override
+    protected void doPractice() {
+        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            SparseVector userVector = trainMatrix.getRowVector(userIndex);
+            userMeans[userIndex] = userVector.getElementSize() == 0 ? meanOfScore : userVector.getSum(false) / userVector.getElementSize();
+        }
+    }
 
-	@Override
-	public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-		int userIndex = dicreteFeatures[userDimension];
-		return userMeans[userIndex];
-	}
+    @Override
+    public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        return userMeans[userIndex];
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.jstarcraft.recommendation.recommender.benchmark.rating;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.modem.ModemDefinition;
 import com.jstarcraft.recommendation.recommender.AbstractRecommender;
 
@@ -17,13 +18,13 @@ import com.jstarcraft.recommendation.recommender.AbstractRecommender;
 @ModemDefinition(value = { "meanOfScore" })
 public class GlobalAverageRecommender extends AbstractRecommender {
 
-	@Override
-	protected void doPractice() {
-	}
+    @Override
+    protected void doPractice() {
+    }
 
-	@Override
-	public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-		return meanOfScore;
-	}
+    @Override
+    public float predict(DataInstance instance) {
+        return meanOfScore;
+    }
 
 }

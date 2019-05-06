@@ -1,5 +1,6 @@
 package com.jstarcraft.recommendation.recommender.benchmark.rating;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.modem.ModemDefinition;
@@ -36,7 +37,7 @@ public class ConstantGuessRecommender extends AbstractRecommender {
 	}
 
 	@Override
-	public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
+	public float predict(DataInstance instance) {
 		return constant;
 	}
 

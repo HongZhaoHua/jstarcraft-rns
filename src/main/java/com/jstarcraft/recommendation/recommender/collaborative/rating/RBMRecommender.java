@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.algorithm.probability.QuantityProbability;
@@ -108,7 +109,7 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
                 itemScoreCount[term.getIndex()][scoreIndex]++;
             }
         }
-        QuantityProbability distribution = new QuantityProbability(JDKRandomGenerator.class, 0L, NormalDistribution.class, 0D, 0.01D);
+        QuantityProbability distribution = new QuantityProbability(JDKRandomGenerator.class, 0, NormalDistribution.class, 0D, 0.01D);
         for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
             for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                 for (int scoreIndex = 0; scoreIndex < numberOfScores; scoreIndex++) {
@@ -338,9 +339,9 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
     }
 
     @Override
-    public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-        int userIndex = dicreteFeatures[userDimension];
-        int itemIndex = dicreteFeatures[itemDimension];
+    public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
         float[] socreProbabilities = new float[numberOfScores];
         float[] factorProbabilities = new float[numberOfFactors];
         float[] factorSums = new float[numberOfFactors];

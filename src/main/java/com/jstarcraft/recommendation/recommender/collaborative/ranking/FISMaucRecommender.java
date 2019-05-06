@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
@@ -220,10 +221,10 @@ public class FISMaucRecommender extends MatrixFactorizationRecommender {
 	}
 
 	@Override
-	public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
+	public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
 		DefaultScalar scalar = DefaultScalar.getInstance();
-		int userIndex = dicreteFeatures[userDimension];
-		int itemIndex = dicreteFeatures[itemDimension];
 		float bias = itemBiases.getValue(itemIndex);
 		float sum = 0F;
 		int count = 0;

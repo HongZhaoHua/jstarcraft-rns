@@ -1,5 +1,6 @@
 package com.jstarcraft.recommendation.recommender.content.rating;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.recommendation.recommender.content.EFMRecommender;
 
 /**
@@ -16,16 +17,16 @@ import com.jstarcraft.recommendation.recommender.content.EFMRecommender;
  */
 public class EFMRatingRecommender extends EFMRecommender {
 
-	@Override
-	public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-		int userIndex = dicreteFeatures[userDimension];
-		int itemIndex = dicreteFeatures[itemDimension];
-		float value = predict(userIndex, itemIndex);
-		if (value < minimumOfScore)
-			return minimumOfScore;
-		if (value > maximumOfScore)
-			return maximumOfScore;
-		return value;
-	}
+    @Override
+    public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
+        float value = predict(userIndex, itemIndex);
+        if (value < minimumOfScore)
+            return minimumOfScore;
+        if (value > maximumOfScore)
+            return maximumOfScore;
+        return value;
+    }
 
 }

@@ -188,7 +188,7 @@ public class DeepFMRecommender extends ModelRecommender {
     @Override
     protected void doPractice() {
         DataInstance instance = marker.getInstance(0);
-        
+
         int[] positiveKeys = new int[dimensionSizes.length], negativeKeys = new int[dimensionSizes.length];
 
         graph = getComputationGraph(dimensionSizes);
@@ -309,9 +309,9 @@ public class DeepFMRecommender extends ModelRecommender {
     }
 
     @Override
-    public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-        int userIndex = dicreteFeatures[userDimension];
-        int itemIndex = dicreteFeatures[itemDimension];
+    public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
         float value = outputData.getValue(userIndex, itemIndex);
         return value;
     }

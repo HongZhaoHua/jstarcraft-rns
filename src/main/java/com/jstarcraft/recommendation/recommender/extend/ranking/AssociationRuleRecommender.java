@@ -2,6 +2,7 @@ package com.jstarcraft.recommendation.recommender.extend.ranking;
 
 import java.util.Iterator;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -101,9 +102,9 @@ public class AssociationRuleRecommender extends AbstractRecommender {
      * @throws RecommendationException if error occurs
      */
     @Override
-    public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-        int userIndex = dicreteFeatures[userDimension];
-        int itemIndex = dicreteFeatures[itemDimension];
+    public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
         float value = 0F;
         for (VectorScalar term : trainMatrix.getRowVector(userIndex)) {
             int associationIndex = term.getIndex();

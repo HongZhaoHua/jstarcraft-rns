@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
@@ -63,9 +64,9 @@ public class PersonalityDiagnosisRecommender extends AbstractRecommender {
      * @throws RecommendationException if error occurs
      */
     @Override
-    public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-        int userIndex = dicreteFeatures[userDimension];
-        int itemIndex = dicreteFeatures[itemDimension];
+    public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
         float[] probabilities = new float[scoreIndexes.size()];
         SparseVector itemVector = trainMatrix.getColumnVector(itemIndex);
         SparseVector rightUserVector = trainMatrix.getRowVector(userIndex);

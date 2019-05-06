@@ -54,7 +54,7 @@ public class FFMRecommender extends FactorizationMachineRecommender {
             }
             count += size;
         }
-        
+
         learnRate = configuration.getFloat("rec.iterator.learnRate");
     }
 
@@ -71,14 +71,9 @@ public class FFMRecommender extends FactorizationMachineRecommender {
             float newWeight = 0F;
             float oldFactor = 0F;
             float newFactor = 0F;
-            int order = marker.getQualityOrder();
-            int[] keys = new int[order];
             for (DataInstance sample : marker) {
-                for (int dimension = 0; dimension < order; dimension++) {
-                    keys[dimension] = sample.getQualityFeature(dimension);
-                }
                 // TODO 因为每次的data都是1,可以考虑避免重复构建featureVector.
-                MathVector featureVector = getFeatureVector(keys);
+                MathVector featureVector = getFeatureVector(sample);
                 float rate = sample.getQuantityMark();
                 float predict = predict(scalar, featureVector);
                 float error = predict - rate;

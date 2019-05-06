@@ -1,5 +1,6 @@
 package com.jstarcraft.recommendation.recommender.collaborative.rating;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
@@ -256,11 +257,11 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
 	}
 
 	@Override
-	public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
+	public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
 		DefaultScalar scalar = DefaultScalar.getInstance();
-		int userIndex = dicreteFeatures[userDimension];
-		int itemIndex = dicreteFeatures[itemDimension];
-		float weightSum = 0;
+		float weightSum = 0F;
 		float valueSum = 0F;
 		for (int iterationStep = 0; iterationStep < numberOfModels; iterationStep++) {
 			float weight = KernelSmoother.EPANECHNIKOV_KERNEL.kernelize(getUserSimilarity(scalar, anchorUsers[iterationStep], userIndex), 0.8F) * KernelSmoother.EPANECHNIKOV_KERNEL.kernelize(getItemSimilarity(scalar, anchorItems[iterationStep], itemIndex), 0.8F);

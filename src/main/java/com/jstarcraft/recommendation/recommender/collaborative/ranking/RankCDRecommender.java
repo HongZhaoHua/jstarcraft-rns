@@ -1,5 +1,6 @@
 package com.jstarcraft.recommendation.recommender.collaborative.ranking;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
@@ -134,10 +135,10 @@ public class RankCDRecommender extends MatrixFactorizationRecommender {
 	}
 
 	@Override
-	public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
+	public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
 		DefaultScalar scalar = DefaultScalar.getInstance();
-		int userIndex = dicreteFeatures[userDimension];
-		int itemIndex = dicreteFeatures[itemDimension];
 		return scalar.dotProduct(userFactors.getRowVector(userIndex), itemFactors.getRowVector(itemIndex)).getValue();
 	}
 

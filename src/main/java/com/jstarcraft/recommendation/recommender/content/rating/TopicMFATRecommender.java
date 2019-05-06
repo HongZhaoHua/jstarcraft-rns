@@ -255,9 +255,9 @@ public class TopicMFATRecommender extends MatrixFactorizationRecommender {
     }
 
     @Override
-    public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-        int userIndex = dicreteFeatures[userDimension];
-        int itemIndex = dicreteFeatures[itemDimension];
+    public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
         return predict(userIndex, itemIndex);
     }
 

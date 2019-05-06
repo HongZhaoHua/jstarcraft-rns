@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.algorithm.probability.QuantityProbability;
@@ -108,7 +109,7 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
         initMean = configuration.getFloat("rec.init.mean", 0F);
         initStd = configuration.getFloat("rec.init.std", 0.1F);
 
-        distribution = new QuantityProbability(JDKRandomGenerator.class, 0L, NormalDistribution.class, initMean, initStd);
+        distribution = new QuantityProbability(JDKRandomGenerator.class, 0, NormalDistribution.class, initMean, initStd);
         featureFactors = DenseMatrix.valueOf(numberOfFeatures, numberOfFactors);
         featureFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
@@ -130,13 +131,13 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
      * @param featureIndexes
      * @return
      */
-    protected MathVector getFeatureVector(int[] featureIndexes) {
-        int size = featureIndexes.length;
-        int[] keys = new int[size];
+    protected MathVector getFeatureVector(DataInstance instance) {
+        int orderSize = instance.getQualityOrder();
+        int[] keys = new int[orderSize];
         int cursor = 0;
-        for (int index = 0; index < size; index++) {
-            keys[index] += cursor + featureIndexes[index];
-            cursor += dimensionSizes[index];
+        for (int orderIndex = 0; orderIndex < orderSize; orderIndex++) {
+            keys[orderIndex] += cursor + instance.getQualityFeature(orderIndex);
+            cursor += dimensionSizes[orderIndex];
         }
         ArrayVector vector = new ArrayVector(numberOfFeatures, keys);
         vector.setValues(1F);
@@ -179,10 +180,10 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
     }
 
     @Override
-    public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
+    public float predict(DataInstance instance) {
         DefaultScalar scalar = DefaultScalar.getInstance();
         // TODO 暂时不支持连续特征,考虑将连续特征离散化.
-        MathVector featureVector = getFeatureVector(dicreteFeatures);
+        MathVector featureVector = getFeatureVector(instance);
         return predict(scalar, featureVector);
     }
 

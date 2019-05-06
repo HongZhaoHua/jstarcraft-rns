@@ -1,5 +1,6 @@
 package com.jstarcraft.recommendation.recommender.benchmark;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.modem.ModemDefinition;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.recommender.AbstractRecommender;
@@ -18,16 +19,16 @@ import com.jstarcraft.recommendation.recommender.AbstractRecommender;
 @ModemDefinition(value = { "userDimension", "itemDimension", "numberOfItems", "minimumOfScore", "maximumOfScore" })
 public class RandomGuessRecommender extends AbstractRecommender {
 
-	@Override
-	protected void doPractice() {
-	}
+    @Override
+    protected void doPractice() {
+    }
 
-	@Override
-	public synchronized float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-		int userIndex = dicreteFeatures[userDimension];
-		int itemIndex = dicreteFeatures[itemDimension];
-		RandomUtility.setSeed(userIndex * numberOfItems + itemIndex);
-		return RandomUtility.randomFloat(minimumOfScore, maximumOfScore);
-	}
+    @Override
+    public synchronized float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
+        RandomUtility.setSeed(userIndex * numberOfItems + itemIndex);
+        return RandomUtility.randomFloat(minimumOfScore, maximumOfScore);
+    }
 
 }

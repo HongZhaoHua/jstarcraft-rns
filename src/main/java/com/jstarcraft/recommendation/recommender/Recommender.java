@@ -1,5 +1,6 @@
 package com.jstarcraft.recommendation.recommender;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.recommendation.configurator.Configuration;
@@ -45,7 +46,7 @@ public interface Recommender {
 	 * @param featureIndexes
 	 * @return
 	 */
-	float predict(int[] dicreteFeatures, float[] continuousFeatures);
+	float predict(DataInstance instance);
 	// double predict(int userIndex, int itemIndex, int... featureIndexes);
 
 }

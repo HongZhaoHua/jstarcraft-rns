@@ -3,6 +3,7 @@ package com.jstarcraft.recommendation.recommender.collaborative.ranking;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
@@ -282,10 +283,10 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
 	}
 
 	@Override
-	public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
+	public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
 		DefaultScalar scalar = DefaultScalar.getInstance();
-		int userIndex = dicreteFeatures[userDimension];
-		int itemIndex = dicreteFeatures[itemDimension];
 		DenseVector userVector = userTopicProbabilities.getRowVector(userIndex);
 		DenseVector itemVector = topicItemProbabilities.getColumnVector(itemIndex);
 		return scalar.dotProduct(userVector, itemVector).getValue();

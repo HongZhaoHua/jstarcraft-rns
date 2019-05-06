@@ -368,12 +368,12 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
      * @throws RecommendationException if error occurs
      */
     @Override
-    public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
+    public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
         DefaultScalar scalar = DefaultScalar.getInstance();
-        int userIndex = dicreteFeatures[userDimension];
-        int itemIndex = dicreteFeatures[itemDimension];
         // retrieve the test rating timestamp
-        int instant = dicreteFeatures[instantDimension];
+        int instant = instance.getQualityFeature(instantDimension);
         int days = days(instant, minTimestamp);
         int section = section(days);
         float deviation = deviation(userIndex, days);

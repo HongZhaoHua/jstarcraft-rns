@@ -92,7 +92,7 @@ public class DeepCrossRecommender extends ModelRecommender {
         weightRegularization = configuration.getFloat("rec.weight.regularization");
         this.marker = model;
 
-     // TODO 此处需要重构,外部索引与内部索引的映射转换
+        // TODO 此处需要重构,外部索引与内部索引的映射转换
         dimensionSizes = new int[marker.getQualityOrder()];
         for (int orderIndex = 0, orderSize = marker.getQualityOrder(); orderIndex < orderSize; orderIndex++) {
             Entry<Integer, KeyValue<String, Boolean>> term = marker.getOuterKeyValue(orderIndex);
@@ -314,9 +314,9 @@ public class DeepCrossRecommender extends ModelRecommender {
     }
 
     @Override
-    public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-        int userIndex = dicreteFeatures[userDimension];
-        int itemIndex = dicreteFeatures[itemDimension];
+    public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
         float value = outputData.getValue(userIndex, itemIndex);
         return value;
     }

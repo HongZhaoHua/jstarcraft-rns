@@ -2,6 +2,7 @@ package com.jstarcraft.recommendation.recommender.collaborative.ranking;
 
 import java.util.Iterator;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.recommender.collaborative.ItemKNNRecommender;
@@ -20,9 +21,9 @@ import com.jstarcraft.recommendation.recommender.collaborative.ItemKNNRecommende
 public class ItemKNNRankingRecommender extends ItemKNNRecommender {
 
 	@Override
-	public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-		int userIndex = dicreteFeatures[userDimension];
-		int itemIndex = dicreteFeatures[itemDimension];
+	public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
 		SparseVector userVector = userVectors[userIndex];
 		int[] neighbors = itemNeighbors[itemIndex];
 		if (userVector.getElementSize() == 0 || neighbors == null) {

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
+import com.jstarcraft.ai.data.module.ArrayInstance;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
@@ -40,7 +41,6 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
 
     protected int lossType;
 
-    protected int[] positiveKeys, negativeKeys;
     protected MathVector positiveVector, negativeVector;
 
     @Override
@@ -61,16 +61,15 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
         biasRegularization = configuration.getFloat("rec.fm.regw0", 0.1F);
         weightRegularization = configuration.getFloat("rec.fm.regW", 0.1F);
         factorRegularization = configuration.getFloat("rec.fm.regF", 0.001F);
-
-        positiveKeys = new int[marker.getQualityOrder()];
-        negativeKeys = new int[marker.getQualityOrder()];
     }
 
-    protected abstract float getGradientValue(DataInstance instance, DefaultScalar scalar, int[] dataPaginations, int[] dataPositions);
+    protected abstract float getGradientValue(DataInstance instance, ArrayInstance positive, ArrayInstance negative, DefaultScalar scalar, int[] dataPaginations, int[] dataPositions);
 
     @Override
     protected void doPractice() {
         DataInstance instance = marker.getInstance(0);
+        ArrayInstance positive = new ArrayInstance(instance.getQualityOrder(), instance.getQuantityOrder());
+        ArrayInstance negative = new ArrayInstance(instance.getQualityOrder(), instance.getQuantityOrder());
 
         DefaultScalar scalar = DefaultScalar.getInstance();
         int[] dataPaginations = new int[numberOfUsers + 1];
@@ -106,7 +105,7 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
             totalLoss = 0F;
             for (int sampleIndex = 0, sampleTimes = numberOfUsers * 50; sampleIndex < sampleTimes; sampleIndex++) {
                 long current = System.currentTimeMillis();
-                float gradient = getGradientValue(instance, scalar, dataPaginations, dataPositions);
+                float gradient = getGradientValue(instance, positive, negative, scalar, dataPaginations, dataPositions);
                 totalTime += (System.currentTimeMillis() - current);
 
                 sum(positiveVector, positiveSum);

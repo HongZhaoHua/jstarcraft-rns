@@ -2,6 +2,7 @@ package com.jstarcraft.recommendation.recommender.collaborative.ranking;
 
 import java.util.Map.Entry;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.recommendation.recommender.collaborative.BHFreeRecommender;
 
 /**
@@ -19,9 +20,9 @@ import com.jstarcraft.recommendation.recommender.collaborative.BHFreeRecommender
 public class BHFreeRankingRecommender extends BHFreeRecommender {
 
 	@Override
-	public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-		int userIndex = dicreteFeatures[userDimension];
-		int itemIndex = dicreteFeatures[itemDimension];
+	public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
 		float value = 0F;
 		for (Entry<Float, Integer> entry : scoreIndexes.entrySet()) {
 			float rate = entry.getKey();

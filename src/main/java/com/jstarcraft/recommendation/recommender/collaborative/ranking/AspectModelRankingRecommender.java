@@ -1,5 +1,6 @@
 package com.jstarcraft.recommendation.recommender.collaborative.ranking;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.MathCalculator;
@@ -121,9 +122,9 @@ public class AspectModelRankingRecommender extends ProbabilisticGraphicalRecomme
 	}
 
 	@Override
-	public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-		int userIndex = dicreteFeatures[userDimension];
-		int itemIndex = dicreteFeatures[itemDimension];
+	public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
 		float value = 0F;
 		for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
 			value += userProbabilities.getValue(topicIndex, userIndex) * itemProbabilities.getValue(topicIndex, itemIndex) * topicProbabilities.getValue(topicIndex);

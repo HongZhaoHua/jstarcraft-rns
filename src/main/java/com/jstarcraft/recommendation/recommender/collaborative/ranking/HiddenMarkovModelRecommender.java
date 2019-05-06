@@ -984,9 +984,9 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
     }
 
     @Override
-    public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-        int userIndex = dicreteFeatures[userDimension];
-        int itemIndex = dicreteFeatures[itemDimension];
+    public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
         float score = 0F;
         for (int state = 0; state < numberOfStates; state++) {
             score += Math.exp(norms.getValue(userIndex, state) - viewProbabilities.getValue(state, itemIndex));

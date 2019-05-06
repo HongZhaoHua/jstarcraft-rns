@@ -309,10 +309,10 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
     }
 
     @Override
-    public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
+    public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
         DefaultScalar scalar = DefaultScalar.getInstance();
-        int userIndex = dicreteFeatures[userDimension];
-        int itemIndex = dicreteFeatures[itemDimension];
         float score = 0F;
         if (trainMatrix.getColumnVector(itemIndex).getElementSize() == 0) {
             score = scalar.dotProduct(userFactors.getRowVector(userIndex), factorMatrix.getColumnVector(itemIndex)).getValue();

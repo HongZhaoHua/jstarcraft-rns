@@ -2,6 +2,7 @@ package com.jstarcraft.recommendation.recommender.collaborative.rating;
 
 import java.util.Map.Entry;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.recommendation.recommender.collaborative.BUCMRecommender;
 
 /**
@@ -20,9 +21,9 @@ import com.jstarcraft.recommendation.recommender.collaborative.BUCMRecommender;
 public class BUCMRatingRecommender extends BUCMRecommender {
 
 	@Override
-	public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-		int userIndex = dicreteFeatures[userDimension];
-		int itemIndex = dicreteFeatures[itemDimension];
+	public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
 		float value = 0F, probabilities = 0F;
 		for (Entry<Float, Integer> term : scoreIndexes.entrySet()) {
 			float rate = term.getKey();

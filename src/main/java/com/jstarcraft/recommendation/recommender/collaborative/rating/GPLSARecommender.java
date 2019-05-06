@@ -2,6 +2,7 @@ package com.jstarcraft.recommendation.recommender.collaborative.rating;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.MathCalculator;
@@ -209,9 +210,9 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 	}
 
 	@Override
-	public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-		int userIndex = dicreteFeatures[userDimension];
-		int itemIndex = dicreteFeatures[itemDimension];
+	public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
 		float sum = 0F;
 		for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
 			sum += userTopicProbabilities.getValue(userIndex, topicIndex) * itemMus.getValue(itemIndex, topicIndex);

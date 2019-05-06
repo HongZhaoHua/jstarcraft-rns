@@ -3,6 +3,7 @@ package com.jstarcraft.recommendation.recommender.content.ranking;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
@@ -26,45 +27,45 @@ import com.jstarcraft.recommendation.recommender.content.EFMRecommender;
  */
 public class EFMRankingRecommender extends EFMRecommender {
 
-	private float threshold;
+    private float threshold;
 
-	private int featureLimit;
+    private int featureLimit;
 
-	@Override
-	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
-		super.prepare(configuration, model, space);
-		threshold = configuration.getFloat("efmranking.threshold", 1F);
-		featureLimit = configuration.getInteger("efmranking.featureLimit", 250);
-	}
+    @Override
+    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+        super.prepare(configuration, model, space);
+        threshold = configuration.getFloat("efmranking.threshold", 1F);
+        featureLimit = configuration.getInteger("efmranking.featureLimit", 250);
+    }
 
-	@Override
-	public float predict(int[] dicreteFeatures, float[] continuousFeatures) {
-		DefaultScalar scalar = DefaultScalar.getInstance();
-		int userIndex = dicreteFeatures[userDimension];
-		int itemIndex = dicreteFeatures[itemDimension];
+    @Override
+    public float predict(DataInstance instance) {
+        int userIndex = instance.getQualityFeature(userDimension);
+        int itemIndex = instance.getQualityFeature(itemDimension);
+        DefaultScalar scalar = DefaultScalar.getInstance();
 
-		// TODO 此处可以优化性能
-		Integer[] orderIndexes = new Integer[numberOfFeatures];
-		for (int featureIndex = 0; featureIndex < numberOfFeatures; featureIndex++) {
-			orderIndexes[featureIndex] = featureIndex;
-		}
-		MathVector vector = DenseVector.valueOf(numberOfFeatures);
-		vector.dotProduct(userExplicitFactors.getRowVector(userIndex), featureFactors, true, MathCalculator.SERIAL);
-		Arrays.sort(orderIndexes, new Comparator<Integer>() {
-			@Override
-			public int compare(Integer leftIndex, Integer rightIndex) {
-				return (vector.getValue(leftIndex) > vector.getValue(rightIndex) ? -1 : (vector.getValue(leftIndex) < vector.getValue(rightIndex) ? 1 : 0));
-			}
-		});
+        // TODO 此处可以优化性能
+        Integer[] orderIndexes = new Integer[numberOfFeatures];
+        for (int featureIndex = 0; featureIndex < numberOfFeatures; featureIndex++) {
+            orderIndexes[featureIndex] = featureIndex;
+        }
+        MathVector vector = DenseVector.valueOf(numberOfFeatures);
+        vector.dotProduct(userExplicitFactors.getRowVector(userIndex), featureFactors, true, MathCalculator.SERIAL);
+        Arrays.sort(orderIndexes, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer leftIndex, Integer rightIndex) {
+                return (vector.getValue(leftIndex) > vector.getValue(rightIndex) ? -1 : (vector.getValue(leftIndex) < vector.getValue(rightIndex) ? 1 : 0));
+            }
+        });
 
-		float value = 0F;
-		for (int index = 0; index < featureLimit; index++) {
-			int featureIndex = orderIndexes[index];
-			value += predictUserFactor(scalar, userIndex, featureIndex) * predictItemFactor(scalar, itemIndex, featureIndex);
-		}
-		value = threshold * (value / (featureLimit * maximumOfScore));
-		value = value + (1F - threshold) * predict(userIndex, itemIndex);
-		return value;
-	}
+        float value = 0F;
+        for (int index = 0; index < featureLimit; index++) {
+            int featureIndex = orderIndexes[index];
+            value += predictUserFactor(scalar, userIndex, featureIndex) * predictItemFactor(scalar, itemIndex, featureIndex);
+        }
+        value = threshold * (value / (featureLimit * maximumOfScore));
+        value = value + (1F - threshold) * predict(userIndex, itemIndex);
+        return value;
+    }
 
 }

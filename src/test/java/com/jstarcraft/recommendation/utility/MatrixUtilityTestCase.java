@@ -35,7 +35,7 @@ import com.jstarcraft.core.utility.RandomUtility;
  */
 public class MatrixUtilityTestCase {
 
-    private QuantityProbability probability = new QuantityProbability(Well19937c.class, 0L, NormalDistribution.class, 1D, 4D);
+    private QuantityProbability probability = new QuantityProbability(Well19937c.class, 0, NormalDistribution.class, 1D, 4D);
 
     @Test
     public void test() throws Exception {

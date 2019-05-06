@@ -38,14 +38,9 @@ public class FMSGDRecommender extends FactorizationMachineRecommender {
 		DefaultScalar scalar = DefaultScalar.getInstance();
 		for (int iterationStep = 0; iterationStep < numberOfEpoches; iterationStep++) {
 			totalLoss = 0F;
-			int order = marker.getQualityOrder();
-			int[] keys = new int[order];
 			for (DataInstance sample : marker) {
-				for (int dimension = 0; dimension < order; dimension++) {
-					keys[dimension] = sample.getQualityFeature(dimension);
-				}
 				// TODO 因为每次的data都是1,可以考虑避免重复构建featureVector.
-				MathVector featureVector = getFeatureVector(keys);
+				MathVector featureVector = getFeatureVector(sample);
 				float rate = sample.getQuantityMark();
 				float predict = predict(scalar, featureVector);
 
