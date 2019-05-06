@@ -12,7 +12,7 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.recommendation.configure.Configuration;
+import com.jstarcraft.recommendation.configurator.Configuration;
 import com.jstarcraft.recommendation.recommender.FactorizationMachineRecommender;
 
 /**

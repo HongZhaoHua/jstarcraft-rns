@@ -6,7 +6,7 @@ import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
-import com.jstarcraft.recommendation.configure.Configuration;
+import com.jstarcraft.recommendation.configurator.Configuration;
 
 /**
  * 社交推荐器

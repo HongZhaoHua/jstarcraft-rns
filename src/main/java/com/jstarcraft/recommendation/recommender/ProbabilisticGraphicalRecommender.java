@@ -3,7 +3,7 @@ package com.jstarcraft.recommendation.recommender;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.recommendation.configure.Configuration;
+import com.jstarcraft.recommendation.configurator.Configuration;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 
 /**

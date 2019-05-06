@@ -1,4 +1,4 @@
-package com.jstarcraft.recommendation.configure;
+package com.jstarcraft.recommendation.configurator;
 
 import java.io.InputStream;
 import java.net.URL;

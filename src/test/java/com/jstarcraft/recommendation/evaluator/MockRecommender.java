@@ -3,7 +3,7 @@ package com.jstarcraft.recommendation.evaluator;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
-import com.jstarcraft.recommendation.configure.Configuration;
+import com.jstarcraft.recommendation.configurator.Configuration;
 import com.jstarcraft.recommendation.recommender.Recommender;
 
 public class MockRecommender implements Recommender {

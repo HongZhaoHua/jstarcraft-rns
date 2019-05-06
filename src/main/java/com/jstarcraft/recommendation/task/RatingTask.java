@@ -8,7 +8,7 @@ import java.util.List;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.utility.Int2FloatKeyValue;
-import com.jstarcraft.recommendation.configure.Configuration;
+import com.jstarcraft.recommendation.configurator.Configuration;
 import com.jstarcraft.recommendation.evaluator.Evaluator;
 import com.jstarcraft.recommendation.evaluator.rating.MAEEvaluator;
 import com.jstarcraft.recommendation.evaluator.rating.MPEEvaluator;

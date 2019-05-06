@@ -15,7 +15,7 @@ import com.jstarcraft.ai.math.structure.matrix.RowArrayMatrix;
 import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.ReflectionUtility;
-import com.jstarcraft.recommendation.configure.Configuration;
+import com.jstarcraft.recommendation.configurator.Configuration;
 import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatAVLTreeMap;

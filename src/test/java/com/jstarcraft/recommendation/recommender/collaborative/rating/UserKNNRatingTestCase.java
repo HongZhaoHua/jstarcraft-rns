@@ -8,7 +8,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.jstarcraft.recommendation.configure.Configuration;
+import com.jstarcraft.recommendation.configurator.Configuration;
 import com.jstarcraft.recommendation.evaluator.rating.MAEEvaluator;
 import com.jstarcraft.recommendation.evaluator.rating.MPEEvaluator;
 import com.jstarcraft.recommendation.evaluator.rating.MSEEvaluator;

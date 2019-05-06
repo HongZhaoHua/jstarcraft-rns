@@ -2,7 +2,7 @@ package com.jstarcraft.recommendation.recommender;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
-import com.jstarcraft.recommendation.configure.Configuration;
+import com.jstarcraft.recommendation.configurator.Configuration;
 
 /**
  * 推荐器

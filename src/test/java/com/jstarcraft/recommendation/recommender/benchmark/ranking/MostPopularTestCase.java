@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.jstarcraft.ai.modem.ModemCodec;
-import com.jstarcraft.recommendation.configure.Configuration;
+import com.jstarcraft.recommendation.configurator.Configuration;
 import com.jstarcraft.recommendation.evaluator.ranking.AUCEvaluator;
 import com.jstarcraft.recommendation.evaluator.ranking.MAPEvaluator;
 import com.jstarcraft.recommendation.evaluator.ranking.MRREvaluator;

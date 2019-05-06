@@ -1,4 +1,4 @@
-package com.jstarcraft.recommendation.configure;
+package com.jstarcraft.recommendation.configurator;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -10,11 +10,11 @@ import java.lang.reflect.Type;
  *
  * @param <T>
  */
-public abstract class Configurer<T> {
+public abstract class Configurator<T> {
 
     protected Class<?> clazz;
 
-    public Configurer() {
+    public Configurator() {
         this.clazz = this.getClass();
         ParameterizedType type = (ParameterizedType) this.clazz.getGenericSuperclass();
         Type[] types = type.getActualTypeArguments();
