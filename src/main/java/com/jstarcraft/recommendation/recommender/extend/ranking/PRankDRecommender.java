@@ -3,8 +3,9 @@ package com.jstarcraft.recommendation.recommender.extend.ranking;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.algorithm.similarity.Similarity;
 import com.jstarcraft.ai.math.structure.matrix.SymmetryMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
@@ -13,9 +14,6 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.ReflectionUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 import com.jstarcraft.recommendation.recommender.collaborative.ranking.RankSGDRecommender;
 import com.jstarcraft.recommendation.utility.SampleUtility;
@@ -60,8 +58,8 @@ public class PRankDRecommender extends RankSGDRecommender {
 	 *             if error occurs
 	 */
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		similarityFilter = configuration.getFloat("rec.sim.filter", 4F);
 		float denominator = 0F;
 		itemWeights = DenseVector.valueOf(numberOfItems);

@@ -3,6 +3,8 @@ package com.jstarcraft.recommendation.recommender.collaborative.ranking;
 import java.util.Date;
 import java.util.concurrent.CountDownLatch;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -11,9 +13,6 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 import com.jstarcraft.recommendation.utility.MatrixUtility;
@@ -51,8 +50,8 @@ public class WRMFRecommender extends MatrixFactorizationRecommender {
 	private SparseMatrix preferenceMatrix;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		weightCoefficient = configuration.getFloat("rec.wrmf.weight.coefficient", 4.0f);
 
 		confindenceMatrix = SparseMatrix.copyOf(trainMatrix, false);

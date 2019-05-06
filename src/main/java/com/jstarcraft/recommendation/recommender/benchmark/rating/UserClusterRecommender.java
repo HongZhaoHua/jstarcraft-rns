@@ -4,6 +4,8 @@ import java.util.Map.Entry;
 
 import org.apache.commons.math3.util.FastMath;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
@@ -12,9 +14,6 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.ai.modem.ModemDefinition;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.ProbabilisticGraphicalRecommender;
 
 /**
@@ -77,8 +76,8 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
 	}
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		topicScoreMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfScores);
 		for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
 			DenseVector probabilityVector = topicScoreMatrix.getRowVector(topicIndex);

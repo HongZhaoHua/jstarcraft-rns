@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.algorithm.similarity.Similarity;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -18,9 +20,6 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.ReflectionUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 import com.jstarcraft.recommendation.recommender.ModelRecommender;
 
@@ -85,8 +84,8 @@ public class SLIMRecommender extends ModelRecommender {
 	 *             if error occurs
 	 */
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		neighborSize = configuration.getInteger("rec.neighbors.knn.number", 50);
 		regL1Norm = configuration.getFloat("rec.slim.regularization.l1", 1.0F);
 		regL2Norm = configuration.getFloat("rec.slim.regularization.l2", 1.0F);

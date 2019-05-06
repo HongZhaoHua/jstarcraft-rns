@@ -8,6 +8,9 @@ import java.util.concurrent.CountDownLatch;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.util.concurrent.AtomicDouble;
+import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.attribute.MemoryQualityAttribute;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.structure.MathCalculator;
@@ -20,9 +23,6 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 import com.jstarcraft.recommendation.recommender.ProbabilisticGraphicalRecommender;
 import com.jstarcraft.recommendation.utility.GammaUtility;
@@ -363,11 +363,11 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
     }
 
     @Override
-    public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-        super.prepare(configuration, marker, model, space);
+    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+        super.prepare(configuration, model, space);
         // 上下文维度
         contextField = configuration.getString("data.model.fields.context");
-        contextDimension = marker.getQualityInner(contextField);
+        contextDimension = model.getQualityInner(contextField);
         numberOfStates = configuration.getInteger("rec.hmm.state.number");
         probabilityRegularization = configuration.getFloat("rec.probability.regularization", 100F);
         stateRegularization = configuration.getFloat("rec.state.regularization", 100F);
@@ -387,10 +387,12 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
         Table<Integer, Integer, Float> table = HashBasedTable.create();
         Table<Integer, Integer, Float> data = HashBasedTable.create();
 
+        DataInstance instance = model.getInstance(0);
         for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
             for (int from = dataPaginations[userIndex], to = dataPaginations[userIndex + 1]; from < to; from++) {
-                int rowKey = (Integer) levels[marker.getQualityFeature(contextDimension, from)];
-                int columnKey = marker.getQualityFeature(itemDimension, from);
+                instance.setCursor(from);
+                int rowKey = (Integer) levels[instance.getQualityFeature(contextDimension)];
+                int columnKey = instance.getQualityFeature(itemDimension);
                 Float count = table.get(rowKey, columnKey);
                 table.put(rowKey, columnKey, count == null ? 1 : ++count);
             }

@@ -4,10 +4,9 @@ import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 
 /**
  * 神经网络推荐器
@@ -69,8 +68,8 @@ public abstract class NeuralNetworkRecommender extends ModelRecommender {
 	protected abstract MultiLayerConfiguration getNetworkConfiguration();
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		inputDimension = getInputDimension();
 		hiddenDimension = configuration.getInteger("rec.hidden.dimension");
 		hiddenActivation = configuration.getString("rec.hidden.activation");

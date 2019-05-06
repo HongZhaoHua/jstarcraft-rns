@@ -5,6 +5,9 @@ import java.util.Map;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.attribute.MemoryQualityAttribute;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
@@ -18,10 +21,6 @@ import com.jstarcraft.ai.model.neuralnetwork.activation.ActivationFunction;
 import com.jstarcraft.ai.model.neuralnetwork.activation.SoftMaxActivationFunction;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DataSample;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 
 /**
@@ -65,8 +64,8 @@ public class TopicMFATRecommender extends MatrixFactorizationRecommender {
     protected ActivationFunction function;
 
     @Override
-    public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-        super.prepare(configuration, marker, model, space);
+    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+        super.prepare(configuration, model, space);
 
         commentField = configuration.getString("data.model.fields.comment");
         commentDimension = model.getQualityInner(commentField);
@@ -91,10 +90,10 @@ public class TopicMFATRecommender extends MatrixFactorizationRecommender {
         // TODO rowCount改为documentIndex?
         int rowCount = 0;
         userItemToDocument = HashBasedTable.create();
-        for (DataSample sample : marker) {
-            int userIndex = sample.getDiscreteFeature(userDimension);
-            int itemIndex = sample.getDiscreteFeature(itemDimension);
-            int documentIndex = sample.getDiscreteFeature(commentDimension);
+        for (DataInstance sample : model) {
+            int userIndex = sample.getQualityFeature(userDimension);
+            int itemIndex = sample.getQualityFeature(itemDimension);
+            int documentIndex = sample.getQualityFeature(commentDimension);
             userItemToDocument.put(userIndex, itemIndex, rowCount);
             // convert wordIds to wordIndices
             String data = (String) documentValues[documentIndex];

@@ -1,6 +1,6 @@
 package com.jstarcraft.recommendation.data.processor;
 
-import com.jstarcraft.recommendation.data.accessor.DataInstance;
+import com.jstarcraft.ai.data.DataInstance;
 
 /**
  * 数据选择器

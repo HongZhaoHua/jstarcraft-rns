@@ -1,8 +1,12 @@
 package com.jstarcraft.recommendation.recommender;
 
+import java.util.Map.Entry;
+
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.algorithm.probability.QuantityProbability;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
@@ -11,10 +15,8 @@ import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
+import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 
 /**
@@ -28,7 +30,7 @@ import com.jstarcraft.recommendation.exception.RecommendationException;
 // TODO 论文中需要支持组合特征(比如:历史评价过的电影),现在的代码并没有实现.
 public abstract class FactorizationMachineRecommender extends ModelRecommender {
 
-    protected SampleAccessor marker;
+    protected DataModule marker;
 
     /**
      * global bias
@@ -73,18 +75,14 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
 
     protected QuantityProbability distribution;
 
-    protected int[] dimensions;
+    protected int[] dimensionSizes;
 
     @Override
-    public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-        super.prepare(configuration, marker, model, space);
+    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+        super.prepare(configuration, model, space);
         // TODO 暂时不支持连续特征,考虑将连续特征离散化.
-        dimensions = new int[marker.getQualityOrder()];
-        int order = 0;
-        for (String name : marker.getQualityFields()) {
-            dimensions[order++] = space.getQualityAttribute(name).getSize();
-        }
-        this.marker = marker;
+        this.marker = model;
+        dimensionSizes = new int[marker.getQualityOrder()];
 
         // TODO 考虑重构,在AbstractRecommender初始化
         numberOfActions = marker.getSize();
@@ -92,8 +90,11 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
         minimumOfScore = configuration.getFloat("rec.recommender.minrate", 0F);
 
         // initialize the parameters of FM
-        for (String name : marker.getQualityFields()) {
-            numberOfFeatures += space.getQualityAttribute(name).getSize();
+        // TODO 此处需要重构,外部索引与内部索引的映射转换
+        for (int orderIndex = 0, orderSize = marker.getQualityOrder(); orderIndex < orderSize; orderIndex++) {
+            Entry<Integer, KeyValue<String, Boolean>> term = marker.getOuterKeyValue(orderIndex);
+            dimensionSizes[marker.getQualityInner(term.getValue().getKey())] = space.getQualityAttribute(term.getValue().getKey()).getSize();
+            numberOfFeatures += dimensionSizes[marker.getQualityInner(term.getValue().getKey())];
         }
 
         numberOfFactors = configuration.getInteger("rec.factor.number");
@@ -135,7 +136,7 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
         int cursor = 0;
         for (int index = 0; index < size; index++) {
             keys[index] += cursor + featureIndexes[index];
-            cursor += dimensions[index];
+            cursor += dimensionSizes[index];
         }
         ArrayVector vector = new ArrayVector(numberOfFeatures, keys);
         vector.setValues(1F);

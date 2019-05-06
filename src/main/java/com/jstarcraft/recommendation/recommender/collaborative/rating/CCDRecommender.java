@@ -2,6 +2,8 @@ package com.jstarcraft.recommendation.recommender.collaborative.rating;
 
 import java.util.Date;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -9,9 +11,6 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 
 /**
@@ -30,8 +29,8 @@ import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 public class CCDRecommender extends MatrixFactorizationRecommender {
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
 		userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			scalar.setValue(distribution.sample().floatValue());

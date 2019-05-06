@@ -2,12 +2,11 @@ package com.jstarcraft.recommendation.recommender;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DataInstance;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 
 /**
  * 社交推荐器
@@ -38,18 +37,19 @@ public abstract class SocialRecommender extends MatrixFactorizationRecommender {
 	protected float socialRegularization;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 
 		socialRegularization = configuration.getFloat("rec.social.regularization", 0.01f);
 		// social path for the socialMatrix
 		// TODO 此处是不是应该使用context.getSimilarity().getSimilarityMatrix();代替?
-		DenseModule socialModel = space.getModule("social");
+		DataModule socialModel = space.getModule("social");
+		// TODO 此处需要重构,trusterDimension与trusteeDimension要配置
 		trusterField = configuration.getString("data.model.fields.truster");
 		trusteeField = configuration.getString("data.model.fields.trustee");
 		coefficientField = configuration.getString("data.model.fields.coefficient");
-		trusterDimension = socialModel.getQualityInner(trusterField);
-		trusteeDimension = socialModel.getQualityInner(trusteeField);
+		trusterDimension = 0;
+		trusteeDimension = 1;
 		coefficientDimension = socialModel.getQuantityInner(coefficientField);
 		Table<Integer, Integer, Float> socialTabel = HashBasedTable.create();
 		for (DataInstance instance : socialModel) {

@@ -1,5 +1,7 @@
 package com.jstarcraft.recommendation.recommender.collaborative.rating;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -8,9 +10,6 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 
 /**
@@ -48,8 +47,8 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
 	 * @see net.librec.recommender.AbstractRecommender#setup()
 	 */
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		numberOfGlobalFactors = configuration.getInteger("rec.global.factors.num", 20);
 		numberOfLocalFactors = numberOfFactors;
 

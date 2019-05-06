@@ -2,9 +2,13 @@ package com.jstarcraft.recommendation.recommender.neuralnetwork;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.nd4j.linalg.factory.Nd4j;
 
+import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DenseCache;
 import com.jstarcraft.ai.math.structure.MathCache;
 import com.jstarcraft.ai.math.structure.MathCalculator;
@@ -32,11 +36,9 @@ import com.jstarcraft.ai.model.neuralnetwork.vertex.accumulation.OuterProductVer
 import com.jstarcraft.ai.model.neuralnetwork.vertex.operation.PlusVertex;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.operation.ShiftVertex;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.transformation.HorizontalAttachVertex;
+import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.ModelRecommender;
 
 /**
@@ -78,22 +80,23 @@ public class DeepCrossRecommender extends ModelRecommender {
      */
     protected Graph graph;
 
-    protected SampleAccessor marker;
+    protected DataModule marker;
 
     protected int[] dimensionSizes;
 
     @Override
-    public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-        super.prepare(configuration, marker, model, space);
+    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+        super.prepare(configuration, model, space);
         learnRate = configuration.getFloat("rec.iterator.learnrate");
         momentum = configuration.getFloat("rec.iterator.momentum");
         weightRegularization = configuration.getFloat("rec.weight.regularization");
-        this.marker = marker;
+        this.marker = model;
 
+     // TODO 此处需要重构,外部索引与内部索引的映射转换
         dimensionSizes = new int[marker.getQualityOrder()];
-        int orderIndex = 0;
-        for (String name : marker.getQualityFields()) {
-            dimensionSizes[orderIndex++] = space.getQualityAttribute(name).getSize();
+        for (int orderIndex = 0, orderSize = marker.getQualityOrder(); orderIndex < orderSize; orderIndex++) {
+            Entry<Integer, KeyValue<String, Boolean>> term = marker.getOuterKeyValue(orderIndex);
+            dimensionSizes[marker.getQualityInner(term.getValue().getKey())] = space.getQualityAttribute(term.getValue().getKey()).getSize();
         }
     }
 
@@ -184,6 +187,7 @@ public class DeepCrossRecommender extends ModelRecommender {
 
     @Override
     protected void doPractice() {
+        DataInstance instance = marker.getInstance(0);
 
         int[] positiveKeys = new int[dimensionSizes.length], negativeKeys = new int[dimensionSizes.length];
 
@@ -213,8 +217,9 @@ public class DeepCrossRecommender extends ModelRecommender {
                 int from = dataPaginations[userIndex], to = dataPaginations[userIndex + 1];
                 // 获取正样本
                 int positivePosition = dataPositions[RandomUtility.randomInteger(from, to)];
+                instance.setCursor(positivePosition);
                 for (int index = 0; index < positiveKeys.length; index++) {
-                    positiveKeys[index] = marker.getQualityFeature(index, positivePosition);
+                    positiveKeys[index] = instance.getQualityFeature(index);
                 }
 
                 // 获取负样本
@@ -228,8 +233,9 @@ public class DeepCrossRecommender extends ModelRecommender {
                 }
                 // TODO 注意,此处为了故意制造负面特征.
                 int negativePosition = dataPositions[RandomUtility.randomInteger(from, to)];
+                instance.setCursor(negativePosition);
                 for (int index = 0; index < negativeKeys.length; index++) {
-                    negativeKeys[index] = marker.getQualityFeature(index, negativePosition);
+                    negativeKeys[index] = instance.getQualityFeature(index);
                 }
                 negativeKeys[itemDimension] = negativeItemIndex;
 
@@ -283,7 +289,8 @@ public class DeepCrossRecommender extends ModelRecommender {
             if (dimension != itemDimension) {
                 for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
                     int position = dataPositions[dataPaginations[userIndex + 1] - 1];
-                    int feature = marker.getQualityFeature(dimension, position);
+                    instance.setCursor(position);
+                    int feature = instance.getQualityFeature(dimension);
                     // inputData[dimension].putScalar(userIndex, 0,
                     // keys[dimension]);
                     // inputData[dimensionSizes.length].setValue(userIndex, dimension, feature);

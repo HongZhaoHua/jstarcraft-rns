@@ -2,6 +2,9 @@ package com.jstarcraft.recommendation.recommender.collaborative.rating;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
@@ -10,10 +13,6 @@ import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DataSample;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.FactorizationMachineRecommender;
 
 /**
@@ -36,8 +35,8 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
     private SparseMatrix featureMatrix;
 
     @Override
-    public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-        super.prepare(configuration, marker, model, space);
+    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+        super.prepare(configuration, model, space);
         // init Q
         // TODO 此处为rateFactors
         actionFactors = DenseMatrix.valueOf(numberOfActions, numberOfFactors);
@@ -46,17 +45,10 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
         Table<Integer, Integer, Float> table = HashBasedTable.create();
         int index = 0;
         int order = marker.getQualityOrder();
-        int[] dimensionSizes = new int[order];
-        {
-            int orderIndex = 0;
-            for (String name : marker.getQualityFields()) {
-                dimensionSizes[orderIndex++] = space.getQualityAttribute(name).getSize();
-            }
-        }
-        for (DataSample sample : marker) {
+        for (DataInstance sample : model) {
             int count = 0;
             for (int orderIndex = 0; orderIndex < order; orderIndex++) {
-                table.put(index, count + sample.getDiscreteFeature(orderIndex), 1F);
+                table.put(index, count + sample.getQualityFeature(orderIndex), 1F);
                 count += dimensionSizes[orderIndex];
             }
             index++;
@@ -73,13 +65,13 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
         int index = 0;
         int order = marker.getQualityOrder();
         int[] keys = new int[order];
-        for (DataSample sample : marker) {
+        for (DataInstance sample : marker) {
             for (int dimension = 0; dimension < order; dimension++) {
-                keys[dimension] = sample.getDiscreteFeature(dimension);
+                keys[dimension] = sample.getQualityFeature(dimension);
             }
             // TODO 因为每次的data都是1,可以考虑避免重复构建featureVector.
             MathVector featureVector = getFeatureVector(keys);
-            float rate = sample.getMark();
+            float rate = sample.getQuantityMark();
             float predict = predict(scalar, featureVector);
 
             float error = rate - predict;

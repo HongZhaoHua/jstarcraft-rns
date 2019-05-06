@@ -10,19 +10,17 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.ai.utility.MathUtility;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 import com.jstarcraft.recommendation.utility.LogisticUtility;
 
@@ -81,8 +79,8 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
 	Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		for (MatrixScalar term : trainMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();

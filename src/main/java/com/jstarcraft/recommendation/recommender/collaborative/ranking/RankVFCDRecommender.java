@@ -1,5 +1,8 @@
 package com.jstarcraft.recommendation.recommender.collaborative.ranking;
 
+import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -10,10 +13,6 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DataInstance;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
@@ -43,8 +42,8 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
     private SparseMatrix relationMatrix;
 
     @Override
-    public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-        super.prepare(configuration, marker, model, space);
+    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+        super.prepare(configuration, model, space);
 
         // TODO 此处代码可以消除(使用常量Marker代替或者使用binarize.threshold)
         for (MatrixScalar term : trainMatrix) {
@@ -75,12 +74,19 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
         });
 
         // 相关矩阵
-        DenseModule relationModel = space.getModule("relation");
-        HashMatrix relationTable =  HashMatrix.valueOf(true, numberOfItems, numberOfItems, new Int2FloatRBTreeMap());
+        DataModule relationModel = space.getModule("relation");
+        // TODO 此处需要重构,leftDimension与rightDimension要配置
+        String leftField = configuration.getString("data.model.fields.left");
+        String rightField = configuration.getString("data.model.fields.right");
+        String coefficientField = configuration.getString("data.model.fields.coefficient");
+        int leftDimension = 0;
+        int rightDimension = 1;
+        int coefficientDimension = relationModel.getQuantityInner(coefficientField);
+        HashMatrix relationTable = HashMatrix.valueOf(true, numberOfItems, numberOfItems, new Int2FloatRBTreeMap());
         for (DataInstance instance : relationModel) {
-            int itemIndex = instance.getQualityFeature(0);
-            int neighborIndex = instance.getQualityFeature(1);
-            relationTable.setValue(itemIndex, neighborIndex, 1F);
+            int itemIndex = instance.getQualityFeature(leftDimension);
+            int neighborIndex = instance.getQualityFeature(rightDimension);
+            relationTable.setValue(itemIndex, neighborIndex, instance.getQuantityFeature(coefficientDimension));
         }
         relationMatrix = SparseMatrix.valueOf(numberOfItems, numberOfItems, relationTable);
         relationTable = null;
@@ -89,11 +95,17 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
         float minimumValue = Float.MAX_VALUE;
         float maximumValue = Float.MIN_VALUE;
         HashMatrix visualTable = HashMatrix.valueOf(true, numberOfFeatures, numberOfItems, new Int2FloatRBTreeMap());
-        DenseModule featureModel = space.getModule("article");
+        DataModule featureModel = space.getModule("article");
+        String articleField = configuration.getString("data.model.fields.article");
+        String featureField = configuration.getString("data.model.fields.feature");
+        String degreeField = configuration.getString("data.model.fields.degree");
+        int articleDimension = featureModel.getQualityInner(articleField);
+        int featureDimension = featureModel.getQualityInner(featureField);
+        int degreeDimension = featureModel.getQuantityInner(degreeField);
         for (DataInstance instance : featureModel) {
-            int itemIndex = instance.getQualityFeature(0);
-            int featureIndex = instance.getQualityFeature(1);
-            float featureValue = instance.getQuantityFeature(0);
+            int itemIndex = instance.getQualityFeature(articleDimension);
+            int featureIndex = instance.getQualityFeature(featureDimension);
+            float featureValue = instance.getQuantityFeature(degreeDimension);
             if (featureValue < minimumValue) {
                 minimumValue = featureValue;
             }

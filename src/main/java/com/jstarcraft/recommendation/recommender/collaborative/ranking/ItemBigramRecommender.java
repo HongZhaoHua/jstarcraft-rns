@@ -9,6 +9,9 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -19,10 +22,6 @@ import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DataSample;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.ProbabilisticGraphicalRecommender;
 import com.jstarcraft.recommendation.utility.GammaUtility;
 import com.jstarcraft.recommendation.utility.SampleUtility;
@@ -102,22 +101,22 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
 	private DenseVector randomProbabilities;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		initAlpha = configuration.getFloat("rec.user.dirichlet.prior", 0.01F);
 		initBeta = configuration.getFloat("rec.topic.dirichlet.prior", 0.01F);
 
 		instantField = configuration.getString("data.model.fields.instant");
-		instantDimension = marker.getQualityInner(instantField);
+		instantDimension = model.getQualityInner(instantField);
 		Table<Integer, Integer, Integer> instantTabel = HashBasedTable.create();
-		for (DataSample sample : marker) {
-			Integer instant = instantTabel.get(sample.getDiscreteFeature(userDimension), sample.getDiscreteFeature(itemDimension));
+		for (DataInstance sample : model) {
+			Integer instant = instantTabel.get(sample.getQualityFeature(userDimension), sample.getQualityFeature(itemDimension));
 			if (instant == null) {
-				instant = sample.getDiscreteFeature(instantDimension);
+				instant = sample.getQualityFeature(instantDimension);
 			} else {
-				instant = sample.getDiscreteFeature(instantDimension) > instant ? sample.getDiscreteFeature(instantDimension) : instant;
+				instant = sample.getQualityFeature(instantDimension) > instant ? sample.getQualityFeature(instantDimension) : instant;
 			}
-			instantTabel.put(sample.getDiscreteFeature(userDimension), sample.getDiscreteFeature(itemDimension), instant);
+			instantTabel.put(sample.getQualityFeature(userDimension), sample.getQualityFeature(itemDimension), instant);
 		}
 		// build the training data, sorting by date
 		userItemMap = new HashMap<>();

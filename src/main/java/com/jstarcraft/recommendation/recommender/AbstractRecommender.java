@@ -6,15 +6,16 @@ import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.attribute.QuantityAttribute;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
+import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.data.processor.DataMatcher;
 import com.jstarcraft.recommendation.data.processor.DataSorter;
 
@@ -31,7 +32,7 @@ public abstract class AbstractRecommender implements Recommender {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /** 用户字段, 物品字段, 分数字段 */
-    protected String userField, itemField, scoreField;
+    protected String userField, itemField;
 
     /** 用户维度, 物品维度 */
     protected int userDimension, itemDimension;
@@ -58,10 +59,9 @@ public abstract class AbstractRecommender implements Recommender {
     protected int[] dataPositions;
 
     @Override
-    public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
+    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         userField = configuration.getString("data.model.fields.user", "user");
         itemField = configuration.getString("data.model.fields.item", "item");
-        scoreField = configuration.getString("data.model.fields.score", "score");
 
         userDimension = model.getQualityInner(userField);
         itemDimension = model.getQualityInner(itemField);
@@ -69,19 +69,21 @@ public abstract class AbstractRecommender implements Recommender {
         numberOfItems = space.getQualityAttribute(itemField).getSize();
 
         dataPaginations = new int[numberOfUsers + 1];
-        dataPositions = new int[marker.getSize()];
-        for (int index = 0; index < marker.getSize(); index++) {
+        dataPositions = new int[model.getSize()];
+        for (int index = 0; index < model.getSize(); index++) {
             dataPositions[index] = index;
         }
-        DataMatcher matcher = DataMatcher.discreteOf(marker, userDimension);
+        DataMatcher matcher = DataMatcher.discreteOf(model, userDimension);
         matcher.match(dataPaginations, dataPositions);
-        DataSorter sorter = DataSorter.featureOf(marker);
+        DataSorter sorter = DataSorter.featureOf(model);
         sorter.sort(dataPaginations, dataPositions);
         HashMatrix dataTable = HashMatrix.valueOf(true, numberOfUsers, numberOfItems, new Int2FloatRBTreeMap());
+        DataInstance instance = model.getInstance(0);
         for (int position : dataPositions) {
-            int rowIndex = marker.getQualityFeature(userDimension, position);
-            int columnIndex = marker.getQualityFeature(itemDimension, position);
-            dataTable.setValue(rowIndex, columnIndex, marker.getMark(position));
+            instance.setCursor(position);
+            int rowIndex = instance.getQualityFeature(userDimension);
+            int columnIndex = instance.getQualityFeature(itemDimension);
+            dataTable.setValue(rowIndex, columnIndex, instance.getQuantityMark());
         }
         trainMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfItems, dataTable);
         numberOfActions = trainMatrix.getElementSize();
@@ -97,9 +99,9 @@ public abstract class AbstractRecommender implements Recommender {
         for (Float value : values) {
             scoreIndexes.put(value, index++);
         }
-        QuantityAttribute attribute = space.getQuantityAttribute(scoreField);
-        minimumOfScore = (Float) attribute.getMinimum();
-        maximumOfScore = (Float) attribute.getMaximum();
+        KeyValue<Float, Float> attribute = trainMatrix.getBoundary(false);
+        minimumOfScore = attribute.getKey();
+        maximumOfScore = attribute.getValue();
         meanOfScore = trainMatrix.getSum(false);
         meanOfScore /= numberOfActions;
     }

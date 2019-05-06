@@ -1,10 +1,9 @@
 package com.jstarcraft.recommendation.recommender.benchmark.rating;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.modem.ModemDefinition;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.AbstractRecommender;
 
 /**
@@ -24,8 +23,8 @@ public class ConstantGuessRecommender extends AbstractRecommender {
 	private float constant;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		// 默认使用最高最低分的平均值
 		constant = (minimumOfScore + maximumOfScore) / 2F;
 		// TODO 支持配置分数

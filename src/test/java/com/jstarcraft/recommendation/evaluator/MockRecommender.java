@@ -1,10 +1,9 @@
 package com.jstarcraft.recommendation.evaluator;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.Recommender;
 
 public class MockRecommender implements Recommender {
@@ -19,7 +18,7 @@ public class MockRecommender implements Recommender {
 	}
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 	}
 
 	@Override

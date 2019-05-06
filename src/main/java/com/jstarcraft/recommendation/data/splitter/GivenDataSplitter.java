@@ -1,7 +1,7 @@
 package com.jstarcraft.recommendation.data.splitter;
 
+import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.utility.IntegerArray;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
 
 /**
  * 指定数据处理器
@@ -12,13 +12,13 @@ import com.jstarcraft.recommendation.data.accessor.DenseModule;
 // TODO 准备改名为SpecificThresholdSplitter
 public class GivenDataSplitter implements DataSplitter {
 
-	private DenseModule dataModel;
+	private DataModule dataModel;
 
 	private IntegerArray trainReference;
 
 	private IntegerArray testReference;
 
-	public GivenDataSplitter(DenseModule model, int threshold) {
+	public GivenDataSplitter(DataModule model, int threshold) {
 		dataModel = model;
 		trainReference = new IntegerArray();
 		testReference = new IntegerArray();
@@ -38,7 +38,7 @@ public class GivenDataSplitter implements DataSplitter {
 	}
 
 	@Override
-	public DenseModule getDataModel() {
+	public DataModule getDataModel() {
 		return dataModel;
 	}
 

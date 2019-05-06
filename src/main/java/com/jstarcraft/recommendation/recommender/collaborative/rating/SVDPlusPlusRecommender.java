@@ -1,14 +1,13 @@
 package com.jstarcraft.recommendation.recommender.collaborative.rating;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 
 /**
  * 
@@ -39,8 +38,8 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
 	 * @see net.librec.recommender.AbstractRecommender#setup()
 	 */
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		regImpItem = configuration.getFloat("rec.impItem.regularization", 0.015F);
 		factorMatrix = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
 		factorMatrix.iterateElement(MathCalculator.SERIAL, (element) -> {

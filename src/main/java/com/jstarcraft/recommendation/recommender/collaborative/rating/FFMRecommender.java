@@ -1,15 +1,14 @@
 package com.jstarcraft.recommendation.recommender.collaborative.rating;
 
+import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DataSample;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.FactorizationMachineRecommender;
 
 /**
@@ -35,8 +34,8 @@ public class FFMRecommender extends FactorizationMachineRecommender {
     private int[] featureOrders;
 
     @Override
-    public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-        super.prepare(configuration, marker, model, space);
+    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+        super.prepare(configuration, model, space);
 
         // Matrix for p * (factor * filed)
         // TODO 此处应该还是稀疏
@@ -48,16 +47,14 @@ public class FFMRecommender extends FactorizationMachineRecommender {
         // init the map for feature of filed
         featureOrders = new int[numberOfFeatures];
         int count = 0;
-        int dimension = 0;
-        for (String name : marker.getQualityFields()) {
-            int size = space.getQualityAttribute(name).getSize();
+        for (int orderIndex = 0, orderSize = dimensionSizes.length; orderIndex < orderSize; orderIndex++) {
+            int size = dimensionSizes[orderIndex];
             for (int index = 0; index < size; index++) {
-                featureOrders[count + index] = dimension;
+                featureOrders[count + index] = orderIndex;
             }
-            dimension++;
             count += size;
         }
-
+        
         learnRate = configuration.getFloat("rec.iterator.learnRate");
     }
 
@@ -76,13 +73,13 @@ public class FFMRecommender extends FactorizationMachineRecommender {
             float newFactor = 0F;
             int order = marker.getQualityOrder();
             int[] keys = new int[order];
-            for (DataSample sample : marker) {
+            for (DataInstance sample : marker) {
                 for (int dimension = 0; dimension < order; dimension++) {
-                    keys[dimension] = sample.getDiscreteFeature(dimension);
+                    keys[dimension] = sample.getQualityFeature(dimension);
                 }
                 // TODO 因为每次的data都是1,可以考虑避免重复构建featureVector.
                 MathVector featureVector = getFeatureVector(keys);
-                float rate = sample.getMark();
+                float rate = sample.getQuantityMark();
                 float predict = predict(scalar, featureVector);
                 float error = predict - rate;
                 totalLoss += error * error;

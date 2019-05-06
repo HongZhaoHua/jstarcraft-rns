@@ -5,6 +5,8 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.algorithm.probability.QuantityProbability;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
@@ -14,9 +16,6 @@ import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 import com.jstarcraft.recommendation.utility.MatrixUtility;
@@ -211,8 +210,8 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
 	}
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		userMean = configuration.getFloat("rec.recommender.user.mu", 0F);
 		userBeta = configuration.getFloat("rec.recommender.user.beta", 1F);
 		userWishart = configuration.getFloat("rec.recommender.user.wishart.scale", 1F);

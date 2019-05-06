@@ -18,46 +18,46 @@ import com.jstarcraft.recommendation.task.RankingTask;
 
 public class LambdaFMTestCase {
 
-	@Test
-	public void testRecommenderByDynamic() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/lambdafmd-test.properties");
-		RankingTask job = new RankingTask(LambdaFMDynamicRecommender.class, configuration);
-		Map<String, Float> measures = job.execute();
-		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.8666254F));
-		Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.27168226F));
-		Assert.assertThat(measures.get(MRREvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.43882155F));
-		Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.34543088F));
-		Assert.assertThat(measures.get(NoveltyEvaluator.class.getSimpleName()), CoreMatchers.equalTo(13.58952F));
-		Assert.assertThat(measures.get(PrecisionEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.13550973F));
-		Assert.assertThat(measures.get(RecallEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.35033005F));
-	}
+    @Test
+    public void testRecommenderByDynamic() throws Exception {
+        Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/lambdafmd-test.properties");
+        RankingTask job = new RankingTask(LambdaFMDynamicRecommender.class, configuration);
+        Map<String, Float> measures = job.execute();
+        Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.8735906F));
+        Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.26976904F));
+        Assert.assertThat(measures.get(MRREvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.43314826F));
+        Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.34483466F));
+        Assert.assertThat(measures.get(NoveltyEvaluator.class.getSimpleName()), CoreMatchers.equalTo(13.532999F));
+        Assert.assertThat(measures.get(PrecisionEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.1383064F));
+        Assert.assertThat(measures.get(RecallEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.35182965F));
+    }
 
-	@Test
-	public void testRecommenderByStatic() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/lambdafms-test.properties");
-		RankingTask job = new RankingTask(LambdaFMStaticRecommender.class, configuration);
-		Map<String, Float> measures = job.execute();
-		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.8592377F));
-		Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.27112952F));
-		Assert.assertThat(measures.get(MRREvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.43539128F));
-		Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.34465468F));
-		Assert.assertThat(measures.get(NoveltyEvaluator.class.getSimpleName()), CoreMatchers.equalTo(16.735916F));
-		Assert.assertThat(measures.get(PrecisionEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.13542481F));
-		Assert.assertThat(measures.get(RecallEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.35522333F));
-	}
+    @Test
+    public void testRecommenderByStatic() throws Exception {
+        Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/lambdafms-test.properties");
+        RankingTask job = new RankingTask(LambdaFMStaticRecommender.class, configuration);
+        Map<String, Float> measures = job.execute();
+        Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.8695807F));
+        Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.26741856F));
+        Assert.assertThat(measures.get(MRREvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.4305091F));
+        Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.34372467F));
+        Assert.assertThat(measures.get(NoveltyEvaluator.class.getSimpleName()), CoreMatchers.equalTo(16.605133F));
+        Assert.assertThat(measures.get(PrecisionEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.13923849F));
+        Assert.assertThat(measures.get(RecallEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.35684606F));
+    }
 
-	@Test
-	public void testRecommenderByWeight() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/lambdafmw-test.properties");
-		RankingTask job = new RankingTask(LambdaFMWeightRecommender.class, configuration);
-		Map<String, Float> measures = job.execute();
-		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.8621852F));
-		Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.27071175F));
-		Assert.assertThat(measures.get(MRREvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.43840307F));
-		Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.34321192F));
-		Assert.assertThat(measures.get(NoveltyEvaluator.class.getSimpleName()), CoreMatchers.equalTo(14.949752F));
-		Assert.assertThat(measures.get(PrecisionEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.13220456F));
-		Assert.assertThat(measures.get(RecallEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.3484864F));
-	}
+    @Test
+    public void testRecommenderByWeight() throws Exception {
+        Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/lambdafmw-test.properties");
+        RankingTask job = new RankingTask(LambdaFMWeightRecommender.class, configuration);
+        Map<String, Float> measures = job.execute();
+        Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.87317735F));
+        Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.27000424F));
+        Assert.assertThat(measures.get(MRREvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.43360916F));
+        Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.34492338F));
+        Assert.assertThat(measures.get(NoveltyEvaluator.class.getSimpleName()), CoreMatchers.equalTo(14.727885F));
+        Assert.assertThat(measures.get(PrecisionEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.13758601F));
+        Assert.assertThat(measures.get(RecallEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.3529868F));
+    }
 
 }

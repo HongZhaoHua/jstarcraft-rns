@@ -3,6 +3,8 @@ package com.jstarcraft.recommendation.recommender.collaborative.ranking;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -10,9 +12,6 @@ import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 import com.jstarcraft.recommendation.recommender.ProbabilisticGraphicalRecommender;
 import com.jstarcraft.recommendation.utility.GammaUtility;
@@ -81,8 +80,8 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
 	 *             if error occurs
 	 */
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 
 		// TODO 此处代码可以消除(使用常量Marker代替或者使用binarize.threshold)
 		for (MatrixScalar term : trainMatrix) {

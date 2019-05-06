@@ -23,21 +23,21 @@ import com.jstarcraft.recommendation.task.RatingTask;
  */
 public class GlobalAverageTestCase {
 
-	@Test
-	public void testRecommender() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommendation/benchmark/globalaverage-test.properties");
-		RatingTask job = new RatingTask(GlobalAverageRecommender.class, configuration);
-		Map<String, Float> measures = job.execute();
-		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.7087578F));
-		Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.7722535F));
-		Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.83724F));
+    @Test
+    public void testRecommender() throws Exception {
+        Configuration configuration = Configuration.valueOf("recommendation/benchmark/globalaverage-test.properties");
+        RatingTask job = new RatingTask(GlobalAverageRecommender.class, configuration);
+        Map<String, Float> measures = job.execute();
+        Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.7087578F));
+        Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.7722535F));
+        Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.83724F));
 
-		for (ModemCodec codec : ModemCodec.values()) {
-			Recommender oldModel = job.getRecommender();
-			byte[] data = codec.encodeModel(oldModel);
-			Recommender newModel = (Recommender) codec.decodeModel(data);
-			Assert.assertThat(newModel.predict(new int[] { 0, 1 }, new float[] {}), CoreMatchers.equalTo(oldModel.predict(new int[] { 0, 1 }, new float[] {})));
-		}
-	}
+        for (ModemCodec codec : ModemCodec.values()) {
+            Recommender oldModel = job.getRecommender();
+            byte[] data = codec.encodeModel(oldModel);
+            Recommender newModel = (Recommender) codec.decodeModel(data);
+            Assert.assertThat(newModel.predict(new int[] { 0, 1 }, new float[] {}), CoreMatchers.equalTo(oldModel.predict(new int[] { 0, 1 }, new float[] {})));
+        }
+    }
 
 }

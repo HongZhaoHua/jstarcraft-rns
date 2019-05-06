@@ -1,9 +1,8 @@
 package com.jstarcraft.recommendation.recommender;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 
 /**
  * 推荐器
@@ -25,7 +24,7 @@ public interface Recommender {
 	 * 
 	 * @param configuration
 	 */
-	void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space);
+	void prepare(Configuration configuration, DataModule model, DataSpace space);
 	// void prepare(Configuration configuration, SparseTensor trainTensor,
 	// SparseTensor testTensor, DataSpace storage);
 

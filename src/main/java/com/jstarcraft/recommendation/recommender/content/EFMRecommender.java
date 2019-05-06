@@ -6,6 +6,9 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.attribute.MemoryQualityAttribute;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
@@ -19,10 +22,6 @@ import com.jstarcraft.ai.utility.MathUtility;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DataSample;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 
 /**
@@ -59,8 +58,8 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 	protected float featureRegularization;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 
 		commentField = configuration.getString("data.model.fields.comment");
 		commentDimension = model.getQualityInner(commentField);
@@ -96,10 +95,10 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 		// }
 		// }
 
-		for (DataSample sample : marker) {
-			int userIndex = sample.getDiscreteFeature(userDimension);
-			int itemIndex = sample.getDiscreteFeature(itemDimension);
-			int wordIndex = sample.getDiscreteFeature(commentDimension);
+		for (DataInstance sample : model) {
+			int userIndex = sample.getQualityFeature(userDimension);
+			int itemIndex = sample.getQualityFeature(itemDimension);
+			int wordIndex = sample.getQualityFeature(commentDimension);
 			String wordValue = (String) wordValues[wordIndex];
 			String[] words = wordValue.split(" ");
 			StringBuilder buffer;

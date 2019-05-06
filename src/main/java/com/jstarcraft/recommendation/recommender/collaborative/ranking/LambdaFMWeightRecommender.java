@@ -1,12 +1,12 @@
 package com.jstarcraft.recommendation.recommender.collaborative.ranking;
 
+import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.utility.LogisticUtility;
 
 /**
@@ -28,8 +28,8 @@ public class LambdaFMWeightRecommender extends LambdaFMRecommender {
 	private int Y, N;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		epsilon = configuration.getFloat("epsilon");
 		orderLosses = new float[numberOfItems - 1];
 		float orderLoss = 0F;
@@ -43,7 +43,7 @@ public class LambdaFMWeightRecommender extends LambdaFMRecommender {
 	}
 
 	@Override
-	protected float getGradientValue(DefaultScalar scalar, int[] dataPaginations, int[] dataPositions) {
+	protected float getGradientValue(DataInstance instance, DefaultScalar scalar, int[] dataPaginations, int[] dataPositions) {
 		int userIndex;
 		float positiveScore;
 		float negativeScore;
@@ -58,8 +58,9 @@ public class LambdaFMWeightRecommender extends LambdaFMRecommender {
 			Y = numberOfItems - trainMatrix.getRowScope(userIndex);
 			int from = dataPaginations[userIndex], to = dataPaginations[userIndex + 1];
 			int positivePosition = dataPositions[RandomUtility.randomInteger(from, to)];
+			instance.setCursor(positivePosition);
 			for (int index = 0; index < negativeKeys.length; index++) {
-				positiveKeys[index] = marker.getQualityFeature(index, positivePosition);
+				positiveKeys[index] = instance.getQualityFeature(index);
 			}
 			positiveVector = getFeatureVector(positiveKeys);
 			positiveScore = predict(scalar, positiveVector);
@@ -76,8 +77,9 @@ public class LambdaFMWeightRecommender extends LambdaFMRecommender {
 				// TODO 注意,此处为了故意制造负面特征.
 				int negativePosition = dataPositions[RandomUtility.randomInteger(from, to)];
 				// TODO 注意,此处为了故意制造负面特征.
+				instance.setCursor(negativePosition);
 				for (int index = 0; index < negativeKeys.length; index++) {
-					negativeKeys[index] = marker.getQualityFeature(index, negativePosition);
+					negativeKeys[index] = instance.getQualityFeature(index);
 				}
 				negativeKeys[itemDimension] = negativeItemIndex;
 				negativeVector = getFeatureVector(negativeKeys);

@@ -1,8 +1,8 @@
 package com.jstarcraft.recommendation.data.splitter;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.utility.IntegerArray;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.processor.DataMatcher;
 import com.jstarcraft.recommendation.data.processor.DataSorter;
 
@@ -15,13 +15,13 @@ import com.jstarcraft.recommendation.data.processor.DataSorter;
 // TODO 准备改名为SpecificNumberSplitter
 public class GivenNumberSplitter implements DataSplitter {
 
-    private DenseModule dataModel;
+    private DataModule dataModel;
 
     private IntegerArray trainReference;
 
     private IntegerArray testReference;
 
-    public GivenNumberSplitter(DataSpace space, DenseModule model, String matchField, String sortField, int number) {
+    public GivenNumberSplitter(DataSpace space, DataModule model, String matchField, String sortField, int number) {
         dataModel = model;
         int size = model.getSize();
         int[] paginations;
@@ -37,11 +37,11 @@ public class GivenNumberSplitter implements DataSplitter {
             DataMatcher matcher = DataMatcher.discreteOf(model, matchDimension);
             matcher.match(paginations, positions);
         }
-        if (model.getQualityFields().contains(sortField)) {
+        if (model.getQualityInner(sortField) >= 0) {
             int sortDimension = model.getQualityInner(sortField);
             DataSorter sorter = DataSorter.discreteOf(model, sortDimension);
             sorter.sort(paginations, positions);
-        } else if (model.getQuantityFields().contains(sortField)) {
+        } else if (model.getQuantityInner(sortField) >= 0) {
             int sortDimension = model.getQuantityInner(sortField);
             DataSorter sorter = DataSorter.continuousOf(model, sortDimension);
             sorter.sort(paginations, positions);
@@ -71,7 +71,7 @@ public class GivenNumberSplitter implements DataSplitter {
     }
 
     @Override
-    public DenseModule getDataModel() {
+    public DataModule getDataModel() {
         return dataModel;
     }
 

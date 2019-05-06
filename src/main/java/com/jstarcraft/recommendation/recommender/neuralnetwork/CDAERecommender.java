@@ -6,6 +6,8 @@ import java.util.Map;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.MathCache;
 import com.jstarcraft.ai.math.structure.Nd4jCache;
 import com.jstarcraft.ai.math.structure.matrix.MathMatrix;
@@ -27,9 +29,6 @@ import com.jstarcraft.ai.model.neuralnetwork.schedule.ConstantSchedule;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.LayerVertex;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.ModelRecommender;
 
 /**
@@ -105,8 +104,8 @@ public class CDAERecommender extends ModelRecommender {
 	}
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		inputDimension = getInputDimension();
 		hiddenDimension = configuration.getInteger("rec.hidden.dimension");
 		hiddenActivation = configuration.getString("rec.hidden.activation");

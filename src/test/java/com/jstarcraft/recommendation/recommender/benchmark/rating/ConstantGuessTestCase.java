@@ -6,12 +6,10 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.jstarcraft.ai.modem.ModemCodec;
 import com.jstarcraft.recommendation.configure.Configuration;
 import com.jstarcraft.recommendation.evaluator.rating.MAEEvaluator;
 import com.jstarcraft.recommendation.evaluator.rating.MPEEvaluator;
 import com.jstarcraft.recommendation.evaluator.rating.MSEEvaluator;
-import com.jstarcraft.recommendation.recommender.Recommender;
 import com.jstarcraft.recommendation.task.RatingTask;
 
 public class ConstantGuessTestCase {
@@ -24,13 +22,6 @@ public class ConstantGuessTestCase {
 		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(1.0565493F));
 		Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(1.0F));
 		Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(1.4247535F));
-
-		for (ModemCodec codec : ModemCodec.values()) {
-			Recommender oldModel = job.getRecommender();
-			byte[] data = codec.encodeModel(oldModel);
-			Recommender newModel = (Recommender) codec.decodeModel(data);
-			Assert.assertThat(newModel.predict(new int[] { 0, 1 }, new float[] {}), CoreMatchers.equalTo(oldModel.predict(new int[] { 0, 1 }, new float[] {})));
-		}
 	}
 
 }

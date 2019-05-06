@@ -1,7 +1,7 @@
 package com.jstarcraft.recommendation.data.splitter;
 
+import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.utility.IntegerArray;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
 
 /**
  * 数据处理器
@@ -24,7 +24,7 @@ public interface DataSplitter {
 	 * 
 	 * @return
 	 */
-	DenseModule getDataModel();
+	DataModule getDataModel();
 
 	/**
 	 * 获取训练引用

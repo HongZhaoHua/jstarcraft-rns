@@ -1,13 +1,12 @@
 package com.jstarcraft.recommendation.recommender.collaborative.ranking;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 import com.jstarcraft.recommendation.utility.LogisticUtility;
 
@@ -28,8 +27,8 @@ public class ListwiseMFRecommender extends MatrixFactorizationRecommender {
 	private DenseVector userExponentials;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		userExponentials = DenseVector.valueOf(numberOfUsers);
 		for (MatrixScalar matrixentry : trainMatrix) {
 			int userIndex = matrixentry.getRow();

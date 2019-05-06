@@ -3,6 +3,9 @@ package com.jstarcraft.recommendation.recommender.collaborative.ranking;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
@@ -10,9 +13,6 @@ import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.utility.LogisticUtility;
 import com.jstarcraft.recommendation.utility.SampleUtility;
 
@@ -38,8 +38,8 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
 	private Integer[] orderIndexes;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		dynamicRho = configuration.getFloat("rec.item.distribution.parameter");
 		numberOfOrders = configuration.getInteger("rec.number.orders", 10);
 
@@ -61,7 +61,7 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
 	}
 
 	@Override
-	protected float getGradientValue(DefaultScalar scalar, int[] dataPaginations, int[] dataPositions) {
+	protected float getGradientValue(DataInstance instance, DefaultScalar scalar, int[] dataPaginations, int[] dataPositions) {
 		int userIndex;
 		while (true) {
 			userIndex = RandomUtility.randomInteger(numberOfUsers);
@@ -72,8 +72,9 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
 
 			int from = dataPaginations[userIndex], to = dataPaginations[userIndex + 1];
 			int positivePosition = dataPositions[RandomUtility.randomInteger(from, to)];
+			instance.setCursor(positivePosition);
 			for (int index = 0; index < negativeKeys.length; index++) {
-				positiveKeys[index] = marker.getQualityFeature(index, positivePosition);
+				positiveKeys[index] = instance.getQualityFeature(index);
 			}
 			// TODO negativeGroup.size()可能永远达不到numberOfNegatives,需要处理
 			for (int orderIndex = 0; orderIndex < numberOfOrders; orderIndex++) {
@@ -88,8 +89,9 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
 				negativeKeys = negativeIndexes[orderIndex];
 				// TODO 注意,此处为了故意制造负面特征.
 				int negativePosition = dataPositions[RandomUtility.randomInteger(from, to)];
+				instance.setCursor(negativePosition);
 				for (int index = 0; index < negativeKeys.length; index++) {
-					negativeKeys[index] = marker.getQualityFeature(index, negativePosition);
+					negativeKeys[index] = instance.getQualityFeature(index);
 				}
 				negativeKeys[itemDimension] = negativeItemIndex;
 				MathVector vector = getFeatureVector(negativeKeys);

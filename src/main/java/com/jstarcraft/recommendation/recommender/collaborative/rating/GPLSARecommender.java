@@ -2,6 +2,8 @@ package com.jstarcraft.recommendation.recommender.collaborative.rating;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
@@ -12,9 +14,6 @@ import com.jstarcraft.ai.utility.Float2FloatKeyValue;
 import com.jstarcraft.ai.utility.MathUtility;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.ProbabilisticGraphicalRecommender;
 import com.jstarcraft.recommendation.utility.GaussianUtility;
 
@@ -62,8 +61,8 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 	protected static float smallValue = MathUtility.EPSILON;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		// Initialize users' conditional probabilities
 		userTopicProbabilities = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
 		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {

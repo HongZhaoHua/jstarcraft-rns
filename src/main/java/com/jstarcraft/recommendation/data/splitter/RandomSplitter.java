@@ -1,9 +1,9 @@
 package com.jstarcraft.recommendation.data.splitter;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
 import com.jstarcraft.recommendation.data.processor.DataMatcher;
 
 /**
@@ -14,13 +14,13 @@ import com.jstarcraft.recommendation.data.processor.DataMatcher;
  */
 public class RandomSplitter implements DataSplitter {
 
-	private DenseModule dataModel;
+	private DataModule dataModel;
 
 	private IntegerArray trainReference;
 
 	private IntegerArray testReference;
 
-	public RandomSplitter(DataSpace space, DenseModule model, String matchField, double random) {
+	public RandomSplitter(DataSpace space, DataModule model, String matchField, double random) {
 		dataModel = model;
 		int size = model.getSize();
 		int[] paginations;
@@ -53,7 +53,7 @@ public class RandomSplitter implements DataSplitter {
 	}
 
 	@Override
-	public DenseModule getDataModel() {
+	public DataModule getDataModel() {
 		return dataModel;
 	}
 

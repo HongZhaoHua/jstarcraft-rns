@@ -1,14 +1,15 @@
 package com.jstarcraft.recommendation.task;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -21,6 +22,13 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
+import com.jstarcraft.ai.data.converter.ArffConverter;
+import com.jstarcraft.ai.data.converter.CsvConverter;
+import com.jstarcraft.ai.data.converter.DataConverter;
+import com.jstarcraft.ai.data.module.ReferenceModule;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.utility.Int2FloatKeyValue;
@@ -32,13 +40,6 @@ import com.jstarcraft.core.utility.ReflectionUtility;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.core.utility.TypeUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.AttributeMarker;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
-import com.jstarcraft.recommendation.data.convertor.ArffConvertor;
-import com.jstarcraft.recommendation.data.convertor.CsvConvertor;
-import com.jstarcraft.recommendation.data.convertor.DataConvertor;
 import com.jstarcraft.recommendation.data.processor.DataMatcher;
 import com.jstarcraft.recommendation.data.processor.DataSorter;
 import com.jstarcraft.recommendation.data.splitter.DataSplitter;
@@ -65,13 +66,13 @@ public abstract class AbstractTask<T> {
 
     protected Configuration configuration;
 
-    protected String userField, itemField, scoreField;
+    protected String userField, itemField;
 
     protected int userDimension, itemDimension, numberOfUsers, numberOfItems;
 
     protected int[] trainPaginations, trainPositions, testPaginations, testPositions;
 
-    protected SampleAccessor dataMarker, trainMarker, testMarker;
+    protected DataModule dataMarker, trainMarker, testMarker;
 
     protected Recommender recommender;
 
@@ -157,83 +158,78 @@ public abstract class AbstractTask<T> {
         Type dicreteConfiguration = TypeUtility.parameterize(HashMap.class, String.class, Class.class);
         Map<String, Class<?>> dicreteDifinitions = JsonUtility.string2Object(configuration.getString("data.space.attributes.dicrete"), dicreteConfiguration);
         // 连续属性
-        Type continuousConfiguration = TypeUtility.parameterize(HashSet.class, String.class);
-        Set<String> continuousDifinitions = JsonUtility.string2Object(configuration.getString("data.space.attributes.continuous"), continuousConfiguration);
-
-        // TODO 数据特征部分
-        Type featureConfiguration = TypeUtility.parameterize(HashMap.class, String.class, String.class);
-        Map<String, String> featureDifinitions = JsonUtility.string2Object(configuration.getString("data.space.features"), featureConfiguration);
+        Type continuousConfiguration = TypeUtility.parameterize(HashMap.class, String.class, Class.class);
+        Map<String, Class<?>> continuousDifinitions = JsonUtility.string2Object(configuration.getString("data.space.attributes.continuous"), continuousConfiguration);
 
         // 数据空间部分
         DataSpace space = new DataSpace(dicreteDifinitions, continuousDifinitions);
-        for (Entry<String, String> term : featureDifinitions.entrySet()) {
-            space.makeFeature(term.getKey(), term.getValue());
+
+        // TODO 数据模型部分
+        ModuleConfigurer[] moduleConfigurers = JsonUtility.string2Object(configuration.getString("data.modules"), ModuleConfigurer[].class);
+        for (ModuleConfigurer moduleConfigurer : moduleConfigurers) {
+            space.makeDenseModule(moduleConfigurer.getName(), moduleConfigurer.getConfiguration(), 1000000000);
         }
 
         // TODO 数据转换器部分
-        Map<String, Integer> counts = new HashMap<>();
-        String format = configuration.getString("data.format");
         Type convertorConfiguration = TypeUtility.parameterize(LinkedHashMap.class, String.class, TypeUtility.parameterize(KeyValue.class, String.class, HashMap.class));
-        Map<String, KeyValue<String, HashMap<String, ?>>> convertorDifinitions = JsonUtility.string2Object(configuration.getString("data.convertors"), convertorConfiguration);
-        for (Entry<String, KeyValue<String, HashMap<String, ?>>> term : convertorDifinitions.entrySet()) {
-            String name = term.getKey();
-            KeyValue<String, HashMap<String, ?>> keyValue = term.getValue();
-            DataConvertor convertor = null;
-            switch (format) {
+        ConverterConfigurer[] converterConfigurers = JsonUtility.string2Object(configuration.getString("data.converters"), ConverterConfigurer[].class);
+        for (ConverterConfigurer converterConfigurer : converterConfigurers) {
+            String name = converterConfigurer.getName();
+            String type = converterConfigurer.getType();
+            String path = converterConfigurer.getPath();
+            DataConverter convertor = null;
+            switch (type) {
             case "arff": {
-                convertor = ReflectionUtility.getInstance(ArffConvertor.class, name, keyValue.getKey(), keyValue.getValue());
+                convertor = ReflectionUtility.getInstance(ArffConverter.class, space.getQualityAttributes(), space.getQuantityAttributes());
                 break;
             }
             case "csv": {
-                convertor = ReflectionUtility.getInstance(CsvConvertor.class, name, configuration.getCharacter("data.splitter.delimiter", ' '), keyValue.getKey(), keyValue.getValue());
+                convertor = ReflectionUtility.getInstance(CsvConverter.class, configuration.getCharacter("data.splitter.delimiter", ' '), space.getQualityAttributes(), space.getQuantityAttributes());
                 break;
             }
             default: {
                 throw new RecommendationException("不支持的转换格式");
             }
             }
-            counts.put(name, convertor.convert(space));
-        }
-
-        // TODO 数据模型部分
-        Type modelConfiguration = TypeUtility.parameterize(HashMap.class, String.class, String[].class);
-        Map<String, String[]> modelDifinitions = JsonUtility.string2Object(configuration.getString("data.models"), modelConfiguration);
-        for (Entry<String, String[]> term : modelDifinitions.entrySet()) {
-            space.makeModule(term.getKey(), term.getValue());
+            File file = new File(path);
+            DataModule module = space.getModule(name);
+            try (InputStream stream = new FileInputStream(file)) {
+                convertor.convert(module, stream, converterConfigurer.getQualityMarkOrder(), converterConfigurer.getQuantityMarkOrder(), converterConfigurer.getWeightOrder());
+            }
         }
 
         // TODO 数据切割器部分
-        SplitConfiguration splitterDifinition = JsonUtility.string2Object(configuration.getString("data.splitter"), SplitConfiguration.class);
-        DenseModule model = space.getModule(splitterDifinition.model);
+        SplitterConfigurer splitterConfigurer = JsonUtility.string2Object(configuration.getString("data.splitter"), SplitterConfigurer.class);
+        DataModule model = space.getModule(splitterConfigurer.getName());
         DataSplitter splitter;
-        switch (splitterDifinition.type) {
+        switch (splitterConfigurer.getType()) {
         case "kcv": {
             int size = configuration.getInteger("data.splitter.kcv.number", 1);
             splitter = new KFoldCrossValidationSplitter(model, size);
             break;
         }
         case "loocv": {
-            splitter = new LeaveOneCrossValidationSplitter(space, model, splitterDifinition.matchField, splitterDifinition.sortField);
+            splitter = new LeaveOneCrossValidationSplitter(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField());
             break;
         }
         case "testset": {
-            String name = configuration.getString("data.splitter.given-data.name");
-            splitter = new GivenDataSplitter(model, counts.get(name));
+            int threshold = configuration.getInteger("data.splitter.threshold");
+            splitter = new GivenDataSplitter(model, threshold);
             break;
         }
         case "givenn": {
             int number = configuration.getInteger("data.splitter.given-number.number");
-            splitter = new GivenNumberSplitter(space, model, splitterDifinition.matchField, splitterDifinition.sortField, number);
+            splitter = new GivenNumberSplitter(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField(), number);
             break;
         }
         case "random": {
             double random = configuration.getDouble("data.splitter.random.value", 0.8D);
-            splitter = new RandomSplitter(space, model, splitterDifinition.matchField, random);
+            splitter = new RandomSplitter(space, model, splitterConfigurer.getMatchField(), random);
             break;
         }
         case "ratio": {
             double ratio = configuration.getDouble("data.splitter.ratio.value", 0.8D);
-            splitter = new RatioSplitter(space, model, splitterDifinition.matchField, splitterDifinition.sortField, ratio);
+            splitter = new RatioSplitter(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField(), ratio);
             break;
         }
         default: {
@@ -244,7 +240,6 @@ public abstract class AbstractTask<T> {
         // 评估部分
         userField = configuration.getString("data.model.fields.user", "user");
         itemField = configuration.getString("data.model.fields.item", "item");
-        scoreField = configuration.getString("data.model.fields.score", "score");
 
         Double binarize = configuration.getDouble("data.convert.binarize.threshold");
         Map<String, Float> measures = new TreeMap<>();
@@ -255,14 +250,14 @@ public abstract class AbstractTask<T> {
                 for (int index = 0; index < splitter.getSize(); index++) {
                     IntegerArray trainReference = splitter.getTrainReference(index);
                     IntegerArray testReference = splitter.getTestReference(index);
-                    trainMarker = new AttributeMarker(trainReference, space.getModule(splitterDifinition.model), scoreField);
-                    testMarker = new AttributeMarker(testReference, space.getModule(splitterDifinition.model), scoreField);
+                    trainMarker = new ReferenceModule(trainReference, model);
+                    testMarker = new ReferenceModule(testReference, model);
 
                     IntegerArray positions = new IntegerArray();
                     for (int position = 0, size = model.getSize(); position < size; position++) {
                         positions.associateData(position);
                     }
-                    dataMarker = new AttributeMarker(positions, model, scoreField);
+                    dataMarker = new ReferenceModule(positions, model);
 
                     userDimension = model.getQualityInner(userField);
                     itemDimension = model.getQualityInner(itemField);
@@ -295,15 +290,15 @@ public abstract class AbstractTask<T> {
                     DataSorter dataSorter = DataSorter.featureOf(dataMarker);
                     dataSorter.sort(dataPaginations, dataPositions);
                     Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
-                    for (int position : dataPositions) {
-                        int rowIndex = dataMarker.getQualityFeature(userDimension, position);
-                        int columnIndex = dataMarker.getQualityFeature(itemDimension, position);
+                    for (DataInstance instance : dataMarker) {
+                        int rowIndex = instance.getQualityFeature(userDimension);
+                        int columnIndex = instance.getQualityFeature(itemDimension);
                         // TODO 处理冲突
-                        dataTable.put(rowIndex, columnIndex, dataMarker.getMark(position));
+                        dataTable.put(rowIndex, columnIndex, instance.getQuantityMark());
                     }
                     SparseMatrix featureMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfItems, dataTable);
 
-                    recommender.prepare(configuration, trainMarker, model, space);
+                    recommender.prepare(configuration, trainMarker, space);
                     recommender.practice();
                     for (Entry<Class<? extends Evaluator>, Int2FloatKeyValue> measure : evaluate(getEvaluators(featureMatrix), recommender).entrySet()) {
                         Float value = measure.getValue().getValue() / measure.getValue().getKey();
@@ -329,16 +324,8 @@ public abstract class AbstractTask<T> {
         return recommender;
     }
 
-    private static class SplitConfiguration {
-
-        private String model;
-
-        private String type;
-
-        private String matchField;
-
-        private String sortField;
-
+    public DataModule getDataMarker() {
+        return dataMarker;
     }
 
 }

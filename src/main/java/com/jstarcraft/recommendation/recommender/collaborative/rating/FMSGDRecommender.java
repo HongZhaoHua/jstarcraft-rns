@@ -1,13 +1,12 @@
 package com.jstarcraft.recommendation.recommender.collaborative.rating;
 
+import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DataSample;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.FactorizationMachineRecommender;
 
 /**
@@ -29,8 +28,8 @@ public class FMSGDRecommender extends FactorizationMachineRecommender {
 	private float learnRate;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		learnRate = configuration.getFloat("rec.iterator.learnRate");
 	}
 
@@ -41,13 +40,13 @@ public class FMSGDRecommender extends FactorizationMachineRecommender {
 			totalLoss = 0F;
 			int order = marker.getQualityOrder();
 			int[] keys = new int[order];
-			for (DataSample sample : marker) {
+			for (DataInstance sample : marker) {
 				for (int dimension = 0; dimension < order; dimension++) {
-					keys[dimension] = sample.getDiscreteFeature(dimension);
+					keys[dimension] = sample.getQualityFeature(dimension);
 				}
 				// TODO 因为每次的data都是1,可以考虑避免重复构建featureVector.
 				MathVector featureVector = getFeatureVector(keys);
-				float rate = sample.getMark();
+				float rate = sample.getQuantityMark();
 				float predict = predict(scalar, featureVector);
 
 				float error = predict - rate;

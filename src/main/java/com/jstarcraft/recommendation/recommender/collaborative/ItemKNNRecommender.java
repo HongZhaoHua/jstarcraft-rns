@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.algorithm.similarity.Similarity;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SymmetryMatrix;
@@ -14,9 +16,6 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.core.utility.ReflectionUtility;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.recommender.AbstractRecommender;
 
 /**
@@ -59,8 +58,8 @@ public abstract class ItemKNNRecommender extends AbstractRecommender {
 	};
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		neighborSize = configuration.getInteger("rec.neighbors.knn.number", 50);
 		// TODO 修改为配置枚举
 		try {

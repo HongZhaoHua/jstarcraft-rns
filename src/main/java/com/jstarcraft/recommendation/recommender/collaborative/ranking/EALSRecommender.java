@@ -2,6 +2,8 @@ package com.jstarcraft.recommendation.recommender.collaborative.ranking;
 
 import java.util.concurrent.CountDownLatch;
 
+import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
@@ -11,9 +13,6 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.recommendation.configure.Configuration;
-import com.jstarcraft.recommendation.data.DataSpace;
-import com.jstarcraft.recommendation.data.accessor.DenseModule;
-import com.jstarcraft.recommendation.data.accessor.SampleAccessor;
 import com.jstarcraft.recommendation.exception.RecommendationException;
 import com.jstarcraft.recommendation.recommender.MatrixFactorizationRecommender;
 
@@ -62,8 +61,8 @@ public class EALSRecommender extends MatrixFactorizationRecommender {
 	private SparseMatrix weights;
 
 	@Override
-	public void prepare(Configuration configuration, SampleAccessor marker, DenseModule model, DataSpace space) {
-		super.prepare(configuration, marker, model, space);
+	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+		super.prepare(configuration, model, space);
 		weightCoefficient = configuration.getFloat("rec.wrmf.weight.coefficient", 4.0f);
 		ratio = configuration.getFloat("rec.eals.ratio", 0.4f);
 		overallWeight = configuration.getFloat("rec.eals.overall", 128.0f);

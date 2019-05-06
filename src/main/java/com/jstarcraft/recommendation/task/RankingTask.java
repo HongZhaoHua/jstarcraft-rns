@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 import com.jstarcraft.recommendation.configure.Configuration;
@@ -53,32 +54,37 @@ public class RankingTask extends AbstractTask<IntCollection> {
 
 	@Override
 	protected IntCollection check(int userIndex) {
+	    DataInstance instance = testMarker.getInstance(0);
 		IntSet itemSet = new IntOpenHashSet();
 		int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
 		for (int index = from, size = to; index < size; index++) {
 			int position = testPositions[index];
-			itemSet.add(testMarker.getQualityFeature(itemDimension, position));
+			instance.setCursor(position);
+			itemSet.add(instance.getQualityFeature(itemDimension));
 		}
 		return itemSet;
 	}
 
 	@Override
 	protected List<Int2FloatKeyValue> recommend(Recommender recommender, int userIndex) {
+	    DataInstance instance = trainMarker.getInstance(0);
 		Set<Integer> itemSet = new HashSet<>();
 		int from = trainPaginations[userIndex], to = trainPaginations[userIndex + 1];
 		for (int index = from, size = to; index < size; index++) {
 			int position = trainPositions[index];
-			itemSet.add(trainMarker.getQualityFeature(itemDimension, position));
+			instance.setCursor(position);
+			itemSet.add(instance.getQualityFeature(itemDimension));
 		}
 		int[] discreteFeatures = new int[trainMarker.getQualityOrder()];
 		float[] continuousFeatures = new float[trainMarker.getQuantityOrder()];
 		if (from < to) {
 			int position = trainPositions[to - 1];
+			instance.setCursor(position);
 			for (int dimension = 0, size = trainMarker.getQualityOrder(); dimension < size; dimension++) {
-				discreteFeatures[dimension] = trainMarker.getQualityFeature(dimension, position);
+				discreteFeatures[dimension] = instance.getQualityFeature(dimension);
 			}
 			for (int dimension = 0, size = trainMarker.getQuantityOrder(); dimension < size; dimension++) {
-				continuousFeatures[dimension] = trainMarker.getQuantityFeature(dimension, position);
+				continuousFeatures[dimension] = instance.getQuantityFeature(dimension);
 			}
 		}
 		discreteFeatures[userDimension] = userIndex;
