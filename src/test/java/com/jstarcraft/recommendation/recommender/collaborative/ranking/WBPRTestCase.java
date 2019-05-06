@@ -23,7 +23,7 @@ public class WBPRTestCase {
 		Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/wbpr-test.properties");
 		RankingTask job = new RankingTask(WBPRRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
-		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.80871534F));
+		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.808611F));
 		Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.28209546F));
 		Assert.assertThat(measures.get(MRREvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.37461984F));
 		Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.34037653F));

@@ -23,7 +23,7 @@ public class BPRTestCase {
 		Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/bpr-test.properties");
 		RankingTask job = new RankingTask(BPRRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
-		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.92198324F));
+		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9220709F));
 		Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.45060882F));
 		Assert.assertThat(measures.get(MRREvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.60363245F));
 		Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.545478F));

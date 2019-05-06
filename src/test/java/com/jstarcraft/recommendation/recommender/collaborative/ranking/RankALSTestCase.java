@@ -23,7 +23,7 @@ public class RankALSTestCase {
 		Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/rankals-test.properties");
 		RankingTask job = new RankingTask(RankALSRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
-		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.86751676F));
+		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.8674617F));
 		Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.32235113F));
 		Assert.assertThat(measures.get(MRREvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.54515827F));
 		Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.4166958F));

@@ -23,7 +23,7 @@ public class AOBPRTestCase {
 		Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/aobpr-test.properties");
 		RankingTask job = new RankingTask(AoBPRRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
-		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9194942F));
+		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9195788F));
 		Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.43754834F));
 		Assert.assertThat(measures.get(MRREvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.5987676F));
 		Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.53109217F));

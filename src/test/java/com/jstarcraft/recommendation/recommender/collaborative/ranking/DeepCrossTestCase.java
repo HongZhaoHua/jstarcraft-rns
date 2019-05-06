@@ -23,7 +23,7 @@ public class DeepCrossTestCase {
 		Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/deepcross-test.properties");
 		RankingTask job = new RankingTask(DeepCrossRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
-		Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.40266135076685144D));
+		Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.42737266F));
 		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9157193591230217D));
 		Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.5055273137731051D));
 		Assert.assertThat(measures.get(PrecisionEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.326326259946951D));

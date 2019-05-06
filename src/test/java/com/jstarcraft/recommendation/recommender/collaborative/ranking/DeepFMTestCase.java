@@ -24,7 +24,7 @@ public class DeepFMTestCase {
 		Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/deepfm-test.properties");
 		RankingTask job = new RankingTask(DeepFMRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
-		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.93613666F));
+		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.93296534F));
 		Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.43918133F));
 		Assert.assertThat(measures.get(MRREvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.56956583F));
 		Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.5408482F));
