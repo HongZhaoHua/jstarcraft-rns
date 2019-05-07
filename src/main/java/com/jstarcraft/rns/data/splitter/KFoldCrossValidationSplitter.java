@@ -35,11 +35,6 @@ public class KFoldCrossValidationSplitter implements DataSplitter {
     }
 
     @Override
-    public DataModule getDataModel() {
-        return dataModel;
-    }
-
-    @Override
     public ReferenceModule getTrainReference(int index) {
         IntegerArray reference = new IntegerArray();
         for (int position = 0, size = dataModel.getSize(); position < size; position++) {

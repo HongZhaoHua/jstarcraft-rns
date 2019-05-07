@@ -70,11 +70,6 @@ public class LeaveOneCrossValidationSplitter implements DataSplitter {
     }
 
     @Override
-    public DataModule getDataModel() {
-        return dataModel;
-    }
-
-    @Override
     public ReferenceModule getTrainReference(int index) {
         return new ReferenceModule(trainReference, dataModel);
     }
