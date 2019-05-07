@@ -26,6 +26,13 @@
     </build>
 
     <dependencies>
+        <!-- 核心框架依赖 -->
+        <dependency>
+            <groupId>com.jstarcraft</groupId>
+            <artifactId>jstarcraft-core-storage</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <!-- 机器学习框架依赖 -->
         <dependency>
             <groupId>com.jstarcraft</groupId>

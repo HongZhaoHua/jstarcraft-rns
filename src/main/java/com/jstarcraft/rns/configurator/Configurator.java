@@ -3,6 +3,9 @@ package com.jstarcraft.rns.configurator;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import com.jstarcraft.core.storage.annotation.StorageConfiguration;
+import com.jstarcraft.core.storage.annotation.StorageId;
+
 /**
  * 装配器
  * 
@@ -10,7 +13,11 @@ import java.lang.reflect.Type;
  *
  * @param <T>
  */
+@StorageConfiguration
 public abstract class Configurator<T> {
+
+    @StorageId
+    private String id;
 
     protected Class<?> clazz;
 
