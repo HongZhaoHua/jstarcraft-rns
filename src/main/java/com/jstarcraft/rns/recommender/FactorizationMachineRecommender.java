@@ -81,15 +81,30 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
+
+        maximumOfScore = configuration.getFloat("rec.recommender.maxrate", 12F);
+        minimumOfScore = configuration.getFloat("rec.recommender.minrate", 0F);
+
+        numberOfFactors = configuration.getInteger("rec.factor.number");
+
+        // init all weight with zero
+        globalBias = 0;
+
+        // init factors with small value
+        // TODO 此处需要重构
+        initMean = configuration.getFloat("rec.init.mean", 0F);
+        initStd = configuration.getFloat("rec.init.std", 0.1F);
+
+        biasRegularization = configuration.getFloat("rec.fm.regw0", 0.01F);
+        weightRegularization = configuration.getFloat("rec.fm.regW", 0.01F);
+        factorRegularization = configuration.getFloat("rec.fm.regF", 10F);
+
         // TODO 暂时不支持连续特征,考虑将连续特征离散化.
         this.marker = model;
         dimensionSizes = new int[marker.getQualityOrder()];
 
         // TODO 考虑重构,在AbstractRecommender初始化
         numberOfActions = marker.getSize();
-        maximumOfScore = configuration.getFloat("rec.recommender.maxrate", 12F);
-        minimumOfScore = configuration.getFloat("rec.recommender.minrate", 0F);
-
         // initialize the parameters of FM
         // TODO 此处需要重构,外部索引与内部索引的映射转换
         for (int orderIndex = 0, orderSize = marker.getQualityOrder(); orderIndex < orderSize; orderIndex++) {
@@ -97,27 +112,12 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
             dimensionSizes[marker.getQualityInner(term.getValue().getKey())] = space.getQualityAttribute(term.getValue().getKey()).getSize();
             numberOfFeatures += dimensionSizes[marker.getQualityInner(term.getValue().getKey())];
         }
-
-        numberOfFactors = configuration.getInteger("rec.factor.number");
-
-        // init all weight with zero
-        globalBias = 0;
         weightVector = DenseVector.valueOf(numberOfFeatures);
-
-        // init factors with small value
-        // TODO 此处需要重构
-        initMean = configuration.getFloat("rec.init.mean", 0F);
-        initStd = configuration.getFloat("rec.init.std", 0.1F);
-
         distribution = new QuantityProbability(JDKRandomGenerator.class, 0, NormalDistribution.class, initMean, initStd);
         featureFactors = DenseMatrix.valueOf(numberOfFeatures, numberOfFactors);
         featureFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-
-        biasRegularization = configuration.getFloat("rec.fm.regw0", 0.01f);
-        weightRegularization = configuration.getFloat("rec.fm.regW", 0.01f);
-        factorRegularization = configuration.getFloat("rec.fm.regF", 10f);
     }
 
     /**
