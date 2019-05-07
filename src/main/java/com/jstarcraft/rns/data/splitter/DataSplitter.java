@@ -1,7 +1,7 @@
 package com.jstarcraft.rns.data.splitter;
 
 import com.jstarcraft.ai.data.DataModule;
-import com.jstarcraft.ai.utility.IntegerArray;
+import com.jstarcraft.ai.data.module.ReferenceModule;
 
 /**
  * 数据处理器
@@ -32,7 +32,7 @@ public interface DataSplitter {
 	 * @param index
 	 * @return
 	 */
-	IntegerArray getTrainReference(int index);
+	ReferenceModule getTrainReference(int index);
 
 	/**
 	 * 获取测试引用
@@ -40,6 +40,6 @@ public interface DataSplitter {
 	 * @param index
 	 * @return
 	 */
-	IntegerArray getTestReference(int index);
+	ReferenceModule getTestReference(int index);
 
 }

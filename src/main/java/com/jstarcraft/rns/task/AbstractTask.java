@@ -248,16 +248,9 @@ public abstract class AbstractTask<T> {
         Future<?> task = context.doTask(() -> {
             try {
                 for (int index = 0; index < splitter.getSize(); index++) {
-                    IntegerArray trainReference = splitter.getTrainReference(index);
-                    IntegerArray testReference = splitter.getTestReference(index);
-                    trainMarker = new ReferenceModule(trainReference, model);
-                    testMarker = new ReferenceModule(testReference, model);
-
-                    IntegerArray positions = new IntegerArray();
-                    for (int position = 0, size = model.getSize(); position < size; position++) {
-                        positions.associateData(position);
-                    }
-                    dataMarker = new ReferenceModule(positions, model);
+                    trainMarker = splitter.getTrainReference(index);
+                    testMarker = splitter.getTestReference(index);
+                    dataMarker = model;
 
                     userDimension = model.getQualityInner(userField);
                     itemDimension = model.getQualityInner(itemField);

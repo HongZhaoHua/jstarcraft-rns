@@ -52,37 +52,28 @@ public abstract class AbstractEvaluatorTestCase<T> {
         discreteFeatures.put("instant", long.class);
         DataSpace space = new DataSpace(discreteFeatures, continuousFeatures);
 
-       
         TreeMap<Integer, String> configuration = new TreeMap<>();
         configuration.put(1, "user");
         configuration.put(2, "item");
         configuration.put(3, "instant");
         CsvConverter csvConvertor = new CsvConverter(' ', space.getQualityAttributes(), space.getQuantityAttributes());
-       
+
         // 制造数据模型
         DataModule model = space.makeDenseModule("model", configuration, 1000000);
-        
+
         String path = "data/filmtrust/score.txt";
         File file = new File(path);
         InputStream stream = new FileInputStream(file);
         int count = csvConvertor.convert(model, stream, null, 3, null);
 
         DataSplitter splitter = new LeaveOneCrossValidationSplitter(space, model, "user", "instant");
-        IntegerArray trainReference = splitter.getTrainReference(0);
-        IntegerArray testReference = splitter.getTestReference(0);
+        trainMarker = splitter.getTrainReference(0);
+        testMarker = splitter.getTestReference(0);
 
         userField = "user";
         itemField = "item";
         scoreField = "score";
         instantField = "instant";
-
-        trainMarker = new ReferenceModule(trainReference, model);
-        testMarker = new ReferenceModule(testReference, model);
-        IntegerArray positions = new IntegerArray();
-        for (int index = 0, size = model.getSize(); index < size; index++) {
-            positions.associateData(index);
-        }
-        ReferenceModule dataMarker = new ReferenceModule(positions, model);
 
         userDimension = model.getQualityInner(userField);
         itemDimension = model.getQualityInner(itemField);
@@ -132,16 +123,16 @@ public abstract class AbstractEvaluatorTestCase<T> {
         SparseMatrix testMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfItems, testTable);
 
         int[] dataPaginations = new int[numberOfUsers + 1];
-        int[] dataPositions = new int[dataMarker.getSize()];
-        for (int index = 0; index < dataMarker.getSize(); index++) {
+        int[] dataPositions = new int[model.getSize()];
+        for (int index = 0; index < model.getSize(); index++) {
             dataPositions[index] = index;
         }
-        DataMatcher dataMatcher = DataMatcher.discreteOf(dataMarker, userDimension);
+        DataMatcher dataMatcher = DataMatcher.discreteOf(model, userDimension);
         dataMatcher.match(dataPaginations, dataPositions);
-        DataSorter dataSorter = DataSorter.featureOf(dataMarker);
+        DataSorter dataSorter = DataSorter.featureOf(model);
         dataSorter.sort(dataPaginations, dataPositions);
         Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
-        DataInstance dataInstance = dataMarker.getInstance(0);
+        DataInstance dataInstance = model.getInstance(0);
         for (int position : dataPositions) {
             dataInstance.setCursor(position);
             int rowIndex = dataInstance.getQualityFeature(userDimension);

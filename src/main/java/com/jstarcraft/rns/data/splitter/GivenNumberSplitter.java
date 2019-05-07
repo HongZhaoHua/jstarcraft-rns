@@ -2,6 +2,7 @@ package com.jstarcraft.rns.data.splitter;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
+import com.jstarcraft.ai.data.module.ReferenceModule;
 import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.rns.data.processor.DataMatcher;
 import com.jstarcraft.rns.data.processor.DataSorter;
@@ -76,13 +77,13 @@ public class GivenNumberSplitter implements DataSplitter {
     }
 
     @Override
-    public IntegerArray getTrainReference(int index) {
-        return trainReference;
+    public ReferenceModule getTrainReference(int index) {
+        return new ReferenceModule(trainReference, dataModel);
     }
 
     @Override
-    public IntegerArray getTestReference(int index) {
-        return testReference;
+    public ReferenceModule getTestReference(int index) {
+        return new ReferenceModule(testReference, dataModel);
     }
 
 }

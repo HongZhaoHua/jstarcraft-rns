@@ -1,6 +1,7 @@
 package com.jstarcraft.rns.data.splitter;
 
 import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.module.ReferenceModule;
 import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.core.utility.RandomUtility;
 
@@ -11,53 +12,53 @@ import com.jstarcraft.core.utility.RandomUtility;
  */
 public class KFoldCrossValidationSplitter implements DataSplitter {
 
-	private DataModule dataModel;
+    private DataModule dataModel;
 
-	private Integer[] folds;
+    private Integer[] folds;
 
-	private int number;
+    private int number;
 
-	public KFoldCrossValidationSplitter(DataModule model, int number) {
-		dataModel = model;
-		this.number = number;
-		folds = new Integer[dataModel.getSize()];
-		for (int index = 0, size = folds.length; index < size; index++) {
-			folds[index] = index % number;
-		}
-		// 通过随机与交换的方式实现打乱排序的目的.
-		RandomUtility.shuffle(folds);
-	}
+    public KFoldCrossValidationSplitter(DataModule model, int number) {
+        dataModel = model;
+        this.number = number;
+        folds = new Integer[dataModel.getSize()];
+        for (int index = 0, size = folds.length; index < size; index++) {
+            folds[index] = index % number;
+        }
+        // 通过随机与交换的方式实现打乱排序的目的.
+        RandomUtility.shuffle(folds);
+    }
 
-	@Override
-	public int getSize() {
-		return number;
-	}
+    @Override
+    public int getSize() {
+        return number;
+    }
 
-	@Override
-	public DataModule getDataModel() {
-		return dataModel;
-	}
+    @Override
+    public DataModule getDataModel() {
+        return dataModel;
+    }
 
-	@Override
-	public IntegerArray getTrainReference(int index) {
-		IntegerArray reference = new IntegerArray();
-		for (int position = 0, size = dataModel.getSize(); position < size; position++) {
-			if (folds[position] != index) {
-				reference.associateData(position);
-			}
-		}
-		return reference;
-	}
+    @Override
+    public ReferenceModule getTrainReference(int index) {
+        IntegerArray reference = new IntegerArray();
+        for (int position = 0, size = dataModel.getSize(); position < size; position++) {
+            if (folds[position] != index) {
+                reference.associateData(position);
+            }
+        }
+        return new ReferenceModule(reference, dataModel);
+    }
 
-	@Override
-	public IntegerArray getTestReference(int index) {
-		IntegerArray reference = new IntegerArray();
-		for (int position = 0, size = dataModel.getSize(); position < size; position++) {
-			if (folds[position] == index) {
-				reference.associateData(position);
-			}
-		}
-		return reference;
-	}
+    @Override
+    public ReferenceModule getTestReference(int index) {
+        IntegerArray reference = new IntegerArray();
+        for (int position = 0, size = dataModel.getSize(); position < size; position++) {
+            if (folds[position] == index) {
+                reference.associateData(position);
+            }
+        }
+        return new ReferenceModule(reference, dataModel);
+    }
 
 }

@@ -2,6 +2,7 @@ package com.jstarcraft.rns.data.splitter;
 
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.module.ReferenceModule;
 import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.rns.data.processor.DataSelector;
 
@@ -14,45 +15,45 @@ import com.jstarcraft.rns.data.processor.DataSelector;
 // TODO 准备改名为SpecificInstanceSplitter
 public class GivenInstanceSplitter implements DataSplitter {
 
-	private DataModule dataModel;
+    private DataModule dataModel;
 
-	private IntegerArray trainReference;
+    private IntegerArray trainReference;
 
-	private IntegerArray testReference;
+    private IntegerArray testReference;
 
-	public GivenInstanceSplitter(DataModule model, DataSelector selector) {
-		this.dataModel = model;
+    public GivenInstanceSplitter(DataModule model, DataSelector selector) {
+        this.dataModel = model;
 
-		this.trainReference = new IntegerArray();
-		this.testReference = new IntegerArray();
-		int position = 0;
-		for (DataInstance instance : model) {
-			if (selector.select(instance)) {
-				testReference.associateData(position++);
-			} else {
-				trainReference.associateData(position++);
-			}
-		}
-	}
+        this.trainReference = new IntegerArray();
+        this.testReference = new IntegerArray();
+        int position = 0;
+        for (DataInstance instance : model) {
+            if (selector.select(instance)) {
+                testReference.associateData(position++);
+            } else {
+                trainReference.associateData(position++);
+            }
+        }
+    }
 
-	@Override
-	public int getSize() {
-		return 1;
-	}
+    @Override
+    public int getSize() {
+        return 1;
+    }
 
-	@Override
-	public DataModule getDataModel() {
-		return dataModel;
-	}
+    @Override
+    public DataModule getDataModel() {
+        return dataModel;
+    }
 
-	@Override
-	public IntegerArray getTrainReference(int index) {
-		return trainReference;
-	}
+    @Override
+    public ReferenceModule getTrainReference(int index) {
+        return new ReferenceModule(trainReference, dataModel);
+    }
 
-	@Override
-	public IntegerArray getTestReference(int index) {
-		return testReference;
-	}
+    @Override
+    public ReferenceModule getTestReference(int index) {
+        return new ReferenceModule(testReference, dataModel);
+    }
 
 }
