@@ -54,7 +54,7 @@ JStarCraft RNS引擎基于[JStarCraft AI框架](https://github.com/HongZhaoHua/j
 ```maven
 <dependency>
     <groupId>com.jstarcraft</groupId>
-    <artifactId>recommendation</artifactId>
+    <artifactId>rns</artifactId>
     <version>1.0</version>
 </dependency>
 ```
@@ -62,7 +62,7 @@ JStarCraft RNS引擎基于[JStarCraft AI框架](https://github.com/HongZhaoHua/j
 #### Gradle依赖
 
 ```gradle
-compile group: 'com.jstarcraft', name: 'recommendation', version: '1.0'
+compile group: 'com.jstarcraft', name: 'rns', version: '1.0'
 ```
 
 #### 设置配置
