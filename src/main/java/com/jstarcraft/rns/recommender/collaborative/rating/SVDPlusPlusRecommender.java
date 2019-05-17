@@ -96,7 +96,7 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
                 }
             }
 
-            totalLoss *= 0.5D;
+            totalLoss *= 0.5F;
             if (isConverged(iterationStep) && isConverged) {
                 break;
             }
@@ -127,7 +127,7 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
             factorVector.addVector(factorMatrix.getRowVector(term.getIndex()));
         }
         float scale = (float) Math.sqrt(userVector.getElementSize());
-        if (scale > 0D) {
+        if (scale > 0F) {
             factorVector.scaleValues(1F / scale);
         }
         return predict(userIndex, itemIndex, factorVector);
