@@ -74,15 +74,15 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 			probabilityVector.scaleValues(1F / probabilityVector.getSum(false));
 		}
 
-		Float2FloatKeyValue keyValue = trainMatrix.getVariance();
+		Float2FloatKeyValue keyValue = scoreMatrix.getVariance();
 		float mean = keyValue.getKey();
-		float variance = keyValue.getValue() / trainMatrix.getElementSize();
+		float variance = keyValue.getValue() / scoreMatrix.getElementSize();
 
 		userMus = DenseVector.valueOf(numberOfUsers);
 		userSigmas = DenseVector.valueOf(numberOfUsers);
 		smoothWeight = configuration.getInteger("rec.recommender.smoothWeight");
 		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-			SparseVector userVector = trainMatrix.getRowVector(userIndex);
+			SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 			int size = userVector.getElementSize();
 			if (size < 1) {
 				continue;
@@ -99,7 +99,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 		// TODO 重构
 		probabilityTensor = HashBasedTable.create();
 
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			float rate = term.getValue();
@@ -111,7 +111,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 		itemMus = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
 		itemSigmas = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
 		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-			SparseVector itemVector = trainMatrix.getColumnVector(itemIndex);
+			SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
 			int size = itemVector.getElementSize();
 			if (size < 1) {
 				continue;
@@ -130,7 +130,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 	protected void eStep() {
 		// variational inference to compute Q
 		float[] numerators = new float[numberOfFactors];
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			float rate = term.getValue();
@@ -155,7 +155,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 		float[] numerators = new float[numberOfFactors];
 		// theta_u,z
 		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-			SparseVector userVector = trainMatrix.getRowVector(userIndex);
+			SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 			if (userVector.getElementSize() < 1) {
 				continue;
 			}
@@ -175,7 +175,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 
 		// topicItemMu, topicItemSigma
 		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-			SparseVector itemVector = trainMatrix.getColumnVector(itemIndex);
+			SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
 			if (itemVector.getElementSize() < 1) {
 				continue;
 			}

@@ -46,13 +46,13 @@ public class ASVDPlusPlusRecommender extends BiasedMFRecommender {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             // TODO 目前没有totalLoss.
             totalLoss = 0f;
-            for (MatrixScalar matrixTerm : trainMatrix) {
+            for (MatrixScalar matrixTerm : scoreMatrix) {
                 int userIndex = matrixTerm.getRow();
                 int itemIndex = matrixTerm.getColumn();
                 float rate = matrixTerm.getValue();
                 float predict = predict(userIndex, itemIndex);
                 float error = rate - predict;
-                SparseVector userVector = trainMatrix.getRowVector(userIndex);
+                SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 
                 // update factors
                 float userBiasValue = userBiases.getValue(userIndex);
@@ -102,7 +102,7 @@ public class ASVDPlusPlusRecommender extends BiasedMFRecommender {
         DenseVector userVector = userFactors.getRowVector(userIndex);
         DenseVector itemVector = itemFactors.getRowVector(itemIndex);
         float value = meanOfScore + userBiases.getValue(userIndex) + itemBiases.getValue(itemIndex) + scalar.dotProduct(userVector, itemVector).getValue();
-        SparseVector rateVector = trainMatrix.getRowVector(userIndex);
+        SparseVector rateVector = scoreMatrix.getRowVector(userIndex);
         float squareRoot = (float) Math.sqrt(rateVector.getElementSize());
         for (VectorScalar term : rateVector) {
             itemIndex = term.getIndex();

@@ -135,7 +135,7 @@ public abstract class BHFreeRecommender extends ProbabilisticGraphicalRecommende
 
 		topicMatrix = HashBasedTable.create();
 
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			float rate = term.getValue();

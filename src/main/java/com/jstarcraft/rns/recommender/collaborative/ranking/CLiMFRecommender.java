@@ -27,7 +27,7 @@ public class CLiMFRecommender extends MatrixFactorizationRecommender {
 
 	@Override
 	protected void doPractice() {
-		List<IntSet> userItemSet = getUserItemSet(trainMatrix);
+		List<IntSet> userItemSet = getUserItemSet(scoreMatrix);
 
 		float[] factorValues = new float[numberOfFactors];
 

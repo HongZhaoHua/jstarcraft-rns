@@ -41,7 +41,7 @@ public class RankSGDRecommender extends MatrixFactorizationRecommender {
 		itemProbabilities = DenseVector.valueOf(numberOfItems);
 		itemProbabilities.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			int index = scalar.getIndex();
-			float userSize = trainMatrix.getColumnScope(index);
+			float userSize = scoreMatrix.getColumnScope(index);
 			// sample items based on popularity
 			float value = (userSize + 0F) / numberOfActions;
 			sum.shiftValue(value);
@@ -51,11 +51,11 @@ public class RankSGDRecommender extends MatrixFactorizationRecommender {
 
 	@Override
 	protected void doPractice() {
-		List<IntSet> userItemSet = getUserItemSet(trainMatrix);
+		List<IntSet> userItemSet = getUserItemSet(scoreMatrix);
 		for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
 			totalLoss = 0F;
 			// for each rated user-item (u,i) pair
-			for (MatrixScalar term : trainMatrix) {
+			for (MatrixScalar term : scoreMatrix) {
 				int userIndex = term.getRow();
 				IntSet itemSet = userItemSet.get(userIndex);
 				int positiveItemIndex = term.getColumn();

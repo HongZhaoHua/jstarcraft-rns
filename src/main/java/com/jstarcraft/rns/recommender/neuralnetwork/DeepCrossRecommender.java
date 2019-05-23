@@ -209,7 +209,7 @@ public class DeepCrossRecommender extends ModelRecommender {
             for (int batchIndex = 0; batchIndex < batchSize;) {
                 // 随机用户
                 int userIndex = RandomUtility.randomInteger(numberOfUsers);
-                SparseVector userVector = trainMatrix.getRowVector(userIndex);
+                SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                 if (userVector.getElementSize() == 0 || userVector.getElementSize() == numberOfItems) {
                     continue;
                 }

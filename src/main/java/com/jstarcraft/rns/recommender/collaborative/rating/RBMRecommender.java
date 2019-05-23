@@ -100,7 +100,7 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
         // TODO 此处需要重构
         int[][] itemScoreCount = new int[numberOfItems][numberOfScores];
         for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-            SparseVector userVector = trainMatrix.getRowVector(userIndex);
+            SparseVector userVector = scoreMatrix.getRowVector(userIndex);
             if (userVector.getElementSize() == 0) {
                 continue;
             }
@@ -151,7 +151,7 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
             }
             RandomUtility.shuffle(userIndexes);
             for (int userIndex : userIndexes) {
-                SparseVector userVector = trainMatrix.getRowVector(userIndex);
+                SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                 if (userVector.getElementSize() == 0) {
                     continue;
                 }
@@ -346,7 +346,7 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
         float[] factorProbabilities = new float[numberOfFactors];
         float[] factorSums = new float[numberOfFactors];
         // 用户历史分数记录?
-        SparseVector userVector = trainMatrix.getRowVector(userIndex);
+        SparseVector userVector = scoreMatrix.getRowVector(userIndex);
         for (VectorScalar term : userVector) {
             int termIndex = term.getIndex();
             int scoreIndex = scoreIndexes.get(term.getValue());

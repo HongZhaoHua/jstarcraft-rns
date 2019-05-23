@@ -81,7 +81,7 @@ public class TopicMFMTRecommender extends MatrixFactorizationRecommender {
         learnRate = configuration.getFloat("rec.iterator.learnrate", 0.01F);
         numberOfEpoches = configuration.getInteger("rec.iterator.maximum", 10);
 
-        numberOfDocuments = trainMatrix.getElementSize();
+        numberOfDocuments = scoreMatrix.getElementSize();
 
         // count the number of words, build the word dictionary and
         // userItemToDoc dictionary
@@ -163,7 +163,7 @@ public class TopicMFMTRecommender extends MatrixFactorizationRecommender {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
             float wordLoss = 0F;
-            for (MatrixScalar term : trainMatrix) {
+            for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow(); // userIdx
                 int itemIndex = term.getColumn(); // itemIdx
                 int documentIndex = userItemToDocument.get(userIndex, itemIndex);
@@ -262,7 +262,7 @@ public class TopicMFMTRecommender extends MatrixFactorizationRecommender {
      * softmax( exp(K|u||v|) )
      */
     private void calculateTheta() {
-        for (MatrixScalar term : trainMatrix) {
+        for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow();
             int itemIndex = term.getColumn();
             int documentIdx = userItemToDocument.get(userIndex, itemIndex);

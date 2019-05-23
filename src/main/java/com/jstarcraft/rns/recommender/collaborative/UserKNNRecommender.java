@@ -65,7 +65,7 @@ public abstract class UserKNNRecommender extends AbstractRecommender {
 		try {
 			Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("rec.similarity.class"));
 			Similarity similarity = ReflectionUtility.getInstance(similarityClass);
-			similarityMatrix = similarity.makeSimilarityMatrix(trainMatrix, false, configuration.getFloat("rec.similarity.shrinkage", 0F));
+			similarityMatrix = similarity.makeSimilarityMatrix(scoreMatrix, false, configuration.getFloat("rec.similarity.shrinkage", 0F));
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
@@ -116,20 +116,20 @@ public abstract class UserKNNRecommender extends AbstractRecommender {
 
 		userVectors = new SparseVector[numberOfUsers];
 		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-			userVectors[userIndex] = trainMatrix.getRowVector(userIndex);
+			userVectors[userIndex] = scoreMatrix.getRowVector(userIndex);
 		}
 
 		itemVectors = new SparseVector[numberOfItems];
 		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-			itemVectors[itemIndex] = trainMatrix.getColumnVector(itemIndex);
+			itemVectors[itemIndex] = scoreMatrix.getColumnVector(itemIndex);
 		}
 	}
 
 	@Override
 	protected void doPractice() {
-		meanOfScore = trainMatrix.getSum(false) / trainMatrix.getElementSize();
+		meanOfScore = scoreMatrix.getSum(false) / scoreMatrix.getElementSize();
 		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-			SparseVector userVector = trainMatrix.getRowVector(userIndex);
+			SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 			userMeans.setValue(userIndex, userVector.getElementSize() > 0 ? userVector.getSum(false) / userVector.getElementSize() : meanOfScore);
 		}
 	}

@@ -35,7 +35,7 @@ public class MFALSRecommender extends MatrixFactorizationRecommender {
             // fix item matrix M, solve user matrix U
             for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
                 // number of items rated by user userIdx
-                SparseVector userVector = trainMatrix.getRowVector(userIndex);
+                SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                 int size = userVector.getElementSize();
                 if (size == 0) {
                     continue;
@@ -69,7 +69,7 @@ public class MFALSRecommender extends MatrixFactorizationRecommender {
             for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
                 // latent factor of users that have rated item itemIdx
                 // number of users rate item j
-                SparseVector itemVector = trainMatrix.getColumnVector(itemIndex);
+                SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
                 int size = itemVector.getElementSize();
                 if (size == 0) {
                     continue;

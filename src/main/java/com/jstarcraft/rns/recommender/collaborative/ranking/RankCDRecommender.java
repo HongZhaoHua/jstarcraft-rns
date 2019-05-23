@@ -37,12 +37,12 @@ public class RankCDRecommender extends MatrixFactorizationRecommender {
 		super.prepare(configuration, model, space);
 
 		// TODO 此处代码可以消除(使用常量Marker代替或者使用binarize.threshold)
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			term.setValue(1F);
 		}
 
 		confidence = configuration.getFloat("rec.rankcd.alpha");
-		weightMatrix = SparseMatrix.copyOf(trainMatrix, false);
+		weightMatrix = SparseMatrix.copyOf(scoreMatrix, false);
 		weightMatrix.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			scalar.setValue(1F + confidence * scalar.getValue());
 		});

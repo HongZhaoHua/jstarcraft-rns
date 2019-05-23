@@ -47,7 +47,7 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // TODO 此处代码可以消除(使用常量Marker代替或者使用binarize.threshold)
-        for (MatrixScalar term : trainMatrix) {
+        for (MatrixScalar term : scoreMatrix) {
             term.setValue(1F);
         }
 

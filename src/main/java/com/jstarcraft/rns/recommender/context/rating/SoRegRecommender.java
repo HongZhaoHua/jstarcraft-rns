@@ -70,7 +70,7 @@ public class SoRegRecommender extends SocialRecommender {
             DenseMatrix itemDeltas = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
 
             // ratings
-            for (MatrixScalar term : trainMatrix) {
+            for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();
                 float error = predict(userIndex, itemIndex) - term.getValue();

@@ -123,7 +123,7 @@ public class CDAERecommender extends ModelRecommender {
 
         array = Nd4j.create(numberOfUsers, numberOfItems);
         labelData = new Nd4jMatrix(array);
-        for (MatrixScalar term : trainMatrix) {
+        for (MatrixScalar term : scoreMatrix) {
             labelData.setValue(term.getRow(), term.getColumn(), 1F);
         }
 
@@ -155,7 +155,7 @@ public class CDAERecommender extends ModelRecommender {
         Graph graph = getComputationGraph();
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             inputData.getArray().assign(labelData.getArray());
-            for (MatrixScalar term : trainMatrix) {
+            for (MatrixScalar term : scoreMatrix) {
                 if (RandomUtility.randomFloat(1F) < 0.2F) {
                     inputData.setValue(term.getRow(), term.getColumn(), 0F);
                 }

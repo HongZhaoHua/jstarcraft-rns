@@ -96,12 +96,12 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
 
         float checkRatio = configuration.getFloat("rec.urp.chech.ratio", 0F);
         if (checkRatio == 0F) {
-            learnMatrix = trainMatrix;
+            learnMatrix = scoreMatrix;
             checkMatrix = null;
         } else {
             Table<Integer, Integer, Float> learnTable = HashBasedTable.create();
             Table<Integer, Integer, Float> checkTable = HashBasedTable.create();
-            for (MatrixScalar term : trainMatrix) {
+            for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();
                 float score = term.getValue();

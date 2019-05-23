@@ -29,7 +29,7 @@ public class BPRRecommender extends MatrixFactorizationRecommender {
 				int userIndex, positiveItemIndex, negativeItemIndex;
 				while (true) {
 					userIndex = RandomUtility.randomInteger(numberOfUsers);
-					SparseVector userVector = trainMatrix.getRowVector(userIndex);
+					SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 					if (userVector.getElementSize() == 0) {
 						continue;
 					}

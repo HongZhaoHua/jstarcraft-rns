@@ -54,11 +54,11 @@ public class WRMFRecommender extends MatrixFactorizationRecommender {
 		super.prepare(configuration, model, space);
 		weightCoefficient = configuration.getFloat("rec.wrmf.weight.coefficient", 4.0f);
 
-		confindenceMatrix = SparseMatrix.copyOf(trainMatrix, false);
+		confindenceMatrix = SparseMatrix.copyOf(scoreMatrix, false);
 		confindenceMatrix.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			scalar.setValue((float) Math.log(1F + Math.pow(10, weightCoefficient) * scalar.getValue()));
 		});
-		preferenceMatrix = SparseMatrix.copyOf(trainMatrix, false);
+		preferenceMatrix = SparseMatrix.copyOf(scoreMatrix, false);
 		preferenceMatrix.setValues(1F);
 	}
 

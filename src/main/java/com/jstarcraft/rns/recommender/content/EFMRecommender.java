@@ -224,8 +224,8 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 
 			// Update UserFeatureMatrix by fixing the others
 			for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-				if (trainMatrix.getRowScope(userIndex) > 0 && userFeatures.getRowScope(userIndex) > 0) {
-					SparseVector userVector = trainMatrix.getRowVector(userIndex);
+				if (scoreMatrix.getRowScope(userIndex) > 0 && userFeatures.getRowScope(userIndex) > 0) {
+					SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 					SparseVector attentionVector = userFeatures.getRowVector(userIndex);
 					// TODO 此处需要重构,应该避免不断构建SparseVector.
 					int user = userIndex;
@@ -249,8 +249,8 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 
 			// Update ItemFeatureMatrix by fixing the others
 			for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-				if (trainMatrix.getColumnScope(itemIndex) > 0 && itemFeatures.getRowScope(itemIndex) > 0) {
-					SparseVector itemVector = trainMatrix.getColumnVector(itemIndex);
+				if (scoreMatrix.getColumnScope(itemIndex) > 0 && itemFeatures.getRowScope(itemIndex) > 0) {
+					SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
 					SparseVector qualityVector = itemFeatures.getRowVector(itemIndex);
 					// TODO 此处需要重构,应该避免不断构建SparseVector.
 					int item = itemIndex;
@@ -274,8 +274,8 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 
 			// Update UserHiddenMatrix by fixing the others
 			for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-				if (trainMatrix.getRowScope(userIndex) > 0) {
-					SparseVector userVector = trainMatrix.getRowVector(userIndex);
+				if (scoreMatrix.getRowScope(userIndex) > 0) {
+					SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 					// TODO 此处需要重构,应该避免不断构建SparseVector.
 					int user = userIndex;
 					ArrayVector itemPredictsVector = new ArrayVector(userVector);
@@ -293,8 +293,8 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 
 			// Update ItemHiddenMatrix by fixing the others
 			for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-				if (trainMatrix.getColumnScope(itemIndex) > 0) {
-					SparseVector itemVector = trainMatrix.getColumnVector(itemIndex);
+				if (scoreMatrix.getColumnScope(itemIndex) > 0) {
+					SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
 					// TODO 此处需要重构,应该避免不断构建SparseVector.
 					int item = itemIndex;
 					ArrayVector userPredictsVector = new ArrayVector(itemVector);
@@ -311,7 +311,7 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 			}
 
 			// Compute loss value
-			for (MatrixScalar term : trainMatrix) {
+			for (MatrixScalar term : scoreMatrix) {
 				int userIndex = term.getRow();
 				int itemIndex = term.getColumn();
 				double rating = term.getValue();

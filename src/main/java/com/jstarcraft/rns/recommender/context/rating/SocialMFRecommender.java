@@ -51,7 +51,7 @@ public class SocialMFRecommender extends SocialRecommender {
             DenseMatrix itemDeltas = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
 
             // rated items
-            for (MatrixScalar term : trainMatrix) {
+            for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();
                 float rate = term.getValue();

@@ -102,7 +102,7 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
 
         userScoreMatrix = DenseMatrix.valueOf(numberOfUsers, numberOfScores);
         for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-            SparseVector scoreVector = trainMatrix.getRowVector(userIndex);
+            SparseVector scoreVector = scoreMatrix.getRowVector(userIndex);
             for (VectorScalar term : scoreVector) {
                 float score = term.getValue();
                 int scoreIndex = scoreIndexes.get(score);
@@ -111,7 +111,7 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
         }
         userScoreVector = DenseVector.valueOf(numberOfUsers);
         userScoreVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
-            scalar.setValue(trainMatrix.getRowVector(scalar.getIndex()).getElementSize());
+            scalar.setValue(scoreMatrix.getRowVector(scalar.getIndex()).getElementSize());
         });
         currentLoss = Float.MIN_VALUE;
 
@@ -122,7 +122,7 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
     protected void eStep() {
         for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
             DenseVector probabilityVector = userTopicProbabilities.getRowVector(userIndex);
-            SparseVector scoreVector = trainMatrix.getRowVector(userIndex);
+            SparseVector scoreVector = scoreMatrix.getRowVector(userIndex);
             if (scoreVector.getElementSize() == 0) {
                 probabilityVector.copyVector(topicScoreVector);
             } else {

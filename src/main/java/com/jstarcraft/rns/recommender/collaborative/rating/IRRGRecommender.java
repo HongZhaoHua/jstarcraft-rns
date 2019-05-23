@@ -82,7 +82,7 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
 	@Override
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			dataTable.put(userIndex, itemIndex, term.getValue());
@@ -111,7 +111,7 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
 
 			DenseMatrix userDeltas = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
 			DenseMatrix itemDeltas = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
-			for (MatrixScalar term : trainMatrix) {
+			for (MatrixScalar term : scoreMatrix) {
 				int userIndex = term.getRow();
 				int itemIndex = term.getColumn();
 				float score = term.getValue();
@@ -212,10 +212,10 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
 	private void computeAssociationRuleByItem() {
 		// TODO 此处可以参考Abstract.getScoreList的相似度计算.
 		for (int leftItemIndex = 0; leftItemIndex < numberOfItems; leftItemIndex++) {
-			if (trainMatrix.getColumnScope(leftItemIndex) == 0) {
+			if (scoreMatrix.getColumnScope(leftItemIndex) == 0) {
 				continue;
 			}
-			SparseVector itemVector = trainMatrix.getColumnVector(leftItemIndex);
+			SparseVector itemVector = scoreMatrix.getColumnVector(leftItemIndex);
 			int total = itemVector.getElementSize();
 			for (int rightItemIndex = 0; rightItemIndex < numberOfItems; rightItemIndex++) {
 				if (leftItemIndex == rightItemIndex) {
@@ -314,7 +314,7 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
 		for (KeyValue<Integer, Integer> keyValue : itemList) {
 			int leftIndex = keyValue.getKey();
 			int rightIndex = keyValue.getValue();
-			SparseVector groupVector = trainMatrix.getColumnVector(groupIndex);
+			SparseVector groupVector = scoreMatrix.getColumnVector(groupIndex);
 			int count = 0;
 			for (VectorScalar term : groupVector) {
 				int userIndex = term.getIndex();
@@ -364,7 +364,7 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
 	 */
 	private void complementAssociationRule() {
 		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-			if (trainMatrix.getColumnScope(itemIndex) == 0) {
+			if (scoreMatrix.getColumnScope(itemIndex) == 0) {
 				continue;
 			}
 			SparseMatrix groupTable = itemCorrsGAR_Sorted.get(itemIndex);

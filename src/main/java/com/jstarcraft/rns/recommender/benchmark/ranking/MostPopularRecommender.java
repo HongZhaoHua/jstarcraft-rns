@@ -32,7 +32,7 @@ public class MostPopularRecommender extends AbstractRecommender {
     @Override
     protected void doPractice() {
         for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-            populars[itemIndex] = trainMatrix.getColumnScope(itemIndex);
+            populars[itemIndex] = scoreMatrix.getColumnScope(itemIndex);
         }
     }
 

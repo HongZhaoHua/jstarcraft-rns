@@ -78,7 +78,7 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
 		userTopics = HashBasedTable.create();
 		itemTopics = HashBasedTable.create();
 
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			float rate = term.getValue();
@@ -112,7 +112,7 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
 		// 缓存概率
 		float random = 0F;
 
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			float rate = term.getValue();
@@ -261,7 +261,7 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
 		estimateParams();
 		// Compute the perplexity
 		float sum = 0F;
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			float rate = term.getValue();

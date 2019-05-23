@@ -64,7 +64,7 @@ public class PRankDRecommender extends RankSGDRecommender {
 		float denominator = 0F;
 		itemWeights = DenseVector.valueOf(numberOfItems);
 		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-			float numerator = trainMatrix.getColumnScope(itemIndex);
+			float numerator = scoreMatrix.getColumnScope(itemIndex);
 			denominator = denominator < numerator ? numerator : denominator;
 			itemWeights.setValue(itemIndex, numerator);
 		}
@@ -78,14 +78,14 @@ public class PRankDRecommender extends RankSGDRecommender {
 		try {
 			Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("rec.similarity.class"));
 			Similarity similarity = ReflectionUtility.getInstance(similarityClass);
-			itemCorrelations = similarity.makeSimilarityMatrix(trainMatrix, true, configuration.getFloat("rec.similarity.shrinkage", 0F));
+			itemCorrelations = similarity.makeSimilarityMatrix(scoreMatrix, true, configuration.getFloat("rec.similarity.shrinkage", 0F));
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
 
 		userIndexes = new LinkedList<>();
 		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-			if (trainMatrix.getRowVector(userIndex).getElementSize() > 0) {
+			if (scoreMatrix.getRowVector(userIndex).getElementSize() > 0) {
 				userIndexes.add(userIndex);
 			}
 		}
@@ -100,12 +100,12 @@ public class PRankDRecommender extends RankSGDRecommender {
 	 */
 	@Override
 	protected void doPractice() {
-		List<IntSet> userItemSet = getUserItemSet(trainMatrix);
+		List<IntSet> userItemSet = getUserItemSet(scoreMatrix);
 		for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
 			totalLoss = 0F;
 			// for each rated user-item (u,i) pair
 			for (int userIndex : userIndexes) {
-				SparseVector userVector = trainMatrix.getRowVector(userIndex);
+				SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 				IntSet itemSet = userItemSet.get(userIndex);
 				for (VectorScalar term : userVector) {
 					// each rated item i

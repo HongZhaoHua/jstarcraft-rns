@@ -66,12 +66,12 @@ public class RFRecRecommender extends MatrixFactorizationRecommender {
         itemWeights = DenseVector.valueOf(numberOfItems);
 
         for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-            SparseVector userVector = trainMatrix.getRowVector(userIndex);
+            SparseVector userVector = scoreMatrix.getRowVector(userIndex);
             userMeans.setValue(userIndex, userVector.getSum(false) / userVector.getElementSize());
             userWeights.setValue(userIndex, 0.6F + RandomUtility.randomFloat(0.01F));
         }
         for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-            SparseVector itemVector = trainMatrix.getColumnVector(itemIndex);
+            SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
             itemMeans.setValue(itemIndex, itemVector.getSum(false) / itemVector.getElementSize());
             itemWeights.setValue(itemIndex, 0.4F + RandomUtility.randomFloat(0.01F));
         }
@@ -79,7 +79,7 @@ public class RFRecRecommender extends MatrixFactorizationRecommender {
         // Users,items
         userRateFrequencies = DenseMatrix.valueOf(numberOfUsers, numberOfActions);
         itemRateFrequencies = DenseMatrix.valueOf(numberOfItems, numberOfActions);
-        for (MatrixScalar term : trainMatrix) {
+        for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow();
             int itemIndex = term.getColumn();
             int rateIndex = scoreIndexes.get(term.getValue());
@@ -91,7 +91,7 @@ public class RFRecRecommender extends MatrixFactorizationRecommender {
     @Override
     protected void doPractice() {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            for (MatrixScalar term : trainMatrix) {
+            for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();
                 float error = term.getValue() - predict(userIndex, itemIndex);

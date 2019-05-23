@@ -83,7 +83,7 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
 	// global svd P Q
 	private void practiceGlobalModel(DefaultScalar scalar) {
 		for (int iterationStep = 1; iterationStep <= numberOfGlobalIterations; iterationStep++) {
-			for (MatrixScalar term : trainMatrix) {
+			for (MatrixScalar term : scoreMatrix) {
 				int userIndex = term.getRow(); // user
 				int itemIndex = term.getColumn(); // item
 				float rate = term.getValue();
@@ -202,7 +202,7 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
 		while (completeModelCount < numberOfModels) {
 			int randomUserIndex = RandomUtility.randomInteger(numberOfUsers);
 			// TODO 考虑重构
-			SparseVector userVector = trainMatrix.getRowVector(randomUserIndex);
+			SparseVector userVector = scoreMatrix.getRowVector(randomUserIndex);
 			if (userVector.getElementSize() == 0) {
 				continue;
 			}
@@ -225,7 +225,7 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
 					element.setValue(distribution.sample().floatValue());
 				});
 				// Starting a new local model learning:
-				learners[nextRunningSlot] = new LLORMALearner(modelCount, numberOfLocalFactors, localLearnRate, localUserRegularization, localItemRegularization, numberOfLocalIterations, localUserFactors, localItemFactors, userWeights, itemWeights, trainMatrix);
+				learners[nextRunningSlot] = new LLORMALearner(modelCount, numberOfLocalFactors, localLearnRate, localUserRegularization, localItemRegularization, numberOfLocalIterations, localUserFactors, localItemFactors, userWeights, itemWeights, scoreMatrix);
 				learners[nextRunningSlot].start();
 				runningThreadList[runningThreadCount] = modelCount;
 				runningThreadCount++;

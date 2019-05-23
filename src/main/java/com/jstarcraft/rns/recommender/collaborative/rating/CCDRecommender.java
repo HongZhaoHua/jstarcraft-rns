@@ -46,7 +46,7 @@ public class CCDRecommender extends MatrixFactorizationRecommender {
 	protected void doPractice() {
 		for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
 			for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-				SparseVector userVector = trainMatrix.getRowVector(userIndex);
+				SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 				for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
 					float userFactor = 0F;
 					float numerator = 0F;
@@ -65,7 +65,7 @@ public class CCDRecommender extends MatrixFactorizationRecommender {
 				}
 			}
 			for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-				SparseVector itemVector = trainMatrix.getColumnVector(itemIndex);
+				SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
 				for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
 					float itemFactor = 0F;
 					float numerator = 0F;

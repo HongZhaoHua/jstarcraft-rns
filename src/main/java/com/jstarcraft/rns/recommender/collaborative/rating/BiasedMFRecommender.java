@@ -59,7 +59,7 @@ public class BiasedMFRecommender extends MatrixFactorizationRecommender {
 		for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
 			totalLoss = 0F;
 
-			for (MatrixScalar term : trainMatrix) {
+			for (MatrixScalar term : scoreMatrix) {
 				int userIndex = term.getRow(); // user userIdx
 				int itemIndex = term.getColumn(); // item itemIdx
 				float rate = term.getValue(); // real rating on item

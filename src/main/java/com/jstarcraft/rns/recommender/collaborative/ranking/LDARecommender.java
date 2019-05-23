@@ -85,7 +85,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
 		super.prepare(configuration, model, space);
 
 		// TODO 此处代码可以消除(使用常量Marker代替或者使用binarize.threshold)
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			term.setValue(1F);
 		}
 
@@ -119,8 +119,8 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
 
 		// The z_u,i are initialized to values in [0, K-1] to determine the
 		// initial state of the Markov chain.
-		topicAssignments = new ArrayList<>(trainMatrix.getElementSize());
-		for (MatrixScalar term : trainMatrix) {
+		topicAssignments = new ArrayList<>(scoreMatrix.getElementSize());
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			int times = (int) (term.getValue());
@@ -153,7 +153,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
 		// Gibbs sampling from full conditional distribution
 		int assignmentsIndex = 0;
 
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			int times = (int) (term.getValue());

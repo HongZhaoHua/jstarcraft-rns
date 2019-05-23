@@ -34,7 +34,7 @@ public class ItemAverageRecommender extends AbstractRecommender {
     @Override
     protected void doPractice() {
         for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-            SparseVector itemVector = trainMatrix.getColumnVector(itemIndex);
+            SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
             itemMeans[itemIndex] = itemVector.getElementSize() == 0 ? meanOfScore : itemVector.getSum(false) / itemVector.getElementSize();
         }
     }

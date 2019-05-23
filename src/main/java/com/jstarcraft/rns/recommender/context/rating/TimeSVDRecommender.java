@@ -180,7 +180,7 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
         float mean;
         float sum = 0F;
         int count = 0;
-        for (MatrixScalar term : trainMatrix) {
+        for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow();
             int itemIndex = term.getColumn();
             sum += days(instantTabel.get(userIndex, itemIndex), minTimestamp);
@@ -191,7 +191,7 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
         userMeanDays = DenseVector.valueOf(numberOfUsers);
         for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
             sum = 0F;
-            SparseVector userVector = trainMatrix.getRowVector(userIndex);
+            SparseVector userVector = scoreMatrix.getRowVector(userIndex);
             for (VectorScalar term : userVector) {
                 int itemIndex = term.getIndex();
                 sum += days(instantTabel.get(userIndex, itemIndex), minTimestamp);
@@ -207,7 +207,7 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
             for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-                SparseVector rateVector = trainMatrix.getRowVector(userIndex);
+                SparseVector rateVector = scoreMatrix.getRowVector(userIndex);
                 int size = rateVector.getElementSize();
                 if (size == 0) {
                     continue;
@@ -385,7 +385,7 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
         value += (userBiases.getValue(userIndex) + userBiasWeights.getValue(userIndex) * deviation + (userDayBiases.contains(userIndex, days) ? userDayBiases.get(userIndex, days) : 0D));
 
         // qi * yj
-        SparseVector userVector = trainMatrix.getRowVector(userIndex);
+        SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 
         float sum = 0F;
         DenseVector itemExplicitVector = itemExplicitFactors.getRowVector(itemIndex);

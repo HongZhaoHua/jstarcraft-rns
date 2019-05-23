@@ -47,7 +47,7 @@ public class NMFRecommender extends MatrixFactorizationRecommender {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; ++iterationStep) {
             // update userFactors by fixing itemFactors
             for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-                SparseVector userVector = trainMatrix.getRowVector(userIndex);
+                SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                 if (userVector.getElementSize() == 0) {
                     continue;
                 }
@@ -66,7 +66,7 @@ public class NMFRecommender extends MatrixFactorizationRecommender {
 
             // update itemFactors by fixing userFactors
             for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-                SparseVector itemVector = trainMatrix.getColumnVector(itemIndex);
+                SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
                 if (itemVector.getElementSize() == 0) {
                     continue;
                 }
@@ -85,7 +85,7 @@ public class NMFRecommender extends MatrixFactorizationRecommender {
 
             // compute errors
             totalLoss = 0F;
-            for (MatrixScalar term : trainMatrix) {
+            for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();
                 float rate = term.getValue();

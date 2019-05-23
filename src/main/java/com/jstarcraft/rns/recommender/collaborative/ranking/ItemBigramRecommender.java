@@ -122,7 +122,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
 		userItemMap = new HashMap<>();
 		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
 			// TODO 考虑优化
-			SparseVector userVector = trainMatrix.getRowVector(userIndex);
+			SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 			if (userVector.getElementSize() == 0) {
 				continue;
 			}

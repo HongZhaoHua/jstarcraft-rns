@@ -64,7 +64,7 @@ public class RSTERecommender extends SocialRecommender {
                     socialWeight += socialTerm.getValue();
                 }
                 DenseVector userVector = userFactors.getRowVector(userIndex);
-                for (VectorScalar rateTerm : trainMatrix.getRowVector(userIndex)) {
+                for (VectorScalar rateTerm : scoreMatrix.getRowVector(userIndex)) {
                     int itemIndex = rateTerm.getIndex();
                     float score = rateTerm.getValue();
                     score = (score - minimumOfScore) / (maximumOfScore - minimumOfScore);
@@ -103,7 +103,7 @@ public class RSTERecommender extends SocialRecommender {
                     for (VectorScalar socialTerm : trusteeVector) {
                         socialWeight += socialTerm.getValue();
                     }
-                    for (VectorScalar rateTerm : trainMatrix.getRowVector(trusteeIndex)) {
+                    for (VectorScalar rateTerm : scoreMatrix.getRowVector(trusteeIndex)) {
                         int itemIndex = rateTerm.getIndex();
                         float score = rateTerm.getValue();
                         score = (score - minimumOfScore) / (maximumOfScore - minimumOfScore);

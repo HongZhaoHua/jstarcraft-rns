@@ -108,7 +108,7 @@ public class TrustMFRecommender extends SocialRecommender {
             DenseMatrix itemGradients = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
 
             // rate matrix
-            for (MatrixScalar term : trainMatrix) {
+            for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();
                 float rate = term.getValue();
@@ -187,7 +187,7 @@ public class TrustMFRecommender extends SocialRecommender {
             DenseMatrix itemGradients = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
 
             // rate matrix
-            for (MatrixScalar term : trainMatrix) {
+            for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();
                 float rate = term.getValue();

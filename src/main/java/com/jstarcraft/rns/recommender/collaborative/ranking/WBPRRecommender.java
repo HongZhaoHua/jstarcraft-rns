@@ -73,7 +73,7 @@ public class WBPRRecommender extends MatrixFactorizationRecommender {
 		// pre-compute and sort by item's popularity
 		itemPopularities = new ArrayList<>(numberOfItems);
 		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-			itemPopularities.add(new KeyValue<>(itemIndex, Double.valueOf(trainMatrix.getColumnScope(itemIndex))));
+			itemPopularities.add(new KeyValue<>(itemIndex, Double.valueOf(scoreMatrix.getColumnScope(itemIndex))));
 		}
 		Collections.sort(itemPopularities, (left, right) -> {
 			// 降序
@@ -81,7 +81,7 @@ public class WBPRRecommender extends MatrixFactorizationRecommender {
 		});
 
 		itemProbabilities = new List[numberOfUsers];
-		List<IntSet> userItemSet = getUserItemSet(trainMatrix);
+		List<IntSet> userItemSet = getUserItemSet(scoreMatrix);
 		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
 			IntSet scoreSet = userItemSet.get(userIndex);
 			List<KeyValue<Integer, Double>> probabilities = new LinkedList<>();
@@ -114,7 +114,7 @@ public class WBPRRecommender extends MatrixFactorizationRecommender {
 				List<KeyValue<Integer, Double>> probabilities;
 				while (true) {
 					userIndex = RandomUtility.randomInteger(numberOfUsers);
-					SparseVector userVector = trainMatrix.getRowVector(userIndex);
+					SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 					if (userVector.getElementSize() == 0) {
 						continue;
 					}

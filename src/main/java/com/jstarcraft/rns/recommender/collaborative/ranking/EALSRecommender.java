@@ -74,7 +74,7 @@ public class EALSRecommender extends MatrixFactorizationRecommender {
 		if (type == 0 || type == 2) {
 			float sumPopularity = 0F;
 			for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-				float alphaPopularity = (float) Math.pow(trainMatrix.getColumnScope(itemIndex) * 1.0 / numberOfActions, ratio);
+				float alphaPopularity = (float) Math.pow(scoreMatrix.getColumnScope(itemIndex) * 1.0 / numberOfActions, ratio);
 				confidences[itemIndex] = overallWeight * alphaPopularity;
 				sumPopularity += alphaPopularity;
 			}
@@ -87,7 +87,7 @@ public class EALSRecommender extends MatrixFactorizationRecommender {
 			}
 		}
 
-		weights = SparseMatrix.copyOf(trainMatrix, false);
+		weights = SparseMatrix.copyOf(scoreMatrix, false);
 		weights.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			if (type == 1 || type == 2) {
 				scalar.setValue(1F + weightCoefficient * scalar.getValue());

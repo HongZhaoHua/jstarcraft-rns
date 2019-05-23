@@ -65,7 +65,7 @@ public class FISMrmseRecommender extends MatrixFactorizationRecommender {
             scalar.setValue(distribution.sample().floatValue());
         });
 
-        numNeighbors = trainMatrix.getElementSize();
+        numNeighbors = scoreMatrix.getElementSize();
         rho = configuration.getFloat("rec.fismrmse.rho");// 3-15
         alpha = configuration.getFloat("rec.fismrmse.alpha", 0.5F);
         beta = configuration.getFloat("rec.fismrmse.beta", 0.6F);
@@ -79,7 +79,7 @@ public class FISMrmseRecommender extends MatrixFactorizationRecommender {
         int sampleSize = (int) (rho * numNeighbors);
         int totalSize = numberOfUsers * numberOfItems;
         Table<Integer, Integer, Float> rateMatrix = HashBasedTable.create();
-        for (MatrixScalar cell : trainMatrix) {
+        for (MatrixScalar cell : scoreMatrix) {
             rateMatrix.put(cell.getRow(), cell.getColumn(), cell.getValue());
         }
         int[] sampleIndexes = new int[sampleSize];
@@ -110,7 +110,7 @@ public class FISMrmseRecommender extends MatrixFactorizationRecommender {
                 int userIndex = cell.getRowKey();
                 int itemIndex = cell.getColumnKey();
                 float rate = cell.getValue();
-                SparseVector rateVector = trainMatrix.getRowVector(userIndex);
+                SparseVector rateVector = scoreMatrix.getRowVector(userIndex);
                 int size = rateVector.getElementSize() - 1;
                 if (size == 0 || size == -1) {
                     size = 1;
@@ -178,7 +178,7 @@ public class FISMrmseRecommender extends MatrixFactorizationRecommender {
         float bias = userBiases.getValue(userIndex) + itemBiases.getValue(itemIndex);
         float sum = 0F;
         int count = 0;
-        for (VectorScalar term : trainMatrix.getRowVector(userIndex)) {
+        for (VectorScalar term : scoreMatrix.getRowVector(userIndex)) {
             int index = term.getIndex();
             // for test, i and j will be always unequal as j is unrated
             if (index != itemIndex) {

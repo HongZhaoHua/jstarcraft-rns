@@ -87,7 +87,7 @@ public class AspectModelRankingRecommender extends ProbabilisticGraphicalRecomme
 		topicSums.setValues(0F);
 		userSums.setValues(0F);
 		itemSums.setValues(0F);
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			probabilities.iterateElement(MathCalculator.SERIAL, (scalar) -> {

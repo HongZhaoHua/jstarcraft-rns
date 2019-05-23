@@ -128,7 +128,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
 
 		// initialize topics
 		topicAssignments = HashBasedTable.create();
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			float rate = term.getValue();
@@ -161,7 +161,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
 		float gammaSum = gamma.getSum(false);
 
 		// collapse Gibbs sampling
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			float rate = term.getValue();
@@ -306,7 +306,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
 		estimateParams();
 		// compute likelihood
 		int sum = 0;
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			float rate = term.getValue();

@@ -106,7 +106,7 @@ public class SLIMRecommender extends ModelRecommender {
 		try {
 			Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("rec.similarity.class"));
 			Similarity similarity = ReflectionUtility.getInstance(similarityClass);
-			similarityMatrix = similarity.makeSimilarityMatrix(trainMatrix, true, configuration.getFloat("rec.similarity.shrinkage", 0F));
+			similarityMatrix = similarity.makeSimilarityMatrix(scoreMatrix, true, configuration.getFloat("rec.similarity.shrinkage", 0F));
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
@@ -153,12 +153,12 @@ public class SLIMRecommender extends ModelRecommender {
 
 		userVectors = new ArrayVector[numberOfUsers];
 		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-			userVectors[userIndex] = new ArrayVector(trainMatrix.getRowVector(userIndex));
+			userVectors[userIndex] = new ArrayVector(scoreMatrix.getRowVector(userIndex));
 		}
 
 		itemVectors = new ArrayVector[numberOfItems];
 		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-			itemVectors[itemIndex] = new ArrayVector(trainMatrix.getColumnVector(itemIndex));
+			itemVectors[itemIndex] = new ArrayVector(scoreMatrix.getColumnVector(itemIndex));
 		}
 	}
 

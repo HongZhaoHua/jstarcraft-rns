@@ -116,7 +116,7 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
             });
 
             for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-                SparseVector userVector = trainMatrix.getRowVector(userIndex);
+                SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                 for (VectorScalar term : userVector) {
                     int positiveItemIndex = term.getIndex();
 

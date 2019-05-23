@@ -99,7 +99,7 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
 
         itemScoreMatrix = DenseMatrix.valueOf(numberOfItems, numberOfScores);
         for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-            SparseVector scoreVector = trainMatrix.getColumnVector(itemIndex);
+            SparseVector scoreVector = scoreMatrix.getColumnVector(itemIndex);
             for (VectorScalar term : scoreVector) {
                 float score = term.getValue();
                 int scoreIndex = scoreIndexes.get(score);
@@ -108,7 +108,7 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
         }
         itemScoreVector = DenseVector.valueOf(numberOfItems);
         itemScoreVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
-            scalar.setValue(trainMatrix.getColumnVector(scalar.getIndex()).getElementSize());
+            scalar.setValue(scoreMatrix.getColumnVector(scalar.getIndex()).getElementSize());
         });
         currentLoss = Float.MIN_VALUE;
 
@@ -119,7 +119,7 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
     protected void eStep() {
         for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
             DenseVector probabilityVector = itemTopicProbabilities.getRowVector(itemIndex);
-            SparseVector scoreVector = trainMatrix.getColumnVector(itemIndex);
+            SparseVector scoreVector = scoreMatrix.getColumnVector(itemIndex);
             if (scoreVector.getElementSize() == 0) {
                 probabilityVector.copyVector(topicScoreVector);
             } else {

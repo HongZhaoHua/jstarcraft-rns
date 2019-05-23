@@ -58,7 +58,7 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
 		super.prepare(configuration, model, space);
 
 		// TODO 此处代码可以消除(使用常量Marker代替或者使用binarize.threshold)
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			term.setValue(1F);
 		}
 
@@ -89,7 +89,7 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
 		// initialize Q
 		probabilityTensor = HashBasedTable.create();
 		userRateTimes = DenseVector.valueOf(numberOfUsers);
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			probabilityTensor.put(userIndex, itemIndex, DenseVector.valueOf(numberOfFactors));
@@ -99,7 +99,7 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
 
 	@Override
 	protected void eStep() {
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			DenseVector probabilities = probabilityTensor.get(userIndex, itemIndex);
@@ -117,7 +117,7 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
 		userTopicSums.setValues(0F);
 		topicItemSums.setValues(0F);
 		topicProbabilities.setValues(0F);
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			float numerator = term.getValue();

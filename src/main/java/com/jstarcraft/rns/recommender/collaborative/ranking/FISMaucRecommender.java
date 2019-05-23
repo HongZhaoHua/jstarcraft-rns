@@ -82,7 +82,7 @@ public class FISMaucRecommender extends MatrixFactorizationRecommender {
 			totalLoss = 0F;
 			// for all u in C
 			for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-				SparseVector rateVector = trainMatrix.getRowVector(userIndex);
+				SparseVector rateVector = scoreMatrix.getRowVector(userIndex);
 				int size = rateVector.getElementSize();
 				if (size == 0 || size == 1) {
 					size = 2;
@@ -228,7 +228,7 @@ public class FISMaucRecommender extends MatrixFactorizationRecommender {
 		float bias = itemBiases.getValue(itemIndex);
 		float sum = 0F;
 		int count = 0;
-		for (VectorScalar term : trainMatrix.getRowVector(userIndex)) {
+		for (VectorScalar term : scoreMatrix.getRowVector(userIndex)) {
 			int compareIndex = term.getIndex();
 			// for test, i and j will be always unequal as j is unrated
 			if (compareIndex != itemIndex) {

@@ -208,7 +208,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
 
         function = new SoftMaxActivationFunction();
 
-        for (MatrixScalar term : trainMatrix) {
+        for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow(); // user
             int itemIndex = term.getColumn(); // item
             Content content = contentMatrix.get(userIndex, itemIndex);
@@ -226,7 +226,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
     private void sample() {
         calculateThetas();
         calculatePhis();
-        for (MatrixScalar term : trainMatrix) {
+        for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow(); // user
             int itemIndex = term.getColumn(); // item
             Content content = contentMatrix.get(userIndex, itemIndex);
@@ -297,7 +297,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
             // TODO 此处应该修改为配置
             for (int iterationSDG = 1; iterationSDG <= 5; iterationSDG++) {
                 totalLoss = 0F;
-                for (MatrixScalar term : trainMatrix) {
+                for (MatrixScalar term : scoreMatrix) {
                     int userIndex = term.getRow(); // user
                     int itemIndex = term.getColumn(); // item
                     float rate = term.getValue();

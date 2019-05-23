@@ -54,7 +54,7 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
             for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-                SparseVector userVector = trainMatrix.getRowVector(userIndex);
+                SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                 if (userVector.getElementSize() == 0) {
                     continue;
                 }
@@ -118,7 +118,7 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
     public float predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
-        SparseVector userVector = trainMatrix.getRowVector(userIndex);
+        SparseVector userVector = scoreMatrix.getRowVector(userIndex);
         // TODO 此处需要重构,取消DenseVector.
         DenseVector factorVector = DenseVector.valueOf(numberOfFactors);
         // sum of implicit feedback factors of userIdx with weight Math.sqrt(1.0

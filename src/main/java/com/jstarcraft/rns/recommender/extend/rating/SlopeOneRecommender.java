@@ -50,7 +50,7 @@ public class SlopeOneRecommender extends AbstractRecommender {
     protected void doPractice() {
         // compute items' differences
         for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-            SparseVector itemVector = trainMatrix.getRowVector(userIndex);
+            SparseVector itemVector = scoreMatrix.getRowVector(userIndex);
             for (VectorScalar leftTerm : itemVector) {
                 float leftRate = leftTerm.getValue();
                 for (VectorScalar rightTerm : itemVector) {
@@ -85,7 +85,7 @@ public class SlopeOneRecommender extends AbstractRecommender {
     public float predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
-        SparseVector userVector = trainMatrix.getRowVector(userIndex);
+        SparseVector userVector = scoreMatrix.getRowVector(userIndex);
         float value = 0F, sum = 0F;
         for (VectorScalar term : userVector) {
             if (itemIndex == term.getIndex()) {

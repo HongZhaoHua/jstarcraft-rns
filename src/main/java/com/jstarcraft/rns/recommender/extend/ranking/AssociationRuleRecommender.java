@@ -48,10 +48,10 @@ public class AssociationRuleRecommender extends AbstractRecommender {
         // transaction
         for (int leftItemIndex = 0; leftItemIndex < numberOfItems; leftItemIndex++) {
             // all transactions for item itemIdx
-            SparseVector leftVector = trainMatrix.getColumnVector(leftItemIndex);
+            SparseVector leftVector = scoreMatrix.getColumnVector(leftItemIndex);
             int size = leftVector.getElementSize();
             for (int rightItemIndex = 0; rightItemIndex < numberOfItems; rightItemIndex++) {
-                SparseVector rightVector = trainMatrix.getColumnVector(rightItemIndex);
+                SparseVector rightVector = scoreMatrix.getColumnVector(rightItemIndex);
                 int leftIndex = 0, rightIndex = 0, leftSize = size, rightSize = rightVector.getElementSize();
                 if (leftSize != 0 && rightSize != 0) {
                     // compute confidence where containing item assoItemIdx
@@ -106,7 +106,7 @@ public class AssociationRuleRecommender extends AbstractRecommender {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float value = 0F;
-        for (VectorScalar term : trainMatrix.getRowVector(userIndex)) {
+        for (VectorScalar term : scoreMatrix.getRowVector(userIndex)) {
             int associationIndex = term.getIndex();
             float association = associationMatrix.getValue(associationIndex, itemIndex);
             double rate = term.getValue();

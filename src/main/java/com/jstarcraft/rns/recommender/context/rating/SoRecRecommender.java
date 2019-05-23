@@ -77,7 +77,7 @@ public class SoRecRecommender extends SocialRecommender {
             DenseMatrix socialDeltas = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
 
             // ratings
-            for (MatrixScalar term : trainMatrix) {
+            for (MatrixScalar term : scoreMatrix) {
                 int userIdx = term.getRow();
                 int itemIdx = term.getColumn();
                 float score = term.getValue();

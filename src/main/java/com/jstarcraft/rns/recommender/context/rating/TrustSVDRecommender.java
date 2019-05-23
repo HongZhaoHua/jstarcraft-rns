@@ -116,7 +116,7 @@ public class TrustSVDRecommender extends SocialRecommender {
             trusterWeights.setValue(userIndex, (float) (socialCount > 0 ? 1F / Math.sqrt(socialCount) : 1F));
         }
         for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-            int count = trainMatrix.getColumnScope(itemIndex);
+            int count = scoreMatrix.getColumnScope(itemIndex);
             itemWeights.setValue(itemIndex, (float) (count > 0 ? 1F / Math.sqrt(count) : 1F));
         }
     }
@@ -135,7 +135,7 @@ public class TrustSVDRecommender extends SocialRecommender {
             DenseMatrix trusterDeltas = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
             DenseMatrix trusteeDeltas = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
 
-            for (MatrixScalar term : trainMatrix) {
+            for (MatrixScalar term : scoreMatrix) {
                 int trusterIndex = term.getRow(); // user userIdx
                 int itemExplicitIndex = term.getColumn(); // item itemIdx
                 // real rating on item itemIdx rated by user userIdx
@@ -151,7 +151,7 @@ public class TrustSVDRecommender extends SocialRecommender {
 
                 // get the implicit influence predict rating using items rated
                 // by user userIdx
-                SparseVector rateVector = trainMatrix.getRowVector(trusterIndex);
+                SparseVector rateVector = scoreMatrix.getRowVector(trusterIndex);
                 if (rateVector.getElementSize() > 0) {
                     float sum = 0F;
                     for (VectorScalar rateTerm : rateVector) {
@@ -306,7 +306,7 @@ public class TrustSVDRecommender extends SocialRecommender {
 
         // the implicit influence of items rated by user in the past on the
         // ratings of unknown items in the future.
-        SparseVector rateVector = trainMatrix.getRowVector(userIndex);
+        SparseVector rateVector = scoreMatrix.getRowVector(userIndex);
         if (rateVector.getElementSize() > 0) {
             float sum = 0F;
             for (VectorScalar rateTerm : rateVector) {

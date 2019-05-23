@@ -22,7 +22,7 @@ public class PMFRecommender extends MatrixFactorizationRecommender {
     protected void doPractice() {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
-            for (MatrixScalar term : trainMatrix) {
+            for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow(); // user
                 int itemIndex = term.getColumn(); // item
                 float rate = term.getValue();

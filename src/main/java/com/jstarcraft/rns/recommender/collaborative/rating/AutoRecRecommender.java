@@ -58,7 +58,7 @@ public class AutoRecRecommender extends NeuralNetworkRecommender {
 		int[] matrixShape = new int[] { numberOfItems, numberOfUsers };
 		inputData = Nd4j.zeros(matrixShape);
 		maskData = Nd4j.zeros(matrixShape);
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			if (term.getValue() > 0D) {
 				inputData.putScalar(term.getColumn(), term.getRow(), term.getValue());
 				maskData.putScalar(term.getColumn(), term.getRow(), 1D);

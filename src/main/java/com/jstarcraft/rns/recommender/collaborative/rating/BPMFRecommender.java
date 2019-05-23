@@ -242,14 +242,14 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
         int cacheSize = 0;
         SparseVector[] userVectors = new SparseVector[numberOfUsers];
         for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-            SparseVector userVector = trainMatrix.getRowVector(userIndex);
+            SparseVector userVector = scoreMatrix.getRowVector(userIndex);
             cacheSize = cacheSize < userVector.getElementSize() ? userVector.getElementSize() : cacheSize;
             userVectors[userIndex] = userVector;
         }
 
         SparseVector[] itemVectors = new SparseVector[numberOfItems];
         for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-            SparseVector itemVector = trainMatrix.getColumnVector(itemIndex);
+            SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
             cacheSize = cacheSize < itemVector.getElementSize() ? itemVector.getElementSize() : cacheSize;
             itemVectors[itemIndex] = itemVector;
         }

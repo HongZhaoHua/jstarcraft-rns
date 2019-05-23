@@ -56,13 +56,13 @@ public class WARPMFRecommender extends MatrixFactorizationRecommender {
 				float negativeScore;
 				while (true) {
 					userIndex = RandomUtility.randomInteger(numberOfUsers);
-					SparseVector userVector = trainMatrix.getRowVector(userIndex);
+					SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 					if (userVector.getElementSize() == 0 || userVector.getElementSize() == numberOfItems) {
 						continue;
 					}
 
 					N = 0;
-					Y = numberOfItems - trainMatrix.getRowScope(userIndex);
+					Y = numberOfItems - scoreMatrix.getRowScope(userIndex);
 					positiveItemIndex = userVector.getIndex(RandomUtility.randomInteger(userVector.getElementSize()));
 					positiveScore = predict(userIndex, positiveItemIndex);
 					do {

@@ -64,7 +64,7 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
         super.prepare(configuration, model, space);
 
         // TODO 此处代码可以消除(使用常量Marker代替或者使用binarize.threshold)
-        for (MatrixScalar term : trainMatrix) {
+        for (MatrixScalar term : scoreMatrix) {
             term.setValue(1F);
         }
 
@@ -152,7 +152,7 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
                 int userKey, positiveItemKey, negativeItemKey;
                 while (true) {
                     userKey = RandomUtility.randomInteger(numberOfUsers);
-                    SparseVector userVector = trainMatrix.getRowVector(userKey);
+                    SparseVector userVector = scoreMatrix.getRowVector(userKey);
                     if (userVector.getElementSize() == 0) {
                         continue;
                     }

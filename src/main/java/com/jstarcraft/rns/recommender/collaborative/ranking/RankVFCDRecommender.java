@@ -46,7 +46,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
         super.prepare(configuration, model, space);
 
         // TODO 此处代码可以消除(使用常量Marker代替或者使用binarize.threshold)
-        for (MatrixScalar term : trainMatrix) {
+        for (MatrixScalar term : scoreMatrix) {
             term.setValue(1F);
         }
 
@@ -153,7 +153,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
             explicitItemDeltas.dotProduct(explicitItemFactors, true, explicitItemFactors, false, MathCalculator.SERIAL);
             // Step 1: update user factors;
             for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-                SparseVector userVector = trainMatrix.getRowVector(userIndex);
+                SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                 for (VectorScalar term : userVector) {
                     int itemIndex = term.getIndex();
                     prediction_items[itemIndex] = scalar.dotProduct(userFactors.getRowVector(userIndex), explicitItemFactors.getRowVector(itemIndex)).getValue();
@@ -192,7 +192,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
             ETF.dotProduct(featureFactors, true, featureMatrix, false, MathCalculator.PARALLEL);
             // Step 2: update item factors;
             for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-                SparseVector itemVector = trainMatrix.getColumnVector(itemIndex);
+                SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
                 SparseVector relationVector = relationMatrix.getRowVector(itemIndex);
                 for (VectorScalar term : itemVector) {
                     int userIndex = term.getIndex();
@@ -314,7 +314,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
         int itemIndex = instance.getQualityFeature(itemDimension);
         DefaultScalar scalar = DefaultScalar.getInstance();
         float score = 0F;
-        if (trainMatrix.getColumnVector(itemIndex).getElementSize() == 0) {
+        if (scoreMatrix.getColumnVector(itemIndex).getElementSize() == 0) {
             score = scalar.dotProduct(userFactors.getRowVector(userIndex), factorMatrix.getColumnVector(itemIndex)).getValue();
         } else {
             score = scalar.dotProduct(userFactors.getRowVector(userIndex), explicitItemFactors.getRowVector(itemIndex)).getValue();

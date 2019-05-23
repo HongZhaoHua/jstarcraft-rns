@@ -68,14 +68,14 @@ public class PersonalityDiagnosisRecommender extends AbstractRecommender {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float[] probabilities = new float[scoreIndexes.size()];
-        SparseVector itemVector = trainMatrix.getColumnVector(itemIndex);
-        SparseVector rightUserVector = trainMatrix.getRowVector(userIndex);
+        SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
+        SparseVector rightUserVector = scoreMatrix.getRowVector(userIndex);
         for (VectorScalar term : itemVector) {
             // other users who rated item j
             userIndex = term.getIndex();
             float rate = term.getValue();
             float probability = 1F;
-            SparseVector leftUserVector = trainMatrix.getRowVector(userIndex);
+            SparseVector leftUserVector = scoreMatrix.getRowVector(userIndex);
             int leftIndex = 0, rightIndex = 0, leftSize = leftUserVector.getElementSize(), rightSize = rightUserVector.getElementSize();
             if (leftSize != 0 && rightSize != 0) {
                 Iterator<VectorScalar> leftIterator = leftUserVector.iterator();

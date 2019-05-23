@@ -46,7 +46,7 @@ public class LambdaFMStaticRecommender extends LambdaFMRecommender {
         Arrays.sort(orderItems, new Comparator<Integer>() {
             @Override
             public int compare(Integer leftItemIndex, Integer rightItemIndex) {
-                return (trainMatrix.getColumnScope(leftItemIndex) > trainMatrix.getColumnScope(rightItemIndex) ? -1 : (trainMatrix.getColumnScope(leftItemIndex) < trainMatrix.getColumnScope(rightItemIndex) ? 1 : 0));
+                return (scoreMatrix.getColumnScope(leftItemIndex) > scoreMatrix.getColumnScope(rightItemIndex) ? -1 : (scoreMatrix.getColumnScope(leftItemIndex) < scoreMatrix.getColumnScope(rightItemIndex) ? 1 : 0));
             }
         });
         Integer[] itemOrders = new Integer[numberOfItems];
@@ -64,7 +64,7 @@ public class LambdaFMStaticRecommender extends LambdaFMRecommender {
             scalar.setValue(sum.getValue());
         });
 
-        for (MatrixScalar term : trainMatrix) {
+        for (MatrixScalar term : scoreMatrix) {
             term.setValue(itemProbabilities.getValue(term.getColumn()));
         }
     }
@@ -74,7 +74,7 @@ public class LambdaFMStaticRecommender extends LambdaFMRecommender {
         int userIndex;
         while (true) {
             userIndex = RandomUtility.randomInteger(numberOfUsers);
-            SparseVector userVector = trainMatrix.getRowVector(userIndex);
+            SparseVector userVector = scoreMatrix.getRowVector(userIndex);
             if (userVector.getElementSize() == 0 || userVector.getElementSize() == numberOfItems) {
                 continue;
             }

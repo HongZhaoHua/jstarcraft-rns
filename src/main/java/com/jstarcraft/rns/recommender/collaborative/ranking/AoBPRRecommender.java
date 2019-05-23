@@ -71,11 +71,11 @@ public class AoBPRRecommender extends MatrixFactorizationRecommender {
 			sum.shiftValue(value);
 			scalar.setValue(sum.getValue());
 		});
-		List<IntSet> userItemSet = getUserItemSet(trainMatrix);
+		List<IntSet> userItemSet = getUserItemSet(scoreMatrix);
 
 		// TODO 此处需要重构
 		List<Integer> userIndexes = new ArrayList<>(numberOfActions), itemIndexes = new ArrayList<>(numberOfActions);
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			userIndexes.add(userIndex);

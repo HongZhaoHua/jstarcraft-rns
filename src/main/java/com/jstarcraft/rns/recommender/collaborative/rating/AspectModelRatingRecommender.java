@@ -92,7 +92,7 @@ public class AspectModelRatingRecommender extends ProbabilisticGraphicalRecommen
 		// initialize Q
 		probabilityTensor = new float[numberOfActions][numberOfFactors];
 
-		float globalMean = trainMatrix.getSum(false) / trainMatrix.getElementSize();
+		float globalMean = scoreMatrix.getSum(false) / scoreMatrix.getElementSize();
 		meanProbabilities = DenseVector.valueOf(numberOfFactors);
 		varianceProbabilities = DenseVector.valueOf(numberOfFactors);
 		meanSums = DenseVector.valueOf(numberOfFactors);
@@ -112,7 +112,7 @@ public class AspectModelRatingRecommender extends ProbabilisticGraphicalRecommen
 		varianceSums.setValues(smallValue);
 		// variational inference to compute Q
 		int actionIndex = 0;
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			float denominator = 0F;
@@ -143,7 +143,7 @@ public class AspectModelRatingRecommender extends ProbabilisticGraphicalRecommen
 		}
 
 		actionIndex = 0;
-		for (MatrixScalar term : trainMatrix) {
+		for (MatrixScalar term : scoreMatrix) {
 			float[] probabilities = probabilityTensor[actionIndex++];
 			for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
 				float mean = meanProbabilities.getValue(topicIndex);

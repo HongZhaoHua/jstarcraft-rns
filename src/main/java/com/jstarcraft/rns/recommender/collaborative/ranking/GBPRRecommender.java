@@ -70,13 +70,13 @@ public class GBPRRecommender extends MatrixFactorizationRecommender {
 				SparseVector userVector;
 				do {
 					userIndex = RandomUtility.randomInteger(numberOfUsers);
-					userVector = trainMatrix.getRowVector(userIndex);
+					userVector = scoreMatrix.getRowVector(userIndex);
 				} while (userVector.getElementSize() == 0);
 				positiveItemIndex = userVector.getIndex(RandomUtility.randomInteger(userVector.getElementSize()));
 
 				// users group Set
 				Set<Integer> memberSet = new HashSet<>();
-				SparseVector positiveItemVector = trainMatrix.getColumnVector(positiveItemIndex);
+				SparseVector positiveItemVector = scoreMatrix.getColumnVector(positiveItemIndex);
 				if (positiveItemVector.getElementSize() <= gLen) {
 					for (VectorScalar entry : positiveItemVector) {
 						memberSet.add(entry.getIndex());

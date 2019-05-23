@@ -48,14 +48,14 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
 		weightVector = DenseVector.valueOf(numberOfItems);
 		sumSupport = 0;
 		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-			float supportValue = weight ? trainMatrix.getColumnScope(itemIndex) : 1F;
+			float supportValue = weight ? scoreMatrix.getColumnScope(itemIndex) : 1F;
 			weightVector.setValue(itemIndex, supportValue);
 			sumSupport += supportValue;
 		}
 
 		userList = new LinkedList<>();
 		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-			if (trainMatrix.getRowVector(userIndex).getElementSize() > 0) {
+			if (scoreMatrix.getRowVector(userIndex).getElementSize() > 0) {
 				userList.add(userIndex);
 			}
 		}
@@ -63,7 +63,7 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
 
 		itemList = new LinkedList<>();
 		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-			if (trainMatrix.getColumnVector(itemIndex).getElementSize() > 0) {
+			if (scoreMatrix.getColumnVector(itemIndex).getElementSize() > 0) {
 				itemList.add(itemIndex);
 			}
 		}
@@ -107,7 +107,7 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
 			// 根据物品特征构建用户特征
 			for (int userIndex : userList) {
 				// for each user
-				SparseVector userVector = trainMatrix.getRowVector(userIndex);
+				SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 
 				// TODO 此处考虑重构,尽量减少数组构建
 				DenseMatrix factorValues = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
@@ -187,7 +187,7 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
 			// 根据用户特征构建物品特征
 			for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
 				// for each item
-				SparseVector itemVector = trainMatrix.getColumnVector(itemIndex);
+				SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
 
 				// TODO 此处考虑重构,尽量减少数组构建
 				DenseVector rateValues = DenseVector.valueOf(numberOfFactors);

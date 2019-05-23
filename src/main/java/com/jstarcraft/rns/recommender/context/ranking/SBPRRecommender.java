@@ -64,14 +64,14 @@ public class SBPRRecommender extends SocialRecommender {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
 
-        userItemSet = getUserItemSet(trainMatrix);
+        userItemSet = getUserItemSet(scoreMatrix);
 
         // TODO 考虑重构
         // find items rated by trusted neighbors only
         socialItemList = new ArrayList<>(numberOfUsers);
 
         for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-            SparseVector userVector = trainMatrix.getRowVector(userIndex);
+            SparseVector userVector = scoreMatrix.getRowVector(userIndex);
             IntSet itemSet = userItemSet.get(userIndex);
             // find items rated by trusted neighbors only
 
@@ -79,7 +79,7 @@ public class SBPRRecommender extends SocialRecommender {
             List<Integer> socialList = new LinkedList<>();
             for (VectorScalar term : socialVector) {
                 int socialIndex = term.getIndex();
-                userVector = trainMatrix.getRowVector(socialIndex);
+                userVector = scoreMatrix.getRowVector(socialIndex);
                 for (VectorScalar enrty : userVector) {
                     int itemIndex = enrty.getIndex();
                     // v's rated items
@@ -103,7 +103,7 @@ public class SBPRRecommender extends SocialRecommender {
                 SparseVector userVector;
                 do {
                     userIndex = RandomUtility.randomInteger(numberOfUsers);
-                    userVector = trainMatrix.getRowVector(userIndex);
+                    userVector = scoreMatrix.getRowVector(userIndex);
                 } while (userVector.getElementSize() == 0);
 
                 // positive item index

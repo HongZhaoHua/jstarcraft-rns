@@ -65,7 +65,7 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
         int userIndex;
         while (true) {
             userIndex = RandomUtility.randomInteger(numberOfUsers);
-            SparseVector userVector = trainMatrix.getRowVector(userIndex);
+            SparseVector userVector = scoreMatrix.getRowVector(userIndex);
             if (userVector.getElementSize() == 0 || userVector.getElementSize() == numberOfItems) {
                 continue;
             }
