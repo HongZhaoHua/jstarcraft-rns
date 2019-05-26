@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.jstarcraft</groupId>
-    <artifactId>rns</artifactId>
+    <artifactId>jstarcraft-rns</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
@@ -36,7 +36,7 @@
         <!-- 机器学习框架依赖 -->
         <dependency>
             <groupId>com.jstarcraft</groupId>
-            <artifactId>ai</artifactId>
+            <artifactId>jstarcraft-ai</artifactId>
             <version>1.0</version>
         </dependency>
 
