@@ -64,19 +64,19 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // TODO 此处可以重构
-        numberOfEpoches = configuration.getInteger("rec.iterator.maximum", 10);
-        numberOfSamples = configuration.getInteger("rec.sample.mumber", 100);
+        numberOfEpoches = configuration.getInteger("recommender.iterator.maximum", 10);
+        numberOfSamples = configuration.getInteger("recommender.sample.mumber", 100);
         numberOfScores = scoreIndexes.size() + 1;
-        numberOfFactors = configuration.getInteger("rec.factor.number", 500);
+        numberOfFactors = configuration.getInteger("recommender.factor.number", 500);
 
-        epsilonWeight = configuration.getFloat("rec.epsilonw", 0.001F);
-        epsilonExplicitBias = configuration.getFloat("rec.epsilonvb", 0.001F);
-        epsilonImplicitBias = configuration.getFloat("rec.epsilonhb", 0.001F);
-        steps = configuration.getInteger("rec.tstep", 1);
-        momentum = configuration.getFloat("rec.momentum", 0F);
-        lamtaWeight = configuration.getFloat("rec.lamtaw", 0.001F);
-        lamtaBias = configuration.getFloat("rec.lamtab", 0F);
-        predictionType = PredictionType.valueOf(configuration.getString("rec.predictiontype", "mean").toUpperCase());
+        epsilonWeight = configuration.getFloat("recommender.epsilonw", 0.001F);
+        epsilonExplicitBias = configuration.getFloat("recommender.epsilonvb", 0.001F);
+        epsilonImplicitBias = configuration.getFloat("recommender.epsilonhb", 0.001F);
+        steps = configuration.getInteger("recommender.tstep", 1);
+        momentum = configuration.getFloat("recommender.momentum", 0F);
+        lamtaWeight = configuration.getFloat("recommender.lamtaw", 0.001F);
+        lamtaBias = configuration.getFloat("recommender.lamtab", 0F);
+        predictionType = PredictionType.valueOf(configuration.getString("recommender.predictiontype", "mean").toUpperCase());
 
         weightProbabilities = new float[numberOfItems][numberOfScores][numberOfFactors];
         explicitBiasProbabilities = new float[numberOfItems][numberOfScores];

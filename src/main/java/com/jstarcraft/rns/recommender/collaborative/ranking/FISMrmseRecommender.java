@@ -66,11 +66,11 @@ public class FISMrmseRecommender extends MatrixFactorizationRecommender {
         });
 
         numNeighbors = scoreMatrix.getElementSize();
-        rho = configuration.getFloat("rec.fismrmse.rho");// 3-15
-        alpha = configuration.getFloat("rec.fismrmse.alpha", 0.5F);
-        beta = configuration.getFloat("rec.fismrmse.beta", 0.6F);
-        gamma = configuration.getFloat("rec.fismrmse.gamma", 0.1F);
-        learnRatio = configuration.getFloat("rec.fismrmse.lrate", 0.0001F);
+        rho = configuration.getFloat("recommender.fismrmse.rho");// 3-15
+        alpha = configuration.getFloat("recommender.fismrmse.alpha", 0.5F);
+        beta = configuration.getFloat("recommender.fismrmse.beta", 0.6F);
+        gamma = configuration.getFloat("recommender.fismrmse.gamma", 0.1F);
+        learnRatio = configuration.getFloat("recommender.fismrmse.lrate", 0.0001F);
     }
 
     @Override

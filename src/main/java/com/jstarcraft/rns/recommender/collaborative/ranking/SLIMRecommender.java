@@ -87,9 +87,9 @@ public class SLIMRecommender extends ModelRecommender {
 	@Override
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
-		neighborSize = configuration.getInteger("rec.neighbors.knn.number", 50);
-		regL1Norm = configuration.getFloat("rec.slim.regularization.l1", 1.0F);
-		regL2Norm = configuration.getFloat("rec.slim.regularization.l2", 1.0F);
+		neighborSize = configuration.getInteger("recommender.neighbors.knn.number", 50);
+		regL1Norm = configuration.getFloat("recommender.slim.regularization.l1", 1.0F);
+		regL2Norm = configuration.getFloat("recommender.slim.regularization.l2", 1.0F);
 
 		// TODO 考虑重构
 		coefficientMatrix = DenseMatrix.valueOf(numberOfItems, numberOfItems);
@@ -104,9 +104,9 @@ public class SLIMRecommender extends ModelRecommender {
 		// up training
 		// TODO 修改为配置枚举
 		try {
-			Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("rec.similarity.class"));
+			Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("recommender.similarity.class"));
 			Similarity similarity = ReflectionUtility.getInstance(similarityClass);
-			similarityMatrix = similarity.makeSimilarityMatrix(scoreMatrix, true, configuration.getFloat("rec.similarity.shrinkage", 0F));
+			similarityMatrix = similarity.makeSimilarityMatrix(scoreMatrix, true, configuration.getFloat("recommender.similarity.shrinkage", 0F));
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}

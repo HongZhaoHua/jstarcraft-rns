@@ -115,12 +115,12 @@ public abstract class BHFreeRecommender extends ProbabilisticGraphicalRecommende
 	@Override
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
-		numberOfUserTopics = configuration.getInteger("rec.bhfree.user.topic.number", 10);
-		numberOfItemTopics = configuration.getInteger("rec.bhfree.item.topic.number", 10);
-		initAlpha = configuration.getFloat("rec.bhfree.alpha", 1.0f / numberOfUserTopics);
-		initBeta = configuration.getFloat("rec.bhfree.beta", 1.0f / numberOfItemTopics);
-		initGamma = configuration.getFloat("rec.bhfree.gamma", 1.0f / numberOfScores);
-		initSigma = configuration.getFloat("rec.sigma", 1.0f / numberOfItems);
+		numberOfUserTopics = configuration.getInteger("recommender.bhfree.user.topic.number", 10);
+		numberOfItemTopics = configuration.getInteger("recommender.bhfree.item.topic.number", 10);
+		initAlpha = configuration.getFloat("recommender.bhfree.alpha", 1.0f / numberOfUserTopics);
+		initBeta = configuration.getFloat("recommender.bhfree.beta", 1.0f / numberOfItemTopics);
+		initGamma = configuration.getFloat("recommender.bhfree.gamma", 1.0f / numberOfScores);
+		initSigma = configuration.getFloat("recommender.sigma", 1.0f / numberOfItems);
 		numberOfScores = scoreIndexes.size();
 
 		// TODO 考虑重构(整合为UserTopic对象)

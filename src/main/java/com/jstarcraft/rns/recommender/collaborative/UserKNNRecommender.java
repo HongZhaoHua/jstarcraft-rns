@@ -60,12 +60,12 @@ public abstract class UserKNNRecommender extends AbstractRecommender {
 	@Override
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
-		neighborSize = configuration.getInteger("rec.neighbors.knn.number");
+		neighborSize = configuration.getInteger("recommender.neighbors.knn.number");
 		// TODO 修改为配置枚举
 		try {
-			Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("rec.similarity.class"));
+			Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("recommender.similarity.class"));
 			Similarity similarity = ReflectionUtility.getInstance(similarityClass);
-			similarityMatrix = similarity.makeSimilarityMatrix(scoreMatrix, false, configuration.getFloat("rec.similarity.shrinkage", 0F));
+			similarityMatrix = similarity.makeSimilarityMatrix(scoreMatrix, false, configuration.getFloat("recommender.similarity.shrinkage", 0F));
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}

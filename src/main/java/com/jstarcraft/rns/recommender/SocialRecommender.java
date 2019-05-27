@@ -40,7 +40,7 @@ public abstract class SocialRecommender extends MatrixFactorizationRecommender {
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
 
-		socialRegularization = configuration.getFloat("rec.social.regularization", 0.01f);
+		socialRegularization = configuration.getFloat("recommender.social.regularization", 0.01f);
 		// social path for the socialMatrix
 		// TODO 此处是不是应该使用context.getSimilarity().getSimilarityMatrix();代替?
 		DataModule socialModel = space.getModule("social");

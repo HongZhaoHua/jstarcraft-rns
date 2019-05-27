@@ -44,7 +44,7 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
 	@Override
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
-		weight = configuration.getBoolean("rec.rankals.support.weight", true);
+		weight = configuration.getBoolean("recommender.rankals.support.weight", true);
 		weightVector = DenseVector.valueOf(numberOfItems);
 		sumSupport = 0;
 		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {

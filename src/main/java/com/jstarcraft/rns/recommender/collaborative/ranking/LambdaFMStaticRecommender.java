@@ -37,7 +37,7 @@ public class LambdaFMStaticRecommender extends LambdaFMRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        staticRho = configuration.getFloat("rec.item.distribution.parameter");
+        staticRho = configuration.getFloat("recommender.item.distribution.parameter");
         // calculate popularity
         Integer[] orderItems = new Integer[numberOfItems];
         for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {

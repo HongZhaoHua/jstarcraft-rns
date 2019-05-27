@@ -57,12 +57,12 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
 		super.prepare(configuration, model, space);
 		numberOfStatistics = 0;
 
-		numberOfUserTopics = configuration.getInteger("rec.pgm.number.users", 10);
-		numberOfItemTopics = configuration.getInteger("rec.pgm.number.items", 10);
+		numberOfUserTopics = configuration.getInteger("recommender.pgm.number.users", 10);
+		numberOfItemTopics = configuration.getInteger("recommender.pgm.number.items", 10);
 
-		userAlpha = configuration.getFloat("rec.pgm.user.alpha", 1F / numberOfUserTopics);
-		itemAlpha = configuration.getFloat("rec.pgm.item.alpha", 1F / numberOfItemTopics);
-		ratingBeta = configuration.getFloat("rec.pgm.rating.beta", 1F / numberOfActions);
+		userAlpha = configuration.getFloat("recommender.pgm.user.alpha", 1F / numberOfUserTopics);
+		itemAlpha = configuration.getFloat("recommender.pgm.item.alpha", 1F / numberOfItemTopics);
+		ratingBeta = configuration.getFloat("recommender.pgm.rating.beta", 1F / numberOfActions);
 
 		userTopicTimes = DenseMatrix.valueOf(numberOfUsers, numberOfUserTopics);
 		itemTopicTimes = DenseMatrix.valueOf(numberOfItems, numberOfItemTopics);

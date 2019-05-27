@@ -61,11 +61,11 @@ public class FISMaucRecommender extends MatrixFactorizationRecommender {
 		itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			scalar.setValue(distribution.sample().floatValue());
 		});
-		rho = configuration.getFloat("rec.fismauc.rho");// 3-15
-		alpha = configuration.getFloat("rec.fismauc.alpha", 0.5F);
-		beta = configuration.getFloat("rec.fismauc.beta", 0.6F);
-		gamma = configuration.getFloat("rec.fismauc.gamma", 0.1F);
-		biasRegularization = configuration.getFloat("rec.iteration.learnrate", 0.0001F);
+		rho = configuration.getFloat("recommender.fismauc.rho");// 3-15
+		alpha = configuration.getFloat("recommender.fismauc.alpha", 0.5F);
+		beta = configuration.getFloat("recommender.fismauc.beta", 0.6F);
+		gamma = configuration.getFloat("recommender.fismauc.gamma", 0.1F);
+		biasRegularization = configuration.getFloat("recommender.iteration.learnrate", 0.0001F);
 		// cacheSpec = conf.get("guava.cache.spec",
 		// "maximumSize=200,expireAfterAccess=2m");
 	}

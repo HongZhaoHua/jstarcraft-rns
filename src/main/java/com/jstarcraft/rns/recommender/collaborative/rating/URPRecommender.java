@@ -94,7 +94,7 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
-        float checkRatio = configuration.getFloat("rec.urp.chech.ratio", 0F);
+        float checkRatio = configuration.getFloat("recommender.urp.chech.ratio", 0F);
         if (checkRatio == 0F) {
             learnMatrix = scoreMatrix;
             checkMatrix = null;
@@ -126,11 +126,11 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
         topicItemTimes = new int[numberOfFactors][numberOfItems][numberOfScores];
         topicItemNumbers = DenseMatrix.valueOf(numberOfFactors, numberOfItems);
 
-        float initAlpha = configuration.getFloat("rec.pgm.bucm.alpha", 1F / numberOfFactors);
+        float initAlpha = configuration.getFloat("recommender.pgm.bucm.alpha", 1F / numberOfFactors);
         alpha = DenseVector.valueOf(numberOfFactors);
         alpha.setValues(initAlpha);
 
-        float initBeta = configuration.getFloat("rec.pgm.bucm.beta", 1F / numberOfFactors);
+        float initBeta = configuration.getFloat("recommender.pgm.bucm.beta", 1F / numberOfFactors);
         beta = DenseVector.valueOf(numberOfScores);
         beta.setValues(initBeta);
 

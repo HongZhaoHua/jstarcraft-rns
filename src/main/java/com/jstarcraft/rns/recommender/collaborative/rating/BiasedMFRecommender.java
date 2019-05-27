@@ -41,7 +41,7 @@ public class BiasedMFRecommender extends MatrixFactorizationRecommender {
 	@Override
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
-		regBias = configuration.getFloat("rec.bias.regularization", 0.01F);
+		regBias = configuration.getFloat("recommender.bias.regularization", 0.01F);
 
 		// initialize the userBiased and itemBiased
 		userBiases = DenseVector.valueOf(numberOfUsers);

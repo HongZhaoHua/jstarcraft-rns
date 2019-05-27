@@ -45,27 +45,27 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see net.librec.recommender.AbstractRecommender#setup()
+	 * @see net.librecommender.recommender.AbstractRecommender#setup()
 	 */
 	@Override
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
-		numberOfGlobalFactors = configuration.getInteger("rec.global.factors.num", 20);
+		numberOfGlobalFactors = configuration.getInteger("recommender.global.factors.num", 20);
 		numberOfLocalFactors = numberOfFactors;
 
-		numberOfGlobalIterations = configuration.getInteger("rec.global.iteration.maximum", 100);
+		numberOfGlobalIterations = configuration.getInteger("recommender.global.iteration.maximum", 100);
 		numberOfLocalIterations = numberOfEpoches;
 
-		globalUserRegularization = configuration.getFloat("rec.global.user.regularization", 0.01F);
-		globalItemRegularization = configuration.getFloat("rec.global.item.regularization", 0.01F);
+		globalUserRegularization = configuration.getFloat("recommender.global.user.regularization", 0.01F);
+		globalItemRegularization = configuration.getFloat("recommender.global.item.regularization", 0.01F);
 		localUserRegularization = userRegularization;
 		localItemRegularization = itemRegularization;
 
-		globalLearnRate = configuration.getFloat("rec.global.iteration.learnrate", 0.01F);
-		localLearnRate = configuration.getFloat("rec.iteration.learnrate", 0.01F);
+		globalLearnRate = configuration.getFloat("recommender.global.iteration.learnrate", 0.01F);
+		localLearnRate = configuration.getFloat("recommender.iteration.learnrate", 0.01F);
 
-		numberOfThreads = configuration.getInteger("rec.thread.count", 4);
-		numberOfModels = configuration.getInteger("rec.model.num", 50);
+		numberOfThreads = configuration.getInteger("recommender.thread.count", 4);
+		numberOfModels = configuration.getInteger("recommender.model.num", 50);
 
 		numberOfThreads = numberOfThreads > numberOfModels ? numberOfModels : numberOfThreads;
 

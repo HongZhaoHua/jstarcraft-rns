@@ -41,7 +41,7 @@ public class RankCDRecommender extends MatrixFactorizationRecommender {
 			term.setValue(1F);
 		}
 
-		confidence = configuration.getFloat("rec.rankcd.alpha");
+		confidence = configuration.getFloat("recommender.rankcd.alpha");
 		weightMatrix = SparseMatrix.copyOf(scoreMatrix, false);
 		weightMatrix.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			scalar.setValue(1F + confidence * scalar.getValue());

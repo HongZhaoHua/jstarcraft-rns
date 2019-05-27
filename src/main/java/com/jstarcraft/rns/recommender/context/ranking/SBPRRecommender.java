@@ -55,7 +55,7 @@ public class SBPRRecommender extends SocialRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        regBias = configuration.getFloat("rec.bias.regularization", 0.01F);
+        regBias = configuration.getFloat("recommender.bias.regularization", 0.01F);
         // cacheSpec = conf.get("guava.cache.spec",
         // "maximumSize=5000,expireAfterAccess=50m");
 

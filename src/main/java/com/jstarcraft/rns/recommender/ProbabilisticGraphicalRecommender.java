@@ -45,10 +45,10 @@ public abstract class ProbabilisticGraphicalRecommender extends ModelRecommender
 	@Override
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
-		numberOfFactors = configuration.getInteger("rec.topic.number", 10);
+		numberOfFactors = configuration.getInteger("recommender.topic.number", 10);
 		numberOfScores = scoreIndexes.size();
-		burnIn = configuration.getInteger("rec.pgm.burnin", 100);
-		numberOfSamples = configuration.getInteger("rec.pgm.samplelag", 100);
+		burnIn = configuration.getInteger("recommender.pgm.burnin", 100);
+		numberOfSamples = configuration.getInteger("recommender.pgm.samplelag", 100);
 	}
 
 	@Override

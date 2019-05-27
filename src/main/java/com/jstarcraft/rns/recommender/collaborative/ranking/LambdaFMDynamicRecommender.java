@@ -40,8 +40,8 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        dynamicRho = configuration.getFloat("rec.item.distribution.parameter");
-        numberOfOrders = configuration.getInteger("rec.number.orders", 10);
+        dynamicRho = configuration.getFloat("recommender.item.distribution.parameter");
+        numberOfOrders = configuration.getInteger("recommender.number.orders", 10);
 
         DefaultScalar sum = DefaultScalar.getInstance();
         sum.setValue(0F);

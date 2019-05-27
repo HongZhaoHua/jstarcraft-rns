@@ -73,13 +73,13 @@ public class TopicMFMTRecommender extends MatrixFactorizationRecommender {
         Object[] documentValues = attribute.getDatas();
 
         // init hyper-parameters
-        lambda = configuration.getFloat("rec.regularization.lambda", 0.001F);
-        lambdaU = configuration.getFloat("rec.regularization.lambdaU", 0.001F);
-        lambdaV = configuration.getFloat("rec.regularization.lambdaV", 0.001F);
-        lambdaB = configuration.getFloat("rec.regularization.lambdaB", 0.001F);
-        numberOfTopics = configuration.getInteger("rec.topic.number", 10);
-        learnRate = configuration.getFloat("rec.iterator.learnrate", 0.01F);
-        numberOfEpoches = configuration.getInteger("rec.iterator.maximum", 10);
+        lambda = configuration.getFloat("recommender.regularization.lambda", 0.001F);
+        lambdaU = configuration.getFloat("recommender.regularization.lambdaU", 0.001F);
+        lambdaV = configuration.getFloat("recommender.regularization.lambdaV", 0.001F);
+        lambdaB = configuration.getFloat("recommender.regularization.lambdaB", 0.001F);
+        numberOfTopics = configuration.getInteger("recommender.topic.number", 10);
+        learnRate = configuration.getFloat("recommender.iterator.learnrate", 0.01F);
+        numberOfEpoches = configuration.getInteger("recommender.iterator.maximum", 10);
 
         numberOfDocuments = scoreMatrix.getElementSize();
 
@@ -116,8 +116,8 @@ public class TopicMFMTRecommender extends MatrixFactorizationRecommender {
         W = SparseMatrix.valueOf(numberOfDocuments, numberOfWords, documentTable);
 
         // init parameters
-        initMean = configuration.getFloat("rec.init.mean", 0.0F);
-        initStd = configuration.getFloat("rec.init.std", 0.01F);
+        initMean = configuration.getFloat("recommender.init.mean", 0.0F);
+        initStd = configuration.getFloat("recommender.init.std", 0.01F);
         userBiases = DenseVector.valueOf(numberOfUsers);
         userBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());

@@ -53,8 +53,8 @@ public class GBPRRecommender extends MatrixFactorizationRecommender {
 			scalar.setValue(RandomUtility.randomFloat(1F));
 		});
 
-		rho = configuration.getFloat("rec.gpbr.rho", 1.5f);
-		gLen = configuration.getInteger("rec.gpbr.gsize", 2);
+		rho = configuration.getFloat("recommender.gpbr.rho", 1.5f);
+		gLen = configuration.getInteger("recommender.gpbr.gsize", 2);
 	}
 
 	@Override

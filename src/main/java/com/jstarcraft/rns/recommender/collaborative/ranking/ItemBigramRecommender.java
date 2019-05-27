@@ -103,8 +103,8 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
 	@Override
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
-		initAlpha = configuration.getFloat("rec.user.dirichlet.prior", 0.01F);
-		initBeta = configuration.getFloat("rec.topic.dirichlet.prior", 0.01F);
+		initAlpha = configuration.getFloat("recommender.user.dirichlet.prior", 0.01F);
+		initBeta = configuration.getFloat("recommender.topic.dirichlet.prior", 0.01F);
 
 		instantField = configuration.getString("data.model.fields.instant");
 		instantDimension = model.getQualityInner(instantField);

@@ -60,7 +60,7 @@ public class PRankDRecommender extends RankSGDRecommender {
 	@Override
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
-		similarityFilter = configuration.getFloat("rec.sim.filter", 4F);
+		similarityFilter = configuration.getFloat("recommender.sim.filter", 4F);
 		float denominator = 0F;
 		itemWeights = DenseVector.valueOf(numberOfItems);
 		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
@@ -76,9 +76,9 @@ public class PRankDRecommender extends RankSGDRecommender {
 		// compute item correlations by cosine similarity
 		// TODO 修改为配置枚举
 		try {
-			Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("rec.similarity.class"));
+			Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("recommender.similarity.class"));
 			Similarity similarity = ReflectionUtility.getInstance(similarityClass);
-			itemCorrelations = similarity.makeSimilarityMatrix(scoreMatrix, true, configuration.getFloat("rec.similarity.shrinkage", 0F));
+			itemCorrelations = similarity.makeSimilarityMatrix(scoreMatrix, true, configuration.getFloat("recommender.similarity.shrinkage", 0F));
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}

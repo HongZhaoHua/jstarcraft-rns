@@ -88,7 +88,7 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
 			dataTable.put(userIndex, itemIndex, term.getValue());
 		}
 
-		correlationRegularization = configuration.getFloat("rec.alpha");
+		correlationRegularization = configuration.getFloat("recommender.alpha");
 		userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			scalar.setValue(RandomUtility.randomFloat(0.8F));
 		});

@@ -71,12 +71,12 @@ public abstract class NeuralNetworkRecommender extends ModelRecommender {
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
 		inputDimension = getInputDimension();
-		hiddenDimension = configuration.getInteger("rec.hidden.dimension");
-		hiddenActivation = configuration.getString("rec.hidden.activation");
-		outputActivation = configuration.getString("rec.output.activation");
-		learnRate = configuration.getFloat("rec.iterator.learnrate");
-		momentum = configuration.getFloat("rec.iterator.momentum");
-		weightRegularization = configuration.getFloat("rec.weight.regularization");
+		hiddenDimension = configuration.getInteger("recommender.hidden.dimension");
+		hiddenActivation = configuration.getString("recommender.hidden.activation");
+		outputActivation = configuration.getString("recommender.output.activation");
+		learnRate = configuration.getFloat("recommender.iterator.learnrate");
+		momentum = configuration.getFloat("recommender.iterator.momentum");
+		weightRegularization = configuration.getFloat("recommender.weight.regularization");
 	}
 
 	@Override

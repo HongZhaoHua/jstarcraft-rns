@@ -53,14 +53,14 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
 
         lossType = configuration.getInteger("losstype", 3);
 
-        isLearned = configuration.getBoolean("rec.learnrate.bolddriver", false);
-        learnDecay = configuration.getFloat("rec.learnrate.decay", 1.0f);
-        learnRate = configuration.getFloat("rec.iterator.learnrate", 0.01f);
-        learnLimit = configuration.getFloat("rec.iterator.learnrate.maximum", 1000.0f);
+        isLearned = configuration.getBoolean("recommender.learnrate.bolddriver", false);
+        learnDecay = configuration.getFloat("recommender.learnrate.decay", 1.0f);
+        learnRate = configuration.getFloat("recommender.iterator.learnrate", 0.01f);
+        learnLimit = configuration.getFloat("recommender.iterator.learnrate.maximum", 1000.0f);
 
-        biasRegularization = configuration.getFloat("rec.fm.regw0", 0.1F);
-        weightRegularization = configuration.getFloat("rec.fm.regW", 0.1F);
-        factorRegularization = configuration.getFloat("rec.fm.regF", 0.001F);
+        biasRegularization = configuration.getFloat("recommender.fm.regw0", 0.1F);
+        weightRegularization = configuration.getFloat("recommender.fm.regW", 0.1F);
+        factorRegularization = configuration.getFloat("recommender.fm.regF", 0.001F);
     }
 
     protected abstract float getGradientValue(DataInstance instance, ArrayInstance positive, ArrayInstance negative, DefaultScalar scalar, int[] dataPaginations, int[] dataPositions);

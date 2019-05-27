@@ -36,12 +36,12 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
     /*
      * (non-Javadoc)
      *
-     * @see net.librec.recommender.AbstractRecommender#setup()
+     * @see net.librecommender.recommender.AbstractRecommender#setup()
      */
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        regImpItem = configuration.getFloat("rec.impItem.regularization", 0.015F);
+        regImpItem = configuration.getFloat("recommender.impItem.regularization", 0.015F);
         factorMatrix = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
         factorMatrix.iterateElement(MathCalculator.SERIAL, (element) -> {
             element.setValue(distribution.sample().floatValue());

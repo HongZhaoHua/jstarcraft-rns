@@ -67,13 +67,13 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 		Object[] wordValues = attribute.getDatas();
 
 		scoreScale = maximumOfScore - minimumOfScore;
-		numberOfExplicitFeatures = configuration.getInteger("rec.factor.explicit", 5);
+		numberOfExplicitFeatures = configuration.getInteger("recommender.factor.explicit", 5);
 		numberOfImplicitFeatures = numberOfFactors - numberOfExplicitFeatures;
-		attentionRegularization = configuration.getFloat("rec.regularization.lambdax", 0.001F);
-		qualityRegularization = configuration.getFloat("rec.regularization.lambday", 0.001F);
-		explicitRegularization = configuration.getFloat("rec.regularization.lambdau", 0.001F);
-		implicitRegularization = configuration.getFloat("rec.regularization.lambdah", 0.001F);
-		featureRegularization = configuration.getFloat("rec.regularization.lambdav", 0.001F);
+		attentionRegularization = configuration.getFloat("recommender.regularization.lambdax", 0.001F);
+		qualityRegularization = configuration.getFloat("recommender.regularization.lambday", 0.001F);
+		explicitRegularization = configuration.getFloat("recommender.regularization.lambdau", 0.001F);
+		implicitRegularization = configuration.getFloat("recommender.regularization.lambdah", 0.001F);
+		featureRegularization = configuration.getFloat("recommender.regularization.lambdav", 0.001F);
 
 		Map<String, Integer> featureDictionaries = new HashMap<>();
 		Map<Integer, StringBuilder> userDictionaries = new HashMap<>();

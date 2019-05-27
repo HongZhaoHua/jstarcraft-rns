@@ -114,7 +114,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
 
 		topicItemRateNumbers = new int[numberOfFactors][numberOfItems][numberOfScores];
 
-		float initAlpha = configuration.getFloat("rec.bucm.alpha", 1F / numberOfFactors);
+		float initAlpha = configuration.getFloat("recommender.bucm.alpha", 1F / numberOfFactors);
 		alpha = DenseVector.valueOf(numberOfFactors);
 		alpha.setValues(initAlpha);
 
@@ -122,7 +122,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
 		beta = DenseVector.valueOf(numberOfItems);
 		beta.setValues(initBeta);
 
-		float initGamma = configuration.getFloat("rec.bucm.gamma", 1F / numberOfFactors);
+		float initGamma = configuration.getFloat("recommender.bucm.gamma", 1F / numberOfFactors);
 		gamma = DenseVector.valueOf(numberOfScores);
 		gamma.setValues(initGamma);
 

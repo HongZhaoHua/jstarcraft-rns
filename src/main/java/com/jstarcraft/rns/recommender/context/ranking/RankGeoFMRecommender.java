@@ -56,10 +56,10 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        margin = configuration.getFloat("rec.ranking.margin", 0.3F);
-        radius = configuration.getFloat("rec.regularization.radius", 1F);
-        balance = configuration.getFloat("rec.regularization.balance", 0.2F);
-        knn = configuration.getInteger("rec.item.nearest.neighbour.number", 300);
+        margin = configuration.getFloat("recommender.ranking.margin", 0.3F);
+        radius = configuration.getFloat("recommender.regularization.radius", 1F);
+        balance = configuration.getFloat("recommender.regularization.balance", 0.2F);
+        knn = configuration.getInteger("recommender.item.nearest.neighbour.number", 300);
 
         geoInfluences = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
 

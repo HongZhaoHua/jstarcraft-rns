@@ -42,7 +42,7 @@ public class RankingTask extends AbstractTask<IntCollection> {
     @Override
     protected Collection<Evaluator> getEvaluators(SparseMatrix featureMatrix) {
         Collection<Evaluator> evaluators = new LinkedList<>();
-        int size = configuration.getInteger("rec.recommender.ranking.topn", 10);
+        int size = configuration.getInteger("recommender.recommender.ranking.topn", 10);
         evaluators.add(new AUCEvaluator(size));
         evaluators.add(new MAPEvaluator(size));
         evaluators.add(new MRREvaluator(size));

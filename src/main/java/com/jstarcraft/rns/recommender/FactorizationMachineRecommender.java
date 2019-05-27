@@ -82,22 +82,22 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
-        maximumOfScore = configuration.getFloat("rec.recommender.maxrate", 12F);
-        minimumOfScore = configuration.getFloat("rec.recommender.minrate", 0F);
+        maximumOfScore = configuration.getFloat("recommender.recommender.maxrate", 12F);
+        minimumOfScore = configuration.getFloat("recommender.recommender.minrate", 0F);
 
-        numberOfFactors = configuration.getInteger("rec.factor.number");
+        numberOfFactors = configuration.getInteger("recommender.factor.number");
 
         // init all weight with zero
         globalBias = 0;
 
         // init factors with small value
         // TODO 此处需要重构
-        initMean = configuration.getFloat("rec.init.mean", 0F);
-        initStd = configuration.getFloat("rec.init.std", 0.1F);
+        initMean = configuration.getFloat("recommender.init.mean", 0F);
+        initStd = configuration.getFloat("recommender.init.std", 0.1F);
 
-        biasRegularization = configuration.getFloat("rec.fm.regw0", 0.01F);
-        weightRegularization = configuration.getFloat("rec.fm.regW", 0.01F);
-        factorRegularization = configuration.getFloat("rec.fm.regF", 10F);
+        biasRegularization = configuration.getFloat("recommender.fm.regw0", 0.01F);
+        weightRegularization = configuration.getFloat("recommender.fm.regW", 0.01F);
+        factorRegularization = configuration.getFloat("recommender.fm.regF", 10F);
 
         // TODO 暂时不支持连续特征,考虑将连续特征离散化.
         this.marker = model;

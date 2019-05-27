@@ -50,10 +50,10 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
             term.setValue(1F);
         }
 
-        alpha = configuration.getFloat("rec.rankvfcd.alpha", 5F);
-        beta = configuration.getFloat("rec.rankvfcd.beta", 10F);
-        gamma = configuration.getFloat("rec.rankvfcd.gamma", 50F);
-        lamutaE = configuration.getFloat("rec.rankvfcd.lamutaE", 50F);
+        alpha = configuration.getFloat("recommender.rankvfcd.alpha", 5F);
+        beta = configuration.getFloat("recommender.rankvfcd.beta", 10F);
+        gamma = configuration.getFloat("recommender.rankvfcd.gamma", 50F);
+        lamutaE = configuration.getFloat("recommender.rankvfcd.lamutaE", 50F);
         numberOfFeatures = 4096;
 
         userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);

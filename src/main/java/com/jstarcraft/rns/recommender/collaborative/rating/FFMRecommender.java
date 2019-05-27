@@ -55,7 +55,7 @@ public class FFMRecommender extends FactorizationMachineRecommender {
             count += size;
         }
 
-        learnRate = configuration.getFloat("rec.iterator.learnRate");
+        learnRate = configuration.getFloat("recommender.iterator.learnRate");
     }
 
     @Override

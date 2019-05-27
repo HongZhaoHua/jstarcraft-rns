@@ -40,7 +40,7 @@ public class RSTERecommender extends SocialRecommender {
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        userSocialRatio = configuration.getFloat("rec.user.social.ratio", 0.8F);
+        userSocialRatio = configuration.getFloat("recommender.user.social.ratio", 0.8F);
     }
 
     @Override

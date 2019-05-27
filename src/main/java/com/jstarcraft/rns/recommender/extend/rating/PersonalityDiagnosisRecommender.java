@@ -47,7 +47,7 @@ public class PersonalityDiagnosisRecommender extends AbstractRecommender {
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         prior = 1F / numberOfUsers;
-        sigma = configuration.getFloat("rec.PersonalityDiagnosis.sigma");
+        sigma = configuration.getFloat("recommender.PersonalityDiagnosis.sigma");
         values = new ArrayList<>(scoreIndexes.keySet());
     }
 

@@ -63,10 +63,10 @@ public class EALSRecommender extends MatrixFactorizationRecommender {
 	@Override
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
-		weightCoefficient = configuration.getFloat("rec.wrmf.weight.coefficient", 4.0f);
-		ratio = configuration.getFloat("rec.eals.ratio", 0.4f);
-		overallWeight = configuration.getFloat("rec.eals.overall", 128.0f);
-		type = configuration.getInteger("rec.eals.wrmf.judge", 1);
+		weightCoefficient = configuration.getFloat("recommender.wrmf.weight.coefficient", 4.0f);
+		ratio = configuration.getFloat("recommender.eals.ratio", 0.4f);
+		overallWeight = configuration.getFloat("recommender.eals.overall", 128.0f);
+		type = configuration.getInteger("recommender.eals.wrmf.judge", 1);
 
 		confidences = new float[numberOfItems];
 

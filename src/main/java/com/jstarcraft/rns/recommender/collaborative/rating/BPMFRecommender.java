@@ -213,17 +213,17 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        userMean = configuration.getFloat("rec.recommender.user.mu", 0F);
-        userBeta = configuration.getFloat("rec.recommender.user.beta", 1F);
-        userWishart = configuration.getFloat("rec.recommender.user.wishart.scale", 1F);
+        userMean = configuration.getFloat("recommender.recommender.user.mu", 0F);
+        userBeta = configuration.getFloat("recommender.recommender.user.beta", 1F);
+        userWishart = configuration.getFloat("recommender.recommender.user.wishart.scale", 1F);
 
-        itemMean = configuration.getFloat("rec.recommender.item.mu", 0F);
-        itemBeta = configuration.getFloat("rec.recommender.item.beta", 1F);
-        itemWishart = configuration.getFloat("rec.recommender.item.wishart.scale", 1F);
+        itemMean = configuration.getFloat("recommender.recommender.item.mu", 0F);
+        itemBeta = configuration.getFloat("recommender.recommender.item.beta", 1F);
+        itemWishart = configuration.getFloat("recommender.recommender.item.wishart.scale", 1F);
 
-        rateSigma = configuration.getFloat("rec.recommender.rating.sigma", 2F);
+        rateSigma = configuration.getFloat("recommender.recommender.rating.sigma", 2F);
 
-        gibbsIterations = configuration.getInteger("rec.recommender.iterations.gibbs", 1);
+        gibbsIterations = configuration.getInteger("recommender.recommender.iterations.gibbs", 1);
 
         userMatrixes = new DenseMatrix[numberOfEpoches - 1];
         itemMatrixes = new DenseMatrix[numberOfEpoches - 1];

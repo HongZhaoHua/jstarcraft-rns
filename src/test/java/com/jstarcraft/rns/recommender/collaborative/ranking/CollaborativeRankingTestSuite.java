@@ -22,7 +22,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
         CLiMFTestCase.class,
 
-        DeepCrossTestCase.class,
+//        DeepCrossTestCase.class,
 
         DeepFMTestCase.class,
 

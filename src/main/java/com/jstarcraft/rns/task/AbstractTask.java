@@ -78,7 +78,7 @@ public abstract class AbstractTask<T> {
 
     protected AbstractTask(Class<? extends Recommender> clazz, Configuration configuration) {
         this.configuration = configuration;
-        Long seed = configuration.getLong("rec.random.seed");
+        Long seed = configuration.getLong("recommender.random.seed");
         if (seed != null) {
             RandomUtility.setSeed(seed);
         }

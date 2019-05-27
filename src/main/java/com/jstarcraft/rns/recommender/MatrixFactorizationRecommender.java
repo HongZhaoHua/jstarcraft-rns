@@ -81,19 +81,19 @@ public abstract class MatrixFactorizationRecommender extends ModelRecommender {
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
-        userRegularization = configuration.getFloat("rec.user.regularization", 0.01f);
-        itemRegularization = configuration.getFloat("rec.item.regularization", 0.01f);
+        userRegularization = configuration.getFloat("recommender.user.regularization", 0.01f);
+        itemRegularization = configuration.getFloat("recommender.item.regularization", 0.01f);
 
-        numberOfFactors = configuration.getInteger("rec.factor.number", 10);
+        numberOfFactors = configuration.getInteger("recommender.factor.number", 10);
 
-        isLearned = configuration.getBoolean("rec.learnrate.bolddriver", false);
-        learnDecay = configuration.getFloat("rec.learnrate.decay", 1.0f);
-        learnRate = configuration.getFloat("rec.iterator.learnrate", 0.01f);
-        learnLimit = configuration.getFloat("rec.iterator.learnrate.maximum", 1000.0f);
+        isLearned = configuration.getBoolean("recommender.learnrate.bolddriver", false);
+        learnDecay = configuration.getFloat("recommender.learnrate.decay", 1.0f);
+        learnRate = configuration.getFloat("recommender.iterator.learnrate", 0.01f);
+        learnLimit = configuration.getFloat("recommender.iterator.learnrate.maximum", 1000.0f);
 
         // TODO 此处需要重构
-        initMean = configuration.getFloat("rec.init.mean", 0F);
-        initStd = configuration.getFloat("rec.init.std", 0.1F);
+        initMean = configuration.getFloat("recommender.init.mean", 0F);
+        initStd = configuration.getFloat("recommender.init.std", 0.1F);
 
         distribution = new QuantityProbability(JDKRandomGenerator.class, 0, NormalDistribution.class, initMean, initStd);
         userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);

@@ -49,7 +49,7 @@ public class AoBPRRecommender extends MatrixFactorizationRecommender {
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
 		// set for this alg
-		lambdaItem = (int) (configuration.getFloat("rec.item.distribution.parameter") * numberOfItems);
+		lambdaItem = (int) (configuration.getFloat("recommender.item.distribution.parameter") * numberOfItems);
 		// lamda_Item=500;
 		loopNumber = (int) (numberOfItems * Math.log(numberOfItems));
 

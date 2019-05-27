@@ -53,8 +53,8 @@ public class SoRecRecommender extends SocialRecommender {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
 
-        regRate = configuration.getFloat("rec.rate.social.regularization", 0.01F);
-        regSocial = configuration.getFloat("rec.user.social.regularization", 0.01F);
+        regRate = configuration.getFloat("recommender.rate.social.regularization", 0.01F);
+        regSocial = configuration.getFloat("recommender.user.social.regularization", 0.01F);
 
         inDegrees = new ArrayList<>(numberOfUsers);
         outDegrees = new ArrayList<>(numberOfUsers);

@@ -68,11 +68,11 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
             term.setValue(1F);
         }
 
-        biasRegularization = configuration.getFloat("rec.bias.regularization", 0.1F);
+        biasRegularization = configuration.getFloat("recommender.bias.regularization", 0.1F);
         // TODO 此处应该修改为配置或者动态计算.
         numberOfFeatures = 4096;
         featureRegularization = 1000;
-        sampleRatio = configuration.getInteger("rec.vbpr.alpha", 5);
+        sampleRatio = configuration.getInteger("recommender.vbpr.alpha", 5);
 
         itemBiases = DenseVector.valueOf(numberOfItems);
         itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {

@@ -116,13 +116,13 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
     /*
      * (non-Javadoc)
      *
-     * @see net.librec.recommender.cf.rating.BiasedMFRecommender#setup()
+     * @see net.librecommender.recommender.cf.rating.BiasedMFRecommender#setup()
      */
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        decay = configuration.getFloat("rec.learnrate.decay", 0.015F);
-        numSections = configuration.getInteger("rec.numBins", 6);
+        decay = configuration.getFloat("recommender.learnrate.decay", 0.015F);
+        numSections = configuration.getInteger("recommender.numBins", 6);
 
         instantField = configuration.getString("data.model.fields.instant");
         instantDimension = model.getQualityInner(instantField);

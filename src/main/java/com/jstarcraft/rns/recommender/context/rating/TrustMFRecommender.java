@@ -77,7 +77,7 @@ public class TrustMFRecommender extends SocialRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        mode = configuration.getString("rec.social.model", "T");
+        mode = configuration.getString("recommender.social.model", "T");
         // algoName = "TrustMF (" + model + ")";
         switch (mode) {
         case "Tr":

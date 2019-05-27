@@ -80,7 +80,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 
 		userMus = DenseVector.valueOf(numberOfUsers);
 		userSigmas = DenseVector.valueOf(numberOfUsers);
-		smoothWeight = configuration.getInteger("rec.recommender.smoothWeight");
+		smoothWeight = configuration.getInteger("recommender.recommender.smoothWeight");
 		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
 			SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 			int size = userVector.getElementSize();

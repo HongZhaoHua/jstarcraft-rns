@@ -13,12 +13,6 @@ import com.jstarcraft.rns.evaluator.rating.MSEEvaluator;
 import com.jstarcraft.rns.recommender.benchmark.rating.GlobalAverageRecommender;
 import com.jstarcraft.rns.task.RatingTask;
 
-/**
- * GlobalAverage Test Case correspond to GlobalAverageRecommender
- * {@link com.jstarcraft.recommendation.recommender.benchmark.rating.librec.recommender.baseline.GlobalAverageRecommender}
- * 
- * @author liuxz
- */
 public class GlobalAverageTestCase {
 
     @Test

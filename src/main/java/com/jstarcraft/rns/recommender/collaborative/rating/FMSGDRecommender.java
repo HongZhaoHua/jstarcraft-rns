@@ -30,7 +30,7 @@ public class FMSGDRecommender extends FactorizationMachineRecommender {
 	@Override
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
-		learnRate = configuration.getFloat("rec.iterator.learnRate");
+		learnRate = configuration.getFloat("recommender.iterator.learnRate");
 	}
 
 	@Override

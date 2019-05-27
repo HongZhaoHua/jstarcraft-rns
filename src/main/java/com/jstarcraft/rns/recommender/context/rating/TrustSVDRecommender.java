@@ -78,7 +78,7 @@ public class TrustSVDRecommender extends SocialRecommender {
         super.prepare(configuration, model, space);
         // trusterFactors.init(1.0);
         // itemExplicitFactors.init(1.0);
-        regBias = configuration.getFloat("rec.bias.regularization", 0.01F);
+        regBias = configuration.getFloat("recommender.bias.regularization", 0.01F);
 
         // initialize userBiases and itemBiases
         // TODO 考虑重构

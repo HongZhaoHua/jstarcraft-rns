@@ -134,9 +134,9 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
         MemoryQualityAttribute attribute = (MemoryQualityAttribute) space.getQualityAttribute(commentField);
         Object[] wordValues = attribute.getDatas();
 
-        biasRegularization = configuration.getFloat("rec.bias.regularization", 0.01F);
-        userRegularization = configuration.getFloat("rec.user.regularization", 0.01F);
-        itemRegularization = configuration.getFloat("rec.item.regularization", 0.01F);
+        biasRegularization = configuration.getFloat("recommender.bias.regularization", 0.01F);
+        userRegularization = configuration.getFloat("recommender.user.regularization", 0.01F);
+        itemRegularization = configuration.getFloat("recommender.item.regularization", 0.01F);
 
         userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
         itemFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);

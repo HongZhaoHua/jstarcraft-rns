@@ -93,9 +93,9 @@ public class DeepFMRecommender extends ModelRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        learnRate = configuration.getFloat("rec.iterator.learnrate");
-        momentum = configuration.getFloat("rec.iterator.momentum");
-        weightRegularization = configuration.getFloat("rec.weight.regularization");
+        learnRate = configuration.getFloat("recommender.iterator.learnrate");
+        momentum = configuration.getFloat("recommender.iterator.momentum");
+        weightRegularization = configuration.getFloat("recommender.weight.regularization");
         this.marker = model;
 
         // TODO 此处需要重构,外部索引与内部索引的映射转换

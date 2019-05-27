@@ -174,9 +174,9 @@ public class TFIDFRecommender extends MatrixFactorizationRecommender {
         super.prepare(configuration, model, space);
 
         try {
-            Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("rec.similarity.class"));
+            Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("recommender.similarity.class"));
             similarity = ReflectionUtility.getInstance(similarityClass);
-            scale = configuration.getFloat("rec.similarity.shrinkage");
+            scale = configuration.getFloat("recommender.similarity.shrinkage");
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }

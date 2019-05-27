@@ -106,11 +106,11 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
 		/**
 		 * Dirichlet hyper-parameters of user-topic distribution: typical value is 50/K
 		 */
-		float initAlpha = configuration.getFloat("rec.user.dirichlet.prior", 50F / numberOfFactors);
+		float initAlpha = configuration.getFloat("recommender.user.dirichlet.prior", 50F / numberOfFactors);
 		/**
 		 * Dirichlet hyper-parameters of topic-item distribution, typical value is 0.01
 		 */
-		float initBeta = configuration.getFloat("rec.topic.dirichlet.prior", 0.01F);
+		float initBeta = configuration.getFloat("recommender.topic.dirichlet.prior", 0.01F);
 		alpha = DenseVector.valueOf(numberOfFactors);
 		alpha.setValues(initAlpha);
 

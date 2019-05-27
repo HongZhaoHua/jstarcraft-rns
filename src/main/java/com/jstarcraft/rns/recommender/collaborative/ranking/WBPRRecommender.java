@@ -63,7 +63,7 @@ public class WBPRRecommender extends MatrixFactorizationRecommender {
 	@Override
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
-		biasRegularization = configuration.getFloat("rec.bias.regularization", 0.01F);
+		biasRegularization = configuration.getFloat("recommender.bias.regularization", 0.01F);
 
 		itemBiases = DenseVector.valueOf(numberOfItems);
 		itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {

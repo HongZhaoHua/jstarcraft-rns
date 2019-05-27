@@ -32,8 +32,8 @@ public abstract class ModelRecommender extends AbstractRecommender {
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
 		// 参数部分
-		numberOfEpoches = configuration.getInteger("rec.iterator.maximum", 100);
-		isConverged = configuration.getBoolean("rec.recommender.earlystop", false);
+		numberOfEpoches = configuration.getInteger("recommender.iterator.maximum", 100);
+		isConverged = configuration.getBoolean("recommender.recommender.earlystop", false);
 	}
 
 	/**
