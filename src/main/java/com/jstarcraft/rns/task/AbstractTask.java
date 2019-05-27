@@ -156,10 +156,10 @@ public abstract class AbstractTask<T> {
         // TODO 数据属性部分
         // 离散属性
         Type dicreteConfiguration = TypeUtility.parameterize(HashMap.class, String.class, Class.class);
-        Map<String, Class<?>> dicreteDifinitions = JsonUtility.string2Object(configuration.getString("data.space.attributes.dicrete"), dicreteConfiguration);
+        Map<String, Class<?>> dicreteDifinitions = JsonUtility.string2Object(configuration.getString("data.attributes.dicrete"), dicreteConfiguration);
         // 连续属性
         Type continuousConfiguration = TypeUtility.parameterize(HashMap.class, String.class, Class.class);
-        Map<String, Class<?>> continuousDifinitions = JsonUtility.string2Object(configuration.getString("data.space.attributes.continuous"), continuousConfiguration);
+        Map<String, Class<?>> continuousDifinitions = JsonUtility.string2Object(configuration.getString("data.attributes.continuous"), continuousConfiguration);
 
         // 数据空间部分
         DataSpace space = new DataSpace(dicreteDifinitions, continuousDifinitions);
