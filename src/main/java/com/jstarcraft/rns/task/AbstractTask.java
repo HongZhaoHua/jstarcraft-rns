@@ -33,7 +33,7 @@ import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.utility.Int2FloatKeyValue;
 import com.jstarcraft.ai.utility.IntegerArray;
-import com.jstarcraft.core.utility.JsonUtility;
+import com.jstarcraft.core.common.conversion.json.JsonUtility;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.ReflectionUtility;

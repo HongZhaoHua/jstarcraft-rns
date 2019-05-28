@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 import org.junit.Test;
 
-import com.jstarcraft.core.utility.JsonUtility;
+import com.jstarcraft.core.common.conversion.json.JsonUtility;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.TypeUtility;
 
