@@ -14,7 +14,7 @@ import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SymmetryMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
-import com.jstarcraft.core.utility.ReflectionUtility;
+import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.rns.configurator.Configuration;
 import com.jstarcraft.rns.recommender.AbstractRecommender;
 

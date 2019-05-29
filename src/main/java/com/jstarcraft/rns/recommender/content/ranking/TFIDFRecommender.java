@@ -14,7 +14,7 @@ import com.jstarcraft.ai.math.algorithm.text.TermFrequency;
 import com.jstarcraft.ai.math.structure.matrix.RowArrayMatrix;
 import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.utility.ReflectionUtility;
+import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.rns.configurator.Configuration;
 import com.jstarcraft.rns.recommender.MatrixFactorizationRecommender;
 

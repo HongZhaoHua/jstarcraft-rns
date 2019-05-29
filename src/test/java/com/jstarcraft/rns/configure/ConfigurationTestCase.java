@@ -8,8 +8,8 @@ import java.util.LinkedList;
 import org.junit.Test;
 
 import com.jstarcraft.core.common.conversion.json.JsonUtility;
+import com.jstarcraft.core.common.reflection.TypeUtility;
 import com.jstarcraft.core.utility.KeyValue;
-import com.jstarcraft.core.utility.TypeUtility;
 
 public class ConfigurationTestCase {
 
