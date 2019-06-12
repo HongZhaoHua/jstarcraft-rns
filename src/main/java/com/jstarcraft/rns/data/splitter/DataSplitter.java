@@ -1,6 +1,5 @@
 package com.jstarcraft.rns.data.splitter;
 
-import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.module.ReferenceModule;
 
 /**
