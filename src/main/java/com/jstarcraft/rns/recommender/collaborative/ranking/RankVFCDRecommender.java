@@ -82,7 +82,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
         int leftDimension = 0;
         int rightDimension = 1;
         int coefficientDimension = relationModel.getQuantityInner(coefficientField);
-        HashMatrix relationTable = HashMatrix.valueOf(true, numberOfItems, numberOfItems, new Int2FloatRBTreeMap());
+        HashMatrix relationTable = new HashMatrix(true, numberOfItems, numberOfItems, new Int2FloatRBTreeMap());
         for (DataInstance instance : relationModel) {
             int itemIndex = instance.getQualityFeature(leftDimension);
             int neighborIndex = instance.getQualityFeature(rightDimension);
@@ -94,7 +94,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
         // 特征矩阵
         float minimumValue = Float.MAX_VALUE;
         float maximumValue = Float.MIN_VALUE;
-        HashMatrix visualTable = HashMatrix.valueOf(true, numberOfFeatures, numberOfItems, new Int2FloatRBTreeMap());
+        HashMatrix visualTable = new HashMatrix(true, numberOfFeatures, numberOfItems, new Int2FloatRBTreeMap());
         DataModule featureModel = space.getModule("article");
         String articleField = configuration.getString("data.model.fields.article");
         String featureField = configuration.getString("data.model.fields.feature");

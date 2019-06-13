@@ -84,7 +84,7 @@ public abstract class AbstractRecommender implements Recommender {
         matcher.match(dataPaginations, dataPositions);
         DataSorter sorter = DataSorter.featureOf(model);
         sorter.sort(dataPaginations, dataPositions);
-        HashMatrix dataTable = HashMatrix.valueOf(true, numberOfUsers, numberOfItems, new Int2FloatRBTreeMap());
+        HashMatrix dataTable = new HashMatrix(true, numberOfUsers, numberOfItems, new Int2FloatRBTreeMap());
         DataInstance instance = model.getInstance(0);
         for (int position : dataPositions) {
             instance.setCursor(position);
