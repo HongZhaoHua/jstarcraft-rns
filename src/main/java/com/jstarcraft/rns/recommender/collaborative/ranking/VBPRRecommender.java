@@ -1,18 +1,12 @@
 package com.jstarcraft.rns.recommender.collaborative.ranking;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-import com.google.common.collect.Table.Cell;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
+import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
@@ -23,6 +17,8 @@ import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.configurator.Configuration;
 import com.jstarcraft.rns.recommender.MatrixFactorizationRecommender;
 import com.jstarcraft.rns.utility.LogisticUtility;
+
+import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
 
 /**
  * 
@@ -52,7 +48,7 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
     private DenseVector itemFeatures;
     private DenseMatrix featureFactors;
 
-    private Table<Integer, Integer, Float> featureTable;
+    private HashMatrix featureTable;
     private DenseMatrix factorMatrix;
     private DenseVector featureVector;
 
@@ -96,7 +92,7 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
 
         float minimumValue = Float.MAX_VALUE;
         float maximumValue = Float.MIN_VALUE;
-        featureTable = HashBasedTable.create();
+        featureTable = new HashMatrix(true, numberOfItems, numberOfFeatures, new Int2FloatRBTreeMap());
         DataModule featureModel = space.getModule("article");
         String articleField = configuration.getString("data.model.fields.article");
         String featureField = configuration.getString("data.model.fields.feature");
@@ -114,11 +110,11 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
             if (featureValue > maximumValue) {
                 maximumValue = featureValue;
             }
-            featureTable.put(itemIndex, featureIndex, featureValue);
+            featureTable.setValue(itemIndex, featureIndex, featureValue);
         }
-        for (Cell<Integer, Integer, Float> cell : featureTable.cellSet()) {
+        for (MatrixScalar cell : featureTable) {
             float value = (cell.getValue() - minimumValue) / (maximumValue - minimumValue);
-            featureTable.put(cell.getRowKey(), cell.getColumnKey(), value);
+            featureTable.setValue(cell.getRow(), cell.getColumn(), value);
         }
         factorMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfItems);
         factorMatrix.iterateElement(MathCalculator.SERIAL, (scalar) -> {
@@ -132,14 +128,14 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
         DenseVector factorVector = DenseVector.valueOf(featureFactors.getRowSize());
         ArrayVector[] featureVectors = new ArrayVector[numberOfItems];
         for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-            Map<Integer, Float> keyValues = new TreeMap<>(featureTable.row(itemIndex));
-            int[] featureIndexes = new int[keyValues.size()];
-            float[] featureValues = new float[keyValues.size()];
-            int index = 0;
-            for (Entry<Integer, Float> keyValue : keyValues.entrySet()) {
-                featureIndexes[index] = keyValue.getKey();
-                featureValues[index] = keyValue.getValue();
-                index++;
+            MathVector keyValues = featureTable.getRowVector(itemIndex);
+            int[] featureIndexes = new int[keyValues.getElementSize()];
+            float[] featureValues = new float[keyValues.getElementSize()];
+            int position = 0;
+            for (VectorScalar keyValue : keyValues) {
+                featureIndexes[position] = keyValue.getIndex();
+                featureValues[position] = keyValue.getValue();
+                position++;
             }
             featureVectors[itemIndex] = new ArrayVector(numberOfFeatures, featureIndexes, featureValues);
         }

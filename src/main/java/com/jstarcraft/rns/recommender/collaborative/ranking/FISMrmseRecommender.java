@@ -1,14 +1,12 @@
 package com.jstarcraft.rns.recommender.collaborative.ranking;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-import com.google.common.collect.Table.Cell;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
+import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
@@ -16,6 +14,8 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.configurator.Configuration;
 import com.jstarcraft.rns.recommender.MatrixFactorizationRecommender;
+
+import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
 
 /**
  * 
@@ -78,9 +78,9 @@ public class FISMrmseRecommender extends MatrixFactorizationRecommender {
         DefaultScalar scalar = DefaultScalar.getInstance();
         int sampleSize = (int) (rho * numNeighbors);
         int totalSize = numberOfUsers * numberOfItems;
-        Table<Integer, Integer, Float> rateMatrix = HashBasedTable.create();
+        HashMatrix rateMatrix = new HashMatrix(true, numberOfUsers, numberOfItems, new Int2FloatRBTreeMap());
         for (MatrixScalar cell : scoreMatrix) {
-            rateMatrix.put(cell.getRow(), cell.getColumn(), cell.getValue());
+            rateMatrix.setValue(cell.getRow(), cell.getColumn(), cell.getValue());
         }
         int[] sampleIndexes = new int[sampleSize];
 
@@ -96,19 +96,19 @@ public class FISMrmseRecommender extends MatrixFactorizationRecommender {
                     int randomIndex = RandomUtility.randomInteger(totalSize - numNeighbors);
                     int rowIndex = randomIndex / numberOfItems;
                     int columnIndex = randomIndex % numberOfItems;
-                    if (rateMatrix.contains(rowIndex, columnIndex)) {
-                        continue;
+
+                    if (Float.isNaN(rateMatrix.getValue(rowIndex, columnIndex))) {
+                        sampleIndexes[sampleIndex] = randomIndex;
+                        rateMatrix.setValue(rowIndex, columnIndex, 0F);
+                        break;
                     }
-                    sampleIndexes[sampleIndex] = randomIndex;
-                    rateMatrix.put(rowIndex, columnIndex, 0F);
-                    break;
                 }
             }
 
             // update throughout each user-item-rating (u, i, rui) cell
-            for (Cell<Integer, Integer, Float> cell : rateMatrix.cellSet()) {
-                int userIndex = cell.getRowKey();
-                int itemIndex = cell.getColumnKey();
+            for (MatrixScalar cell : rateMatrix) {
+                int userIndex = cell.getRow();
+                int itemIndex = cell.getColumn();
                 float rate = cell.getValue();
                 SparseVector rateVector = scoreMatrix.getRowVector(userIndex);
                 int size = rateVector.getElementSize() - 1;
@@ -158,7 +158,7 @@ public class FISMrmseRecommender extends MatrixFactorizationRecommender {
             for (int sampleIndex : sampleIndexes) {
                 int rowIndex = sampleIndex / numberOfItems;
                 int columnIndex = sampleIndex % numberOfItems;
-                rateMatrix.remove(rowIndex, columnIndex);
+                rateMatrix.setValue(rowIndex, columnIndex, Float.NaN);
             }
 
             totalLoss *= 0.5F;

@@ -1,7 +1,5 @@
 package com.jstarcraft.rns.recommender.collaborative.ranking;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
@@ -9,10 +7,13 @@ import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
+import com.jstarcraft.ai.math.structure.table.SparseTable;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.configurator.Configuration;
 import com.jstarcraft.rns.recommender.ProbabilisticGraphicalRecommender;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 
 /**
  * 
@@ -31,7 +32,7 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
 	/**
 	 * {user, item, {topic z, probability}}
 	 */
-	private Table<Integer, Integer, DenseVector> probabilityTensor;
+	private SparseTable<DenseVector> probabilityTensor;
 
 	/**
 	 * Conditional Probability: P(z|u)
@@ -87,12 +88,12 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
 		// initialize Q
 
 		// initialize Q
-		probabilityTensor = HashBasedTable.create();
+		probabilityTensor = new SparseTable<>(true, numberOfUsers, numberOfItems, new Int2ObjectRBTreeMap<>());
 		userRateTimes = DenseVector.valueOf(numberOfUsers);
 		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
-			probabilityTensor.put(userIndex, itemIndex, DenseVector.valueOf(numberOfFactors));
+			probabilityTensor.setValue(userIndex, itemIndex, DenseVector.valueOf(numberOfFactors));
 			userRateTimes.shiftValue(userIndex, term.getValue());
 		}
 	}
@@ -102,7 +103,7 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
 		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
-			DenseVector probabilities = probabilityTensor.get(userIndex, itemIndex);
+			DenseVector probabilities = probabilityTensor.getValue(userIndex, itemIndex);
 			probabilities.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 				int index = scalar.getIndex();
 				float value = userTopicProbabilities.getValue(userIndex, index) * topicItemProbabilities.getValue(index, itemIndex);
@@ -121,7 +122,7 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
 			int userIndex = term.getRow();
 			int itemIndex = term.getColumn();
 			float numerator = term.getValue();
-			DenseVector probabilities = probabilityTensor.get(userIndex, itemIndex);
+			DenseVector probabilities = probabilityTensor.getValue(userIndex, itemIndex);
 			for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
 				float value = probabilities.getValue(topicIndex) * numerator;
 				userTopicSums.shiftValue(userIndex, topicIndex, value);

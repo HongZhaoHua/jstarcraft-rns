@@ -20,19 +20,16 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.converter.ArffConverter;
 import com.jstarcraft.ai.data.converter.CsvConverter;
 import com.jstarcraft.ai.data.converter.DataConverter;
-import com.jstarcraft.ai.data.module.ReferenceModule;
 import com.jstarcraft.ai.environment.EnvironmentContext;
+import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.utility.Int2FloatKeyValue;
-import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.core.common.conversion.json.JsonUtility;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.common.reflection.TypeUtility;
@@ -52,6 +49,8 @@ import com.jstarcraft.rns.data.splitter.RatioSplitter;
 import com.jstarcraft.rns.evaluator.Evaluator;
 import com.jstarcraft.rns.exception.RecommendationException;
 import com.jstarcraft.rns.recommender.Recommender;
+
+import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
 
 /**
  * 抽象任务
@@ -282,12 +281,12 @@ public abstract class AbstractTask<T> {
                     dataMatcher.match(dataPaginations, dataPositions);
                     DataSorter dataSorter = DataSorter.featureOf(dataMarker);
                     dataSorter.sort(dataPaginations, dataPositions);
-                    Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
+                    HashMatrix dataTable = new HashMatrix(true, numberOfUsers, numberOfItems, new Int2FloatRBTreeMap());
                     for (DataInstance instance : dataMarker) {
                         int rowIndex = instance.getQualityFeature(userDimension);
                         int columnIndex = instance.getQualityFeature(itemDimension);
                         // TODO 处理冲突
-                        dataTable.put(rowIndex, columnIndex, instance.getQuantityMark());
+                        dataTable.setValue(rowIndex, columnIndex, instance.getQuantityMark());
                     }
                     SparseMatrix featureMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfItems, dataTable);
 
