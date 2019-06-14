@@ -10,6 +10,7 @@ import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
+import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
@@ -18,6 +19,9 @@ import com.jstarcraft.rns.configurator.Configuration;
 import com.jstarcraft.rns.recommender.ProbabilisticGraphicalRecommender;
 import com.jstarcraft.rns.utility.GammaUtility;
 import com.jstarcraft.rns.utility.SampleUtility;
+
+import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
+import it.unimi.dsi.fastutil.ints.Int2IntRBTreeMap;
 
 /**
  * 
@@ -68,7 +72,7 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
     /**
      *
      */
-    private Table<Integer, Integer, Integer> topicAssignments;
+    private Int2IntRBTreeMap topicAssignments;
 
     /**
      * number of occurrences of entry (t, i, r)
@@ -99,16 +103,16 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
             learnMatrix = scoreMatrix;
             checkMatrix = null;
         } else {
-            Table<Integer, Integer, Float> learnTable = HashBasedTable.create();
-            Table<Integer, Integer, Float> checkTable = HashBasedTable.create();
+            HashMatrix learnTable = new HashMatrix(true, numberOfUsers, numberOfItems, new Int2FloatRBTreeMap());
+            HashMatrix checkTable = new HashMatrix(true, numberOfUsers, numberOfItems, new Int2FloatRBTreeMap());
             for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();
                 float score = term.getValue();
                 if (RandomUtility.randomFloat(1F) <= checkRatio) {
-                    checkTable.put(userIndex, itemIndex, score);
+                    checkTable.setValue(userIndex, itemIndex, score);
                 } else {
-                    learnTable.put(userIndex, itemIndex, score);
+                    learnTable.setValue(userIndex, itemIndex, score);
                 }
             }
             learnMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfItems, learnTable);
@@ -135,7 +139,7 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
         beta.setValues(initBeta);
 
         // initialize topics
-        topicAssignments = HashBasedTable.create();
+        topicAssignments = new Int2IntRBTreeMap();
         for (MatrixScalar term : learnMatrix) {
             int userIndex = term.getRow();
             int itemIndex = term.getColumn();
@@ -147,7 +151,7 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
             // k-1
 
             // Assign a topic t to pair (u, i)
-            topicAssignments.put(userIndex, itemIndex, topicIndex);
+            topicAssignments.put(userIndex * numberOfItems + itemIndex, topicIndex);
             // number of pairs (u, t) in (u, i, t)
             userTopicTimes.shiftValue(userIndex, topicIndex, 1);
             // total number of items of user u
@@ -174,7 +178,7 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
             float rate = term.getValue();
             int rateIndex = scoreIndexes.get(rate); // rating level 0 ~
                                                     // numLevels
-            int assignmentIndex = topicAssignments.get(userIndex, itemIndex);
+            int assignmentIndex = topicAssignments.get(userIndex * numberOfItems + itemIndex);
 
             userTopicTimes.shiftValue(userIndex, assignmentIndex, -1);
             userTopicNumbers.shiftValue(userIndex, -1);
@@ -193,7 +197,7 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
             assignmentIndex = SampleUtility.binarySearch(randomProbabilities, 0, randomProbabilities.getElementSize() - 1, RandomUtility.randomFloat(sum.getValue()));
 
             // new topic t
-            topicAssignments.put(userIndex, itemIndex, assignmentIndex);
+            topicAssignments.put(userIndex * numberOfItems + itemIndex, assignmentIndex);
 
             // add newly estimated z_i to count variables
             userTopicTimes.shiftValue(userIndex, assignmentIndex, 1);

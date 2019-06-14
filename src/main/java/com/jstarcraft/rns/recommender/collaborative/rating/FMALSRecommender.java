@@ -1,12 +1,11 @@
 package com.jstarcraft.rns.recommender.collaborative.rating;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
+import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
@@ -14,6 +13,8 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.rns.configurator.Configuration;
 import com.jstarcraft.rns.recommender.FactorizationMachineRecommender;
+
+import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
 
 /**
  * 
@@ -42,13 +43,13 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
         actionFactors = DenseMatrix.valueOf(numberOfActions, numberOfFactors);
 
         // construct training appender matrix
-        Table<Integer, Integer, Float> table = HashBasedTable.create();
+        HashMatrix table = new HashMatrix(true, numberOfActions, numberOfFeatures, new Int2FloatRBTreeMap());
         int index = 0;
         int order = marker.getQualityOrder();
         for (DataInstance sample : model) {
             int count = 0;
             for (int orderIndex = 0; orderIndex < order; orderIndex++) {
-                table.put(index, count + sample.getQualityFeature(orderIndex), 1F);
+                table.setValue(index, count + sample.getQualityFeature(orderIndex), 1F);
                 count += dimensionSizes[orderIndex];
             }
             index++;

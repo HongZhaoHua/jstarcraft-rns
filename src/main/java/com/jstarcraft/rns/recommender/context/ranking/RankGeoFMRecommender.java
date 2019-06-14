@@ -12,6 +12,7 @@ import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
+import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
@@ -24,6 +25,8 @@ import com.jstarcraft.rns.configurator.Configuration;
 import com.jstarcraft.rns.exception.RecommendationException;
 import com.jstarcraft.rns.recommender.MatrixFactorizationRecommender;
 import com.jstarcraft.rns.utility.LogisticUtility;
+
+import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
 
 /**
  * 
@@ -228,7 +231,7 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
      * @return
      */
     private void calculateNeighborWeightMatrix(Integer k_nearest) {
-        Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
+        HashMatrix dataTable = new HashMatrix(true, numberOfItems, numberOfItems, new Int2FloatRBTreeMap());
         for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
             List<KeyValue<Integer, Float>> locationNeighbors = new ArrayList<>(numberOfItems);
             Float2FloatKeyValue location = itemLocations[itemIndex];
@@ -253,7 +256,7 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
                 } else {
                     weight = 1F / (locationNeighbors.get(index).getValue());
                 }
-                dataTable.put(itemIndex, neighborItemIdx, weight);
+                dataTable.setValue(itemIndex, neighborItemIdx, weight);
             }
         }
 

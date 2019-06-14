@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
@@ -13,6 +11,7 @@ import com.jstarcraft.ai.data.attribute.MemoryQualityAttribute;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
+import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.math.structure.vector.ArrayVector;
@@ -23,6 +22,8 @@ import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.configurator.Configuration;
 import com.jstarcraft.rns.recommender.MatrixFactorizationRecommender;
+
+import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
 
 /**
  * 
@@ -148,7 +149,7 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 		float[] featureValues = new float[numberOfFeatures];
 
 		// compute UserFeatureAttention
-		Table<Integer, Integer, Float> userTable = HashBasedTable.create();
+		HashMatrix userTable = new HashMatrix(true, numberOfUsers, numberOfFeatures, new Int2FloatRBTreeMap());
 		for (Entry<Integer, StringBuilder> term : userDictionaries.entrySet()) {
 			int userIndex = term.getKey();
 			String[] words = term.getValue().toString().split(" ");
@@ -161,14 +162,14 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 			for (int featureIndex = 0; featureIndex < numberOfFeatures; featureIndex++) {
 				if (featureValues[featureIndex] != 0F) {
 					float value = (float) (1F + (scoreScale - 1F) * (2F / (1F + Math.exp(-featureValues[featureIndex])) - 1F));
-					userTable.put(userIndex, featureIndex, value);
+					userTable.setValue(userIndex, featureIndex, value);
 					featureValues[featureIndex] = 0F;
 				}
 			}
 		}
 		userFeatures = SparseMatrix.valueOf(numberOfUsers, numberOfFeatures, userTable);
 		// compute ItemFeatureQuality
-		Table<Integer, Integer, Float> itemTable = HashBasedTable.create();
+		HashMatrix itemTable = new HashMatrix(true, numberOfItems, numberOfFeatures, new Int2FloatRBTreeMap());
 		for (Entry<Integer, StringBuilder> term : itemDictionaries.entrySet()) {
 			int itemIndex = term.getKey();
 			String[] words = term.getValue().toString().split(" ");
@@ -181,7 +182,7 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 			for (int featureIndex = 0; featureIndex < numberOfFeatures; featureIndex++) {
 				if (featureValues[featureIndex] != 0F) {
 					float value = (float) (1F + (scoreScale - 1F) / (1F + Math.exp(-featureValues[featureIndex])));
-					itemTable.put(itemIndex, featureIndex, value);
+					itemTable.setValue(itemIndex, featureIndex, value);
 					featureValues[featureIndex] = 0F;
 				}
 			}

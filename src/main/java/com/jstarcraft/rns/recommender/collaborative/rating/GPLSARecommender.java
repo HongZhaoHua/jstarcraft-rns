@@ -1,13 +1,12 @@
 package com.jstarcraft.rns.recommender.collaborative.rating;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
+import com.jstarcraft.ai.math.structure.table.SparseTable;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
@@ -17,6 +16,8 @@ import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.configurator.Configuration;
 import com.jstarcraft.rns.recommender.ProbabilisticGraphicalRecommender;
 import com.jstarcraft.rns.utility.GaussianUtility;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 
 /**
  * 
@@ -35,7 +36,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 	/*
 	 * {user, item, {topic z, probability}}
 	 */
-	protected Table<Integer, Integer, float[]> probabilityTensor;
+	protected SparseTable<float[]> probabilityTensor;
 	/*
 	 * Conditional Probability: P(z|u)
 	 */
@@ -97,7 +98,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 
 		// Initialize Q
 		// TODO 重构
-		probabilityTensor = HashBasedTable.create();
+		probabilityTensor = new SparseTable<>(true, numberOfUsers, numberOfItems, new Int2ObjectRBTreeMap<>());
 
 		for (MatrixScalar term : scoreMatrix) {
 			int userIndex = term.getRow();
@@ -105,7 +106,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 			float rate = term.getValue();
 			rate = (rate - userMus.getValue(userIndex)) / userSigmas.getValue(userIndex);
 			term.setValue(rate);
-			probabilityTensor.put(userIndex, itemIndex, new float[numberOfFactors]);
+			probabilityTensor.setValue(userIndex, itemIndex, new float[numberOfFactors]);
 		}
 
 		itemMus = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
@@ -142,7 +143,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 				numerators[topicIndex] = value;
 				denominator += value;
 			}
-			float[] probabilities = probabilityTensor.get(userIndex, itemIndex);
+			float[] probabilities = probabilityTensor.getValue(userIndex, itemIndex);
 			for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
 				float probability = (denominator > 0 ? numerators[topicIndex] / denominator : 0);
 				probabilities[topicIndex] = probability;
@@ -162,7 +163,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 			float denominator = 0F;
 			for (VectorScalar term : userVector) {
 				int itemIndex = term.getIndex();
-				float[] probabilities = probabilityTensor.get(userIndex, itemIndex);
+				float[] probabilities = probabilityTensor.getValue(userIndex, itemIndex);
 				for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
 					numerators[topicIndex] = probabilities[topicIndex];
 					denominator += numerators[topicIndex];
@@ -183,7 +184,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 			for (VectorScalar term : itemVector) {
 				int userIndex = term.getIndex();
 				float rate = term.getValue();
-				float[] probabilities = probabilityTensor.get(userIndex, itemIndex);
+				float[] probabilities = probabilityTensor.getValue(userIndex, itemIndex);
 				for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
 					float probability = probabilities[topicIndex];
 					numerator += rate * probability;
@@ -195,7 +196,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 			for (VectorScalar term : itemVector) {
 				int userIndex = term.getIndex();
 				float rate = term.getValue();
-				float[] probabilities = probabilityTensor.get(userIndex, itemIndex);
+				float[] probabilities = probabilityTensor.getValue(userIndex, itemIndex);
 				for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
 					double probability = probabilities[topicIndex];
 					numerator += Math.pow(rate - mu, 2) * probability;

@@ -15,6 +15,7 @@ import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
+import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
@@ -24,6 +25,8 @@ import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.configurator.Configuration;
 import com.jstarcraft.rns.recommender.MatrixFactorizationRecommender;
 import com.jstarcraft.rns.utility.LogisticUtility;
+
+import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
 
 /**
  * 
@@ -345,12 +348,12 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
 				list = list.subList(0, neighborSize);
 			}
 
-			Table<Integer, Integer, Float> groupTable = HashBasedTable.create();
+			HashMatrix groupTable = new HashMatrix(true, numberOfItems, numberOfItems, new Int2FloatRBTreeMap());
 			for (KeyValue<KeyValue<Integer, Integer>, Float> keyValue : list) {
 				int leftItemIndex = keyValue.getKey().getKey();
 				int rightItemIndex = keyValue.getKey().getValue();
 				float correlation = keyValue.getValue();
-				groupTable.put(leftItemIndex, rightItemIndex, correlation);
+				groupTable.setValue(leftItemIndex, rightItemIndex, correlation);
 			}
 			itemCorrsGAR_Sorted.put(groupIndex, SparseMatrix.valueOf(numberOfItems, numberOfItems, groupTable));
 		}
