@@ -24,6 +24,8 @@ import com.jstarcraft.rns.configurator.Configuration;
 import com.jstarcraft.rns.recommender.MatrixFactorizationRecommender;
 import com.jstarcraft.rns.utility.SampleUtility;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
+
 /**
  * 
  * HFT推荐器
@@ -63,7 +65,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
     }
 
     // TODO 考虑重构
-    private Table<Integer, Integer, Content> contentMatrix;
+    private Int2ObjectRBTreeMap<Content> contentMatrix;
 
     private DenseMatrix wordFactors;
 
@@ -155,7 +157,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
 
         numberOfWords = 0;
         // build review matrix and counting the number of words
-        contentMatrix = HashBasedTable.create();
+        contentMatrix = new Int2ObjectRBTreeMap<>();
         Map<String, Integer> wordDictionaries = new HashMap<>();
         for (DataInstance sample : model) {
             int userIndex = sample.getQualityFeature(userDimension);
@@ -177,7 +179,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
                 wordIndexes[index] = Integer.valueOf(words[index]);
             }
             Content content = new Content(wordIndexes);
-            contentMatrix.put(userIndex, itemIndex, content);
+            contentMatrix.put(userIndex * numberOfItems + itemIndex, content);
         }
 
         // TODO 此处保证所有特征都会被识别
@@ -211,7 +213,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
         for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow(); // user
             int itemIndex = term.getColumn(); // item
-            Content content = contentMatrix.get(userIndex, itemIndex);
+            Content content = contentMatrix.get(userIndex * numberOfItems + itemIndex);
             int[] wordIndexes = content.getWordIndexes();
             int[] topicIndexes = new int[wordIndexes.length];
             for (int wordIndex = 0; wordIndex < wordIndexes.length; wordIndex++) {
@@ -229,7 +231,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
         for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow(); // user
             int itemIndex = term.getColumn(); // item
-            Content content = contentMatrix.get(userIndex, itemIndex);
+            Content content = contentMatrix.get(userIndex * numberOfItems + itemIndex);
             int[] wordIndexes = content.getWordIndexes();
             int[] topicIndexes = content.getTopicIndexes();
             sampleTopicsToWords(userIndex, wordIndexes, topicIndexes);
@@ -317,7 +319,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
                     // loss += regB * bj * bj;
 
                     // TODO 此处应该重构
-                    Content content = contentMatrix.get(userIndex, itemIndex);
+                    Content content = contentMatrix.get(userIndex * numberOfItems + itemIndex);
                     int[] wordIndexes = content.getWordIndexes();
                     if (wordIndexes.length == 0) {
                         continue;
