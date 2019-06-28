@@ -20,7 +20,7 @@ import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.converter.CsvConverter;
 import com.jstarcraft.ai.data.module.ReferenceModule;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
-import com.jstarcraft.ai.utility.Int2FloatKeyValue;
+import com.jstarcraft.ai.utility.Integer2FloatKeyValue;
 import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.rns.data.processor.DataMatcher;
 import com.jstarcraft.rns.data.processor.DataSorter;
@@ -144,16 +144,16 @@ public abstract class AbstractEvaluatorTestCase<T> {
 
         Recommender recommender = new MockRecommender(itemDimension, trainMatrix);
         Evaluator<T> evaluator = getEvaluator(featureMatrix);
-        Int2FloatKeyValue sum = evaluate(evaluator, recommender);
+        Integer2FloatKeyValue sum = evaluate(evaluator, recommender);
         Assert.assertThat(sum.getValue() / sum.getKey(), CoreMatchers.equalTo(getMeasure()));
     }
 
     protected abstract T check(int userIndex);
 
-    protected abstract List<Int2FloatKeyValue> recommend(Recommender recommender, int userIndex);
+    protected abstract List<Integer2FloatKeyValue> recommend(Recommender recommender, int userIndex);
 
-    private Int2FloatKeyValue evaluate(Evaluator<T> evaluator, Recommender recommender) {
-        Int2FloatKeyValue sum = new Int2FloatKeyValue(0, 0F);
+    private Integer2FloatKeyValue evaluate(Evaluator<T> evaluator, Recommender recommender) {
+        Integer2FloatKeyValue sum = new Integer2FloatKeyValue(0, 0F);
         for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
             // 测试映射
             if (testPaginations[userIndex + 1] - testPaginations[userIndex] == 0) {
@@ -162,9 +162,9 @@ public abstract class AbstractEvaluatorTestCase<T> {
             // 训练映射
             T checkCollection = check(userIndex);
             // 推荐列表
-            List<Int2FloatKeyValue> recommendList = recommend(recommender, userIndex);
+            List<Integer2FloatKeyValue> recommendList = recommend(recommender, userIndex);
             // 测量列表
-            Int2FloatKeyValue measure = evaluator.evaluate(checkCollection, recommendList);
+            Integer2FloatKeyValue measure = evaluator.evaluate(checkCollection, recommendList);
             sum.setKey(sum.getKey() + measure.getKey());
             sum.setValue(sum.getValue() + measure.getValue());
         }

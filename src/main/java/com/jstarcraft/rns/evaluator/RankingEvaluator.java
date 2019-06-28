@@ -2,7 +2,7 @@ package com.jstarcraft.rns.evaluator;
 
 import java.util.List;
 
-import com.jstarcraft.ai.utility.Int2FloatKeyValue;
+import com.jstarcraft.ai.utility.Integer2FloatKeyValue;
 
 import it.unimi.dsi.fastutil.ints.IntCollection;
 
@@ -22,7 +22,7 @@ public abstract class RankingEvaluator extends AbstractEvaluator<IntCollection> 
 	}
 
 	@Override
-	protected int count(IntCollection checkCollection, List<Int2FloatKeyValue> recommendList) {
+	protected int count(IntCollection checkCollection, List<Integer2FloatKeyValue> recommendList) {
 		return 1;
 	}
 

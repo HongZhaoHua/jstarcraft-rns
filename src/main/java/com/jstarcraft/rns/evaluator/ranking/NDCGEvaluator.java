@@ -3,7 +3,7 @@ package com.jstarcraft.rns.evaluator.ranking;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jstarcraft.ai.utility.Int2FloatKeyValue;
+import com.jstarcraft.ai.utility.Integer2FloatKeyValue;
 import com.jstarcraft.ai.utility.MathUtility;
 import com.jstarcraft.rns.evaluator.RankingEvaluator;
 
@@ -31,7 +31,7 @@ public class NDCGEvaluator extends RankingEvaluator {
 	}
 
 	@Override
-	protected float measure(IntCollection checkCollection, List<Int2FloatKeyValue> recommendList) {
+	protected float measure(IntCollection checkCollection, List<Integer2FloatKeyValue> recommendList) {
 		if (recommendList.size() > size) {
 			recommendList = recommendList.subList(0, size);
 		}

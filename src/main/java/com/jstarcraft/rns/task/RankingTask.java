@@ -11,7 +11,7 @@ import java.util.Set;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.module.ArrayInstance;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
-import com.jstarcraft.ai.utility.Int2FloatKeyValue;
+import com.jstarcraft.ai.utility.Integer2FloatKeyValue;
 import com.jstarcraft.rns.configurator.Configuration;
 import com.jstarcraft.rns.evaluator.Evaluator;
 import com.jstarcraft.rns.evaluator.ranking.AUCEvaluator;
@@ -67,7 +67,7 @@ public class RankingTask extends AbstractTask<IntCollection> {
     }
 
     @Override
-    protected List<Int2FloatKeyValue> recommend(Recommender recommender, int userIndex) {
+    protected List<Integer2FloatKeyValue> recommend(Recommender recommender, int userIndex) {
         DataInstance instance = trainMarker.getInstance(0);
         Set<Integer> itemSet = new HashSet<>();
         int from = trainPaginations[userIndex], to = trainPaginations[userIndex + 1];
@@ -90,13 +90,13 @@ public class RankingTask extends AbstractTask<IntCollection> {
             }
         }
         copy.setQualityFeature(userDimension, userIndex);
-        List<Int2FloatKeyValue> recommendList = new ArrayList<>(numberOfItems - itemSet.size());
+        List<Integer2FloatKeyValue> recommendList = new ArrayList<>(numberOfItems - itemSet.size());
         for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
             if (itemSet.contains(itemIndex)) {
                 continue;
             }
             copy.setQualityFeature(itemDimension, itemIndex);
-            recommendList.add(new Int2FloatKeyValue(itemIndex, recommender.predict(copy)));
+            recommendList.add(new Integer2FloatKeyValue(itemIndex, recommender.predict(copy)));
         }
         Collections.sort(recommendList, (left, right) -> {
             return Float.compare(right.getValue(), left.getValue());

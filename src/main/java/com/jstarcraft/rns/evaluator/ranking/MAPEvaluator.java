@@ -2,7 +2,7 @@ package com.jstarcraft.rns.evaluator.ranking;
 
 import java.util.List;
 
-import com.jstarcraft.ai.utility.Int2FloatKeyValue;
+import com.jstarcraft.ai.utility.Integer2FloatKeyValue;
 import com.jstarcraft.rns.evaluator.RankingEvaluator;
 
 import it.unimi.dsi.fastutil.ints.IntCollection;
@@ -25,7 +25,7 @@ public class MAPEvaluator extends RankingEvaluator {
 	}
 
 	@Override
-	protected float measure(IntCollection checkCollection, List<Int2FloatKeyValue> recommendList) {
+	protected float measure(IntCollection checkCollection, List<Integer2FloatKeyValue> recommendList) {
 		if (recommendList.size() > size) {
 			recommendList = recommendList.subList(0, size);
 		}

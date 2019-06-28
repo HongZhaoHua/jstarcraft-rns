@@ -2,7 +2,7 @@ package com.jstarcraft.rns.evaluator;
 
 import java.util.List;
 
-import com.jstarcraft.ai.utility.Int2FloatKeyValue;
+import com.jstarcraft.ai.utility.Integer2FloatKeyValue;
 
 /**
  * 抽象评估器
@@ -19,7 +19,7 @@ public abstract class AbstractEvaluator<T> implements Evaluator<T> {
 	 * @param recommendList
 	 * @return
 	 */
-	protected abstract int count(T checkCollection, List<Int2FloatKeyValue> recommendList);
+	protected abstract int count(T checkCollection, List<Integer2FloatKeyValue> recommendList);
 
 	/**
 	 * 测量列表
@@ -28,11 +28,11 @@ public abstract class AbstractEvaluator<T> implements Evaluator<T> {
 	 * @param recommendList
 	 * @return
 	 */
-	protected abstract float measure(T checkCollection, List<Int2FloatKeyValue> recommendList);
+	protected abstract float measure(T checkCollection, List<Integer2FloatKeyValue> recommendList);
 
 	@Override
-	public final Int2FloatKeyValue evaluate(T checkCollection, List<Int2FloatKeyValue> recommendList) {
-		return new Int2FloatKeyValue(count(checkCollection, recommendList), measure(checkCollection, recommendList));
+	public final Integer2FloatKeyValue evaluate(T checkCollection, List<Integer2FloatKeyValue> recommendList) {
+		return new Integer2FloatKeyValue(count(checkCollection, recommendList), measure(checkCollection, recommendList));
 	}
 
 }

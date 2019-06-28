@@ -2,7 +2,7 @@ package com.jstarcraft.rns.evaluator;
 
 import java.util.List;
 
-import com.jstarcraft.ai.utility.Int2FloatKeyValue;
+import com.jstarcraft.ai.utility.Integer2FloatKeyValue;
 
 /**
  * 评估器
@@ -19,6 +19,6 @@ public interface Evaluator<T> {
 	 * @param recommendList
 	 * @return
 	 */
-	Int2FloatKeyValue evaluate(T checkCollection, List<Int2FloatKeyValue> recommendList);
+	Integer2FloatKeyValue evaluate(T checkCollection, List<Integer2FloatKeyValue> recommendList);
 
 }
