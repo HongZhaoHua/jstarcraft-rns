@@ -52,9 +52,9 @@ JStarCraft RNS引擎基于[JStarCraft AI框架](https://github.com/HongZhaoHua/j
 #### 克隆项目
 
 使用Git克隆以下三个项目:
-[JStarCraft Core](https://github.com/HongZhaoHua/jstarcraft-core)
-[JStarCraft AI](https://github.com/HongZhaoHua/jstarcraft-ai)
-[JStarCraft RNS](https://github.com/HongZhaoHua/jstarcraft-rns)
+1. [JStarCraft Core](https://github.com/HongZhaoHua/jstarcraft-core)
+2. [JStarCraft AI](https://github.com/HongZhaoHua/jstarcraft-ai)
+3. [JStarCraft RNS](https://github.com/HongZhaoHua/jstarcraft-rns)
 
 #### 配置依赖
 
