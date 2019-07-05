@@ -58,7 +58,7 @@ JStarCraft RNS引擎基于[JStarCraft AI框架](https://github.com/HongZhaoHua/j
 
 #### 配置依赖
 
-**Maven依赖**
+*Maven依赖*
 
 ```maven
 <dependency>
@@ -68,7 +68,7 @@ JStarCraft RNS引擎基于[JStarCraft AI框架](https://github.com/HongZhaoHua/j
 </dependency>
 ```
 
-**Gradle依赖**
+*Gradle依赖*
 
 ```gradle
 compile group: 'com.jstarcraft', name: 'rns', version: '1.0'
