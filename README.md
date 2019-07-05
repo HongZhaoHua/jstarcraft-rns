@@ -20,9 +20,9 @@ JStarCraft RNS引擎基于[JStarCraft AI框架](https://github.com/HongZhaoHua/j
 ## JStarCraft RNS特性
 
 * 1.跨平台
-* [2.串行与并行计算](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)
-* [3.CPU与GPU硬件加速](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)
-* [4.模型保存与装载](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)
+* [2.串行与并行计算](https://github.com/HongZhaoHua/jstarcraft-ai)
+* [3.CPU与GPU硬件加速](https://github.com/HongZhaoHua/jstarcraft-ai)
+* [4.模型保存与装载](https://github.com/HongZhaoHua/jstarcraft-ai)
 * [5.丰富的推荐算法](https://github.com/HongZhaoHua/jstarcraft-rns/wiki/%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95)
     * [基准算法](https://github.com/HongZhaoHua/jstarcraft-rns/wiki/%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95#%E5%9F%BA%E5%87%86%E7%AE%97%E6%B3%95)
     * [协同算法](https://github.com/HongZhaoHua/jstarcraft-rns/wiki/%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95#%E5%8D%8F%E5%90%8C%E7%AE%97%E6%B3%95)
@@ -37,9 +37,9 @@ JStarCraft RNS引擎基于[JStarCraft AI框架](https://github.com/HongZhaoHua/j
 
 ## JStarCraft RNS教程
 
-* 1.设置依赖
-    * [Maven依赖](#Maven依赖)
-    * [Gradle依赖](#Gradle依赖)
+* 1.使用准备
+    * [克隆项目](#克隆项目)
+    * [配置依赖](#配置依赖)
 * 2.配置推荐器
     * [设置配置](#设置配置)
     * [排序推荐器](#排序推荐器)
@@ -49,7 +49,16 @@ JStarCraft RNS引擎基于[JStarCraft AI框架](https://github.com/HongZhaoHua/j
     * [编码推荐器](#编码推荐器)
     * [解码推荐器](#解码推荐器)
 
-#### Maven依赖
+#### 克隆项目
+
+使用Git克隆以下三个项目:
+[JStarCraft Core](https://github.com/HongZhaoHua/jstarcraft-core)
+[JStarCraft AI](https://github.com/HongZhaoHua/jstarcraft-ai)
+[JStarCraft RNS](https://github.com/HongZhaoHua/jstarcraft-rns)
+
+#### 配置依赖
+
+**Maven依赖**
 
 ```maven
 <dependency>
@@ -59,7 +68,7 @@ JStarCraft RNS引擎基于[JStarCraft AI框架](https://github.com/HongZhaoHua/j
 </dependency>
 ```
 
-#### Gradle依赖
+**Gradle依赖**
 
 ```gradle
 compile group: 'com.jstarcraft', name: 'rns', version: '1.0'
