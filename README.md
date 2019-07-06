@@ -5,11 +5,12 @@ JStarCraft RNS
 
 *****
 
-**JStarCraft RNS是一个面向推荐系统的轻量级引擎.遵循Apache 2.0协议.**
+**JStarCraft RNS是一个面向推荐与搜索系统的轻量级引擎.遵循Apache 2.0协议.**
 
-JStarCraft RNS引擎基于[JStarCraft AI框架](https://github.com/HongZhaoHua/jstarcraft-ai-1.0)重构了所有[LibRec引擎](https://github.com/guoguibing/librec)的推荐算法.
+提供满足工业级别场景要求的推荐算法设计与实现.
+提供满足工业级别场景要求的搜索算法设计与实现.
 
-在此特别感谢**LibRec团队**,也特别感谢**推荐系统QQ群**(274750470)提供的支持与帮助.
+在此特别感谢**[LibRec团队](https://github.com/guoguibing/librec)**,也特别感谢**推荐系统QQ群**(274750470)提供的支持与帮助.
 
 |作者|洪钊桦|
 |---|---
@@ -24,14 +25,18 @@ JStarCraft RNS引擎基于[JStarCraft AI框架](https://github.com/HongZhaoHua/j
 * [3.CPU与GPU硬件加速](https://github.com/HongZhaoHua/jstarcraft-ai)
 * [4.模型保存与装载](https://github.com/HongZhaoHua/jstarcraft-ai)
 * [5.丰富的推荐算法](https://github.com/HongZhaoHua/jstarcraft-rns/wiki/%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95)
-    * [基准算法](https://github.com/HongZhaoHua/jstarcraft-rns/wiki/%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95#%E5%9F%BA%E5%87%86%E7%AE%97%E6%B3%95)
-    * [协同算法](https://github.com/HongZhaoHua/jstarcraft-rns/wiki/%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95#%E5%8D%8F%E5%90%8C%E7%AE%97%E6%B3%95)
-    * [内容算法](https://github.com/HongZhaoHua/jstarcraft-rns/wiki/%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95#%E5%86%85%E5%AE%B9%E7%AE%97%E6%B3%95)
-* [6.丰富的评估指标](#评估指标)
+    * [基准推荐算法](https://github.com/HongZhaoHua/jstarcraft-rns/wiki/%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95#%E5%9F%BA%E5%87%86%E7%AE%97%E6%B3%95)
+    * [协同推荐算法](https://github.com/HongZhaoHua/jstarcraft-rns/wiki/%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95#%E5%8D%8F%E5%90%8C%E7%AE%97%E6%B3%95)
+    * [内容推荐算法](https://github.com/HongZhaoHua/jstarcraft-rns/wiki/%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95#%E5%86%85%E5%AE%B9%E7%AE%97%E6%B3%95)
+* 6.丰富的搜索算法
+    分词
+    索引
+    查询
+* [7.丰富的评估指标](#评估指标)
     * [排序指标](#排序指标)
     * [评分指标](#评分指标)
-* 7.独立的环境配置与算法配置
-* 8.完整的单元测试
+* 8.独立的环境配置与算法配置
+* 9.完整的单元测试
 
 *****
 
