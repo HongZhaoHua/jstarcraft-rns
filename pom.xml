@@ -29,7 +29,7 @@
         <!-- 核心框架依赖 -->
         <dependency>
             <groupId>com.jstarcraft</groupId>
-            <artifactId>jstarcraft-core-storage</artifactId>
+            <artifactId>jstarcraft-core-resource</artifactId>
             <version>1.0</version>
         </dependency>
 

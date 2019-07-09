@@ -3,8 +3,8 @@ package com.jstarcraft.rns.configurator;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import com.jstarcraft.core.storage.annotation.StorageConfiguration;
-import com.jstarcraft.core.storage.annotation.StorageId;
+import com.jstarcraft.core.resource.annotation.StorageConfiguration;
+import com.jstarcraft.core.resource.annotation.StorageId;
 
 /**
  * 装配器
