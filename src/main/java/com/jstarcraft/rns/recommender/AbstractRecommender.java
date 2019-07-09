@@ -13,8 +13,8 @@ import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
-import com.jstarcraft.core.resource.annotation.StorageConfiguration;
-import com.jstarcraft.core.resource.annotation.StorageId;
+import com.jstarcraft.core.resource.annotation.ResourceConfiguration;
+import com.jstarcraft.core.resource.annotation.ResourceId;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.configurator.Configuration;
 import com.jstarcraft.rns.data.processor.DataMatcher;
@@ -28,12 +28,12 @@ import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
  * @author Birdy
  *
  */
-@StorageConfiguration
+@ResourceConfiguration
 public abstract class AbstractRecommender implements Recommender {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @StorageId
+    @ResourceId
     protected String id;
 
     // 参数部分
