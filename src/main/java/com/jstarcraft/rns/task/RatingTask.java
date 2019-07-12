@@ -17,7 +17,6 @@ import com.jstarcraft.rns.configure.Configuration;
 import com.jstarcraft.rns.recommend.Recommender;
 
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
-import it.unimi.dsi.fastutil.floats.FloatCollection;
 import it.unimi.dsi.fastutil.floats.FloatList;
 
 /**
@@ -26,7 +25,7 @@ import it.unimi.dsi.fastutil.floats.FloatList;
  * @author Birdy
  *
  */
-public class RatingTask extends AbstractTask<FloatCollection> {
+public class RatingTask extends AbstractTask<FloatList, FloatList> {
 
 	public RatingTask(Class<? extends Recommender> clazz, Configuration configuration) {
 		super(clazz, configuration);
@@ -42,7 +41,7 @@ public class RatingTask extends AbstractTask<FloatCollection> {
 	}
 
 	@Override
-	protected FloatCollection check(int userIndex) {
+	protected FloatList check(int userIndex) {
 	    DataInstance instance = testMarker.getInstance(0);
 		int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
 		FloatList scoreList = new FloatArrayList(to - from);
@@ -55,18 +54,23 @@ public class RatingTask extends AbstractTask<FloatCollection> {
 	}
 
 	@Override
-	protected List<Integer2FloatKeyValue> recommend(Recommender recommender, int userIndex) {
+	protected FloatList recommend(Recommender recommender, int userIndex) {
 	    DataInstance instance = testMarker.getInstance(0);
 	    int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
         ArrayInstance copy = new ArrayInstance(testMarker.getQualityOrder(), testMarker.getQuantityOrder());
-        List<Integer2FloatKeyValue> recommendList = new ArrayList<>(to - from);
+        List<Integer2FloatKeyValue> rateList = new ArrayList<>(to - from);
         for (int index = from, size = to; index < size; index++) {
             int position = testPositions[index];
             instance.setCursor(position);
             copy.copyInstance(instance);
-            recommendList.add(new Integer2FloatKeyValue(copy.getQualityFeature(itemDimension), recommender.predict(copy)));
+            rateList.add(new Integer2FloatKeyValue(copy.getQualityFeature(itemDimension), recommender.predict(copy)));
         }
-		return recommendList;
+        
+        FloatList recommendList = new FloatArrayList(rateList.size());
+        for (Integer2FloatKeyValue keyValue : rateList) {
+            recommendList.add(keyValue.getValue());
+        }
+        return recommendList;
 	}
 
 }

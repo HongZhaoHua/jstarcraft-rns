@@ -7,7 +7,6 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -59,7 +58,7 @@ import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
  *
  * @param <T>
  */
-public abstract class AbstractTask<T> {
+public abstract class AbstractTask<L, R> {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -86,9 +85,9 @@ public abstract class AbstractTask<T> {
 
     protected abstract Collection<Evaluator> getEvaluators(SparseMatrix featureMatrix);
 
-    protected abstract T check(int userIndex);
+    protected abstract L check(int userIndex);
 
-    protected abstract List<Integer2FloatKeyValue> recommend(Recommender recommender, int userIndex);
+    protected abstract R recommend(Recommender recommender, int userIndex);
 
     private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
@@ -105,11 +104,11 @@ public abstract class AbstractTask<T> {
                 try {
                     if (testPaginations[index + 1] - testPaginations[index] != 0) {
                         // 校验集合
-                        T checkCollection = check(index);
+                        L checkCollection = check(index);
                         // 推荐列表
-                        List<Integer2FloatKeyValue> recommendList = recommend(recommender, index);
+                        R recommendList = recommend(recommender, index);
                         // 测量列表
-                        for (Evaluator<T> evaluator : evaluators) {
+                        for (Evaluator<L, R> evaluator : evaluators) {
                             Integer2FloatKeyValue[] measures = values.get(evaluator.getClass());
                             Integer2FloatKeyValue measure = evaluator.evaluate(checkCollection, recommendList);
                             measures[index] = measure;

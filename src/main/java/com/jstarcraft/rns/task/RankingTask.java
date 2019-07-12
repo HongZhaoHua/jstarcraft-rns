@@ -23,7 +23,8 @@ import com.jstarcraft.ai.utility.Integer2FloatKeyValue;
 import com.jstarcraft.rns.configure.Configuration;
 import com.jstarcraft.rns.recommend.Recommender;
 
-import it.unimi.dsi.fastutil.ints.IntCollection;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 
@@ -33,7 +34,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
  * @author Birdy
  *
  */
-public class RankingTask extends AbstractTask<IntCollection> {
+public class RankingTask extends AbstractTask<IntSet, IntList> {
 
     public RankingTask(Class<? extends Recommender> clazz, Configuration configuration) {
         super(clazz, configuration);
@@ -54,7 +55,7 @@ public class RankingTask extends AbstractTask<IntCollection> {
     }
 
     @Override
-    protected IntCollection check(int userIndex) {
+    protected IntSet check(int userIndex) {
         DataInstance instance = testMarker.getInstance(0);
         IntSet itemSet = new IntOpenHashSet();
         int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
@@ -67,7 +68,7 @@ public class RankingTask extends AbstractTask<IntCollection> {
     }
 
     @Override
-    protected List<Integer2FloatKeyValue> recommend(Recommender recommender, int userIndex) {
+    protected IntList recommend(Recommender recommender, int userIndex) {
         DataInstance instance = trainMarker.getInstance(0);
         Set<Integer> itemSet = new HashSet<>();
         int from = trainPaginations[userIndex], to = trainPaginations[userIndex + 1];
@@ -90,17 +91,23 @@ public class RankingTask extends AbstractTask<IntCollection> {
             }
         }
         copy.setQualityFeature(userDimension, userIndex);
-        List<Integer2FloatKeyValue> recommendList = new ArrayList<>(numberOfItems - itemSet.size());
+
+        List<Integer2FloatKeyValue> rankList = new ArrayList<>(numberOfItems - itemSet.size());
         for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
             if (itemSet.contains(itemIndex)) {
                 continue;
             }
             copy.setQualityFeature(itemDimension, itemIndex);
-            recommendList.add(new Integer2FloatKeyValue(itemIndex, recommender.predict(copy)));
+            rankList.add(new Integer2FloatKeyValue(itemIndex, recommender.predict(copy)));
         }
-        Collections.sort(recommendList, (left, right) -> {
+        Collections.sort(rankList, (left, right) -> {
             return Float.compare(right.getValue(), left.getValue());
         });
+
+        IntList recommendList = new IntArrayList(rankList.size());
+        for (Integer2FloatKeyValue keyValue : rankList) {
+            recommendList.add(keyValue.getKey());
+        }
         return recommendList;
     }
 
