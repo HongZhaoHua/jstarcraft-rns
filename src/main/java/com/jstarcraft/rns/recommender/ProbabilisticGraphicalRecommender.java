@@ -4,7 +4,7 @@ import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.configurator.Configuration;
-import com.jstarcraft.rns.exception.RecommendationException;
+import com.jstarcraft.rns.recommender.exception.RecommendException;
 
 /**
  * 概率图推荐器
@@ -39,7 +39,7 @@ public abstract class ProbabilisticGraphicalRecommender extends ModelRecommender
 	/**
 	 * setup init member method
 	 *
-	 * @throws RecommendationException
+	 * @throws RecommendException
 	 *             if error occurs during setting up
 	 */
 	@Override

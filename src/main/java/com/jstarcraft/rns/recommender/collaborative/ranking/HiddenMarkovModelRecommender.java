@@ -23,8 +23,8 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.configurator.Configuration;
-import com.jstarcraft.rns.exception.RecommendationException;
 import com.jstarcraft.rns.recommender.ProbabilisticGraphicalRecommender;
+import com.jstarcraft.rns.recommender.exception.RecommendException;
 import com.jstarcraft.rns.utility.GammaUtility;
 
 /**
@@ -758,7 +758,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
                 try {
                     latch.await();
                 } catch (Exception exception) {
-                    throw new RecommendationException(exception);
+                    throw new RecommendException(exception);
                 }
             }
 
@@ -853,7 +853,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
         try {
             latch.await();
         } catch (Exception exception) {
-            throw new RecommendationException(exception);
+            throw new RecommendException(exception);
         }
     }
 
@@ -929,7 +929,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
             try {
                 latch.await();
             } catch (Exception exception) {
-                throw new RecommendationException(exception);
+                throw new RecommendException(exception);
             }
         }
 

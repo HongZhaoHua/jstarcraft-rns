@@ -4,7 +4,7 @@ import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.utility.MathUtility;
 import com.jstarcraft.rns.configurator.Configuration;
-import com.jstarcraft.rns.exception.RecommendationException;
+import com.jstarcraft.rns.recommender.exception.RecommendException;
 import com.jstarcraft.rns.utility.LogisticUtility;
 
 /**
@@ -53,7 +53,7 @@ public abstract class ModelRecommender extends AbstractRecommender {
 		if (Float.isNaN(totalLoss) || Float.isInfinite(totalLoss)) {
 			// LOG.error("Loss = NaN or Infinity: current settings does not fit
 			// the recommender! Change the settings and try again!");
-			throw new RecommendationException("Loss = NaN or Infinity: current settings does not fit the recommender! Change the settings and try again!");
+			throw new RecommendException("Loss = NaN or Infinity: current settings does not fit the recommender! Change the settings and try again!");
 		}
 		// check if converged
 		boolean converged = Math.abs(deltaError) < MathUtility.EPSILON;

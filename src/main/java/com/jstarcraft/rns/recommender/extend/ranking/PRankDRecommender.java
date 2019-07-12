@@ -14,8 +14,8 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.configurator.Configuration;
-import com.jstarcraft.rns.exception.RecommendationException;
 import com.jstarcraft.rns.recommender.collaborative.ranking.RankSGDRecommender;
+import com.jstarcraft.rns.recommender.exception.RecommendException;
 import com.jstarcraft.rns.utility.SampleUtility;
 
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -54,7 +54,7 @@ public class PRankDRecommender extends RankSGDRecommender {
 	/**
 	 * initialization
 	 *
-	 * @throws RecommendationException
+	 * @throws RecommendException
 	 *             if error occurs
 	 */
 	@Override
@@ -95,7 +95,7 @@ public class PRankDRecommender extends RankSGDRecommender {
 	/**
 	 * train model
 	 *
-	 * @throws RecommendationException
+	 * @throws RecommendException
 	 *             if error occurs
 	 */
 	@Override

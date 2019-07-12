@@ -22,8 +22,8 @@ import com.jstarcraft.ai.utility.Float2FloatKeyValue;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.configurator.Configuration;
-import com.jstarcraft.rns.exception.RecommendationException;
 import com.jstarcraft.rns.recommender.MatrixFactorizationRecommender;
+import com.jstarcraft.rns.recommender.exception.RecommendException;
 import com.jstarcraft.rns.utility.LogisticUtility;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
@@ -269,7 +269,7 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
         }
     }
 
-    private void calculateGeoInfluenceMatrix() throws RecommendationException {
+    private void calculateGeoInfluenceMatrix() throws RecommendException {
         for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
             ArrayVector neighborVector = neighborWeights[itemIndex];
             if (neighborVector.getElementSize() == 0) {

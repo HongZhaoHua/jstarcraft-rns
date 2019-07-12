@@ -8,8 +8,8 @@ import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.rns.configurator.Configuration;
-import com.jstarcraft.rns.exception.RecommendationException;
 import com.jstarcraft.rns.recommender.AbstractRecommender;
+import com.jstarcraft.rns.recommender.exception.RecommendException;
 
 /**
  * 
@@ -32,7 +32,7 @@ public class SlopeOneRecommender extends AbstractRecommender {
     /**
      * initialization
      *
-     * @throws RecommendationException if error occurs
+     * @throws RecommendException if error occurs
      */
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
@@ -44,7 +44,7 @@ public class SlopeOneRecommender extends AbstractRecommender {
     /**
      * train model
      *
-     * @throws RecommendationException if error occurs
+     * @throws RecommendException if error occurs
      */
     @Override
     protected void doPractice() {
@@ -79,7 +79,7 @@ public class SlopeOneRecommender extends AbstractRecommender {
      * @param userIndex user index
      * @param itemIndex item index
      * @return predictive rating for user userIdx on item itemIdx
-     * @throws RecommendationException if error occurs
+     * @throws RecommendException if error occurs
      */
     @Override
     public float predict(DataInstance instance) {

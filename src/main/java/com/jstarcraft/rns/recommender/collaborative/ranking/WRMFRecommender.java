@@ -13,8 +13,8 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.rns.configurator.Configuration;
-import com.jstarcraft.rns.exception.RecommendationException;
 import com.jstarcraft.rns.recommender.MatrixFactorizationRecommender;
+import com.jstarcraft.rns.recommender.exception.RecommendException;
 import com.jstarcraft.rns.utility.MatrixUtility;
 
 /**
@@ -139,7 +139,7 @@ public class WRMFRecommender extends MatrixFactorizationRecommender {
 			try {
 				userLatch.await();
 			} catch (Exception exception) {
-				throw new RecommendationException(exception);
+				throw new RecommendException(exception);
 			}
 
 			// Step 2: update item factors;
@@ -190,7 +190,7 @@ public class WRMFRecommender extends MatrixFactorizationRecommender {
 			try {
 				itemLatch.await();
 			} catch (Exception exception) {
-				throw new RecommendationException(exception);
+				throw new RecommendException(exception);
 			}
 
 			if (logger.isInfoEnabled()) {

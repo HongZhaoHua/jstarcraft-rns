@@ -13,8 +13,8 @@ import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.configurator.Configuration;
-import com.jstarcraft.rns.exception.RecommendationException;
 import com.jstarcraft.rns.recommender.ProbabilisticGraphicalRecommender;
+import com.jstarcraft.rns.recommender.exception.RecommendException;
 import com.jstarcraft.rns.utility.GammaUtility;
 import com.jstarcraft.rns.utility.SampleUtility;
 
@@ -77,7 +77,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
 	/**
 	 * setup init member method
 	 *
-	 * @throws RecommendationException
+	 * @throws RecommendException
 	 *             if error occurs
 	 */
 	@Override

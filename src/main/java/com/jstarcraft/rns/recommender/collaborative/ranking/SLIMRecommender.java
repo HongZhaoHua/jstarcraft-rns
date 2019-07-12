@@ -21,8 +21,8 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.configurator.Configuration;
-import com.jstarcraft.rns.exception.RecommendationException;
 import com.jstarcraft.rns.recommender.ModelRecommender;
+import com.jstarcraft.rns.recommender.exception.RecommendException;
 
 /**
  * 
@@ -81,7 +81,7 @@ public class SLIMRecommender extends ModelRecommender {
 	/**
 	 * initialization
 	 *
-	 * @throws RecommendationException
+	 * @throws RecommendException
 	 *             if error occurs
 	 */
 	@Override
@@ -165,7 +165,7 @@ public class SLIMRecommender extends ModelRecommender {
 	/**
 	 * train model
 	 *
-	 * @throws RecommendationException
+	 * @throws RecommendException
 	 *             if error occurs
 	 */
 	@Override
@@ -283,7 +283,7 @@ public class SLIMRecommender extends ModelRecommender {
 	 * @param itemIndex
 	 *            item index
 	 * @return predictive ranking score for user userIdx on item itemIdx
-	 * @throws RecommendationException
+	 * @throws RecommendException
 	 *             if error occurs
 	 */
 	@Override

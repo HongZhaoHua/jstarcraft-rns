@@ -10,8 +10,8 @@ import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.configurator.Configuration;
-import com.jstarcraft.rns.exception.RecommendationException;
 import com.jstarcraft.rns.recommender.SocialRecommender;
+import com.jstarcraft.rns.recommender.exception.RecommendException;
 import com.jstarcraft.rns.utility.LogisticUtility;
 
 /**
@@ -96,7 +96,7 @@ public class TrustMFRecommender extends SocialRecommender {
     /**
      * Build TrusterMF model: Br*Vr
      *
-     * @throws RecommendationException if error occurs
+     * @throws RecommendException if error occurs
      */
     private void trainByTruster(DefaultScalar scalar) {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
@@ -175,7 +175,7 @@ public class TrustMFRecommender extends SocialRecommender {
     /**
      * Build TrusteeMF model: We*Ve
      *
-     * @throws RecommendationException if error occurs
+     * @throws RecommendException if error occurs
      */
     private void trainByTrustee(DefaultScalar scalar) {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {

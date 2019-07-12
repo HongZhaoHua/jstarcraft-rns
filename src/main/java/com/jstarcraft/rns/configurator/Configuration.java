@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.rns.exception.RecommendationException;
+import com.jstarcraft.rns.recommender.exception.RecommendException;
 
 /**
  * 配置
@@ -35,7 +35,7 @@ public class Configuration {
 		try {
 			global.load(url.openStream());
 		} catch (Exception exception) {
-			throw new RecommendationException("无法获取全局配置", exception);
+			throw new RecommendException("无法获取全局配置", exception);
 		}
 	}
 
@@ -138,7 +138,7 @@ public class Configuration {
 			property.load(stream);
 			return Configuration.valueOf(property);
 		} catch (Exception exception) {
-			throw new RecommendationException("无法获取指定配置", exception);
+			throw new RecommendException("无法获取指定配置", exception);
 		}
 	}
 
@@ -146,7 +146,7 @@ public class Configuration {
 		try {
 			return Configuration.valueOf(url.openStream());
 		} catch (Exception exception) {
-			throw new RecommendationException("无法获取指定配置", exception);
+			throw new RecommendException("无法获取指定配置", exception);
 		}
 	}
 
