@@ -13,7 +13,7 @@ JStarCraft RNS
 
 提供满足工业级别场景要求的搜索引擎设计与实现.
 
-在此特别感谢**[LibRec团队](https://github.com/guoguibing/librec)**,也特别感谢**推荐系统QQ群**(274750470)提供的支持与帮助.
+在此特别感谢[LibRec团队](https://github.com/guoguibing/librec),也特别感谢**推荐系统QQ群**(274750470)提供的支持与帮助.
 
 |作者|洪钊桦|
 |---|---
