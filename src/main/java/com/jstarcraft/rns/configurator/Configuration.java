@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.rns.recommender.exception.RecommendException;
+import com.jstarcraft.rns.recommend.exception.RecommendException;
 
 /**
  * 配置
