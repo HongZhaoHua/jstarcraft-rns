@@ -1,4 +1,4 @@
-package com.jstarcraft.rns.evaluate.rate;
+package com.jstarcraft.rns.evaluate.rating;
 
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.rns.evaluate.AbstractRatingEvaluatorTestCase;

@@ -1,4 +1,4 @@
-package com.jstarcraft.rns.evaluate.rank;
+package com.jstarcraft.rns.evaluate.ranking;
 
 import com.jstarcraft.ai.math.algorithm.similarity.CosineSimilarity;
 import com.jstarcraft.ai.math.algorithm.similarity.Similarity;

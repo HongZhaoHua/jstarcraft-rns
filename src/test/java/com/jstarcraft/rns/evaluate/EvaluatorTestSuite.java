@@ -4,16 +4,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.jstarcraft.rns.evaluate.rank.AUCEvaluatorTestCase;
-import com.jstarcraft.rns.evaluate.rank.DiversityEvaluatorTestCase;
-import com.jstarcraft.rns.evaluate.rank.MAPEvaluatorTestCase;
-import com.jstarcraft.rns.evaluate.rank.MRREvaluatorTestCase;
-import com.jstarcraft.rns.evaluate.rank.NDCGEvaluatorTestCase;
-import com.jstarcraft.rns.evaluate.rank.PrecisionEvaluatorTestCase;
-import com.jstarcraft.rns.evaluate.rank.RecallEvaluatorTestCase;
-import com.jstarcraft.rns.evaluate.rate.MAEEvaluatorTestCase;
-import com.jstarcraft.rns.evaluate.rate.MPEEvaluatorTestCase;
-import com.jstarcraft.rns.evaluate.rate.MSEEvaluatorTestCase;
+import com.jstarcraft.rns.evaluate.ranking.AUCEvaluatorTestCase;
+import com.jstarcraft.rns.evaluate.ranking.DiversityEvaluatorTestCase;
+import com.jstarcraft.rns.evaluate.ranking.MAPEvaluatorTestCase;
+import com.jstarcraft.rns.evaluate.ranking.MRREvaluatorTestCase;
+import com.jstarcraft.rns.evaluate.ranking.NDCGEvaluatorTestCase;
+import com.jstarcraft.rns.evaluate.ranking.PrecisionEvaluatorTestCase;
+import com.jstarcraft.rns.evaluate.ranking.RecallEvaluatorTestCase;
+import com.jstarcraft.rns.evaluate.rating.MAEEvaluatorTestCase;
+import com.jstarcraft.rns.evaluate.rating.MPEEvaluatorTestCase;
+import com.jstarcraft.rns.evaluate.rating.MSEEvaluatorTestCase;
 
 @RunWith(Suite.class)
 @SuiteClasses({
