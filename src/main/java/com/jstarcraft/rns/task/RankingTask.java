@@ -10,17 +10,17 @@ import java.util.Set;
 
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.module.ArrayInstance;
+import com.jstarcraft.ai.evaluate.Evaluator;
+import com.jstarcraft.ai.evaluate.ranking.AUCEvaluator;
+import com.jstarcraft.ai.evaluate.ranking.MAPEvaluator;
+import com.jstarcraft.ai.evaluate.ranking.MRREvaluator;
+import com.jstarcraft.ai.evaluate.ranking.NDCGEvaluator;
+import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
+import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
+import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.utility.Integer2FloatKeyValue;
 import com.jstarcraft.rns.configure.Configuration;
-import com.jstarcraft.rns.evaluate.Evaluator;
-import com.jstarcraft.rns.evaluate.ranking.AUCEvaluator;
-import com.jstarcraft.rns.evaluate.ranking.MAPEvaluator;
-import com.jstarcraft.rns.evaluate.ranking.MRREvaluator;
-import com.jstarcraft.rns.evaluate.ranking.NDCGEvaluator;
-import com.jstarcraft.rns.evaluate.ranking.NoveltyEvaluator;
-import com.jstarcraft.rns.evaluate.ranking.PrecisionEvaluator;
-import com.jstarcraft.rns.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.rns.recommend.Recommender;
 
 import it.unimi.dsi.fastutil.ints.IntCollection;

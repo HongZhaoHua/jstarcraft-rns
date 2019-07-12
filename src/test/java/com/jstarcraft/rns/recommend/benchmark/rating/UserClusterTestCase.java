@@ -6,11 +6,11 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
+import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
+import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.ai.modem.ModemCodec;
 import com.jstarcraft.rns.configure.Configuration;
-import com.jstarcraft.rns.evaluate.rating.MAEEvaluator;
-import com.jstarcraft.rns.evaluate.rating.MPEEvaluator;
-import com.jstarcraft.rns.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.rns.recommend.Recommender;
 import com.jstarcraft.rns.recommend.benchmark.rating.UserClusterRecommender;
 import com.jstarcraft.rns.task.RatingTask;

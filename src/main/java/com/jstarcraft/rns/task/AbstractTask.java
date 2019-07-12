@@ -27,6 +27,7 @@ import com.jstarcraft.ai.data.converter.ArffConverter;
 import com.jstarcraft.ai.data.converter.CsvConverter;
 import com.jstarcraft.ai.data.converter.DataConverter;
 import com.jstarcraft.ai.environment.EnvironmentContext;
+import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.utility.Integer2FloatKeyValue;
@@ -46,7 +47,6 @@ import com.jstarcraft.rns.data.splitter.KFoldCrossValidationSplitter;
 import com.jstarcraft.rns.data.splitter.LeaveOneCrossValidationSplitter;
 import com.jstarcraft.rns.data.splitter.RandomSplitter;
 import com.jstarcraft.rns.data.splitter.RatioSplitter;
-import com.jstarcraft.rns.evaluate.Evaluator;
 import com.jstarcraft.rns.recommend.Recommender;
 import com.jstarcraft.rns.recommend.exception.RecommendException;
 

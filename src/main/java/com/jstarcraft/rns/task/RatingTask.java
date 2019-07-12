@@ -7,13 +7,13 @@ import java.util.List;
 
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.module.ArrayInstance;
+import com.jstarcraft.ai.evaluate.Evaluator;
+import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
+import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
+import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.utility.Integer2FloatKeyValue;
 import com.jstarcraft.rns.configure.Configuration;
-import com.jstarcraft.rns.evaluate.Evaluator;
-import com.jstarcraft.rns.evaluate.rating.MAEEvaluator;
-import com.jstarcraft.rns.evaluate.rating.MPEEvaluator;
-import com.jstarcraft.rns.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.rns.recommend.Recommender;
 
 import it.unimi.dsi.fastutil.floats.FloatArrayList;

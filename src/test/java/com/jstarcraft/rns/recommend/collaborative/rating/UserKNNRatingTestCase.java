@@ -8,10 +8,10 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
+import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
+import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.rns.configure.Configuration;
-import com.jstarcraft.rns.evaluate.rating.MAEEvaluator;
-import com.jstarcraft.rns.evaluate.rating.MPEEvaluator;
-import com.jstarcraft.rns.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.rns.recommend.collaborative.rating.UserKNNRatingRecommender;
 import com.jstarcraft.rns.task.RatingTask;
 

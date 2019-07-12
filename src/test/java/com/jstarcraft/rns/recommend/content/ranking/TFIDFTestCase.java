@@ -6,14 +6,14 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jstarcraft.ai.evaluate.ranking.AUCEvaluator;
+import com.jstarcraft.ai.evaluate.ranking.MAPEvaluator;
+import com.jstarcraft.ai.evaluate.ranking.MRREvaluator;
+import com.jstarcraft.ai.evaluate.ranking.NDCGEvaluator;
+import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
+import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
+import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.rns.configure.Configuration;
-import com.jstarcraft.rns.evaluate.ranking.AUCEvaluator;
-import com.jstarcraft.rns.evaluate.ranking.MAPEvaluator;
-import com.jstarcraft.rns.evaluate.ranking.MRREvaluator;
-import com.jstarcraft.rns.evaluate.ranking.NDCGEvaluator;
-import com.jstarcraft.rns.evaluate.ranking.NoveltyEvaluator;
-import com.jstarcraft.rns.evaluate.ranking.PrecisionEvaluator;
-import com.jstarcraft.rns.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.rns.recommend.content.ranking.TFIDFRecommender;
 import com.jstarcraft.rns.task.RankingTask;
 
