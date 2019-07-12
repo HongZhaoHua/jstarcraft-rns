@@ -12,7 +12,7 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configurator.Configuration;
+import com.jstarcraft.rns.configure.Configuration;
 import com.jstarcraft.rns.recommend.SocialRecommender;
 
 /**

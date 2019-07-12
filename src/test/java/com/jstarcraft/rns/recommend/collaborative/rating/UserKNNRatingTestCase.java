@@ -8,7 +8,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.jstarcraft.rns.configurator.Configuration;
+import com.jstarcraft.rns.configure.Configuration;
 import com.jstarcraft.rns.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.rns.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.rns.evaluate.rating.MSEEvaluator;
@@ -20,7 +20,7 @@ public class UserKNNRatingTestCase {
 
 	@Test
 	public void testRecommenderRating() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommendation/collaborative/userknnrating-test.properties");
+		Configuration configuration = Configuration.valueOf("recommend/collaborative/userknnrating-test.properties");
 		RatingTask job = new RatingTask(UserKNNRatingRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.6379187F));

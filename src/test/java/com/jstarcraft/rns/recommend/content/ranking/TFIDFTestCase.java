@@ -6,7 +6,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.jstarcraft.rns.configurator.Configuration;
+import com.jstarcraft.rns.configure.Configuration;
 import com.jstarcraft.rns.evaluate.ranking.AUCEvaluator;
 import com.jstarcraft.rns.evaluate.ranking.MAPEvaluator;
 import com.jstarcraft.rns.evaluate.ranking.MRREvaluator;
@@ -21,7 +21,7 @@ public class TFIDFTestCase {
 
 	@Test
 	public void testRecommender() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommendation/content/tfidf-test.properties");
+		Configuration configuration = Configuration.valueOf("recommend/content/tfidf-test.properties");
 		RankingTask job = new RankingTask(TFIDFRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.5128588F));

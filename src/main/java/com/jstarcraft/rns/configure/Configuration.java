@@ -1,4 +1,4 @@
-package com.jstarcraft.rns.configurator;
+package com.jstarcraft.rns.configure;
 
 import java.io.InputStream;
 import java.net.URL;

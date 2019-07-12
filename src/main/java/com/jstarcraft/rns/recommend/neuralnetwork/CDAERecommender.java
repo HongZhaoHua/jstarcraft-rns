@@ -29,7 +29,7 @@ import com.jstarcraft.ai.model.neuralnetwork.parameter.XavierParameterFactory;
 import com.jstarcraft.ai.model.neuralnetwork.schedule.ConstantSchedule;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.LayerVertex;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configurator.Configuration;
+import com.jstarcraft.rns.configure.Configuration;
 import com.jstarcraft.rns.recommend.ModelRecommender;
 
 /**

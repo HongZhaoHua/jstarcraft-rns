@@ -6,7 +6,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.jstarcraft.rns.configurator.Configuration;
+import com.jstarcraft.rns.configure.Configuration;
 import com.jstarcraft.rns.evaluate.ranking.AUCEvaluator;
 import com.jstarcraft.rns.evaluate.ranking.MAPEvaluator;
 import com.jstarcraft.rns.evaluate.ranking.MRREvaluator;
@@ -23,7 +23,7 @@ public class LambdaFMTestCase {
 
     @Test
     public void testRecommenderByDynamic() throws Exception {
-        Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/lambdafmd-test.properties");
+        Configuration configuration = Configuration.valueOf("recommend/collaborative/ranking/lambdafmd-test.properties");
         RankingTask job = new RankingTask(LambdaFMDynamicRecommender.class, configuration);
         Map<String, Float> measures = job.execute();
         Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.8735906F));
@@ -37,7 +37,7 @@ public class LambdaFMTestCase {
 
     @Test
     public void testRecommenderByStatic() throws Exception {
-        Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/lambdafms-test.properties");
+        Configuration configuration = Configuration.valueOf("recommend/collaborative/ranking/lambdafms-test.properties");
         RankingTask job = new RankingTask(LambdaFMStaticRecommender.class, configuration);
         Map<String, Float> measures = job.execute();
         Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.8695807F));
@@ -51,7 +51,7 @@ public class LambdaFMTestCase {
 
     @Test
     public void testRecommenderByWeight() throws Exception {
-        Configuration configuration = Configuration.valueOf("recommendation/collaborative/ranking/lambdafmw-test.properties");
+        Configuration configuration = Configuration.valueOf("recommend/collaborative/ranking/lambdafmw-test.properties");
         RankingTask job = new RankingTask(LambdaFMWeightRecommender.class, configuration);
         Map<String, Float> measures = job.execute();
         Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.87317735F));

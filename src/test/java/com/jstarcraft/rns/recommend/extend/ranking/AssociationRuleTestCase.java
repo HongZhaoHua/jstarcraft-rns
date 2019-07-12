@@ -6,7 +6,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.jstarcraft.rns.configurator.Configuration;
+import com.jstarcraft.rns.configure.Configuration;
 import com.jstarcraft.rns.evaluate.ranking.AUCEvaluator;
 import com.jstarcraft.rns.evaluate.ranking.MAPEvaluator;
 import com.jstarcraft.rns.evaluate.ranking.MRREvaluator;
@@ -21,7 +21,7 @@ public class AssociationRuleTestCase {
 
 	@Test
 	public void testAssociationRuleRecommender() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommendation/extend/associationrule-test.properties");
+		Configuration configuration = Configuration.valueOf("recommend/extend/associationrule-test.properties");
 		RankingTask job = new RankingTask(AssociationRuleRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.933426F));

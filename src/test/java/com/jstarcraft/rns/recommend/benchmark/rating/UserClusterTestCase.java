@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.jstarcraft.ai.modem.ModemCodec;
-import com.jstarcraft.rns.configurator.Configuration;
+import com.jstarcraft.rns.configure.Configuration;
 import com.jstarcraft.rns.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.rns.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.rns.evaluate.rating.MSEEvaluator;
@@ -19,7 +19,7 @@ public class UserClusterTestCase {
 
     @Test
     public void testRecommender() throws Exception {
-        Configuration configuration = Configuration.valueOf("recommendation/benchmark/usercluster-test.properties");
+        Configuration configuration = Configuration.valueOf("recommend/benchmark/usercluster-test.properties");
         RatingTask job = new RatingTask(UserClusterRecommender.class, configuration);
         Map<String, Float> measures = job.execute();
         Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.7087581F));

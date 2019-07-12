@@ -1,4 +1,4 @@
-package com.jstarcraft.rns.configurator;
+package com.jstarcraft.rns.configure;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

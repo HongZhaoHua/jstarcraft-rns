@@ -6,7 +6,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.jstarcraft.rns.configurator.Configuration;
+import com.jstarcraft.rns.configure.Configuration;
 import com.jstarcraft.rns.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.rns.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.rns.evaluate.rating.MSEEvaluator;
@@ -17,7 +17,7 @@ public class BiasedMFTestCase {
 
 	@Test
 	public void testRecommender() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommendation/collaborative/rating/biasedmf-test.properties");
+		Configuration configuration = Configuration.valueOf("recommend/collaborative/rating/biasedmf-test.properties");
 		RatingTask job = new RatingTask(BiasedMFRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.62022835F));

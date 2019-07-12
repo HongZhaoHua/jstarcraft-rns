@@ -6,7 +6,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.jstarcraft.rns.configurator.Configuration;
+import com.jstarcraft.rns.configure.Configuration;
 import com.jstarcraft.rns.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.rns.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.rns.evaluate.rating.MSEEvaluator;
@@ -17,7 +17,7 @@ public class TopicMFMTTestCase {
 
 	@Test
 	public void testRecommender() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommendation/content/topicmfmt-test.properties");
+		Configuration configuration = Configuration.valueOf("recommend/content/topicmfmt-test.properties");
 		RatingTask job = new RatingTask(TopicMFMTRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.61956674F));

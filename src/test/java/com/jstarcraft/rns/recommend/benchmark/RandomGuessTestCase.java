@@ -6,7 +6,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.jstarcraft.rns.configurator.Configuration;
+import com.jstarcraft.rns.configure.Configuration;
 import com.jstarcraft.rns.evaluate.ranking.AUCEvaluator;
 import com.jstarcraft.rns.evaluate.ranking.MAPEvaluator;
 import com.jstarcraft.rns.evaluate.ranking.MRREvaluator;
@@ -25,7 +25,7 @@ public class RandomGuessTestCase {
 
 	@Test
 	public void testRecommenderByRanking() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommendation/benchmark/randomguess-test.properties");
+		Configuration configuration = Configuration.valueOf("recommend/benchmark/randomguess-test.properties");
 		RankingTask job = new RankingTask(RandomGuessRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.5205948F));
@@ -39,7 +39,7 @@ public class RandomGuessTestCase {
 
 	@Test
 	public void testRecommenderByRating() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommendation/benchmark/randomguess-test.properties");
+		Configuration configuration = Configuration.valueOf("recommend/benchmark/randomguess-test.properties");
 		RatingTask job = new RatingTask(RandomGuessRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(1.2708743F));

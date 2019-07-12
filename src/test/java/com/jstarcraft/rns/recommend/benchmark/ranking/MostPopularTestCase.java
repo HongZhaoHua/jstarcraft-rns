@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.jstarcraft.ai.modem.ModemCodec;
-import com.jstarcraft.rns.configurator.Configuration;
+import com.jstarcraft.rns.configure.Configuration;
 import com.jstarcraft.rns.evaluate.ranking.AUCEvaluator;
 import com.jstarcraft.rns.evaluate.ranking.MAPEvaluator;
 import com.jstarcraft.rns.evaluate.ranking.MRREvaluator;
@@ -23,7 +23,7 @@ public class MostPopularTestCase {
 
     @Test
     public void testRecommender() throws Exception {
-        Configuration configuration = Configuration.valueOf("recommendation/benchmark/mostpopular-test.properties");
+        Configuration configuration = Configuration.valueOf("recommend/benchmark/mostpopular-test.properties");
         RankingTask job = new RankingTask(MostPopularRecommender.class, configuration);
         Map<String, Float> measures = job.execute();
         Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9350321F));

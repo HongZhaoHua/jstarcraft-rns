@@ -6,7 +6,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.jstarcraft.rns.configurator.Configuration;
+import com.jstarcraft.rns.configure.Configuration;
 import com.jstarcraft.rns.evaluate.ranking.AUCEvaluator;
 import com.jstarcraft.rns.evaluate.ranking.MAPEvaluator;
 import com.jstarcraft.rns.evaluate.ranking.MRREvaluator;
@@ -26,7 +26,7 @@ public class EFMTestCase {
 
 	@Test
 	public void testRecommenderByRanking() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommendation/content/efmranking-test.properties");
+		Configuration configuration = Configuration.valueOf("recommend/content/efmranking-test.properties");
 		RankingTask job = new RankingTask(EFMRankingRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.6127146F));
@@ -40,7 +40,7 @@ public class EFMTestCase {
 
 	@Test
 	public void testRecommenderByRating() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommendation/content/efmrating-test.properties");
+		Configuration configuration = Configuration.valueOf("recommend/content/efmrating-test.properties");
 		RatingTask job = new RatingTask(EFMRatingRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.6154602F));

@@ -36,7 +36,7 @@ import com.jstarcraft.core.common.reflection.TypeUtility;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.rns.configurator.Configuration;
+import com.jstarcraft.rns.configure.Configuration;
 import com.jstarcraft.rns.data.processor.DataMatcher;
 import com.jstarcraft.rns.data.processor.DataSorter;
 import com.jstarcraft.rns.data.splitter.DataSplitter;
