@@ -18,6 +18,12 @@ https://mozhenghua.iteye.com/blog/2275932
 搜索引擎的检索模型-查询与文档的相关度计算:
 https://blog.csdn.net/hguisu/article/details/7981145
 
+Elasticsearch中的相似度模型:
+https://www.cnblogs.com/sheeva/p/6847309.html
+
+BM25和Lucene Default Similarity比较:
+https://www.cnblogs.com/sheeva/p/6846885.html
+
 分词
 
 史上最全中文分词工具整理:
