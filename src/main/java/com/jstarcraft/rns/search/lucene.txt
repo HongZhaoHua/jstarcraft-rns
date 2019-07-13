@@ -2,7 +2,7 @@
 http://blog.csdn.net/xialei199023/article/details/47680401
 
 Lucene解析 - 基本概念:
-https://www.jianshu.com/p/fbb171e73721?from=timeline&isappinstalled=0
+https://segmentfault.com/a/1190000014481642
 
 Lucene DocValues——没有看懂:
 https://www.cnblogs.com/bonelee/p/6669263.html
