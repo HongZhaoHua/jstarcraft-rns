@@ -13,7 +13,7 @@ https://blog.csdn.net/zteny/article/details/60633374
 Solr DocValues详解:
 https://mozhenghua.iteye.com/blog/2275932
 
-相似度
+相关度
 
 搜索引擎的检索模型-查询与文档的相关度计算:
 https://blog.csdn.net/hguisu/article/details/7981145
