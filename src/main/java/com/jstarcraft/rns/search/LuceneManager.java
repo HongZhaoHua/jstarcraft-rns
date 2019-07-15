@@ -21,9 +21,9 @@ import org.apache.lucene.store.Directory;
  */
 public interface LuceneManager {
 
-    static final String ID = "id";
+    static final String ID = "_id";
 
-    static final String VERSION = "version";
+    static final String VERSION = "_version";
 
     default String getId(Document document) {
         return document.get(ID);
