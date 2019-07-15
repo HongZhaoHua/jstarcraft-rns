@@ -1,14 +1,3 @@
-Elasticsearch技术研讨:
-https://zhuanlan.zhihu.com/Elasticsearch
-
-Elasticsearch内核解析:
-https://zhuanlan.zhihu.com/p/34680841
-https://zhuanlan.zhihu.com/p/34669354
-https://zhuanlan.zhihu.com/p/34674517
-
-实时搜索引擎Elasticsearch:
-http://blog.csdn.net/xialei199023/article/details/47680401
-
 Lucene解析 - 基本概念:
 https://www.jianshu.com/p/fbb171e73721?from=timeline&isappinstalled=0
 
@@ -81,7 +70,7 @@ https://www.infoq.cn/article/database-timestamp-03
 Lucene 索引文件宏观结构:
 http://blog.sina.com.cn/s/blog_48a45b950100kqc0.html
 
-4.x
+----- 4.x -----
 
 Lucene(修真篇):
 https://qindongliang.iteye.com/category/282568
