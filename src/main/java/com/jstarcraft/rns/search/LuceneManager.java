@@ -3,14 +3,11 @@ package com.jstarcraft.rns.search;
 import java.io.IOException;
 
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.StoredField;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.util.BytesRef;
-import org.apache.lucene.util.NumericUtils;
 
 /**
  * Lucene管理器
@@ -30,19 +27,6 @@ public interface LuceneManager {
 
     default String getId(Document document) {
         return document.get(ID);
-    }
-
-    default long getVersion(Document document) {
-        BytesRef bytes = document.getBinaryValue(VERSION);
-        long version = NumericUtils.sortableBytesToLong(bytes.bytes, bytes.offset);
-        return version;
-    }
-
-    default void setVersion(Document document, long version) {
-        byte[] bytes = new byte[Long.BYTES];
-        NumericUtils.longToSortableBytes(version, bytes, 0);
-        StoredField field = new StoredField(VERSION, bytes);
-        document.add(field);
     }
 
     /**

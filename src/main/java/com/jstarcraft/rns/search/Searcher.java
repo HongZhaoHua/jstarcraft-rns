@@ -3,12 +3,13 @@ package com.jstarcraft.rns.search;
 import java.nio.file.Path;
 
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.ByteBuffersDirectory;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 
 /**
  * 缓存搜索器
@@ -20,15 +21,20 @@ import org.apache.lucene.search.TopDocs;
  */
 public class Searcher {
 
+    /** 瞬时化管理器 */
     private TransienceManager transienceManager;
 
+    /** 持久化管理器 */
     private PersistenceManager persistenceManager;
 
+    /** Lucene搜索器 */
     private LuceneSearcher searcher;
 
     public Searcher(IndexWriterConfig config, Path path) throws Exception {
-        this.transienceManager = new TransienceManager(config);
-        this.persistenceManager = new PersistenceManager(config, path);
+        Directory transienceDirectory = new ByteBuffersDirectory();
+        this.transienceManager = new TransienceManager(config, transienceDirectory);
+        Directory persistenceDirectory = FSDirectory.open(path);
+        this.persistenceManager = new PersistenceManager(config, persistenceDirectory);
         this.searcher = new LuceneSearcher(this.transienceManager, this.persistenceManager);
     }
 
@@ -75,7 +81,6 @@ public class Searcher {
         if (this.transienceManager.isChanged() || this.persistenceManager.isChanged()) {
             this.searcher = new LuceneSearcher(this.transienceManager, this.persistenceManager);
         }
-
         return this.searcher.search(query, size, sort);
     }
 

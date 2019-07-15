@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.NumericDocValuesField;
 import org.apache.lucene.index.BinaryDocValues;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.DocValues;
@@ -18,74 +19,74 @@ import org.apache.lucene.index.NumericDocValues;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Scorable;
-import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 
 /**
- * 瞬时化搜索器
+ * 瞬时化管理器
  * 
  * @author Birdy
  *
  */
 public class TransienceManager implements LuceneManager {
 
+    /** Lucene配置 */
+    private IndexWriterConfig config;
+
+    /** Lucene目录 */
+    private Directory directory;
+
+    /** Lucene读出器 */
+    private DirectoryReader reader;
+
+    /** Lucene写入器 */
+    private IndexWriter writer;
+
+    /** 是否变更 */
     private AtomicBoolean changed = new AtomicBoolean(false);
 
     /** 创建标识 */
-    // TODO 准备重构为Object2LongMap,支持查询
     private Set<String> createdIds;
 
     /** 更新标识 */
-    // TODO 准备重构为Object2LongMap,支持查询
     private Object2LongMap<String> updatedIds;
 
     /** 删除标识 */
-    // TODO 准备重构为Object2LongMap,支持查询
     private Set<String> deletedIds;
 
-    private IndexWriterConfig config;
-
-    private Directory directory;
-
-    private DirectoryReader reader;
-
-    private IndexWriter writer;
-
-    public TransienceManager(IndexWriterConfig config) throws Exception {
+    public TransienceManager(IndexWriterConfig config, Directory directory) throws Exception {
         this.createdIds = new HashSet<>();
         this.updatedIds = new Object2LongOpenHashMap<>();
         this.deletedIds = new HashSet<>();
 
         this.config = config;
-        this.directory = new ByteBuffersDirectory();
+        this.directory = directory;
         this.writer = new IndexWriter(this.directory, this.config);
         this.reader = DirectoryReader.open(this.writer);
     }
 
     Set<String> getCreatedIds() {
-        // TODO Auto-generated method stub
-        return null;
+        return createdIds;
     }
 
     Object2LongMap<String> getUpdatedIds() {
-        // TODO Auto-generated method stub
-        return null;
+        return updatedIds;
     }
 
     Set<String> getDeletedIds() {
-        // TODO Auto-generated method stub
-        return null;
+        return deletedIds;
     }
 
     void createDocuments(Document... documents) throws Exception {
         for (Document document : documents) {
             String id = getId(document);
             if (this.deletedIds.remove(id)) {
-                long version = getVersion(document);
+                long version = System.currentTimeMillis();
                 this.updatedIds.put(id, version);
+                NumericDocValuesField field = new NumericDocValuesField(VERSION, version);
+                document.add(field);
             } else {
                 this.createdIds.add(id);
             }
@@ -96,8 +97,10 @@ public class TransienceManager implements LuceneManager {
     void updateDocuments(Document... documents) throws Exception {
         for (Document document : documents) {
             String id = getId(document);
-            long version = getVersion(document);
+            long version = System.currentTimeMillis();
             this.updatedIds.put(id, version);
+            NumericDocValuesField field = new NumericDocValuesField(VERSION, version);
+            document.add(field);
             this.writer.addDocument(document);
         }
     }
@@ -150,11 +153,11 @@ public class TransienceManager implements LuceneManager {
                 if (TransienceManager.this.deletedIds.contains(id)) {
                     return;
                 }
-                long newVersion = TransienceManager.this.updatedIds.get(id);
-                if (newVersion != 0) {
+                long updated = TransienceManager.this.updatedIds.get(id);
+                if (updated != 0) {
                     versions.advanceExact(index);
-                    long oldVersion = versions.longValue();
-                    if (newVersion != oldVersion) {
+                    long version = versions.longValue();
+                    if (updated > version) {
                         return;
                     }
                 }
@@ -166,8 +169,7 @@ public class TransienceManager implements LuceneManager {
 
     @Override
     public Directory getDirectory() {
-        // TODO Auto-generated method stub
-        return null;
+        return directory;
     }
 
     @Override

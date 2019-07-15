@@ -12,6 +12,16 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Weight;
 
+/**
+ * Lucene搜索器
+ * 
+ * <pre>
+ * 支持按照createdIds,updatedIds与deletedIds过滤文档
+ * </pre>
+ * 
+ * @author Birdy
+ *
+ */
 public class LuceneSearcher extends IndexSearcher {
 
     private LuceneManager[] luceneManagers;

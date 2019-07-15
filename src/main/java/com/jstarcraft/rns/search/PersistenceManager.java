@@ -1,7 +1,6 @@
 package com.jstarcraft.rns.search;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -19,38 +18,49 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Scorable;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 
 /**
- * 持久化搜索器
+ * 持久化管理器
  * 
  * @author Birdy
  *
  */
 public class PersistenceManager implements LuceneManager {
 
-    private TransienceManager transienceManager;
-
-    private AtomicBoolean changed = new AtomicBoolean(false);
-
+    /** Lucene配置 */
     private IndexWriterConfig config;
 
+    /** Lucene目录 */
     private Directory directory;
 
+    /** Lucene读出器 */
     private DirectoryReader reader;
 
+    /** Lucene写入器 */
     private IndexWriter writer;
 
-    public PersistenceManager(IndexWriterConfig config, Path path) throws Exception {
+    /** 是否变更 */
+    private AtomicBoolean changed = new AtomicBoolean(false);
+
+    /** 瞬时化管理器 */
+    private TransienceManager transienceManager;
+
+    public PersistenceManager(IndexWriterConfig config, Directory directory) throws Exception {
         this.config = config;
-        this.directory = FSDirectory.open(path);
+        this.directory = directory;
         this.writer = new IndexWriter(this.directory, this.config);
         this.reader = DirectoryReader.open(this.writer);
     }
 
-    synchronized void merge(TransienceManager transienceManager) throws Exception {
+    /**
+     * 合并管理器
+     * 
+     * @param transienceManager
+     * @throws Exception
+     */
+    synchronized void mergeManager(TransienceManager transienceManager) throws Exception {
         this.transienceManager = transienceManager;
         this.changed.set(true);
 
@@ -113,11 +123,11 @@ public class PersistenceManager implements LuceneManager {
                 if (deletedIds.contains(id)) {
                     return;
                 }
-                long newVersion = updatedIds.get(id);
-                if (newVersion != 0) {
+                long updated = updatedIds.get(id);
+                if (updated != 0) {
                     versions.advanceExact(index);
-                    long oldVersion = versions.longValue();
-                    if (newVersion != oldVersion) {
+                    long version = versions.longValue();
+                    if (updated > version) {
                         return;
                     }
                 }
@@ -129,10 +139,10 @@ public class PersistenceManager implements LuceneManager {
 
     @Override
     public Directory getDirectory() {
-        // TODO Auto-generated method stub
-        return null;
+        return directory;
     }
 
+    @Override
     public IndexReader getReader() throws Exception {
         if (this.changed.compareAndSet(true, false)) {
             if (this.transienceManager != null) {
