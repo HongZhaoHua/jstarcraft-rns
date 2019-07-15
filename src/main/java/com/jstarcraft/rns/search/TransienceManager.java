@@ -1,5 +1,6 @@
 package com.jstarcraft.rns.search;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,7 +34,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
  * @author Birdy
  *
  */
-public class TransienceManager implements LuceneManager {
+public class TransienceManager implements LuceneManager, Closeable {
 
     /** Lucene配置 */
     private IndexWriterConfig config;
@@ -120,12 +121,6 @@ public class TransienceManager implements LuceneManager {
         } else {
             this.deletedIds.add(id);
         }
-    }
-
-    @Override
-    public void open() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override

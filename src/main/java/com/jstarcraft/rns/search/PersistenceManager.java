@@ -1,5 +1,6 @@
 package com.jstarcraft.rns.search;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,7 +28,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
  * @author Birdy
  *
  */
-public class PersistenceManager implements LuceneManager {
+public class PersistenceManager implements LuceneManager, Closeable {
 
     /** Lucene配置 */
     private IndexWriterConfig config;
@@ -77,12 +78,6 @@ public class PersistenceManager implements LuceneManager {
 
         this.transienceManager = null;
         this.changed.set(true);
-    }
-
-    @Override
-    public void open() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override

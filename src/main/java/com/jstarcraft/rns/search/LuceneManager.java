@@ -30,16 +30,6 @@ public interface LuceneManager {
     }
 
     /**
-     * 开启
-     */
-    void open();
-
-    /**
-     * 关闭
-     */
-    void close();
-
-    /**
      * 是否变更
      * 
      * @return
