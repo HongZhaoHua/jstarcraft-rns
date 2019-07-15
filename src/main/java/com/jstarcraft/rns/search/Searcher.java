@@ -44,8 +44,8 @@ public class Searcher {
      * @param documents
      * @throws Exception
      */
-    public void createDocuments(Document... documents) throws Exception {
-        this.transienceManager.createDocuments(documents);
+    public void createDocuments(String id, Document document) throws Exception {
+        this.transienceManager.createDocument(id, document);
     }
 
     /**
@@ -54,8 +54,8 @@ public class Searcher {
      * @param documents
      * @throws Exception
      */
-    public void updateDocuments(Document... documents) throws Exception {
-        this.transienceManager.updateDocuments(documents);
+    public void updateDocuments(String id, Document document) throws Exception {
+        this.transienceManager.updateDocument(id, document);
     }
 
     /**
@@ -64,8 +64,8 @@ public class Searcher {
      * @param ids
      * @throws Exception
      */
-    public void deleteDocuments(String... ids) throws Exception {
-        this.transienceManager.deleteDocuments(ids);
+    public void deleteDocuments(String id) throws Exception {
+        this.transienceManager.deleteDocument(id);
     }
 
     /**

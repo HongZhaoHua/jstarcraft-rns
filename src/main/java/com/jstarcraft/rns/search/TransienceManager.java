@@ -6,13 +6,16 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.NumericDocValuesField;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.BinaryDocValues;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.DocValues;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.LeafReader;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.NumericDocValues;
@@ -79,40 +82,43 @@ public class TransienceManager implements LuceneManager {
         return deletedIds;
     }
 
-    void createDocuments(Document... documents) throws Exception {
-        for (Document document : documents) {
-            String id = getId(document);
-            if (this.deletedIds.remove(id)) {
-                long version = System.currentTimeMillis();
-                this.updatedIds.put(id, version);
-                NumericDocValuesField field = new NumericDocValuesField(VERSION, version);
-                document.add(field);
-            } else {
-                this.createdIds.add(id);
-            }
-            this.writer.addDocument(document);
-        }
-    }
-
-    void updateDocuments(Document... documents) throws Exception {
-        for (Document document : documents) {
-            String id = getId(document);
-            long version = System.currentTimeMillis();
+    void createDocument(String id, Document document) throws Exception {
+        IndexableField field = null;
+        field = new StringField(ID, id, Store.YES);
+        document.add(field);
+        long version = System.currentTimeMillis();
+        field = new NumericDocValuesField(VERSION, version);
+        document.add(field);
+        if (this.deletedIds.remove(id)) {
             this.updatedIds.put(id, version);
-            NumericDocValuesField field = new NumericDocValuesField(VERSION, version);
-            document.add(field);
+        } else {
+            this.createdIds.add(id);
+        }
+        this.writer.addDocument(document);
+    }
+
+    void updateDocument(String id, Document document) throws Exception {
+        IndexableField field = null;
+        field = new StringField(ID, id, Store.YES);
+        document.add(field);
+        long version = System.currentTimeMillis();
+        field = new NumericDocValuesField(VERSION, version);
+        document.add(field);
+        if (this.createdIds.contains(id)) {
+            Term term = new Term(ID, id);
+            this.writer.updateDocument(term, document);
+        } else {
+            this.updatedIds.put(id, version);
             this.writer.addDocument(document);
         }
     }
 
-    void deleteDocuments(String... ids) throws Exception {
-        for (String id : ids) {
-            if (this.createdIds.remove(id)) {
-                Term term = new Term(ID, id);
-                this.writer.deleteDocuments(term);
-            } else {
-                this.deletedIds.add(id);
-            }
+    void deleteDocument(String id) throws Exception {
+        if (this.createdIds.remove(id)) {
+            Term term = new Term(ID, id);
+            this.writer.deleteDocuments(term);
+        } else {
+            this.deletedIds.add(id);
         }
     }
 
