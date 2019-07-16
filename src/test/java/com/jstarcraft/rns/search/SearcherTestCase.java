@@ -97,6 +97,8 @@ public class SearcherTestCase {
         AtomicBoolean state = new AtomicBoolean(true);
         for (int index = 0; index < Runtime.getRuntime().availableProcessors(); index++) {
             Thread readThead = new Thread() {
+
+                @Override
                 public void run() {
                     try {
                         while (state.get()) {
@@ -107,11 +109,14 @@ public class SearcherTestCase {
                         Assert.fail();
                     }
                 }
+
             };
             readThead.setDaemon(true);
             readThead.start();
 
             Thread writeThead = new Thread() {
+
+                @Override
                 public void run() {
                     try {
                         while (state.get()) {
@@ -126,6 +131,7 @@ public class SearcherTestCase {
                         Assert.fail();
                     }
                 }
+
             };
             writeThead.setDaemon(true);
             writeThead.start();
