@@ -1,5 +1,7 @@
 package com.jstarcraft.rns.search;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -21,7 +23,7 @@ import org.apache.lucene.store.FSDirectory;
  * @param <I>
  * @param <T>
  */
-public class Searcher {
+public class Searcher implements Closeable {
 
     /** 配置 */
     private IndexWriterConfig config;
@@ -124,7 +126,7 @@ public class Searcher {
      * @param documents
      * @throws Exception
      */
-    public void createDocuments(String id, Document document) throws Exception {
+    public void createDocument(String id, Document document) throws Exception {
         try {
             lockWrite();
             this.transienceManager.createDocument(id, document);
@@ -139,7 +141,7 @@ public class Searcher {
      * @param documents
      * @throws Exception
      */
-    public void updateDocuments(String id, Document document) throws Exception {
+    public void updateDocument(String id, Document document) throws Exception {
         try {
             lockWrite();
             this.transienceManager.updateDocument(id, document);
@@ -154,7 +156,7 @@ public class Searcher {
      * @param ids
      * @throws Exception
      */
-    public void deleteDocuments(String id) throws Exception {
+    public void deleteDocument(String id) throws Exception {
         try {
             lockWrite();
             this.transienceManager.deleteDocument(id);
@@ -204,6 +206,17 @@ public class Searcher {
             return this.searcher.count(query);
         } finally {
             unlockRead();
+        }
+    }
+
+    @Override
+    public void close() {
+        try {
+            mergeManager();
+            this.transienceManager.close();
+            this.persistenceManager.close();
+        } catch (Exception exception) {
+            // TODO 需要抛异常
         }
     }
 

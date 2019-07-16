@@ -75,10 +75,10 @@ class PersistenceManager implements LuceneManager, Closeable {
         Term[] terms = new Term[this.transienceManager.getUpdatedIds().size() + this.transienceManager.getDeletedIds().size()];
         int index = 0;
         for (String id : this.transienceManager.getUpdatedIds().keySet()) {
-            terms[index++] = new Term(ID, id.toString());
+            terms[index++] = new Term(ID, id);
         }
         for (String id : this.transienceManager.getDeletedIds()) {
-            terms[index++] = new Term(ID, id.toString());
+            terms[index++] = new Term(ID, id);
         }
         this.writer.deleteDocuments(terms);
         this.writer.addIndexes(this.transienceManager.getDirectory());
