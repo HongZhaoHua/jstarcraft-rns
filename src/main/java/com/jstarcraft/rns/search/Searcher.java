@@ -46,6 +46,9 @@ public class Searcher {
         this.searcher = new LuceneSearcher(this.transienceManager, this.persistenceManager);
     }
 
+    /**
+     * 加锁读
+     */
     private void lockRead() {
         while (true) {
             int semaphore = this.semaphore.get();
@@ -57,10 +60,16 @@ public class Searcher {
         }
     }
 
+    /**
+     * 解锁读
+     */
     private void unlockRead() {
         this.semaphore.decrementAndGet();
     }
 
+    /**
+     * 加锁写
+     */
     private void lockWrite() {
         while (true) {
             int semaphore = this.semaphore.get();
@@ -72,6 +81,9 @@ public class Searcher {
         }
     }
 
+    /**
+     * 解锁写
+     */
     private void unlockWrite() {
         this.semaphore.incrementAndGet();
     }
