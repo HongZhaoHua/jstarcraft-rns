@@ -3,6 +3,7 @@ package com.jstarcraft.rns.search;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.Query;
@@ -40,10 +41,11 @@ public class Searcher {
     public Searcher(IndexWriterConfig config, Path path) throws Exception {
         this.config = config;
         Directory transienceDirectory = new ByteBuffersDirectory();
-        this.transienceManager = new TransienceManager(config, transienceDirectory);
+        this.transienceManager = new TransienceManager((IndexWriterConfig) BeanUtils.cloneBean(config), transienceDirectory);
         Directory persistenceDirectory = FSDirectory.open(path);
-        this.persistenceManager = new PersistenceManager(config, persistenceDirectory);
+        this.persistenceManager = new PersistenceManager((IndexWriterConfig) BeanUtils.cloneBean(config), persistenceDirectory);
         this.searcher = new LuceneSearcher(this.transienceManager, this.persistenceManager);
+        this.semaphore = new AtomicInteger();
     }
 
     /**
@@ -94,7 +96,7 @@ public class Searcher {
      * @throws Exception
      */
     void mergeManager() throws Exception {
-        TransienceManager newTransienceManager = new TransienceManager(this.config, new ByteBuffersDirectory());
+        TransienceManager newTransienceManager = new TransienceManager((IndexWriterConfig) BeanUtils.cloneBean(config), new ByteBuffersDirectory());
         TransienceManager oldTransienceManager = this.transienceManager;
 
         try {
@@ -105,6 +107,7 @@ public class Searcher {
             unlockWrite();
         }
 
+        oldTransienceManager.close();
         this.persistenceManager.mergeManager();
 
         try {
@@ -113,8 +116,6 @@ public class Searcher {
         } finally {
             unlockWrite();
         }
-
-        oldTransienceManager.close();
     }
 
     /**
