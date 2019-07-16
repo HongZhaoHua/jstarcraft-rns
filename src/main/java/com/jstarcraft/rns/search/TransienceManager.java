@@ -6,13 +6,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.lucene.document.BinaryDocValuesField;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.NumericDocValuesField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.BinaryDocValues;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.DocValues;
+import org.apache.lucene.index.DocValuesType;
+import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -24,6 +28,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Scorable;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.util.BytesRef;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -35,6 +40,17 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
  *
  */
 class TransienceManager implements LuceneManager, Closeable {
+
+    private static final FieldType type = new FieldType();
+
+    static {
+        type.setOmitNorms(true);
+        type.setIndexOptions(IndexOptions.DOCS);
+        type.setDocValuesType(DocValuesType.BINARY);
+        type.setStored(true);
+        type.setTokenized(false);
+        type.freeze();
+    }
 
     /** Lucene配置 */
     private IndexWriterConfig config;
@@ -87,6 +103,8 @@ class TransienceManager implements LuceneManager, Closeable {
         IndexableField field = null;
         field = new StringField(ID, id, Store.YES);
         document.add(field);
+        field = new BinaryDocValuesField(ID, new BytesRef(id));
+        document.add(field);
         long version = System.currentTimeMillis();
         field = new NumericDocValuesField(VERSION, version);
         document.add(field);
@@ -96,11 +114,14 @@ class TransienceManager implements LuceneManager, Closeable {
             this.createdIds.add(id);
         }
         this.writer.addDocument(document);
+        changed.set(true);
     }
 
     void updateDocument(String id, Document document) throws Exception {
         IndexableField field = null;
         field = new StringField(ID, id, Store.YES);
+        document.add(field);
+        field = new BinaryDocValuesField(ID, new BytesRef(id));
         document.add(field);
         long version = System.currentTimeMillis();
         field = new NumericDocValuesField(VERSION, version);
@@ -112,6 +133,7 @@ class TransienceManager implements LuceneManager, Closeable {
             this.updatedIds.put(id, version);
             this.writer.addDocument(document);
         }
+        changed.set(true);
     }
 
     void deleteDocument(String id) throws Exception {
@@ -121,6 +143,7 @@ class TransienceManager implements LuceneManager, Closeable {
         } else {
             this.deletedIds.add(id);
         }
+        changed.set(true);
     }
 
     @Override
@@ -158,7 +181,7 @@ class TransienceManager implements LuceneManager, Closeable {
                 if (TransienceManager.this.deletedIds.contains(id)) {
                     return;
                 }
-                long updated = TransienceManager.this.updatedIds.get(id);
+                long updated = TransienceManager.this.updatedIds.getLong(id);
                 if (updated != 0) {
                     versions.advanceExact(index);
                     long version = versions.longValue();

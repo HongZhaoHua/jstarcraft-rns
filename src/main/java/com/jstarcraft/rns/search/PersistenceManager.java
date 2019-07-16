@@ -126,7 +126,7 @@ class PersistenceManager implements LuceneManager, Closeable {
                 if (deletedIds.contains(id)) {
                     return;
                 }
-                long updated = updatedIds.get(id);
+                long updated = updatedIds.getLong(id);
                 if (updated != 0) {
                     versions.advanceExact(index);
                     long version = versions.longValue();
