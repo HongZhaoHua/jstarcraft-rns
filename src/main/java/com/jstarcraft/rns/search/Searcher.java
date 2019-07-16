@@ -51,7 +51,7 @@ public class Searcher implements Closeable {
     }
 
     /**
-     * 加锁读
+     * 加锁读操作
      */
     private void lockRead() {
         while (true) {
@@ -65,14 +65,14 @@ public class Searcher implements Closeable {
     }
 
     /**
-     * 解锁读
+     * 解锁读操作
      */
     private void unlockRead() {
         this.semaphore.decrementAndGet();
     }
 
     /**
-     * 加锁写
+     * 加锁写操作
      */
     private void lockWrite() {
         while (true) {
@@ -86,7 +86,7 @@ public class Searcher implements Closeable {
     }
 
     /**
-     * 解锁写
+     * 解锁写操作
      */
     private void unlockWrite() {
         this.semaphore.incrementAndGet();
