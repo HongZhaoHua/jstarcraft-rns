@@ -56,7 +56,7 @@ import org.junit.Test;
 
 import com.jstarcraft.core.utility.StringUtility;
 
-public class SearcherTestCase {
+public class QueryTestCase {
 
     private IndexSearcher searcher;
 
