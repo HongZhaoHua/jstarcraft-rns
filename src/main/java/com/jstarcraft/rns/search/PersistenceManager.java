@@ -28,7 +28,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
  * @author Birdy
  *
  */
-public class PersistenceManager implements LuceneManager, Closeable {
+class PersistenceManager implements LuceneManager, Closeable {
 
     /** Lucene配置 */
     private IndexWriterConfig config;
@@ -56,34 +56,42 @@ public class PersistenceManager implements LuceneManager, Closeable {
     }
 
     /**
+     * 设置管理器
+     * 
+     * @param transienceManager
+     */
+    void setManager(TransienceManager transienceManager) {
+        this.transienceManager = transienceManager;
+        this.changed.set(true);
+    }
+
+    /**
      * 合并管理器
      * 
      * @param transienceManager
      * @throws Exception
      */
-    synchronized void mergeManager(TransienceManager transienceManager) throws Exception {
-        this.transienceManager = transienceManager;
-        this.changed.set(true);
-
-        Term[] terms = new Term[transienceManager.getUpdatedIds().size() + transienceManager.getDeletedIds().size()];
+    void mergeManager() throws Exception {
+        Term[] terms = new Term[this.transienceManager.getUpdatedIds().size() + this.transienceManager.getDeletedIds().size()];
         int index = 0;
-        for (String id : transienceManager.getUpdatedIds().keySet()) {
+        for (String id : this.transienceManager.getUpdatedIds().keySet()) {
             terms[index++] = new Term(ID, id.toString());
         }
-        for (String id : transienceManager.getDeletedIds()) {
+        for (String id : this.transienceManager.getDeletedIds()) {
             terms[index++] = new Term(ID, id.toString());
         }
         this.writer.deleteDocuments(terms);
         this.writer.addIndexes(this.transienceManager.getDirectory());
-
-        this.transienceManager = null;
-        this.changed.set(true);
     }
 
     @Override
     public void close() {
-        // TODO Auto-generated method stub
-
+        try {
+            this.reader.close();
+            this.writer.close();
+        } catch (Exception exception) {
+            // TODO 需要抛异常
+        }
     }
 
     @Override

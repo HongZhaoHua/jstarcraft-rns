@@ -34,7 +34,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
  * @author Birdy
  *
  */
-public class TransienceManager implements LuceneManager, Closeable {
+class TransienceManager implements LuceneManager, Closeable {
 
     /** Lucene配置 */
     private IndexWriterConfig config;
@@ -125,8 +125,12 @@ public class TransienceManager implements LuceneManager, Closeable {
 
     @Override
     public void close() {
-        // TODO Auto-generated method stub
-
+        try {
+            this.reader.close();
+            this.writer.close();
+        } catch (Exception exception) {
+            // TODO 需要抛异常
+        }
     }
 
     @Override

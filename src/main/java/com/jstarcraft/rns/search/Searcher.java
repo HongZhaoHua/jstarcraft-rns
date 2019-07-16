@@ -1,6 +1,7 @@
 package com.jstarcraft.rns.search;
 
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -21,21 +22,87 @@ import org.apache.lucene.store.FSDirectory;
  */
 public class Searcher {
 
+    /** 配置 */
+    private IndexWriterConfig config;
+
     /** 瞬时化管理器 */
-    private TransienceManager transienceManager;
+    private volatile TransienceManager transienceManager;
 
     /** 持久化管理器 */
-    private PersistenceManager persistenceManager;
+    private volatile PersistenceManager persistenceManager;
 
     /** Lucene搜索器 */
-    private LuceneSearcher searcher;
+    private volatile LuceneSearcher searcher;
+
+    /** 信号量 */
+    private AtomicInteger semaphore;
 
     public Searcher(IndexWriterConfig config, Path path) throws Exception {
+        this.config = config;
         Directory transienceDirectory = new ByteBuffersDirectory();
         this.transienceManager = new TransienceManager(config, transienceDirectory);
         Directory persistenceDirectory = FSDirectory.open(path);
         this.persistenceManager = new PersistenceManager(config, persistenceDirectory);
         this.searcher = new LuceneSearcher(this.transienceManager, this.persistenceManager);
+    }
+
+    private void lockRead() {
+        while (true) {
+            int semaphore = this.semaphore.get();
+            if (semaphore >= 0) {
+                if (this.semaphore.compareAndSet(semaphore, semaphore + 1)) {
+                    break;
+                }
+            }
+        }
+    }
+
+    private void unlockRead() {
+        this.semaphore.decrementAndGet();
+    }
+
+    private void lockWrite() {
+        while (true) {
+            int semaphore = this.semaphore.get();
+            if (semaphore <= 0) {
+                if (this.semaphore.compareAndSet(semaphore, semaphore - 1)) {
+                    break;
+                }
+            }
+        }
+    }
+
+    private void unlockWrite() {
+        this.semaphore.incrementAndGet();
+    }
+
+    /**
+     * 合并管理器
+     * 
+     * @throws Exception
+     */
+    void mergeManager() throws Exception {
+        TransienceManager newTransienceManager = new TransienceManager(this.config, new ByteBuffersDirectory());
+        TransienceManager oldTransienceManager = this.transienceManager;
+
+        try {
+            lockWrite();
+            this.transienceManager = newTransienceManager;
+            this.persistenceManager.setManager(oldTransienceManager);
+        } finally {
+            unlockWrite();
+        }
+
+        this.persistenceManager.mergeManager();
+
+        try {
+            lockWrite();
+            this.persistenceManager.setManager(null);
+        } finally {
+            unlockWrite();
+        }
+
+        oldTransienceManager.close();
     }
 
     /**
@@ -45,7 +112,12 @@ public class Searcher {
      * @throws Exception
      */
     public void createDocuments(String id, Document document) throws Exception {
-        this.transienceManager.createDocument(id, document);
+        try {
+            lockWrite();
+            this.transienceManager.createDocument(id, document);
+        } finally {
+            unlockWrite();
+        }
     }
 
     /**
@@ -55,7 +127,12 @@ public class Searcher {
      * @throws Exception
      */
     public void updateDocuments(String id, Document document) throws Exception {
-        this.transienceManager.updateDocument(id, document);
+        try {
+            lockWrite();
+            this.transienceManager.updateDocument(id, document);
+        } finally {
+            unlockWrite();
+        }
     }
 
     /**
@@ -65,7 +142,12 @@ public class Searcher {
      * @throws Exception
      */
     public void deleteDocuments(String id) throws Exception {
-        this.transienceManager.deleteDocument(id);
+        try {
+            lockWrite();
+            this.transienceManager.deleteDocument(id);
+        } finally {
+            unlockWrite();
+        }
     }
 
     /**
@@ -78,10 +160,17 @@ public class Searcher {
      * @throws Exception
      */
     public TopDocs retrieveDocuments(Query query, Sort sort, int size) throws Exception {
-        if (this.transienceManager.isChanged() || this.persistenceManager.isChanged()) {
-            this.searcher = new LuceneSearcher(this.transienceManager, this.persistenceManager);
+        try {
+            lockRead();
+            synchronized (this.semaphore) {
+                if (this.transienceManager.isChanged() || this.persistenceManager.isChanged()) {
+                    this.searcher = new LuceneSearcher(this.transienceManager, this.persistenceManager);
+                }
+            }
+            return this.searcher.search(query, size, sort);
+        } finally {
+            unlockRead();
         }
-        return this.searcher.search(query, size, sort);
     }
 
     /**
@@ -92,10 +181,17 @@ public class Searcher {
      * @throws Exception
      */
     public int countDocuments(Query query) throws Exception {
-        if (this.transienceManager.isChanged() || this.persistenceManager.isChanged()) {
-            this.searcher = new LuceneSearcher(this.transienceManager, this.persistenceManager);
+        try {
+            lockRead();
+            synchronized (this.semaphore) {
+                if (this.transienceManager.isChanged() || this.persistenceManager.isChanged()) {
+                    this.searcher = new LuceneSearcher(this.transienceManager, this.persistenceManager);
+                }
+            }
+            return this.searcher.count(query);
+        } finally {
+            unlockRead();
         }
-        return this.searcher.count(query);
     }
 
 }
