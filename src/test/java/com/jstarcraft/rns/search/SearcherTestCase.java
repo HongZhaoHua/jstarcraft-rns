@@ -70,6 +70,7 @@ public class SearcherTestCase {
         Assert.assertEquals(250, searcher.countDocuments(new TermQuery(new Term("title", "1"))));
         
         searcher.close();
+        FileUtils.forceDeleteOnExit(file);
     }
 
 }
