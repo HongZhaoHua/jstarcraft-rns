@@ -24,7 +24,7 @@ public class SearcherTestCase {
 
         Path path = Paths.get("./lucene");
         File file = path.toFile();
-        FileUtils.forceDeleteOnExit(file);
+        FileUtils.deleteDirectory(file);
         Searcher searcher = new Searcher(config, path);
 
         for (int index = 0; index < 1000; index++) {
@@ -70,7 +70,7 @@ public class SearcherTestCase {
         Assert.assertEquals(250, searcher.countDocuments(new TermQuery(new Term("title", "1"))));
         
         searcher.close();
-        FileUtils.forceDeleteOnExit(file);
+        FileUtils.deleteDirectory(file);
     }
 
 }
