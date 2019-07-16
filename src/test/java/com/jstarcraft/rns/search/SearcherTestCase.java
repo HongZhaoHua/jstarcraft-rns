@@ -17,10 +17,12 @@ import org.apache.lucene.search.TermQuery;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jstarcraft.core.utility.RandomUtility;
+
 public class SearcherTestCase {
 
     @Test
-    public void testMergeManager() throws Exception {
+    public void testCRUD() throws Exception {
         IndexWriterConfig config = new IndexWriterConfig();
 
         Path path = Paths.get("./lucene");
@@ -70,44 +72,62 @@ public class SearcherTestCase {
         Assert.assertEquals(250, searcher.countDocuments(new TermQuery(new Term("title", "0"))));
         Assert.assertEquals(250, searcher.countDocuments(new TermQuery(new Term("title", "1"))));
 
-        for (int index = 0; index < 500; index++) {
+        searcher.close();
+        FileUtils.deleteDirectory(file);
+    }
+
+    @Test
+    public void testMerge() throws Exception {
+        IndexWriterConfig config = new IndexWriterConfig();
+
+        Path path = Paths.get("./lucene");
+        File file = path.toFile();
+        FileUtils.deleteDirectory(file);
+        Searcher searcher = new Searcher(config, path);
+
+        for (int index = 0; index < 1000; index++) {
             String data = String.valueOf(index);
             Document document = new Document();
             Field field = new StringField("title", data, Store.NO);
             document.add(field);
             searcher.createDocument(data, document);
         }
+        searcher.mergeManager();
 
         AtomicBoolean state = new AtomicBoolean(true);
         for (int index = 0; index < Runtime.getRuntime().availableProcessors(); index++) {
             Thread readThead = new Thread() {
                 public void run() {
-                    while (state.get()) {
-                        Assert.assertEquals(1000, searcher.countDocuments(new MatchAllDocsQuery()));
-                        try {
+                    try {
+                        while (state.get()) {
+                            Assert.assertEquals(1000, searcher.countDocuments(new MatchAllDocsQuery()));
                             Thread.sleep(1L);
-                        } catch (Exception exception) {
                         }
+                    } catch (Exception exception) {
+                        Assert.fail();
                     }
                 }
             };
+            readThead.setDaemon(true);
             readThead.start();
 
             Thread writeThead = new Thread() {
                 public void run() {
-                    while (state.get()) {
-                        String data = String.valueOf(0);
-                        Document document = new Document();
-                        Field field = new StringField("title", data, Store.NO);
-                        document.add(field);
-                        searcher.updateDocument(data, document);
-                        try {
+                    try {
+                        while (state.get()) {
+                            String data = String.valueOf(RandomUtility.randomInteger(1000));
+                            Document document = new Document();
+                            Field field = new StringField("title", data, Store.NO);
+                            document.add(field);
+                            searcher.updateDocument(data, document);
                             Thread.sleep(1L);
-                        } catch (Exception exception) {
                         }
+                    } catch (Exception exception) {
+                        Assert.fail();
                     }
                 }
             };
+            writeThead.setDaemon(true);
             writeThead.start();
         }
         searcher.mergeManager();
