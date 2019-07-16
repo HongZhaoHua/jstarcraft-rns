@@ -113,8 +113,13 @@ public class Searcher implements AutoCloseable {
             unlockWrite();
         }
 
-        // TODO 此处需要考虑防止有线程在使用时关闭.
-        oldTransienceManager.close();
+        // 此处需要考虑防止有线程在使用时关闭.
+        try {
+            lockRead();
+            oldTransienceManager.close();
+        } finally {
+            unlockRead();
+        }
         this.persistenceManager.mergeManager();
 
         try {

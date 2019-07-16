@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.lucene.document.BinaryDocValuesField;
 import org.apache.lucene.document.Document;
@@ -83,6 +84,8 @@ class TransienceManager implements LuceneManager, AutoCloseable {
 
     private HashLockable[] lockables;
 
+    private AtomicInteger count;
+
     public TransienceManager(IndexWriterConfig config, Directory directory) {
         try {
             this.createdIds = new HashSet<>();
@@ -98,6 +101,7 @@ class TransienceManager implements LuceneManager, AutoCloseable {
             for (int index = 0; index < size; index++) {
                 this.lockables[index] = new HashLockable();
             }
+            this.count = new AtomicInteger();
         } catch (Exception exception) {
             throw new SearchException(exception);
         }
@@ -182,16 +186,6 @@ class TransienceManager implements LuceneManager, AutoCloseable {
     }
 
     @Override
-    public void close() {
-        try {
-            this.reader.close();
-            this.writer.close();
-        } catch (Exception exception) {
-            // TODO 需要抛异常
-        }
-    }
-
-    @Override
     public boolean isChanged() {
         return changed.get();
     }
@@ -255,6 +249,16 @@ class TransienceManager implements LuceneManager, AutoCloseable {
     @Override
     public IndexWriter getWriter() {
         return writer;
+    }
+
+    @Override
+    public void close() {
+        try {
+            // 只关闭writer,不关闭reader.
+            this.writer.close();
+        } catch (Exception exception) {
+            throw new SearchException(exception);
+        }
     }
 
 }
