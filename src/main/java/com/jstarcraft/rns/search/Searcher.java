@@ -1,7 +1,5 @@
 package com.jstarcraft.rns.search;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -15,6 +13,8 @@ import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
+import com.jstarcraft.rns.search.exception.SearchException;
+
 /**
  * 缓存搜索器
  * 
@@ -23,7 +23,7 @@ import org.apache.lucene.store.FSDirectory;
  * @param <I>
  * @param <T>
  */
-public class Searcher implements Closeable {
+public class Searcher implements AutoCloseable {
 
     /** 配置 */
     private IndexWriterConfig config;
@@ -40,14 +40,18 @@ public class Searcher implements Closeable {
     /** 信号量 */
     private AtomicInteger semaphore;
 
-    public Searcher(IndexWriterConfig config, Path path) throws Exception {
-        this.config = config;
-        Directory transienceDirectory = new ByteBuffersDirectory();
-        this.transienceManager = new TransienceManager((IndexWriterConfig) BeanUtils.cloneBean(config), transienceDirectory);
-        Directory persistenceDirectory = FSDirectory.open(path);
-        this.persistenceManager = new PersistenceManager((IndexWriterConfig) BeanUtils.cloneBean(config), persistenceDirectory);
-        this.searcher = new LuceneSearcher(this.transienceManager, this.persistenceManager);
-        this.semaphore = new AtomicInteger();
+    public Searcher(IndexWriterConfig config, Path path) {
+        try {
+            this.config = config;
+            Directory transienceDirectory = new ByteBuffersDirectory();
+            this.transienceManager = new TransienceManager((IndexWriterConfig) BeanUtils.cloneBean(config), transienceDirectory);
+            Directory persistenceDirectory = FSDirectory.open(path);
+            this.persistenceManager = new PersistenceManager((IndexWriterConfig) BeanUtils.cloneBean(config), persistenceDirectory);
+            this.searcher = new LuceneSearcher(this.transienceManager, this.persistenceManager);
+            this.semaphore = new AtomicInteger();
+        } catch (Exception exception) {
+            throw new SearchException(exception);
+        }
     }
 
     /**
@@ -109,6 +113,7 @@ public class Searcher implements Closeable {
             unlockWrite();
         }
 
+        // TODO 此处需要考虑防止有线程在使用时关闭.
         oldTransienceManager.close();
         this.persistenceManager.mergeManager();
 
@@ -126,10 +131,12 @@ public class Searcher implements Closeable {
      * @param documents
      * @throws Exception
      */
-    public void createDocument(String id, Document document) throws Exception {
+    public void createDocument(String id, Document document) {
         try {
             lockWrite();
             this.transienceManager.createDocument(id, document);
+        } catch (Exception exception) {
+            throw new SearchException(exception);
         } finally {
             unlockWrite();
         }
@@ -141,10 +148,12 @@ public class Searcher implements Closeable {
      * @param documents
      * @throws Exception
      */
-    public void updateDocument(String id, Document document) throws Exception {
+    public void updateDocument(String id, Document document) {
         try {
             lockWrite();
             this.transienceManager.updateDocument(id, document);
+        } catch (Exception exception) {
+            throw new SearchException(exception);
         } finally {
             unlockWrite();
         }
@@ -156,10 +165,12 @@ public class Searcher implements Closeable {
      * @param ids
      * @throws Exception
      */
-    public void deleteDocument(String id) throws Exception {
+    public void deleteDocument(String id) {
         try {
             lockWrite();
             this.transienceManager.deleteDocument(id);
+        } catch (Exception exception) {
+            throw new SearchException(exception);
         } finally {
             unlockWrite();
         }
@@ -174,7 +185,7 @@ public class Searcher implements Closeable {
      * @return
      * @throws Exception
      */
-    public TopDocs retrieveDocuments(Query query, Sort sort, int size) throws Exception {
+    public TopDocs retrieveDocuments(Query query, Sort sort, int size) {
         try {
             lockRead();
             synchronized (this.semaphore) {
@@ -183,6 +194,8 @@ public class Searcher implements Closeable {
                 }
             }
             return this.searcher.search(query, size, sort);
+        } catch (Exception exception) {
+            throw new SearchException(exception);
         } finally {
             unlockRead();
         }
@@ -195,7 +208,7 @@ public class Searcher implements Closeable {
      * @return
      * @throws Exception
      */
-    public int countDocuments(Query query) throws Exception {
+    public int countDocuments(Query query) {
         try {
             lockRead();
             synchronized (this.semaphore) {
@@ -204,6 +217,8 @@ public class Searcher implements Closeable {
                 }
             }
             return this.searcher.count(query);
+        } catch (Exception exception) {
+            throw new SearchException(exception);
         } finally {
             unlockRead();
         }
@@ -216,7 +231,7 @@ public class Searcher implements Closeable {
             this.transienceManager.close();
             this.persistenceManager.close();
         } catch (Exception exception) {
-            // TODO 需要抛异常
+            throw new SearchException(exception);
         }
     }
 

@@ -20,6 +20,8 @@ import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Scorable;
 import org.apache.lucene.store.Directory;
 
+import com.jstarcraft.rns.search.exception.SearchException;
+
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 
 /**
@@ -28,7 +30,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
  * @author Birdy
  *
  */
-class PersistenceManager implements LuceneManager, Closeable {
+class PersistenceManager implements LuceneManager, AutoCloseable {
 
     /** Lucene配置 */
     private IndexWriterConfig config;
@@ -48,11 +50,15 @@ class PersistenceManager implements LuceneManager, Closeable {
     /** 瞬时化管理器 */
     private TransienceManager transienceManager;
 
-    public PersistenceManager(IndexWriterConfig config, Directory directory) throws Exception {
-        this.config = config;
-        this.directory = directory;
-        this.writer = new IndexWriter(this.directory, this.config);
-        this.reader = DirectoryReader.open(this.writer);
+    public PersistenceManager(IndexWriterConfig config, Directory directory) {
+        try {
+            this.config = config;
+            this.directory = directory;
+            this.writer = new IndexWriter(this.directory, this.config);
+            this.reader = DirectoryReader.open(this.writer);
+        } catch (Exception exception) {
+            throw new SearchException(exception);
+        }
     }
 
     /**
@@ -71,26 +77,20 @@ class PersistenceManager implements LuceneManager, Closeable {
      * @param transienceManager
      * @throws Exception
      */
-    void mergeManager() throws Exception {
-        Term[] terms = new Term[this.transienceManager.getUpdatedIds().size() + this.transienceManager.getDeletedIds().size()];
-        int index = 0;
-        for (String id : this.transienceManager.getUpdatedIds().keySet()) {
-            terms[index++] = new Term(ID, id);
-        }
-        for (String id : this.transienceManager.getDeletedIds()) {
-            terms[index++] = new Term(ID, id);
-        }
-        this.writer.deleteDocuments(terms);
-        this.writer.addIndexes(this.transienceManager.getDirectory());
-    }
-
-    @Override
-    public void close() {
+    void mergeManager() {
         try {
-            this.reader.close();
-            this.writer.close();
+            Term[] terms = new Term[this.transienceManager.getUpdatedIds().size() + this.transienceManager.getDeletedIds().size()];
+            int index = 0;
+            for (String id : this.transienceManager.getUpdatedIds().keySet()) {
+                terms[index++] = new Term(ID, id);
+            }
+            for (String id : this.transienceManager.getDeletedIds()) {
+                terms[index++] = new Term(ID, id);
+            }
+            this.writer.deleteDocuments(terms);
+            this.writer.addIndexes(this.transienceManager.getDirectory());
         } catch (Exception exception) {
-            // TODO 需要抛异常
+            throw new SearchException(exception);
         }
     }
 
@@ -146,25 +146,39 @@ class PersistenceManager implements LuceneManager, Closeable {
     }
 
     @Override
-    public IndexReader getReader() throws Exception {
-        if (this.changed.compareAndSet(true, false)) {
-            if (this.transienceManager != null) {
-                IndexReader reader = DirectoryReader.open(this.transienceManager.getDirectory());
-                reader = new MultiReader(reader, this.reader);
-                return reader;
+    public IndexReader getReader() {
+        try {
+            if (this.changed.compareAndSet(true, false)) {
+                if (this.transienceManager != null) {
+                    IndexReader reader = DirectoryReader.open(this.transienceManager.getDirectory());
+                    reader = new MultiReader(reader, this.reader);
+                    return reader;
+                }
             }
+            DirectoryReader reader = DirectoryReader.openIfChanged(this.reader);
+            if (reader != null) {
+                this.reader.close();
+                this.reader = reader;
+            }
+            return this.reader;
+        } catch (Exception exception) {
+            throw new SearchException(exception);
         }
-        DirectoryReader reader = DirectoryReader.openIfChanged(this.reader);
-        if (reader != null) {
-            this.reader.close();
-            this.reader = reader;
-        }
-        return this.reader;
     }
 
     @Override
     public IndexWriter getWriter() {
         return this.writer;
+    }
+
+    @Override
+    public void close() {
+        try {
+            this.reader.close();
+            this.writer.close();
+        } catch (Exception exception) {
+            throw new SearchException(exception);
+        }
     }
 
 }

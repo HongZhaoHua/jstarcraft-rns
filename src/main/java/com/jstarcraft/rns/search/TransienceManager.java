@@ -30,6 +30,9 @@ import org.apache.lucene.search.Scorable;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.BytesRef;
 
+import com.jstarcraft.core.common.lockable.HashLockable;
+import com.jstarcraft.rns.search.exception.SearchException;
+
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 
@@ -39,7 +42,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
  * @author Birdy
  *
  */
-class TransienceManager implements LuceneManager, Closeable {
+class TransienceManager implements LuceneManager, AutoCloseable {
 
     private static final FieldType type = new FieldType();
 
@@ -76,15 +79,28 @@ class TransienceManager implements LuceneManager, Closeable {
     /** 删除标识 */
     private Set<String> deletedIds;
 
-    public TransienceManager(IndexWriterConfig config, Directory directory) throws Exception {
-        this.createdIds = new HashSet<>();
-        this.updatedIds = new Object2LongOpenHashMap<>();
-        this.deletedIds = new HashSet<>();
+    private static final int size = 1000;
 
-        this.config = config;
-        this.directory = directory;
-        this.writer = new IndexWriter(this.directory, this.config);
-        this.reader = DirectoryReader.open(this.writer);
+    private HashLockable[] lockables;
+
+    public TransienceManager(IndexWriterConfig config, Directory directory) {
+        try {
+            this.createdIds = new HashSet<>();
+            this.updatedIds = new Object2LongOpenHashMap<>();
+            this.deletedIds = new HashSet<>();
+
+            this.config = config;
+            this.directory = directory;
+            this.writer = new IndexWriter(this.directory, this.config);
+            this.reader = DirectoryReader.open(this.writer);
+
+            this.lockables = new HashLockable[size];
+            for (int index = 0; index < size; index++) {
+                this.lockables[index] = new HashLockable();
+            }
+        } catch (Exception exception) {
+            throw new SearchException(exception);
+        }
     }
 
     Set<String> getCreatedIds() {
@@ -99,51 +115,70 @@ class TransienceManager implements LuceneManager, Closeable {
         return deletedIds;
     }
 
-    void createDocument(String id, Document document) throws Exception {
-        IndexableField field = null;
-        field = new StringField(ID, id, Store.YES);
-        document.add(field);
-        field = new BinaryDocValuesField(ID, new BytesRef(id));
-        document.add(field);
-        long version = System.currentTimeMillis();
-        field = new NumericDocValuesField(VERSION, version);
-        document.add(field);
-        if (this.deletedIds.remove(id)) {
-            this.updatedIds.put(id, version);
-        } else {
-            this.createdIds.add(id);
+    void createDocument(String id, Document document) {
+        try {
+            IndexableField field = null;
+            field = new StringField(ID, id, Store.YES);
+            document.add(field);
+            field = new BinaryDocValuesField(ID, new BytesRef(id));
+            document.add(field);
+            long version = System.currentTimeMillis();
+            field = new NumericDocValuesField(VERSION, version);
+            document.add(field);
+            HashLockable lockable = lockables[Math.abs(id.hashCode() % size)];
+            lockable.open();
+            if (this.deletedIds.remove(id)) {
+                this.updatedIds.put(id, version);
+            } else {
+                this.createdIds.add(id);
+            }
+            this.writer.addDocument(document);
+            lockable.close();
+            changed.set(true);
+        } catch (Exception exception) {
+            throw new SearchException(exception);
         }
-        this.writer.addDocument(document);
-        changed.set(true);
     }
 
-    void updateDocument(String id, Document document) throws Exception {
-        IndexableField field = null;
-        field = new StringField(ID, id, Store.YES);
-        document.add(field);
-        field = new BinaryDocValuesField(ID, new BytesRef(id));
-        document.add(field);
-        long version = System.currentTimeMillis();
-        field = new NumericDocValuesField(VERSION, version);
-        document.add(field);
-        if (this.createdIds.contains(id)) {
+    void updateDocument(String id, Document document) {
+        try {
+            IndexableField field = null;
+            field = new StringField(ID, id, Store.YES);
+            document.add(field);
+            field = new BinaryDocValuesField(ID, new BytesRef(id));
+            document.add(field);
+            long version = System.currentTimeMillis();
+            field = new NumericDocValuesField(VERSION, version);
+            document.add(field);
+            HashLockable lockable = lockables[Math.abs(id.hashCode() % size)];
+            lockable.open();
+            if (!this.createdIds.contains(id)) {
+                this.updatedIds.put(id, version);
+            }
             Term term = new Term(ID, id);
             this.writer.updateDocument(term, document);
-        } else {
-            this.updatedIds.put(id, version);
-            this.writer.addDocument(document);
+            lockable.close();
+            changed.set(true);
+        } catch (Exception exception) {
+            throw new SearchException(exception);
         }
-        changed.set(true);
     }
 
-    void deleteDocument(String id) throws Exception {
-        if (this.createdIds.remove(id)) {
-            Term term = new Term(ID, id);
-            this.writer.deleteDocuments(term);
-        } else {
-            this.deletedIds.add(id);
+    void deleteDocument(String id) {
+        try {
+            HashLockable lockable = lockables[Math.abs(id.hashCode() % size)];
+            lockable.open();
+            if (this.createdIds.remove(id)) {
+                Term term = new Term(ID, id);
+                this.writer.deleteDocuments(term);
+            } else {
+                this.deletedIds.add(id);
+            }
+            lockable.close();
+            changed.set(true);
+        } catch (Exception exception) {
+            throw new SearchException(exception);
         }
-        changed.set(true);
     }
 
     @Override
@@ -201,16 +236,20 @@ class TransienceManager implements LuceneManager, Closeable {
     }
 
     @Override
-    public IndexReader getReader() throws Exception {
-        if (changed.compareAndSet(true, false)) {
-            this.writer.flush();
-            DirectoryReader reader = DirectoryReader.openIfChanged(this.reader);
-            if (reader != null) {
-                this.reader.close();
-                this.reader = reader;
+    public IndexReader getReader() {
+        try {
+            if (changed.compareAndSet(true, false)) {
+                this.writer.flush();
+                DirectoryReader reader = DirectoryReader.openIfChanged(this.reader);
+                if (reader != null) {
+                    this.reader.close();
+                    this.reader = reader;
+                }
             }
+            return this.reader;
+        } catch (Exception exception) {
+            throw new SearchException(exception);
         }
-        return this.reader;
     }
 
     @Override

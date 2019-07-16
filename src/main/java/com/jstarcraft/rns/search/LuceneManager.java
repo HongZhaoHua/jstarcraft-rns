@@ -58,13 +58,13 @@ public interface LuceneManager {
      * 
      * @return
      */
-    IndexReader getReader() throws Exception;
+    IndexReader getReader();
 
     /**
      * 获取写入器
      * 
      * @return
      */
-    IndexWriter getWriter() throws Exception;
+    IndexWriter getWriter();
 
 }
