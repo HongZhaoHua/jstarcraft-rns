@@ -1,6 +1,7 @@
 package com.jstarcraft.rns.search;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.lucene.index.LeafReaderContext;
@@ -8,8 +9,12 @@ import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.search.BulkScorer;
 import org.apache.lucene.search.CollectionTerminatedException;
 import org.apache.lucene.search.Collector;
+import org.apache.lucene.search.CollectorManager;
+import org.apache.lucene.search.ConstantScoreQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.LeafCollector;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TotalHitCountCollector;
 import org.apache.lucene.search.Weight;
 
 /**
@@ -52,6 +57,37 @@ public class LuceneSearcher extends IndexSearcher {
                 }
             }
         }
+    }
+
+    @Override
+    public int count(Query query) throws IOException {
+        query = rewrite(query);
+        while (true) {
+            if (query instanceof ConstantScoreQuery) {
+                query = ((ConstantScoreQuery) query).getQuery();
+            } else {
+                break;
+            }
+        }
+
+        final CollectorManager<TotalHitCountCollector, Integer> collectorManager = new CollectorManager<TotalHitCountCollector, Integer>() {
+
+            @Override
+            public TotalHitCountCollector newCollector() throws IOException {
+                return new TotalHitCountCollector();
+            }
+
+            @Override
+            public Integer reduce(Collection<TotalHitCountCollector> collectors) throws IOException {
+                int count = 0;
+                for (TotalHitCountCollector collector : collectors) {
+                    count += collector.getTotalHits();
+                }
+                return count;
+            }
+
+        };
+        return search(query, collectorManager);
     }
 
 }
