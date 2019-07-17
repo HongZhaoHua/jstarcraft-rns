@@ -5,10 +5,10 @@ import java.util.Collection;
 
 import org.apache.lucene.index.IndexableField;
 
-import com.jstarcraft.rns.search.annotation.RetrievalAnalyze;
-import com.jstarcraft.rns.search.annotation.RetrievalIndex;
-import com.jstarcraft.rns.search.annotation.RetrievalSort;
-import com.jstarcraft.rns.search.annotation.RetrievalStore;
+import com.jstarcraft.rns.search.annotation.SearchAnalyze;
+import com.jstarcraft.rns.search.annotation.SearchIndex;
+import com.jstarcraft.rns.search.annotation.SearchSort;
+import com.jstarcraft.rns.search.annotation.SearchStore;
 
 /**
  * 检索转换器
@@ -30,6 +30,6 @@ public interface RetrievalConverter {
      * @param store
      * @return
      */
-    Collection<IndexableField> convert(String name, Type type, Object data, RetrievalAnalyze analyze, RetrievalIndex index, RetrievalSort sort, RetrievalStore store);
+    Collection<IndexableField> convert(String name, Type type, Object data, SearchAnalyze analyze, SearchIndex index, SearchSort sort, SearchStore store);
 
 }

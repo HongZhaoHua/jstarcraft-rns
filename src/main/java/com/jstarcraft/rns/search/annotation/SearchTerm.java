@@ -1,18 +1,24 @@
 package com.jstarcraft.rns.search.annotation;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
- * 检索存储
+ * 词向量
  * 
  * @author Birdy
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD })
-public @interface RetrievalStore {
+public @interface SearchTerm {
+
+    /** 词频 */
+    boolean frequency();
+
+    /** 位置 */
+    boolean position();
+
+    /** 偏移 */
+    boolean offset();
 
 }

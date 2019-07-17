@@ -5,10 +5,10 @@ import java.util.Collection;
 
 import org.apache.lucene.index.IndexableField;
 
-import com.jstarcraft.rns.search.annotation.RetrievalAnalyze;
-import com.jstarcraft.rns.search.annotation.RetrievalIndex;
-import com.jstarcraft.rns.search.annotation.RetrievalSort;
-import com.jstarcraft.rns.search.annotation.RetrievalStore;
+import com.jstarcraft.rns.search.annotation.SearchAnalyze;
+import com.jstarcraft.rns.search.annotation.SearchIndex;
+import com.jstarcraft.rns.search.annotation.SearchSort;
+import com.jstarcraft.rns.search.annotation.SearchStore;
 
 /**
  * 对象转换器
@@ -19,7 +19,7 @@ import com.jstarcraft.rns.search.annotation.RetrievalStore;
 public class ObjectConverter implements RetrievalConverter {
 
     @Override
-    public Collection<IndexableField> convert(String name, Type type, Object data, RetrievalAnalyze analyze, RetrievalIndex index, RetrievalSort sort, RetrievalStore store) {
+    public Collection<IndexableField> convert(String name, Type type, Object data, SearchAnalyze analyze, SearchIndex index, SearchSort sort, SearchStore store) {
         // TODO Auto-generated method stub
         return null;
     }

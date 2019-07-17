@@ -9,11 +9,11 @@ import org.apache.lucene.index.DocValuesType;
 import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexableField;
 
-import com.jstarcraft.rns.search.annotation.RetrievalAnalyze;
-import com.jstarcraft.rns.search.annotation.RetrievalIndex;
-import com.jstarcraft.rns.search.annotation.RetrievalSort;
-import com.jstarcraft.rns.search.annotation.RetrievalStore;
-import com.jstarcraft.rns.search.annotation.RetrievalTerm;
+import com.jstarcraft.rns.search.annotation.SearchAnalyze;
+import com.jstarcraft.rns.search.annotation.SearchIndex;
+import com.jstarcraft.rns.search.annotation.SearchSort;
+import com.jstarcraft.rns.search.annotation.SearchStore;
+import com.jstarcraft.rns.search.annotation.SearchTerm;
 
 /**
  * 字符串转换器
@@ -24,7 +24,7 @@ import com.jstarcraft.rns.search.annotation.RetrievalTerm;
 public class StringConverter implements RetrievalConverter {
 
     @Override
-    public Collection<IndexableField> convert(String name, Type type, Object data, RetrievalAnalyze analyze, RetrievalIndex index, RetrievalSort sort, RetrievalStore store) {
+    public Collection<IndexableField> convert(String name, Type type, Object data, SearchAnalyze analyze, SearchIndex index, SearchSort sort, SearchStore store) {
         FieldType configuration = new FieldType();
         if (index != null) {
             configuration.setIndexOptions(IndexOptions.DOCS);
@@ -34,7 +34,7 @@ public class StringConverter implements RetrievalConverter {
             configuration.setTokenized(true);
 
             if (index != null) {
-                RetrievalTerm negative = analyze.negative();
+                SearchTerm negative = analyze.negative();
                 if (negative.offset()) {
                     configuration.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
                 } else if (negative.position()) {
@@ -44,7 +44,7 @@ public class StringConverter implements RetrievalConverter {
                 }
             }
 
-            RetrievalTerm positive = analyze.positive();
+            SearchTerm positive = analyze.positive();
             if (positive.offset()) {
                 configuration.setStoreTermVectorOffsets(true);
             }

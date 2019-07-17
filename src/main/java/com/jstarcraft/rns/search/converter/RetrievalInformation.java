@@ -11,10 +11,10 @@ import org.apache.lucene.index.IndexableField;
 
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.common.reflection.Specification;
-import com.jstarcraft.rns.search.annotation.RetrievalAnalyze;
-import com.jstarcraft.rns.search.annotation.RetrievalIndex;
-import com.jstarcraft.rns.search.annotation.RetrievalSort;
-import com.jstarcraft.rns.search.annotation.RetrievalStore;
+import com.jstarcraft.rns.search.annotation.SearchAnalyze;
+import com.jstarcraft.rns.search.annotation.SearchIndex;
+import com.jstarcraft.rns.search.annotation.SearchSort;
+import com.jstarcraft.rns.search.annotation.SearchStore;
 import com.jstarcraft.rns.search.exception.SearchException;
 
 public class RetrievalInformation<T> {
@@ -61,10 +61,10 @@ public class RetrievalInformation<T> {
                 String name = field.getName();
                 Type type = field.getGenericType();
                 Object data = field.get(object);
-                RetrievalAnalyze analyze = field.getAnnotation(RetrievalAnalyze.class);
-                RetrievalIndex index = field.getAnnotation(RetrievalIndex.class);
-                RetrievalSort sort = field.getAnnotation(RetrievalSort.class);
-                RetrievalStore store = field.getAnnotation(RetrievalStore.class);
+                SearchAnalyze analyze = field.getAnnotation(SearchAnalyze.class);
+                SearchIndex index = field.getAnnotation(SearchIndex.class);
+                SearchSort sort = field.getAnnotation(SearchSort.class);
+                SearchStore store = field.getAnnotation(SearchStore.class);
 
                 RetrievalConverter converter = term.getValue();
                 for (IndexableField indexable : converter.convert(name, type, data, analyze, index, sort, store)) {

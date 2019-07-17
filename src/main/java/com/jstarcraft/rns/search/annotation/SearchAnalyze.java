@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 import org.apache.lucene.analysis.TokenStream;
 
 /**
- * 检索分词
+ * 分词
  * 
  * <pre>
  *  仅作用于{@link Reader},{@link String},{@link TokenStream}类型字段的注解.
@@ -20,12 +20,12 @@ import org.apache.lucene.analysis.TokenStream;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })
-public @interface RetrievalAnalyze {
+public @interface SearchAnalyze {
 
     /** 反向词向量(取决于是否需要查询) */
-    RetrievalTerm negative() default @RetrievalTerm(frequency = false, position = false, offset = false);
+    SearchTerm negative() default @SearchTerm(frequency = false, position = false, offset = false);
 
     /** 正向词向量(取决于是否需要高亮) */
-    RetrievalTerm positive() default @RetrievalTerm(frequency = false, position = false, offset = false);
+    SearchTerm positive() default @SearchTerm(frequency = false, position = false, offset = false);
 
 }
