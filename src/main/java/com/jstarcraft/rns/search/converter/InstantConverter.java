@@ -11,10 +11,7 @@ import org.apache.lucene.index.IndexableField;
 
 import com.jstarcraft.core.common.reflection.TypeUtility;
 import com.jstarcraft.core.utility.ClassUtility;
-import com.jstarcraft.rns.search.annotation.SearchAnalyze;
-import com.jstarcraft.rns.search.annotation.SearchIndex;
-import com.jstarcraft.rns.search.annotation.SearchSort;
-import com.jstarcraft.rns.search.annotation.SearchStore;
+import com.jstarcraft.rns.search.annotation.SearchEncode;
 import com.jstarcraft.rns.search.exception.SearchException;
 
 /**
@@ -26,7 +23,7 @@ import com.jstarcraft.rns.search.exception.SearchException;
 public class InstantConverter implements SearchConverter {
 
     @Override
-    public Collection<IndexableField> convert(String name, Type type, Object data, SearchAnalyze analyze, SearchIndex index, SearchSort sort, SearchStore store) {
+    public Collection<IndexableField> convert(String name, Type type, Object data, SearchEncode encode) {
         Class<?> clazz = TypeUtility.getRawType(type, null);
         clazz = ClassUtility.primitiveToWrapper(clazz);
         if (Short.class == clazz) {
@@ -34,13 +31,13 @@ public class InstantConverter implements SearchConverter {
         }
         if (Integer.class == clazz) {
             Collection<IndexableField> fields = new LinkedList<>();
-            if (index != null) {
+            if (encode.index()) {
                 fields.add(new IntPoint(name, (Integer) data));
             }
-            if (sort != null) {
+            if (encode.sort()) {
                 fields.add(new NumericDocValuesField(name, (Integer) data));
             }
-            if (store != null) {
+            if (encode.store()) {
                 fields.add(new StoredField(name, (Integer) data));
             }
             return fields;

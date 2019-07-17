@@ -7,10 +7,7 @@ import java.util.Collection;
 import org.apache.lucene.index.IndexableField;
 
 import com.jstarcraft.core.common.reflection.TypeUtility;
-import com.jstarcraft.rns.search.annotation.SearchAnalyze;
-import com.jstarcraft.rns.search.annotation.SearchIndex;
-import com.jstarcraft.rns.search.annotation.SearchSort;
-import com.jstarcraft.rns.search.annotation.SearchStore;
+import com.jstarcraft.rns.search.annotation.SearchEncode;
 
 /**
  * 数组转换器
@@ -21,7 +18,7 @@ import com.jstarcraft.rns.search.annotation.SearchStore;
 public class ArrayConverter implements SearchConverter {
 
     @Override
-    public Collection<IndexableField> convert(String name, Type type, Object data, SearchAnalyze analyze, SearchIndex index, SearchSort sort, SearchStore store) {
+    public Collection<IndexableField> convert(String name, Type type, Object data, SearchEncode encode) {
         Class<?> componentClass = null;
         Type componentType = null;
         if (type instanceof GenericArrayType) {

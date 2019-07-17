@@ -3,6 +3,7 @@ package com.jstarcraft.rns.search;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -11,10 +12,7 @@ import org.apache.lucene.index.IndexableField;
 
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.common.reflection.Specification;
-import com.jstarcraft.rns.search.annotation.SearchAnalyze;
-import com.jstarcraft.rns.search.annotation.SearchIndex;
-import com.jstarcraft.rns.search.annotation.SearchSort;
-import com.jstarcraft.rns.search.annotation.SearchStore;
+import com.jstarcraft.rns.search.annotation.SearchEncode;
 import com.jstarcraft.rns.search.converter.ArrayConverter;
 import com.jstarcraft.rns.search.converter.BooleanConverter;
 import com.jstarcraft.rns.search.converter.CollectionConverter;
@@ -54,9 +52,12 @@ public class SearchCodec<S, L> {
     private Map<Field, SearchConverter> converters;
 
     public SearchCodec(Class<S> saveClazz, Class<L> loadClazz) {
+        this.converters = new HashMap<>();
+
         ReflectionUtility.doWithFields(saveClazz, (field) -> {
             // TODO 检查是否存在自定义转换器
 
+            ReflectionUtility.makeAccessible(field);
             Type type = field.getGenericType();
             Specification specification = Specification.getSpecification(type);
             SearchConverter converter = CONVERTERS.get(specification);
@@ -71,10 +72,10 @@ public class SearchCodec<S, L> {
     /**
      * 编码
      * 
-     * @param object
+     * @param instance
      * @return
      */
-    public Document encode(S object) {
+    public Document encode(S instance) {
         Document document = new Document();
         try {
             for (Entry<Field, SearchConverter> term : converters.entrySet()) {
@@ -83,19 +84,17 @@ public class SearchCodec<S, L> {
                 // TODO 此处可以考虑优化
                 String name = field.getName();
                 Type type = field.getGenericType();
-                Object data = field.get(object);
-                SearchAnalyze analyze = field.getAnnotation(SearchAnalyze.class);
-                SearchIndex index = field.getAnnotation(SearchIndex.class);
-                SearchSort sort = field.getAnnotation(SearchSort.class);
-                SearchStore store = field.getAnnotation(SearchStore.class);
+                Object data = field.get(instance);
+                SearchEncode encode = field.getAnnotation(SearchEncode.class);
 
                 SearchConverter converter = term.getValue();
-                for (IndexableField indexable : converter.convert(name, type, data, analyze, index, sort, store)) {
+                for (IndexableField indexable : converter.convert(name, type, data, encode)) {
                     document.add(indexable);
                 }
             }
         } catch (Exception exception) {
             // TODO
+            throw new SearchException(exception);
         }
         return document;
     }

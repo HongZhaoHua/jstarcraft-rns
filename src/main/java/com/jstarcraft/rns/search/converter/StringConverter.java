@@ -9,10 +9,7 @@ import org.apache.lucene.index.DocValuesType;
 import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexableField;
 
-import com.jstarcraft.rns.search.annotation.SearchAnalyze;
-import com.jstarcraft.rns.search.annotation.SearchIndex;
-import com.jstarcraft.rns.search.annotation.SearchSort;
-import com.jstarcraft.rns.search.annotation.SearchStore;
+import com.jstarcraft.rns.search.annotation.SearchEncode;
 import com.jstarcraft.rns.search.annotation.SearchTerm;
 
 /**
@@ -24,17 +21,17 @@ import com.jstarcraft.rns.search.annotation.SearchTerm;
 public class StringConverter implements SearchConverter {
 
     @Override
-    public Collection<IndexableField> convert(String name, Type type, Object data, SearchAnalyze analyze, SearchIndex index, SearchSort sort, SearchStore store) {
+    public Collection<IndexableField> convert(String name, Type type, Object data, SearchEncode encode) {
         FieldType configuration = new FieldType();
-        if (index != null) {
+        if (encode.index()) {
             configuration.setIndexOptions(IndexOptions.DOCS);
         }
 
-        if (analyze != null) {
+        if (encode.analyze()) {
             configuration.setTokenized(true);
 
-            if (index != null) {
-                SearchTerm negative = analyze.negative();
+            if (encode.index()) {
+                SearchTerm negative = encode.negative();
                 if (negative.offset()) {
                     configuration.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
                 } else if (negative.position()) {
@@ -44,7 +41,7 @@ public class StringConverter implements SearchConverter {
                 }
             }
 
-            SearchTerm positive = analyze.positive();
+            SearchTerm positive = encode.positive();
             if (positive.offset()) {
                 configuration.setStoreTermVectorOffsets(true);
             }
@@ -54,15 +51,15 @@ public class StringConverter implements SearchConverter {
             if (positive.frequency()) {
                 configuration.setStoreTermVectors(true);
             }
-        } else if (sort != null) {
+        } else if (encode.sort()) {
             // 注意:分词字段存储docValue没有意义
-            configuration.setDocValuesType(DocValuesType.SORTED);
+            configuration.setDocValuesType(DocValuesType.BINARY);
         }
 
-        if (store != null) {
+        if (encode.store()) {
             configuration.setStored(true);
         }
-        
+
         Collection<IndexableField> fields = new LinkedList<>();
         fields.add(new org.apache.lucene.document.Field(name, (String) data, configuration));
         return fields;

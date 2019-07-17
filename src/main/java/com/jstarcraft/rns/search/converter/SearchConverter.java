@@ -5,10 +5,7 @@ import java.util.Collection;
 
 import org.apache.lucene.index.IndexableField;
 
-import com.jstarcraft.rns.search.annotation.SearchAnalyze;
-import com.jstarcraft.rns.search.annotation.SearchIndex;
-import com.jstarcraft.rns.search.annotation.SearchSort;
-import com.jstarcraft.rns.search.annotation.SearchStore;
+import com.jstarcraft.rns.search.annotation.SearchEncode;
 
 /**
  * 检索转换器
@@ -30,6 +27,6 @@ public interface SearchConverter {
      * @param store
      * @return
      */
-    Collection<IndexableField> convert(String name, Type type, Object data, SearchAnalyze analyze, SearchIndex index, SearchSort sort, SearchStore store);
+    Collection<IndexableField> convert(String name, Type type, Object data, SearchEncode encode);
 
 }

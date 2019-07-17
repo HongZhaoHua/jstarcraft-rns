@@ -6,10 +6,7 @@ import java.util.Collection;
 
 import org.apache.lucene.index.IndexableField;
 
-import com.jstarcraft.rns.search.annotation.SearchAnalyze;
-import com.jstarcraft.rns.search.annotation.SearchIndex;
-import com.jstarcraft.rns.search.annotation.SearchSort;
-import com.jstarcraft.rns.search.annotation.SearchStore;
+import com.jstarcraft.rns.search.annotation.SearchEncode;
 
 /**
  * 映射转换器
@@ -20,7 +17,7 @@ import com.jstarcraft.rns.search.annotation.SearchStore;
 public class MapConverter implements SearchConverter {
 
     @Override
-    public Collection<IndexableField> convert(String name, Type type, Object data, SearchAnalyze analyze, SearchIndex index, SearchSort sort, SearchStore store) {
+    public Collection<IndexableField> convert(String name, Type type, Object data, SearchEncode encode) {
         ParameterizedType parameterizedType = ParameterizedType.class.cast(type);
         Type[] types = parameterizedType.getActualTypeArguments();
         return null;
