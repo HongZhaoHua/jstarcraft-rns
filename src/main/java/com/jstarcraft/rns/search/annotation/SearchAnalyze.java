@@ -11,6 +11,8 @@ import org.apache.lucene.analysis.TokenStream;
  * 
  * <pre>
  *  仅作用于{@link Reader},{@link String},{@link TokenStream}类型字段的注解.
+ *  对于分词数据,排序没有意义
+ *  对于不分词数据,词频/位置/偏移没有意义
  * </pre>
  * 
  * @author Birdy
