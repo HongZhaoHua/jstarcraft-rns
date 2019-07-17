@@ -16,12 +16,10 @@ import org.apache.lucene.store.FSDirectory;
 import com.jstarcraft.rns.search.exception.SearchException;
 
 /**
- * 缓存搜索器
+ * 搜索器
  * 
  * @author Birdy
  *
- * @param <I>
- * @param <T>
  */
 public class Searcher implements AutoCloseable {
 
