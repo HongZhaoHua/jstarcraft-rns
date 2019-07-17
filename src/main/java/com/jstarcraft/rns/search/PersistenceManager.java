@@ -1,6 +1,5 @@
 package com.jstarcraft.rns.search;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;

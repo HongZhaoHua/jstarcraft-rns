@@ -1,11 +1,9 @@
 package com.jstarcraft.rns.search;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.lucene.document.BinaryDocValuesField;
 import org.apache.lucene.document.Document;
@@ -84,8 +82,6 @@ class TransienceManager implements LuceneManager, AutoCloseable {
 
     private HashLockable[] lockables;
 
-    private AtomicInteger count;
-
     public TransienceManager(IndexWriterConfig config, Directory directory) {
         try {
             this.createdIds = new HashSet<>();
@@ -101,7 +97,6 @@ class TransienceManager implements LuceneManager, AutoCloseable {
             for (int index = 0; index < size; index++) {
                 this.lockables[index] = new HashLockable();
             }
-            this.count = new AtomicInteger();
         } catch (Exception exception) {
             throw new SearchException(exception);
         }
