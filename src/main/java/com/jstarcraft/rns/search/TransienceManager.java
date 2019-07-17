@@ -8,14 +8,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.lucene.document.BinaryDocValuesField;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field.Store;
-import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.NumericDocValuesField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.BinaryDocValues;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.DocValues;
-import org.apache.lucene.index.DocValuesType;
-import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -42,17 +39,6 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
  *
  */
 class TransienceManager implements LuceneManager, AutoCloseable {
-
-    private static final FieldType type = new FieldType();
-
-    static {
-        type.setOmitNorms(true);
-        type.setIndexOptions(IndexOptions.DOCS);
-        type.setDocValuesType(DocValuesType.BINARY);
-        type.setStored(true);
-        type.setTokenized(false);
-        type.freeze();
-    }
 
     /** Lucene配置 */
     private IndexWriterConfig config;
