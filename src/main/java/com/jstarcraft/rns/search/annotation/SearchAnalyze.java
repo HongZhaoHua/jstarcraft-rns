@@ -1,10 +1,8 @@
 package com.jstarcraft.rns.search.annotation;
 
 import java.io.Reader;
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 import org.apache.lucene.analysis.TokenStream;
 
@@ -19,13 +17,12 @@ import org.apache.lucene.analysis.TokenStream;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD })
 public @interface SearchAnalyze {
 
     /** 反向词向量(取决于是否需要查询) */
-    SearchTerm negative() default @SearchTerm(frequency = false, position = false, offset = false);
+    SearchTerm negative() default @SearchTerm;
 
     /** 正向词向量(取决于是否需要高亮) */
-    SearchTerm positive() default @SearchTerm(frequency = false, position = false, offset = false);
+    SearchTerm positive() default @SearchTerm;
 
 }

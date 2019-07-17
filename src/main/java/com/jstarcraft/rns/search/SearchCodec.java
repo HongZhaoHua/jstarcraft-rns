@@ -1,4 +1,4 @@
-package com.jstarcraft.rns.search.converter;
+package com.jstarcraft.rns.search;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -15,9 +15,27 @@ import com.jstarcraft.rns.search.annotation.SearchAnalyze;
 import com.jstarcraft.rns.search.annotation.SearchIndex;
 import com.jstarcraft.rns.search.annotation.SearchSort;
 import com.jstarcraft.rns.search.annotation.SearchStore;
+import com.jstarcraft.rns.search.converter.ArrayConverter;
+import com.jstarcraft.rns.search.converter.BooleanConverter;
+import com.jstarcraft.rns.search.converter.CollectionConverter;
+import com.jstarcraft.rns.search.converter.EnumerationConverter;
+import com.jstarcraft.rns.search.converter.InstantConverter;
+import com.jstarcraft.rns.search.converter.MapConverter;
+import com.jstarcraft.rns.search.converter.NumberConverter;
+import com.jstarcraft.rns.search.converter.ObjectConverter;
+import com.jstarcraft.rns.search.converter.SearchConverter;
+import com.jstarcraft.rns.search.converter.StringConverter;
 import com.jstarcraft.rns.search.exception.SearchException;
 
-public class SearchInformation<T> {
+/**
+ * 搜索编解码器
+ * 
+ * @author Birdy
+ *
+ * @param <T>
+ */
+// TODO 以后会整合到Searcher
+public class SearchCodec<S, L> {
 
     protected static final EnumMap<Specification, SearchConverter> CONVERTERS = new EnumMap<>(Specification.class);
 
@@ -35,8 +53,8 @@ public class SearchInformation<T> {
 
     private Map<Field, SearchConverter> converters;
 
-    public SearchInformation(Class<T> clazz) {
-        ReflectionUtility.doWithFields(clazz, (field) -> {
+    public SearchCodec(Class<S> saveClazz, Class<L> loadClazz) {
+        ReflectionUtility.doWithFields(saveClazz, (field) -> {
             // TODO 检查是否存在自定义转换器
 
             Type type = field.getGenericType();
@@ -50,9 +68,14 @@ public class SearchInformation<T> {
         });
     }
 
-    public Document convert(T object) {
+    /**
+     * 编码
+     * 
+     * @param object
+     * @return
+     */
+    public Document encode(S object) {
         Document document = new Document();
-
         try {
             for (Entry<Field, SearchConverter> term : converters.entrySet()) {
                 Field field = term.getKey();
@@ -74,8 +97,17 @@ public class SearchInformation<T> {
         } catch (Exception exception) {
             // TODO
         }
-
         return document;
+    }
+
+    /**
+     * 解码
+     * 
+     * @param document
+     * @return
+     */
+    public L decode(Document document) {
+        return null;
     }
 
 }

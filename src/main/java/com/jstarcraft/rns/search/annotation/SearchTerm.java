@@ -13,12 +13,12 @@ import java.lang.annotation.RetentionPolicy;
 public @interface SearchTerm {
 
     /** 词频 */
-    boolean frequency();
+    boolean frequency() default false;
 
     /** 位置 */
-    boolean position();
+    boolean position() default false;
 
     /** 偏移 */
-    boolean offset();
+    boolean offset() default false;
 
 }
