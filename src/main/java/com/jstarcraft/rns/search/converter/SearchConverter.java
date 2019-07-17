@@ -16,7 +16,7 @@ import com.jstarcraft.rns.search.annotation.SearchStore;
  * @author Birdy
  *
  */
-public interface RetrievalConverter {
+public interface SearchConverter {
 
     /**
      * 转换

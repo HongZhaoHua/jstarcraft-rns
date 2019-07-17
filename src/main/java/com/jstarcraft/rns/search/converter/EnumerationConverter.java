@@ -21,7 +21,7 @@ import com.jstarcraft.rns.search.annotation.SearchTerm;
  * @author Birdy
  *
  */
-public class EnumerationConverter implements RetrievalConverter {
+public class EnumerationConverter implements SearchConverter {
 
     @Override
     public Collection<IndexableField> convert(String name, Type type, Object data, SearchAnalyze analyze, SearchIndex index, SearchSort sort, SearchStore store) {

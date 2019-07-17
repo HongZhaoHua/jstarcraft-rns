@@ -23,7 +23,7 @@ import com.jstarcraft.rns.search.exception.SearchException;
  * @author Birdy
  *
  */
-public class InstantConverter implements RetrievalConverter {
+public class InstantConverter implements SearchConverter {
 
     @Override
     public Collection<IndexableField> convert(String name, Type type, Object data, SearchAnalyze analyze, SearchIndex index, SearchSort sort, SearchStore store) {

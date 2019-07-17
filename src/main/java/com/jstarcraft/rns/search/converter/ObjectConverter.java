@@ -16,7 +16,7 @@ import com.jstarcraft.rns.search.annotation.SearchStore;
  * @author Birdy
  *
  */
-public class ObjectConverter implements RetrievalConverter {
+public class ObjectConverter implements SearchConverter {
 
     @Override
     public Collection<IndexableField> convert(String name, Type type, Object data, SearchAnalyze analyze, SearchIndex index, SearchSort sort, SearchStore store) {

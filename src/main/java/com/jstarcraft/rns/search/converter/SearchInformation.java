@@ -17,9 +17,9 @@ import com.jstarcraft.rns.search.annotation.SearchSort;
 import com.jstarcraft.rns.search.annotation.SearchStore;
 import com.jstarcraft.rns.search.exception.SearchException;
 
-public class RetrievalInformation<T> {
+public class SearchInformation<T> {
 
-    protected static final EnumMap<Specification, RetrievalConverter> CONVERTERS = new EnumMap<>(Specification.class);
+    protected static final EnumMap<Specification, SearchConverter> CONVERTERS = new EnumMap<>(Specification.class);
 
     static {
         CONVERTERS.put(Specification.ARRAY, new ArrayConverter());
@@ -33,15 +33,15 @@ public class RetrievalInformation<T> {
         CONVERTERS.put(Specification.STRING, new StringConverter());
     }
 
-    private Map<Field, RetrievalConverter> converters;
+    private Map<Field, SearchConverter> converters;
 
-    public RetrievalInformation(Class<T> clazz) {
+    public SearchInformation(Class<T> clazz) {
         ReflectionUtility.doWithFields(clazz, (field) -> {
             // TODO 检查是否存在自定义转换器
 
             Type type = field.getGenericType();
             Specification specification = Specification.getSpecification(type);
-            RetrievalConverter converter = CONVERTERS.get(specification);
+            SearchConverter converter = CONVERTERS.get(specification);
             if (converter == null) {
                 throw new SearchException();
             } else {
@@ -54,7 +54,7 @@ public class RetrievalInformation<T> {
         Document document = new Document();
 
         try {
-            for (Entry<Field, RetrievalConverter> term : converters.entrySet()) {
+            for (Entry<Field, SearchConverter> term : converters.entrySet()) {
                 Field field = term.getKey();
 
                 // TODO 此处可以考虑优化
@@ -66,7 +66,7 @@ public class RetrievalInformation<T> {
                 SearchSort sort = field.getAnnotation(SearchSort.class);
                 SearchStore store = field.getAnnotation(SearchStore.class);
 
-                RetrievalConverter converter = term.getValue();
+                SearchConverter converter = term.getValue();
                 for (IndexableField indexable : converter.convert(name, type, data, analyze, index, sort, store)) {
                     document.add(indexable);
                 }
