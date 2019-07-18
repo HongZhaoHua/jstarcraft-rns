@@ -5,15 +5,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.jstarcraft.rns.search.sort.SortConverter;
+
 /**
- * 搜索装载
+ * 搜索排序
  * 
  * @author Birdy
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })
-@Deprecated
-public @interface SearchDecode {
+public @interface SearchSort {
 
+    /** 排序转换器 */
+    Class<? extends SortConverter> clazz() default SortConverter.class;
+    
 }

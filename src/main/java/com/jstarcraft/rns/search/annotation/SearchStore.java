@@ -5,15 +5,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.jstarcraft.rns.search.store.StoreConverter;
+
 /**
- * 搜索装载
+ * 搜索存储
  * 
  * @author Birdy
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })
-@Deprecated
-public @interface SearchDecode {
+public @interface SearchStore {
+
+    /** 存储转换器 */
+    Class<? extends StoreConverter> clazz() default StoreConverter.class;
 
 }
