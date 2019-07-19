@@ -11,7 +11,6 @@ import org.apache.lucene.index.IndexableField;
 import com.jstarcraft.core.common.reflection.TypeUtility;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.search.annotation.SearchStore;
-import com.jstarcraft.rns.search.converter.SortConverter;
 import com.jstarcraft.rns.search.converter.StoreConverter;
 
 /**

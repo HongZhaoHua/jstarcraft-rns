@@ -26,8 +26,8 @@ public class EnumerationIndexConverter implements IndexConverter {
 
     @Override
     public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, String name, Type type, Object data) {
-        name = path + StringUtility.DOT + name;
         Collection<IndexableField> fields = new LinkedList<>();
+        name = path + StringUtility.DOT + name;
         fields.add(new StringField(name, data.toString(), Store.NO));
         return fields;
     }

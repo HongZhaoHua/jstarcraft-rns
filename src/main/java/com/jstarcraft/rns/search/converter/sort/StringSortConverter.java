@@ -26,8 +26,8 @@ public class StringSortConverter implements SortConverter {
 
     @Override
     public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, SortConverter>>> context, String path, Field field, SearchSort annotation, String name, Type type, Object data) {
-        name = path + StringUtility.DOT + name;
         Collection<IndexableField> fields = new LinkedList<>();
+        name = path + StringUtility.DOT + name;
         fields.add(new SortedDocValuesField(name, new BytesRef(data.toString())));
         return fields;
     }

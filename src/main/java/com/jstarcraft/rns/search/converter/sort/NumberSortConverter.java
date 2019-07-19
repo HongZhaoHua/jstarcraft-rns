@@ -15,6 +15,7 @@ import org.apache.lucene.index.IndexableField;
 import com.jstarcraft.core.common.reflection.TypeUtility;
 import com.jstarcraft.core.utility.ClassUtility;
 import com.jstarcraft.core.utility.KeyValue;
+import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.search.annotation.SearchSort;
 import com.jstarcraft.rns.search.converter.SortConverter;
 import com.jstarcraft.rns.search.exception.SearchException;
@@ -29,31 +30,31 @@ public class NumberSortConverter implements SortConverter {
 
     @Override
     public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, SortConverter>>> context, String path, Field field, SearchSort annotation, String name, Type type, Object data) {
+        Collection<IndexableField> fields = new LinkedList<>();
+        name = path + StringUtility.DOT + name;
         Class<?> clazz = TypeUtility.getRawType(type, null);
         clazz = ClassUtility.primitiveToWrapper(clazz);
-        if (Byte.class == clazz) {
-
+        if (Byte.class.isAssignableFrom(clazz)) {
+            fields.add(new NumericDocValuesField(name, (Byte) data));
+            return fields;
         }
-        if (Short.class == clazz) {
-
+        if (Short.class.isAssignableFrom(clazz)) {
+            fields.add(new NumericDocValuesField(name, (Short) data));
+            return fields;
         }
-        if (Integer.class == clazz) {
-            Collection<IndexableField> fields = new LinkedList<>();
+        if (Integer.class.isAssignableFrom(clazz)) {
             fields.add(new NumericDocValuesField(name, (Integer) data));
             return fields;
         }
-        if (Long.class == clazz) {
-            Collection<IndexableField> fields = new LinkedList<>();
+        if (Long.class.isAssignableFrom(clazz)) {
             fields.add(new NumericDocValuesField(name, (Long) data));
             return fields;
         }
-        if (Float.class == clazz) {
-            Collection<IndexableField> fields = new LinkedList<>();
+        if (Float.class.isAssignableFrom(clazz)) {
             fields.add(new FloatDocValuesField(name, (Float) data));
             return fields;
         }
-        if (Double.class == clazz) {
-            Collection<IndexableField> fields = new LinkedList<>();
+        if (Double.class.isAssignableFrom(clazz)) {
             fields.add(new DoubleDocValuesField(name, (Double) data));
             return fields;
         }

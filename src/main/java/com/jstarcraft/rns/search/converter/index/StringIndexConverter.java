@@ -12,6 +12,7 @@ import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexableField;
 
 import com.jstarcraft.core.utility.KeyValue;
+import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.search.annotation.SearchIndex;
 import com.jstarcraft.rns.search.annotation.SearchTerm;
 import com.jstarcraft.rns.search.converter.IndexConverter;
@@ -26,9 +27,10 @@ public class StringIndexConverter implements IndexConverter {
 
     @Override
     public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, String name, Type type, Object data) {
+        Collection<IndexableField> fields = new LinkedList<>();
+        name = path + StringUtility.DOT + name;
         FieldType configuration = new FieldType();
         configuration.setIndexOptions(IndexOptions.DOCS);
-
         if (annotation.analyze()) {
             configuration.setTokenized(true);
 
@@ -52,8 +54,6 @@ public class StringIndexConverter implements IndexConverter {
                 configuration.setStoreTermVectors(true);
             }
         }
-
-        Collection<IndexableField> fields = new LinkedList<>();
         fields.add(new org.apache.lucene.document.Field(name, (String) data, configuration));
         return fields;
     }

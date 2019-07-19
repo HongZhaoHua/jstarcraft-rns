@@ -29,16 +29,15 @@ public class BooleanSortConverter implements SortConverter {
 
     @Override
     public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, SortConverter>>> context, String path, Field field, SearchSort annotation, String name, Type type, Object data) {
+        Collection<IndexableField> fields = new LinkedList<>();
         name = path + StringUtility.DOT + name;
         Class<?> clazz = TypeUtility.getRawType(type, null);
         clazz = ClassUtility.primitiveToWrapper(clazz);
-        if (AtomicBoolean.class == clazz) {
-            Collection<IndexableField> fields = new LinkedList<>();
+        if (AtomicBoolean.class.isAssignableFrom(clazz)) {
             fields.add(new NumericDocValuesField(name, AtomicBoolean.class.cast(data).get() ? 1L : 0L));
             return fields;
         }
-        if (Boolean.class == clazz) {
-            Collection<IndexableField> fields = new LinkedList<>();
+        if (Boolean.class.isAssignableFrom(clazz)) {
             fields.add(new NumericDocValuesField(name, Boolean.class.cast(data) ? 1L : 0L));
             return fields;
         }
