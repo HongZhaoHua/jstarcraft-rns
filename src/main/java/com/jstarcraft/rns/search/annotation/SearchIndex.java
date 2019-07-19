@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.jstarcraft.rns.search.index.IndexConverter;
+import com.jstarcraft.rns.search.converter.IndexConverter;
 
 /**
  * 搜索索引

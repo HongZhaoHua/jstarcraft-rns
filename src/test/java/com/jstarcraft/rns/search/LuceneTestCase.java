@@ -37,8 +37,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.rns.search.hanlp.HanlpIndexAnalyzer;
-import com.jstarcraft.rns.search.hanlp.HanlpQueryAnalyzer;
+import com.jstarcraft.rns.search.analyzer.hanlp.HanlpIndexAnalyzer;
+import com.jstarcraft.rns.search.analyzer.hanlp.HanlpQueryAnalyzer;
 
 public class LuceneTestCase {
 

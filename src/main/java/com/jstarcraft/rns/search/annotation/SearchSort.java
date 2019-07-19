@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.jstarcraft.rns.search.sort.SortConverter;
+import com.jstarcraft.rns.search.converter.SortConverter;
 
 /**
  * 搜索排序
