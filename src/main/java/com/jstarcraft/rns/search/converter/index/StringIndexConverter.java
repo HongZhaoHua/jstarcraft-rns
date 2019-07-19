@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.lucene.document.FieldType;
-import org.apache.lucene.index.DocValuesType;
 import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexableField;
 
@@ -16,7 +15,6 @@ import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.search.annotation.SearchIndex;
 import com.jstarcraft.rns.search.annotation.SearchTerm;
 import com.jstarcraft.rns.search.converter.IndexConverter;
-import com.jstarcraft.rns.search.converter.SortConverter;
 
 /**
  * 字符串转换器

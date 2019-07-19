@@ -18,7 +18,6 @@ import com.jstarcraft.core.utility.ClassUtility;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.search.annotation.SearchIndex;
 import com.jstarcraft.rns.search.converter.IndexConverter;
-import com.jstarcraft.rns.search.converter.SortConverter;
 import com.jstarcraft.rns.search.exception.SearchException;
 
 /**

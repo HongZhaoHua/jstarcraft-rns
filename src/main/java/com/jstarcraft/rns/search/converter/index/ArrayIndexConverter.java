@@ -12,7 +12,6 @@ import com.jstarcraft.core.common.reflection.TypeUtility;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.search.annotation.SearchIndex;
 import com.jstarcraft.rns.search.converter.IndexConverter;
-import com.jstarcraft.rns.search.converter.SortConverter;
 
 /**
  * 数组转换器
