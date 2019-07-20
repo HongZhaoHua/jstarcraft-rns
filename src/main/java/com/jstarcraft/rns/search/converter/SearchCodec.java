@@ -61,11 +61,11 @@ import com.jstarcraft.rns.search.exception.SearchException;
 // TODO 以后会整合到Searcher
 public class SearchCodec<S, L> {
 
-    private static final EnumMap<Specification, IndexConverter> INDEX_CONVERTERS = new EnumMap<>(Specification.class);
+    public static final EnumMap<Specification, IndexConverter> INDEX_CONVERTERS = new EnumMap<>(Specification.class);
 
-    private static final EnumMap<Specification, SortConverter> SORT_CONVERTERS = new EnumMap<>(Specification.class);
+    public static final EnumMap<Specification, SortConverter> SORT_CONVERTERS = new EnumMap<>(Specification.class);
 
-    private static final EnumMap<Specification, StoreConverter> STORE_CONVERTERS = new EnumMap<>(Specification.class);
+    public static final EnumMap<Specification, StoreConverter> STORE_CONVERTERS = new EnumMap<>(Specification.class);
 
     static {
         INDEX_CONVERTERS.put(Specification.ARRAY, new ArrayIndexConverter());

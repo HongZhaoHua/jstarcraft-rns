@@ -35,6 +35,7 @@ public class MockComplexObject {
     @SearchStore
     private String lastName;
 
+    @SearchStore
     private String[] names;
 
     @SearchIndex
@@ -42,6 +43,7 @@ public class MockComplexObject {
     @SearchStore
     private int money;
 
+    @SearchStore
     private int[] currencies;
 
     @SearchIndex

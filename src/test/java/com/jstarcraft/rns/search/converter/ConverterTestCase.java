@@ -32,9 +32,9 @@ public class ConverterTestCase {
         SearchCodec<MockComplexObject, MockComplexObject> codec = new SearchCodec<>(MockComplexObject.class, MockComplexObject.class);
         int size = 100;
         Instant now = Instant.now();
-        MockComplexObject protoss = MockComplexObject.instanceOf(Integer.MIN_VALUE, "protoss", "jstarcraft", size, now, MockEnumeration.PROTOSS);
+        MockComplexObject protoss = MockComplexObject.instanceOf(-1, "protoss", "jstarcraft", size, now, MockEnumeration.PROTOSS);
         MockComplexObject terran = MockComplexObject.instanceOf(0, "terran", "jstarcraft", size, now, MockEnumeration.TERRAN);
-        MockComplexObject zerg = MockComplexObject.instanceOf(Integer.MAX_VALUE, "zerg", "jstarcraft", size, now, MockEnumeration.ZERG);
+        MockComplexObject zerg = MockComplexObject.instanceOf(1, "zerg", "jstarcraft", size, now, MockEnumeration.ZERG);
 
         indexWriter.addDocument(codec.encode(protoss));
         indexWriter.addDocument(codec.encode(terran));
@@ -43,36 +43,17 @@ public class ConverterTestCase {
         IndexReader indexReader = DirectoryReader.open(indexWriter);
 
         IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-        TopDocs search = indexSearcher.search(IntPoint.newExactQuery("id", 0), 1000);
+        TopDocs search = indexSearcher.search(IntPoint.newRangeQuery("id", -1, 1), 1000);
         for (ScoreDoc scoreDoc : search.scoreDocs) {
             Document document = indexReader.document(scoreDoc.doc);
 
             System.err.println(StringUtility.reflect(codec.decode(document)));
 
-            document.forEach((field) -> {
-                System.out.println(field.getClass());
-                System.out.println(field.name());
-            });
+//            document.forEach((field) -> {
+//                System.out.println(field.getClass());
+//                System.out.println(field.name());
+//            });
         }
-
-        TreeSet<String> tree = new TreeSet<>();
-        tree.add("lastName");
-        tree.add("id");
-        tree.add("firstName");
-        tree.add("names[0]");
-        tree.add("names[1]");
-        tree.add("list[0].name");
-        tree.add("list[0].id");
-        tree.add("list[1].name");
-        tree.add("list[1].id");
-        tree.add("list");
-        tree.add("lisu");
-
-        System.out.println(tree);
-        char last = "lisz".charAt("lisz".length() - 1);
-        last += 1;
-        System.out.println("list".substring(0, "list".length() - 1) + last);
-        System.out.println(tree.subSet("list", true, "list".substring(0, "list".length() - 1) + last, false));
 
         indexReader.close();
         indexWriter.close();
