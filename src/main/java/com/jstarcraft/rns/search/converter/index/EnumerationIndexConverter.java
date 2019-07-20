@@ -24,10 +24,9 @@ import com.jstarcraft.rns.search.converter.IndexConverter;
 public class EnumerationIndexConverter implements IndexConverter {
 
     @Override
-    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, String name, Type type, Object data) {
+    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, Type type, Object data) {
         Collection<IndexableField> fields = new LinkedList<>();
-        name = path  + name;
-        fields.add(new StringField(name, data.toString(), Store.NO));
+        fields.add(new StringField(path, data.toString(), Store.NO));
         return fields;
     }
 

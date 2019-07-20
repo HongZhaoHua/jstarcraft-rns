@@ -28,6 +28,6 @@ public interface SortConverter {
      * @param data
      * @return
      */
-    Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, SortConverter>>> context, String path, Field field, SearchSort annotation, String name, Type type, Object data);
+    Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, SortConverter>>> context, String path, Field field, SearchSort annotation, Type type, Object data);
 
 }

@@ -22,9 +22,8 @@ import com.jstarcraft.rns.search.converter.SortConverter;
 public class ObjectSortConverter implements SortConverter {
 
     @Override
-    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, SortConverter>>> context, String path, Field field, SearchSort annotation, String name, Type type, Object data) {
+    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, SortConverter>>> context, String path, Field field, SearchSort annotation, Type type, Object data) {
         Collection<IndexableField> fields = new LinkedList<>();
-        name = path  + name;
         // TODO Auto-generated method stub
         return null;
     }

@@ -19,7 +19,6 @@ import com.jstarcraft.core.codec.specification.CodecDefinition;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.common.reflection.Specification;
 import com.jstarcraft.core.utility.KeyValue;
-import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.search.annotation.SearchIndex;
 import com.jstarcraft.rns.search.annotation.SearchSort;
 import com.jstarcraft.rns.search.annotation.SearchStore;
@@ -221,12 +220,11 @@ public class SearchCodec<S, L> {
                 // TODO 此处代码可以优反射次数.
                 Field field = keyValue.getKey();
                 IndexConverter converter = keyValue.getValue();
-                String path = StringUtility.EMPTY;
                 SearchIndex annotation = field.getAnnotation(SearchIndex.class);
-                String name = field.getName();
+                String path = field.getName();
                 Type type = field.getGenericType();
                 Object data = field.get(instance);
-                for (IndexableField indexable : converter.convert(this.indexKeyValues, path, field, annotation, name, type, data)) {
+                for (IndexableField indexable : converter.convert(this.indexKeyValues, path, field, annotation, type, data)) {
                     document.add(indexable);
                 }
             }
@@ -234,12 +232,11 @@ public class SearchCodec<S, L> {
                 // TODO 此处代码可以优反射次数.
                 Field field = keyValue.getKey();
                 SortConverter converter = keyValue.getValue();
-                String path = StringUtility.EMPTY;
                 SearchSort annotation = field.getAnnotation(SearchSort.class);
-                String name = field.getName();
+                String path = field.getName();
                 Type type = field.getGenericType();
                 Object data = field.get(instance);
-                for (IndexableField indexable : converter.convert(this.sortKeyValues, path, field, annotation, name, type, data)) {
+                for (IndexableField indexable : converter.convert(this.sortKeyValues, path, field, annotation, type, data)) {
                     document.add(indexable);
                 }
             }
@@ -247,12 +244,11 @@ public class SearchCodec<S, L> {
                 // TODO 此处代码可以优反射次数.
                 Field field = keyValue.getKey();
                 StoreConverter converter = keyValue.getValue();
-                String path = StringUtility.EMPTY;
                 SearchStore annotation = field.getAnnotation(SearchStore.class);
-                String name = field.getName();
+                String path = field.getName();
                 Type type = field.getGenericType();
                 Object data = field.get(instance);
-                for (IndexableField indexable : converter.encode(this.storeKeyValues, path, field, annotation, name, type, data).values()) {
+                for (IndexableField indexable : converter.encode(this.storeKeyValues, path, field, annotation, type, data).values()) {
                     document.add(indexable);
                 }
             }
@@ -280,11 +276,10 @@ public class SearchCodec<S, L> {
                 // TODO 此处代码可以优反射次数.
                 Field field = keyValue.getKey();
                 StoreConverter converter = keyValue.getValue();
-                String path = StringUtility.EMPTY;
                 SearchStore annotation = field.getAnnotation(SearchStore.class);
-                String name = field.getName();
+                String path = field.getName();
                 Type type = field.getGenericType();
-                Object data = converter.decode(this.storeKeyValues, path, field, annotation, name, type, indexables);
+                Object data = converter.decode(this.storeKeyValues, path, field, annotation, type, indexables);
                 field.set(instance, data);
             }
             return instance;

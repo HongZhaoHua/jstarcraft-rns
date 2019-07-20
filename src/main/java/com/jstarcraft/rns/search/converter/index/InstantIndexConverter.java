@@ -17,7 +17,6 @@ import java.util.Map;
 import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.index.IndexableField;
 
-import com.jstarcraft.core.common.reflection.Specification;
 import com.jstarcraft.core.common.reflection.TypeUtility;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.search.annotation.SearchIndex;
@@ -33,18 +32,17 @@ import com.jstarcraft.rns.search.exception.SearchException;
 public class InstantIndexConverter implements IndexConverter {
 
     @Override
-    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, String name, Type type, Object data) {
+    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, Type type, Object data) {
         Collection<IndexableField> fields = new LinkedList<>();
-        name = path + name;
         Class<?> clazz = TypeUtility.getRawType(type, null);
         if (Instant.class.isAssignableFrom(clazz)) {
             Instant instant = (Instant) data;
-            fields.add(new LongPoint(name, instant.toEpochMilli()));
+            fields.add(new LongPoint(path, instant.toEpochMilli()));
             return fields;
         }
         if (Date.class.isAssignableFrom(clazz)) {
             Date instant = (Date) data;
-            fields.add(new LongPoint(name, instant.getTime()));
+            fields.add(new LongPoint(path, instant.getTime()));
             return fields;
         }
         if (LocalDate.class.isAssignableFrom(clazz)) {

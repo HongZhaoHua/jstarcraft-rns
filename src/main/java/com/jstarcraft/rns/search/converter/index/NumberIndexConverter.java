@@ -29,33 +29,32 @@ import com.jstarcraft.rns.search.exception.SearchException;
 public class NumberIndexConverter implements IndexConverter {
 
     @Override
-    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, String name, Type type, Object data) {
+    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, Type type, Object data) {
         Collection<IndexableField> fields = new LinkedList<>();
-        name = path  + name;
         Class<?> clazz = TypeUtility.getRawType(type, null);
         clazz = ClassUtility.primitiveToWrapper(clazz);
         if (Byte.class.isAssignableFrom(clazz)) {
-            fields.add(new IntPoint(name, (Byte) data));
+            fields.add(new IntPoint(path, (Byte) data));
             return fields;
         }
         if (Short.class.isAssignableFrom(clazz)) {
-            fields.add(new IntPoint(name, (Short) data));
+            fields.add(new IntPoint(path, (Short) data));
             return fields;
         }
         if (Integer.class.isAssignableFrom(clazz)) {
-            fields.add(new IntPoint(name, (Integer) data));
+            fields.add(new IntPoint(path, (Integer) data));
             return fields;
         }
         if (Long.class.isAssignableFrom(clazz)) {
-            fields.add(new LongPoint(name, (Long) data));
+            fields.add(new LongPoint(path, (Long) data));
             return fields;
         }
         if (Float.class.isAssignableFrom(clazz)) {
-            fields.add(new FloatPoint(name, (Float) data));
+            fields.add(new FloatPoint(path, (Float) data));
             return fields;
         }
         if (Double.class.isAssignableFrom(clazz)) {
-            fields.add(new DoublePoint(name, (Double) data));
+            fields.add(new DoublePoint(path, (Double) data));
             return fields;
         }
         throw new SearchException();

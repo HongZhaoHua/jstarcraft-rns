@@ -23,9 +23,8 @@ import com.jstarcraft.rns.search.converter.IndexConverter;
 public class CollectionIndexConverter implements IndexConverter {
 
     @Override
-    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, String name, Type type, Object data) {
+    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, Type type, Object data) {
         Collection<IndexableField> fields = new LinkedList<>();
-        name = path  + name;
         ParameterizedType parameterizedType = ParameterizedType.class.cast(type);
         Type[] types = parameterizedType.getActualTypeArguments();
         return null;

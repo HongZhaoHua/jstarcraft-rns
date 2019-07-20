@@ -28,33 +28,32 @@ import com.jstarcraft.rns.search.exception.SearchException;
 public class NumberSortConverter implements SortConverter {
 
     @Override
-    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, SortConverter>>> context, String path, Field field, SearchSort annotation, String name, Type type, Object data) {
+    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, SortConverter>>> context, String path, Field field, SearchSort annotation, Type type, Object data) {
         Collection<IndexableField> fields = new LinkedList<>();
-        name = path  + name;
         Class<?> clazz = TypeUtility.getRawType(type, null);
         clazz = ClassUtility.primitiveToWrapper(clazz);
         if (Byte.class.isAssignableFrom(clazz)) {
-            fields.add(new NumericDocValuesField(name, (Byte) data));
+            fields.add(new NumericDocValuesField(path, (Byte) data));
             return fields;
         }
         if (Short.class.isAssignableFrom(clazz)) {
-            fields.add(new NumericDocValuesField(name, (Short) data));
+            fields.add(new NumericDocValuesField(path, (Short) data));
             return fields;
         }
         if (Integer.class.isAssignableFrom(clazz)) {
-            fields.add(new NumericDocValuesField(name, (Integer) data));
+            fields.add(new NumericDocValuesField(path, (Integer) data));
             return fields;
         }
         if (Long.class.isAssignableFrom(clazz)) {
-            fields.add(new NumericDocValuesField(name, (Long) data));
+            fields.add(new NumericDocValuesField(path, (Long) data));
             return fields;
         }
         if (Float.class.isAssignableFrom(clazz)) {
-            fields.add(new FloatDocValuesField(name, (Float) data));
+            fields.add(new FloatDocValuesField(path, (Float) data));
             return fields;
         }
         if (Double.class.isAssignableFrom(clazz)) {
-            fields.add(new DoubleDocValuesField(name, (Double) data));
+            fields.add(new DoubleDocValuesField(path, (Double) data));
             return fields;
         }
         throw new SearchException();

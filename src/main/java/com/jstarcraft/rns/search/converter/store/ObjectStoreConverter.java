@@ -21,13 +21,13 @@ import com.jstarcraft.rns.search.converter.StoreConverter;
 public class ObjectStoreConverter implements StoreConverter {
 
     @Override
-    public NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, String name, Type type, Object data) {
+    public NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, Object data) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Object decode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, String name, Type type, NavigableMap<String, IndexableField> document) {
+    public Object decode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document) {
         // TODO Auto-generated method stub
         return null;
     }

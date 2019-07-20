@@ -23,7 +23,7 @@ import com.jstarcraft.rns.search.converter.StoreConverter;
 public class ArrayStoreConverter implements StoreConverter {
 
     @Override
-    public NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, String name, Type type, Object data) {
+    public NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, Object data) {
         Class<?> componentClass = null;
         Type componentType = null;
         if (type instanceof GenericArrayType) {
@@ -39,7 +39,7 @@ public class ArrayStoreConverter implements StoreConverter {
     }
 
     @Override
-    public Object decode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, String name, Type type, NavigableMap<String, IndexableField> document) {
+    public Object decode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document) {
         Class<?> componentClass = null;
         Type componentType = null;
         if (type instanceof GenericArrayType) {

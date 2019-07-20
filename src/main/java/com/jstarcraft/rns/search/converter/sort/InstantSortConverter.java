@@ -32,18 +32,17 @@ import com.jstarcraft.rns.search.exception.SearchException;
 public class InstantSortConverter implements SortConverter {
 
     @Override
-    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, SortConverter>>> context, String path, Field field, SearchSort annotation, String name, Type type, Object data) {
+    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, SortConverter>>> context, String path, Field field, SearchSort annotation, Type type, Object data) {
         Collection<IndexableField> fields = new LinkedList<>();
-        name = path  + name;
         Class<?> clazz = TypeUtility.getRawType(type, null);
         if (Instant.class.isAssignableFrom(clazz)) {
             Instant instant = (Instant) data;
-            fields.add(new NumericDocValuesField(name, instant.toEpochMilli()));
+            fields.add(new NumericDocValuesField(path, instant.toEpochMilli()));
             return fields;
         }
         if (Date.class.isAssignableFrom(clazz)) {
             Date instant = (Date) data;
-            fields.add(new NumericDocValuesField(name, instant.getTime()));
+            fields.add(new NumericDocValuesField(path, instant.getTime()));
             return fields;
         }
         if (LocalDate.class.isAssignableFrom(clazz)) {

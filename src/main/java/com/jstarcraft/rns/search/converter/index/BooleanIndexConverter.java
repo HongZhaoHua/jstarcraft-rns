@@ -27,17 +27,16 @@ import com.jstarcraft.rns.search.exception.SearchException;
 public class BooleanIndexConverter implements IndexConverter {
 
     @Override
-    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, String name, Type type, Object data) {
+    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, Type type, Object data) {
         Collection<IndexableField> fields = new LinkedList<>();
-        name = path  + name;
         Class<?> clazz = TypeUtility.getRawType(type, null);
         clazz = ClassUtility.primitiveToWrapper(clazz);
         if (AtomicBoolean.class.isAssignableFrom(clazz)) {
-            fields.add(new IntPoint(name, AtomicBoolean.class.cast(data).get() ? 1 : 0));
+            fields.add(new IntPoint(path, AtomicBoolean.class.cast(data).get() ? 1 : 0));
             return fields;
         }
         if (Boolean.class.isAssignableFrom(clazz)) {
-            fields.add(new IntPoint(name, Boolean.class.cast(data) ? 1 : 0));
+            fields.add(new IntPoint(path, Boolean.class.cast(data) ? 1 : 0));
             return fields;
         }
         throw new SearchException();
