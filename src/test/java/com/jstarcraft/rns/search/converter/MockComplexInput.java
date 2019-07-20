@@ -8,6 +8,10 @@ import java.util.LinkedList;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import com.jstarcraft.rns.search.annotation.SearchIndex;
+import com.jstarcraft.rns.search.annotation.SearchSort;
+import com.jstarcraft.rns.search.annotation.SearchStore;
+
 /**
  * 模仿复杂输入
  * 
@@ -16,18 +20,33 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public class MockComplexInput {
 
+    @SearchIndex
+    @SearchSort
+    @SearchStore
     private Integer id;
 
+    @SearchIndex
+    @SearchSort
+    @SearchStore
     private String firstName;
 
+    @SearchIndex
+    @SearchSort
+    @SearchStore
     private String lastName;
 
     private String[] names;
 
+    @SearchIndex
+    @SearchSort
+    @SearchStore
     private int money;
 
     private int[] currencies;
 
+    @SearchIndex
+    @SearchSort
+    @SearchStore
     private Instant instant;
 
     private MockEnumeration race;

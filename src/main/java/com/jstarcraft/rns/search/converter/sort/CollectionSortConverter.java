@@ -11,7 +11,6 @@ import java.util.Map;
 import org.apache.lucene.index.IndexableField;
 
 import com.jstarcraft.core.utility.KeyValue;
-import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.search.annotation.SearchSort;
 import com.jstarcraft.rns.search.converter.SortConverter;
 
@@ -26,7 +25,7 @@ public class CollectionSortConverter implements SortConverter {
     @Override
     public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, SortConverter>>> context, String path, Field field, SearchSort annotation, String name, Type type, Object data) {
         Collection<IndexableField> fields = new LinkedList<>();
-        name = path + StringUtility.DOT + name;
+        name = path  + name;
         ParameterizedType parameterizedType = ParameterizedType.class.cast(type);
         Type[] types = parameterizedType.getActualTypeArguments();
         return null;

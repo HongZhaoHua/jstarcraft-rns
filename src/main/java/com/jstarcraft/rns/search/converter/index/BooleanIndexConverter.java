@@ -14,7 +14,6 @@ import org.apache.lucene.index.IndexableField;
 import com.jstarcraft.core.common.reflection.TypeUtility;
 import com.jstarcraft.core.utility.ClassUtility;
 import com.jstarcraft.core.utility.KeyValue;
-import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.search.annotation.SearchIndex;
 import com.jstarcraft.rns.search.converter.IndexConverter;
 import com.jstarcraft.rns.search.exception.SearchException;
@@ -30,7 +29,7 @@ public class BooleanIndexConverter implements IndexConverter {
     @Override
     public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, String name, Type type, Object data) {
         Collection<IndexableField> fields = new LinkedList<>();
-        name = path + StringUtility.DOT + name;
+        name = path  + name;
         Class<?> clazz = TypeUtility.getRawType(type, null);
         clazz = ClassUtility.primitiveToWrapper(clazz);
         if (AtomicBoolean.class.isAssignableFrom(clazz)) {

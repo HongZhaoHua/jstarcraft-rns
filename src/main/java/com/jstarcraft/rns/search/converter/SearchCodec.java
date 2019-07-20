@@ -118,7 +118,6 @@ public class SearchCodec<S, L> {
         List<KeyValue<Field, StoreConverter>> storeKeyValues = new LinkedList<>();
 
         ReflectionUtility.doWithFields(definition.getType(), (field) -> {
-            // TODO 检查是否存在自定义转换器
             ReflectionUtility.makeAccessible(field);
             Type type = field.getGenericType();
             Specification specification = Specification.getSpecification(type);
@@ -172,15 +171,22 @@ public class SearchCodec<S, L> {
     public SearchCodec(Class<S> saveClass, Class<L> loadClass) {
         CodecDefinition saveDefinition = CodecDefinition.instanceOf(saveClass);
         CodecDefinition loadDefinition = CodecDefinition.instanceOf(loadClass);
-
         this.indexKeyValues = new HashMap<>();
         this.sortKeyValues = new HashMap<>();
         this.storeKeyValues = new HashMap<>();
 
         for (ClassDefinition classDefinition : saveDefinition.getClassDefinitions()) {
+            // 预定义的规范类型不需要分析
+            if (Specification.type2Specifitions.containsKey(classDefinition.getType())) {
+                continue;
+            }
             parse(classDefinition);
         }
         for (ClassDefinition classDefinition : loadDefinition.getClassDefinitions()) {
+            // 预定义的规范类型不需要分析
+            if (Specification.type2Specifitions.containsKey(classDefinition.getType())) {
+                continue;
+            }
             parse(classDefinition);
         }
 
