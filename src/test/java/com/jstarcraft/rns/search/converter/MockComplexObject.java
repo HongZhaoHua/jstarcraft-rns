@@ -13,12 +13,12 @@ import com.jstarcraft.rns.search.annotation.SearchSort;
 import com.jstarcraft.rns.search.annotation.SearchStore;
 
 /**
- * 模仿复杂输入
+ * 模仿复杂对象
  * 
  * @author Birdy
  *
  */
-public class MockComplexInput {
+public class MockComplexObject {
 
     @SearchIndex
     @SearchSort
@@ -49,15 +49,18 @@ public class MockComplexInput {
     @SearchStore
     private Instant instant;
 
+    @SearchIndex
+    @SearchSort
+    @SearchStore
     private MockEnumeration race;
 
     private Type type;
 
-    private LinkedList<MockSimpleInput> list;
+    private LinkedList<MockSimpleObject> list;
 
-    private HashMap<Integer, MockSimpleInput> map;
+    private HashMap<Integer, MockSimpleObject> map;
 
-    public MockComplexInput() {
+    public MockComplexObject() {
     }
 
     public Integer getId() {
@@ -100,7 +103,7 @@ public class MockComplexInput {
             return false;
         if (getClass() != object.getClass())
             return false;
-        MockComplexInput that = (MockComplexInput) object;
+        MockComplexObject that = (MockComplexObject) object;
         EqualsBuilder equal = new EqualsBuilder();
         equal.append(this.id, that.id);
         equal.append(this.firstName, that.firstName);
@@ -129,8 +132,8 @@ public class MockComplexInput {
         return hash.toHashCode();
     }
 
-    public static MockComplexInput instanceOf(Integer id, String firstName, String lastName, int money, Instant instant, MockEnumeration race) {
-        MockComplexInput instance = new MockComplexInput();
+    public static MockComplexObject instanceOf(Integer id, String firstName, String lastName, int money, Instant instant, MockEnumeration race) {
+        MockComplexObject instance = new MockComplexObject();
         instance.id = id;
         instance.firstName = firstName;
         instance.lastName = lastName;
@@ -141,9 +144,9 @@ public class MockComplexInput {
         instance.race = race;
         instance.list = new LinkedList<>();
         instance.map = new HashMap<>();
-        instance.type = MockComplexInput.class;
+        instance.type = MockComplexObject.class;
         for (int index = 0; index < money; index++) {
-            MockSimpleInput object = MockSimpleInput.instanceOf(index, lastName);
+            MockSimpleObject object = MockSimpleObject.instanceOf(index, lastName);
             instance.list.add(object);
             instance.map.put(index, object);
         }

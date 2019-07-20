@@ -5,6 +5,7 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
 
 import org.apache.lucene.index.IndexableField;
 
@@ -22,7 +23,7 @@ import com.jstarcraft.rns.search.converter.StoreConverter;
 public class ArrayStoreConverter implements StoreConverter {
 
     @Override
-    public Iterable<IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, String name, Type type, Object data) {
+    public NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, String name, Type type, Object data) {
         Class<?> componentClass = null;
         Type componentType = null;
         if (type instanceof GenericArrayType) {
@@ -38,7 +39,7 @@ public class ArrayStoreConverter implements StoreConverter {
     }
 
     @Override
-    public Object decode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, String name, Type type, Iterable<IndexableField> document) {
+    public Object decode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, String name, Type type, NavigableMap<String, IndexableField> document) {
         Class<?> componentClass = null;
         Type componentType = null;
         if (type instanceof GenericArrayType) {

@@ -8,12 +8,12 @@ import com.jstarcraft.rns.search.annotation.SearchSort;
 import com.jstarcraft.rns.search.annotation.SearchStore;
 
 /**
- * 模仿简单输入
+ * 模仿简单对象
  * 
  * @author Birdy
  *
  */
-public class MockSimpleInput {
+public class MockSimpleObject {
 
     @SearchIndex
     @SearchSort
@@ -49,7 +49,7 @@ public class MockSimpleInput {
             return false;
         if (getClass() != object.getClass())
             return false;
-        MockSimpleInput that = (MockSimpleInput) object;
+        MockSimpleObject that = (MockSimpleObject) object;
         EqualsBuilder equal = new EqualsBuilder();
         equal.append(this.id, that.id);
         equal.append(this.name, that.name);
@@ -64,8 +64,8 @@ public class MockSimpleInput {
         return hash.toHashCode();
     }
 
-    public static MockSimpleInput instanceOf(long id, String name) {
-        MockSimpleInput instance = new MockSimpleInput();
+    public static MockSimpleObject instanceOf(long id, String name) {
+        MockSimpleObject instance = new MockSimpleObject();
         instance.id = id;
         instance.name = name;
         return instance;

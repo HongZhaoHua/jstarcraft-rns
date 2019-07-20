@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
@@ -250,7 +252,7 @@ public class SearchCodec<S, L> {
                 String name = field.getName();
                 Type type = field.getGenericType();
                 Object data = field.get(instance);
-                for (IndexableField indexable : converter.encode(this.storeKeyValues, path, field, annotation, name, type, data)) {
+                for (IndexableField indexable : converter.encode(this.storeKeyValues, path, field, annotation, name, type, data).values()) {
                     document.add(indexable);
                 }
             }
@@ -269,6 +271,10 @@ public class SearchCodec<S, L> {
      */
     public L decode(Document document) {
         try {
+            NavigableMap<String, IndexableField> indexables = new TreeMap<>();
+            for (IndexableField indexable : document) {
+                indexables.put(indexable.name(), indexable);
+            }
             L instance = (L) loadDefinition.getInstance();
             for (KeyValue<Field, StoreConverter> keyValue : this.storeKeyValues.get(this.loadDefinition.getType())) {
                 // TODO 此处代码可以优反射次数.
@@ -278,7 +284,7 @@ public class SearchCodec<S, L> {
                 SearchStore annotation = field.getAnnotation(SearchStore.class);
                 String name = field.getName();
                 Type type = field.getGenericType();
-                Object data = converter.decode(this.storeKeyValues, path, field, annotation, name, type, document);
+                Object data = converter.decode(this.storeKeyValues, path, field, annotation, name, type, indexables);
                 field.set(instance, data);
             }
             return instance;
