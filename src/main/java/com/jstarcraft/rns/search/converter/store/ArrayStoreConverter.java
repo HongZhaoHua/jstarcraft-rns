@@ -12,7 +12,6 @@ import java.util.TreeMap;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.index.IndexableField;
 
-import com.jstarcraft.core.codec.csv.converter.CsvConverter;
 import com.jstarcraft.core.common.reflection.Specification;
 import com.jstarcraft.core.common.reflection.TypeUtility;
 import com.jstarcraft.core.utility.KeyValue;
@@ -21,7 +20,7 @@ import com.jstarcraft.rns.search.converter.SearchCodec;
 import com.jstarcraft.rns.search.converter.StoreConverter;
 
 /**
- * 数组转换器
+ * 数组存储转换器
  * 
  * @author Birdy
  *

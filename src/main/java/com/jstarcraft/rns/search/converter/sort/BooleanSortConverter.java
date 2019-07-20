@@ -19,7 +19,7 @@ import com.jstarcraft.rns.search.converter.SortConverter;
 import com.jstarcraft.rns.search.exception.SearchException;
 
 /**
- * 布尔转换器
+ * 布尔排序转换器
  * 
  * @author Birdy
  *

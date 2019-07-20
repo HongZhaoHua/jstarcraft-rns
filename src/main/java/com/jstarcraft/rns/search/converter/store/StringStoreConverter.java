@@ -15,7 +15,7 @@ import com.jstarcraft.rns.search.annotation.SearchStore;
 import com.jstarcraft.rns.search.converter.StoreConverter;
 
 /**
- * 字符串转换器
+ * 字符串存储转换器
  * 
  * @author Birdy
  *

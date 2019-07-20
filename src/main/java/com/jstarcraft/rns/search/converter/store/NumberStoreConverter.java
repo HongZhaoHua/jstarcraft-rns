@@ -18,7 +18,7 @@ import com.jstarcraft.rns.search.converter.StoreConverter;
 import com.jstarcraft.rns.search.exception.SearchException;
 
 /**
- * 数值转换器
+ * 数值存储转换器
  * 
  * @author Birdy
  *

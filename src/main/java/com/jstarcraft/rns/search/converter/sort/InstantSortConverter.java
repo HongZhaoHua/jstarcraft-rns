@@ -24,7 +24,7 @@ import com.jstarcraft.rns.search.converter.SortConverter;
 import com.jstarcraft.rns.search.exception.SearchException;
 
 /**
- * 时间转换器
+ * 时间排序转换器
  * 
  * @author Birdy
  *

@@ -16,7 +16,7 @@ import com.jstarcraft.rns.search.annotation.SearchSort;
 import com.jstarcraft.rns.search.converter.SortConverter;
 
 /**
- * 字符串转换器
+ * 字符排序串转换器
  * 
  * @author Birdy
  *
