@@ -5,15 +5,13 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.lucene.index.IndexableField;
 
 import com.jstarcraft.core.common.reflection.TypeUtility;
-import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.search.annotation.SearchIndex;
 import com.jstarcraft.rns.search.converter.IndexConverter;
+import com.jstarcraft.rns.search.converter.SearchContext;
 
 /**
  * 数组索引转换器
@@ -24,7 +22,7 @@ import com.jstarcraft.rns.search.converter.IndexConverter;
 public class ArrayIndexConverter implements IndexConverter {
 
     @Override
-    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, Type type, Object data) {
+    public Iterable<IndexableField> convert(SearchContext context, String path, Field field, SearchIndex annotation, Type type, Object data) {
         Collection<IndexableField> fields = new LinkedList<>();
         Class<?> componentClass = null;
         Type componentType = null;

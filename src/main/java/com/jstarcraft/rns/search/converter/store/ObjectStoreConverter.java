@@ -2,8 +2,6 @@ package com.jstarcraft.rns.search.converter.store;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
@@ -13,6 +11,7 @@ import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.common.reflection.TypeUtility;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.search.annotation.SearchStore;
+import com.jstarcraft.rns.search.converter.SearchContext;
 import com.jstarcraft.rns.search.converter.StoreConverter;
 import com.jstarcraft.rns.search.exception.SearchException;
 
@@ -25,7 +24,7 @@ import com.jstarcraft.rns.search.exception.SearchException;
 public class ObjectStoreConverter implements StoreConverter {
 
     @Override
-    public Object decode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document) {
+    public Object decode(SearchContext context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document) {
         String from = path;
         char character = path.charAt(path.length() - 1);
         character++;
@@ -35,8 +34,8 @@ public class ObjectStoreConverter implements StoreConverter {
 
         // TODO 此处需要代码重构
         try {
-            Object instance = ReflectionUtility.getInstance(clazz);
-            for (KeyValue<Field, StoreConverter> keyValue : context.get(clazz)) {
+            Object instance = context.getInstance(clazz);
+            for (KeyValue<Field, StoreConverter> keyValue : context.getStoreKeyValues(clazz)) {
                 // TODO 此处代码可以优反射次数.
                 field = keyValue.getKey();
                 StoreConverter converter = keyValue.getValue();
@@ -54,13 +53,13 @@ public class ObjectStoreConverter implements StoreConverter {
     }
 
     @Override
-    public NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, Object instance) {
+    public NavigableMap<String, IndexableField> encode(SearchContext context, String path, Field field, SearchStore annotation, Type type, Object instance) {
         NavigableMap<String, IndexableField> indexables = new TreeMap<>();
         Class<?> clazz = TypeUtility.getRawType(type, null);
 
         // TODO 此处需要代码重构
         try {
-            for (KeyValue<Field, StoreConverter> keyValue : context.get(clazz)) {
+            for (KeyValue<Field, StoreConverter> keyValue : context.getStoreKeyValues(clazz)) {
                 // TODO 此处代码可以优反射次数.
                 field = keyValue.getKey();
                 StoreConverter converter = keyValue.getValue();

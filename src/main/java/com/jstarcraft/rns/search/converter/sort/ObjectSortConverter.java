@@ -4,13 +4,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.lucene.index.IndexableField;
 
-import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.search.annotation.SearchSort;
+import com.jstarcraft.rns.search.converter.SearchContext;
 import com.jstarcraft.rns.search.converter.SortConverter;
 
 /**
@@ -22,7 +20,7 @@ import com.jstarcraft.rns.search.converter.SortConverter;
 public class ObjectSortConverter implements SortConverter {
 
     @Override
-    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, SortConverter>>> context, String path, Field field, SearchSort annotation, Type type, Object data) {
+    public Iterable<IndexableField> convert(SearchContext context, String path, Field field, SearchSort annotation, Type type, Object data) {
         Collection<IndexableField> fields = new LinkedList<>();
         // TODO Auto-generated method stub
         return null;

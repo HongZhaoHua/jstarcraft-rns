@@ -4,14 +4,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.lucene.index.IndexableField;
 
-import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.search.annotation.SearchIndex;
 import com.jstarcraft.rns.search.converter.IndexConverter;
+import com.jstarcraft.rns.search.converter.SearchContext;
 
 /**
  * 对象索引转换器
@@ -22,7 +20,7 @@ import com.jstarcraft.rns.search.converter.IndexConverter;
 public class ObjectIndexConverter implements IndexConverter {
 
     @Override
-    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, Type type, Object data) {
+    public Iterable<IndexableField> convert(SearchContext context, String path, Field field, SearchIndex annotation, Type type, Object data) {
         Collection<IndexableField> fields = new LinkedList<>();
         // TODO Auto-generated method stub
         return null;

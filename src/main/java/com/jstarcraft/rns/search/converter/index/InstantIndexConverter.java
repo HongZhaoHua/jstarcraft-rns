@@ -11,16 +11,14 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.index.IndexableField;
 
 import com.jstarcraft.core.common.reflection.TypeUtility;
-import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.search.annotation.SearchIndex;
 import com.jstarcraft.rns.search.converter.IndexConverter;
+import com.jstarcraft.rns.search.converter.SearchContext;
 import com.jstarcraft.rns.search.exception.SearchException;
 
 /**
@@ -32,7 +30,7 @@ import com.jstarcraft.rns.search.exception.SearchException;
 public class InstantIndexConverter implements IndexConverter {
 
     @Override
-    public Iterable<IndexableField> convert(Map<Class<?>, List<KeyValue<Field, IndexConverter>>> context, String path, Field field, SearchIndex annotation, Type type, Object data) {
+    public Iterable<IndexableField> convert(SearchContext context, String path, Field field, SearchIndex annotation, Type type, Object data) {
         Collection<IndexableField> fields = new LinkedList<>();
         Class<?> clazz = TypeUtility.getRawType(type, null);
         if (Instant.class.isAssignableFrom(clazz)) {
