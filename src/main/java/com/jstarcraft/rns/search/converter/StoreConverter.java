@@ -20,20 +20,6 @@ import com.jstarcraft.rns.search.annotation.SearchStore;
 public interface StoreConverter {
 
     /**
-     * 编码存储
-     * 
-     * @param context
-     * @param path
-     * @param field
-     * @param annotation
-     * @param name
-     * @param type
-     * @param data
-     * @return
-     */
-    NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, Object data);
-
-    /**
      * 解码存储
      * 
      * @param context
@@ -46,5 +32,19 @@ public interface StoreConverter {
      * @return
      */
     Object decode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document);
+
+    /**
+     * 编码存储
+     * 
+     * @param context
+     * @param path
+     * @param field
+     * @param annotation
+     * @param name
+     * @param type
+     * @param data
+     * @return
+     */
+    NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, Object data);
 
 }

@@ -25,6 +25,7 @@ import com.jstarcraft.rns.search.converter.StoreConverter;
  * @author Birdy
  *
  */
+// TODO 代码需要重构,避免字符串拼接.
 public class ArrayStoreConverter implements StoreConverter {
 
     @Override

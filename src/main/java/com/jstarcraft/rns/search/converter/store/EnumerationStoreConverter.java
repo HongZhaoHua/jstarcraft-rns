@@ -24,13 +24,6 @@ import com.jstarcraft.rns.search.converter.StoreConverter;
 public class EnumerationStoreConverter implements StoreConverter {
 
     @Override
-    public NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, Object data) {
-        NavigableMap<String, IndexableField> indexables = new TreeMap<>();
-        indexables.put(path, new StoredField(path, data.toString()));
-        return indexables;
-    }
-
-    @Override
     public Object decode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document) {
         String from = path;
         char character = path.charAt(path.length() - 1);
@@ -40,6 +33,13 @@ public class EnumerationStoreConverter implements StoreConverter {
         IndexableField indexable = document.firstEntry().getValue();
         Class clazz = TypeUtility.getRawType(type, null);
         return Enum.valueOf(clazz, indexable.stringValue());
+    }
+
+    @Override
+    public NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, Object data) {
+        NavigableMap<String, IndexableField> indexables = new TreeMap<>();
+        indexables.put(path, new StoredField(path, data.toString()));
+        return indexables;
     }
 
 }

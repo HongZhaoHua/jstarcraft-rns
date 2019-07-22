@@ -33,18 +33,21 @@ import com.jstarcraft.rns.search.exception.SearchException;
 public class InstantStoreConverter implements StoreConverter {
 
     @Override
-    public NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, Object data) {
-        NavigableMap<String, IndexableField> indexables = new TreeMap<>();
+    public Object decode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document) {
+        String from = path;
+        char character = path.charAt(path.length() - 1);
+        character++;
+        String to = path.substring(0, path.length() - 1) + character;
+        document = document.subMap(from, true, to, false);
+        IndexableField indexable = document.firstEntry().getValue();
         Class<?> clazz = TypeUtility.getRawType(type, null);
+        clazz = ClassUtility.primitiveToWrapper(clazz);
+        Number number = indexable.numericValue();
         if (Instant.class.isAssignableFrom(clazz)) {
-            Instant instant = (Instant) data;
-            indexables.put(path, new StoredField(path, instant.toEpochMilli()));
-            return indexables;
+            return Instant.ofEpochMilli(number.longValue());
         }
         if (Date.class.isAssignableFrom(clazz)) {
-            Date instant = (Date) data;
-            indexables.put(path, new StoredField(path, instant.getTime()));
-            return indexables;
+            return new Date(number.longValue());
         }
         if (LocalDate.class.isAssignableFrom(clazz)) {
 
@@ -65,21 +68,18 @@ public class InstantStoreConverter implements StoreConverter {
     }
 
     @Override
-    public Object decode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document) {
-        String from = path;
-        char character = path.charAt(path.length() - 1);
-        character++;
-        String to = path.substring(0, path.length() - 1) + character;
-        document = document.subMap(from, true, to, false);
-        IndexableField indexable = document.firstEntry().getValue();
+    public NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, Object data) {
+        NavigableMap<String, IndexableField> indexables = new TreeMap<>();
         Class<?> clazz = TypeUtility.getRawType(type, null);
-        clazz = ClassUtility.primitiveToWrapper(clazz);
-        Number number = indexable.numericValue();
         if (Instant.class.isAssignableFrom(clazz)) {
-            return Instant.ofEpochMilli(number.longValue());
+            Instant instant = (Instant) data;
+            indexables.put(path, new StoredField(path, instant.toEpochMilli()));
+            return indexables;
         }
         if (Date.class.isAssignableFrom(clazz)) {
-            return new Date(number.longValue());
+            Date instant = (Date) data;
+            indexables.put(path, new StoredField(path, instant.getTime()));
+            return indexables;
         }
         if (LocalDate.class.isAssignableFrom(clazz)) {
 

@@ -1,7 +1,6 @@
 package com.jstarcraft.rns.search.converter;
 
 import java.time.Instant;
-import java.util.TreeSet;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;

@@ -26,38 +26,6 @@ import com.jstarcraft.rns.search.exception.SearchException;
 public class NumberStoreConverter implements StoreConverter {
 
     @Override
-    public NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, Object data) {
-        NavigableMap<String, IndexableField> indexables = new TreeMap<>();
-        Class<?> clazz = TypeUtility.getRawType(type, null);
-        clazz = ClassUtility.primitiveToWrapper(clazz);
-        if (Byte.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (Byte) data));
-            return indexables;
-        }
-        if (Short.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (Short) data));
-            return indexables;
-        }
-        if (Integer.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (Integer) data));
-            return indexables;
-        }
-        if (Long.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (Long) data));
-            return indexables;
-        }
-        if (Float.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (Float) data));
-            return indexables;
-        }
-        if (Double.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (Double) data));
-            return indexables;
-        }
-        throw new SearchException();
-    }
-
-    @Override
     public Object decode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document) {
         String from = path;
         char character = path.charAt(path.length() - 1);
@@ -85,6 +53,38 @@ public class NumberStoreConverter implements StoreConverter {
         }
         if (Double.class.isAssignableFrom(clazz)) {
             return number.doubleValue();
+        }
+        throw new SearchException();
+    }
+
+    @Override
+    public NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, Object data) {
+        NavigableMap<String, IndexableField> indexables = new TreeMap<>();
+        Class<?> clazz = TypeUtility.getRawType(type, null);
+        clazz = ClassUtility.primitiveToWrapper(clazz);
+        if (Byte.class.isAssignableFrom(clazz)) {
+            indexables.put(path, new StoredField(path, (Byte) data));
+            return indexables;
+        }
+        if (Short.class.isAssignableFrom(clazz)) {
+            indexables.put(path, new StoredField(path, (Short) data));
+            return indexables;
+        }
+        if (Integer.class.isAssignableFrom(clazz)) {
+            indexables.put(path, new StoredField(path, (Integer) data));
+            return indexables;
+        }
+        if (Long.class.isAssignableFrom(clazz)) {
+            indexables.put(path, new StoredField(path, (Long) data));
+            return indexables;
+        }
+        if (Float.class.isAssignableFrom(clazz)) {
+            indexables.put(path, new StoredField(path, (Float) data));
+            return indexables;
+        }
+        if (Double.class.isAssignableFrom(clazz)) {
+            indexables.put(path, new StoredField(path, (Double) data));
+            return indexables;
         }
         throw new SearchException();
     }

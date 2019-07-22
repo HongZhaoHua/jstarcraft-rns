@@ -1,6 +1,5 @@
 package com.jstarcraft.rns.search.converter;
 
-import java.lang.reflect.Type;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -55,8 +54,6 @@ public class MockComplexObject {
     @SearchSort
     @SearchStore
     private MockEnumeration race;
-
-    private Type type;
 
     private LinkedList<MockSimpleObject> list;
 
@@ -115,7 +112,6 @@ public class MockComplexObject {
         equal.append(this.currencies, that.currencies);
         equal.append(this.instant, that.instant);
         equal.append(this.race, that.race);
-        equal.append(this.type, that.type);
         return equal.isEquals();
     }
 
@@ -130,7 +126,6 @@ public class MockComplexObject {
         hash.append(currencies);
         hash.append(instant);
         hash.append(race);
-        hash.append(type);
         return hash.toHashCode();
     }
 
@@ -146,7 +141,6 @@ public class MockComplexObject {
         instance.race = race;
         instance.list = new LinkedList<>();
         instance.map = new HashMap<>();
-        instance.type = MockComplexObject.class;
         for (int index = 0; index < money; index++) {
             MockSimpleObject object = MockSimpleObject.instanceOf(index, lastName);
             instance.list.add(object);
