@@ -29,32 +29,6 @@ import com.jstarcraft.rns.search.converter.StoreConverter;
 public class ArrayStoreConverter implements StoreConverter {
 
     @Override
-    public NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, Object data) {
-        NavigableMap<String, IndexableField> indexables = new TreeMap<>();
-        Class<?> componentClass = null;
-        Type componentType = null;
-        if (type instanceof GenericArrayType) {
-            GenericArrayType genericArrayType = GenericArrayType.class.cast(type);
-            componentType = genericArrayType.getGenericComponentType();
-            componentClass = TypeUtility.getRawType(componentType, null);
-        } else {
-            Class<?> clazz = TypeUtility.getRawType(type, null);
-            componentType = clazz.getComponentType();
-            componentClass = clazz.getComponentType();
-        }
-        Specification specification = Specification.getSpecification(componentClass);
-        StoreConverter converter = SearchCodec.STORE_CONVERTERS.get(specification);
-        int size = Array.getLength(data);
-        for (int index = 0; index < size; index++) {
-            Object element = Array.get(data, index);
-            indexables.putAll(converter.encode(context, path + "[" + index + "]", field, annotation, componentClass, element));
-        }
-        IndexableField indexable = new StoredField(path + ".size", size);
-        indexables.put(path + ".size", indexable);
-        return indexables;
-    }
-
-    @Override
     public Object decode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document) {
         String from = path;
         char character = path.charAt(path.length() - 1);
@@ -72,16 +46,42 @@ public class ArrayStoreConverter implements StoreConverter {
             componentType = clazz.getComponentType();
             componentClass = clazz.getComponentType();
         }
+        Specification specification = Specification.getSpecification(componentClass);
+        StoreConverter converter = SearchCodec.STORE_CONVERTERS.get(specification);
         IndexableField indexable = document.get(path + ".size");
         int size = indexable.numericValue().intValue();
         Object array = Array.newInstance(componentClass, size);
-        Specification specification = Specification.getSpecification(componentClass);
-        StoreConverter converter = SearchCodec.STORE_CONVERTERS.get(specification);
         for (int index = 0; index < size; index++) {
-            Object element = converter.decode(context, path + "[" + index + "]", field, annotation, componentClass, document);
+            Object element = converter.decode(context, path + "[" + index + "]", field, annotation, componentType, document);
             Array.set(array, index, element);
         }
         return array;
+    }
+
+    @Override
+    public NavigableMap<String, IndexableField> encode(Map<Class<?>, List<KeyValue<Field, StoreConverter>>> context, String path, Field field, SearchStore annotation, Type type, Object data) {
+        NavigableMap<String, IndexableField> indexables = new TreeMap<>();
+        Class<?> componentClass = null;
+        Type componentType = null;
+        if (type instanceof GenericArrayType) {
+            GenericArrayType genericArrayType = GenericArrayType.class.cast(type);
+            componentType = genericArrayType.getGenericComponentType();
+            componentClass = TypeUtility.getRawType(componentType, null);
+        } else {
+            Class<?> clazz = TypeUtility.getRawType(type, null);
+            componentType = clazz.getComponentType();
+            componentClass = clazz.getComponentType();
+        }
+        Specification specification = Specification.getSpecification(componentClass);
+        StoreConverter converter = SearchCodec.STORE_CONVERTERS.get(specification);
+        int size = Array.getLength(data);
+        IndexableField indexable = new StoredField(path + ".size", size);
+        indexables.put(path + ".size", indexable);
+        for (int index = 0; index < size; index++) {
+            Object element = Array.get(data, index);
+            indexables.putAll(converter.encode(context, path + "[" + index + "]", field, annotation, componentType, element));
+        }
+        return indexables;
     }
 
 }

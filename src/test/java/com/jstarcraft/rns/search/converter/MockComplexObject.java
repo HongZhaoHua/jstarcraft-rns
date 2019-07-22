@@ -55,6 +55,7 @@ public class MockComplexObject {
     @SearchStore
     private MockEnumeration race;
 
+    @SearchStore
     private LinkedList<MockSimpleObject> list;
 
     private HashMap<Integer, MockSimpleObject> map;

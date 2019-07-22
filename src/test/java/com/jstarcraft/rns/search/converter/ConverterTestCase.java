@@ -45,13 +45,11 @@ public class ConverterTestCase {
         TopDocs search = indexSearcher.search(IntPoint.newRangeQuery("id", -1, 1), 1000);
         for (ScoreDoc scoreDoc : search.scoreDocs) {
             Document document = indexReader.document(scoreDoc.doc);
-
-            System.err.println(StringUtility.reflect(codec.decode(document)));
-
-//            document.forEach((field) -> {
-//                System.out.println(field.getClass());
-//                System.out.println(field.name());
-//            });
+            document.forEach((field) -> {
+                System.out.println(field.getClass());
+                System.out.println(field.name());
+            });
+            System.out.println(StringUtility.reflect(codec.decode(document)));
         }
 
         indexReader.close();

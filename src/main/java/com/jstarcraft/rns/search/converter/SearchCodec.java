@@ -208,6 +208,36 @@ public class SearchCodec<S, L> {
     }
 
     /**
+     * 解码
+     * 
+     * @param document
+     * @return
+     */
+    public L decode(Document document) {
+        try {
+            NavigableMap<String, IndexableField> indexables = new TreeMap<>();
+            for (IndexableField indexable : document) {
+                indexables.put(indexable.name(), indexable);
+            }
+            L instance = (L) loadDefinition.getInstance();
+            for (KeyValue<Field, StoreConverter> keyValue : this.storeKeyValues.get(this.loadDefinition.getType())) {
+                // TODO 此处代码可以优反射次数.
+                Field field = keyValue.getKey();
+                StoreConverter converter = keyValue.getValue();
+                SearchStore annotation = field.getAnnotation(SearchStore.class);
+                String path = field.getName();
+                Type type = field.getGenericType();
+                Object data = converter.decode(this.storeKeyValues, path, field, annotation, type, indexables);
+                field.set(instance, data);
+            }
+            return instance;
+        } catch (Exception exception) {
+            // TODO
+            throw new SearchException(exception);
+        }
+    }
+
+    /**
      * 编码
      * 
      * @param instance
@@ -253,36 +283,6 @@ public class SearchCodec<S, L> {
                 }
             }
             return document;
-        } catch (Exception exception) {
-            // TODO
-            throw new SearchException(exception);
-        }
-    }
-
-    /**
-     * 解码
-     * 
-     * @param document
-     * @return
-     */
-    public L decode(Document document) {
-        try {
-            NavigableMap<String, IndexableField> indexables = new TreeMap<>();
-            for (IndexableField indexable : document) {
-                indexables.put(indexable.name(), indexable);
-            }
-            L instance = (L) loadDefinition.getInstance();
-            for (KeyValue<Field, StoreConverter> keyValue : this.storeKeyValues.get(this.loadDefinition.getType())) {
-                // TODO 此处代码可以优反射次数.
-                Field field = keyValue.getKey();
-                StoreConverter converter = keyValue.getValue();
-                SearchStore annotation = field.getAnnotation(SearchStore.class);
-                String path = field.getName();
-                Type type = field.getGenericType();
-                Object data = converter.decode(this.storeKeyValues, path, field, annotation, type, indexables);
-                field.set(instance, data);
-            }
-            return instance;
         } catch (Exception exception) {
             // TODO
             throw new SearchException(exception);
