@@ -35,6 +35,7 @@ public class MockComplexObject {
     @SearchStore
     private String lastName;
 
+    @SearchIndex
     @SearchStore
     private String[] names;
 
@@ -43,6 +44,7 @@ public class MockComplexObject {
     @SearchStore
     private int money;
 
+    @SearchIndex
     @SearchStore
     private int[] currencies;
 
@@ -55,6 +57,9 @@ public class MockComplexObject {
     @SearchSort
     @SearchStore
     private MockEnumeration race;
+
+    @SearchStore
+    private MockSimpleObject object;
 
     @SearchStore
     private LinkedList<MockSimpleObject> list;
@@ -77,8 +82,16 @@ public class MockComplexObject {
         return lastName;
     }
 
+    public String[] getNames() {
+        return names;
+    }
+
     public int getMoney() {
         return money;
+    }
+
+    public int[] getCurrencies() {
+        return currencies;
     }
 
     public Instant getInstant() {
@@ -89,12 +102,16 @@ public class MockComplexObject {
         return race;
     }
 
-    public String[] toNames() {
-        return names;
+    public MockSimpleObject getObject() {
+        return object;
     }
 
-    public int[] toCurrencies() {
-        return currencies;
+    public LinkedList<MockSimpleObject> getList() {
+        return list;
+    }
+
+    public HashMap<Integer, MockSimpleObject> getMap() {
+        return map;
     }
 
     @Override
@@ -115,6 +132,9 @@ public class MockComplexObject {
         equal.append(this.currencies, that.currencies);
         equal.append(this.instant, that.instant);
         equal.append(this.race, that.race);
+        equal.append(this.object, that.object);
+        equal.append(this.list, that.list);
+        equal.append(this.map, that.map);
         return equal.isEquals();
     }
 
@@ -129,6 +149,9 @@ public class MockComplexObject {
         hash.append(currencies);
         hash.append(instant);
         hash.append(race);
+        hash.append(object);
+        hash.append(list);
+        hash.append(map);
         return hash.toHashCode();
     }
 
@@ -143,6 +166,9 @@ public class MockComplexObject {
         string.append(currencies);
         string.append(instant);
         string.append(race);
+        string.append(object);
+        string.append(list);
+        string.append(map);
         return string.toString();
     }
 
@@ -158,11 +184,9 @@ public class MockComplexObject {
         instance.race = race;
         instance.list = new LinkedList<>();
         instance.map = new HashMap<>();
-        for (int index = 0; index < money; index++) {
-            MockSimpleObject object = MockSimpleObject.instanceOf(index, lastName);
-            instance.list.add(object);
-            instance.map.put(index, object);
-        }
+        instance.object = MockSimpleObject.instanceOf(money, firstName);
+        instance.list.add(instance.object);
+        instance.map.put(money, instance.object);
         return instance;
     }
 

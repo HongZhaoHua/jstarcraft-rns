@@ -23,9 +23,9 @@ public class EnumerationSortConverter implements SortConverter {
 
     @Override
     public Iterable<IndexableField> convert(SearchContext context, String path, Field field, SearchSort annotation, Type type, Object data) {
-        Collection<IndexableField> fields = new LinkedList<>();
-        fields.add(new SortedDocValuesField(path, new BytesRef(data.toString())));
-        return fields;
+        Collection<IndexableField> indexables = new LinkedList<>();
+        indexables.add(new SortedDocValuesField(path, new BytesRef(data.toString())));
+        return indexables;
     }
 
 }

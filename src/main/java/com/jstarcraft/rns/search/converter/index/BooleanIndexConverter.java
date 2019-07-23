@@ -26,16 +26,16 @@ public class BooleanIndexConverter implements IndexConverter {
 
     @Override
     public Iterable<IndexableField> convert(SearchContext context, String path, Field field, SearchIndex annotation, Type type, Object data) {
-        Collection<IndexableField> fields = new LinkedList<>();
+        Collection<IndexableField> indexables = new LinkedList<>();
         Class<?> clazz = TypeUtility.getRawType(type, null);
         clazz = ClassUtility.primitiveToWrapper(clazz);
         if (AtomicBoolean.class.isAssignableFrom(clazz)) {
-            fields.add(new IntPoint(path, AtomicBoolean.class.cast(data).get() ? 1 : 0));
-            return fields;
+            indexables.add(new IntPoint(path, AtomicBoolean.class.cast(data).get() ? 1 : 0));
+            return indexables;
         }
         if (Boolean.class.isAssignableFrom(clazz)) {
-            fields.add(new IntPoint(path, Boolean.class.cast(data) ? 1 : 0));
-            return fields;
+            indexables.add(new IntPoint(path, Boolean.class.cast(data) ? 1 : 0));
+            return indexables;
         }
         throw new SearchException();
     }

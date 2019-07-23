@@ -31,17 +31,17 @@ public class InstantIndexConverter implements IndexConverter {
 
     @Override
     public Iterable<IndexableField> convert(SearchContext context, String path, Field field, SearchIndex annotation, Type type, Object data) {
-        Collection<IndexableField> fields = new LinkedList<>();
+        Collection<IndexableField> indexables = new LinkedList<>();
         Class<?> clazz = TypeUtility.getRawType(type, null);
         if (Instant.class.isAssignableFrom(clazz)) {
             Instant instant = (Instant) data;
-            fields.add(new LongPoint(path, instant.toEpochMilli()));
-            return fields;
+            indexables.add(new LongPoint(path, instant.toEpochMilli()));
+            return indexables;
         }
         if (Date.class.isAssignableFrom(clazz)) {
             Date instant = (Date) data;
-            fields.add(new LongPoint(path, instant.getTime()));
-            return fields;
+            indexables.add(new LongPoint(path, instant.getTime()));
+            return indexables;
         }
         if (LocalDate.class.isAssignableFrom(clazz)) {
 

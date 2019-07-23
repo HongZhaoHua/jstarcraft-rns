@@ -22,7 +22,7 @@ public class MapIndexConverter implements IndexConverter {
 
     @Override
     public Iterable<IndexableField> convert(SearchContext context, String path, Field field, SearchIndex annotation, Type type, Object data) {
-        Collection<IndexableField> fields = new LinkedList<>();
+        Collection<IndexableField> indexables = new LinkedList<>();
         ParameterizedType parameterizedType = ParameterizedType.class.cast(type);
         Type[] types = parameterizedType.getActualTypeArguments();
         return null;

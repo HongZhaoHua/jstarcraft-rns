@@ -28,32 +28,32 @@ public class NumberIndexConverter implements IndexConverter {
 
     @Override
     public Iterable<IndexableField> convert(SearchContext context, String path, Field field, SearchIndex annotation, Type type, Object data) {
-        Collection<IndexableField> fields = new LinkedList<>();
+        Collection<IndexableField> indexables = new LinkedList<>();
         Class<?> clazz = TypeUtility.getRawType(type, null);
         clazz = ClassUtility.primitiveToWrapper(clazz);
         if (Byte.class.isAssignableFrom(clazz)) {
-            fields.add(new IntPoint(path, (Byte) data));
-            return fields;
+            indexables.add(new IntPoint(path, (byte) data));
+            return indexables;
         }
         if (Short.class.isAssignableFrom(clazz)) {
-            fields.add(new IntPoint(path, (Short) data));
-            return fields;
+            indexables.add(new IntPoint(path, (short) data));
+            return indexables;
         }
         if (Integer.class.isAssignableFrom(clazz)) {
-            fields.add(new IntPoint(path, (Integer) data));
-            return fields;
+            indexables.add(new IntPoint(path, (int) data));
+            return indexables;
         }
         if (Long.class.isAssignableFrom(clazz)) {
-            fields.add(new LongPoint(path, (Long) data));
-            return fields;
+            indexables.add(new LongPoint(path, (long) data));
+            return indexables;
         }
         if (Float.class.isAssignableFrom(clazz)) {
-            fields.add(new FloatPoint(path, (Float) data));
-            return fields;
+            indexables.add(new FloatPoint(path, (float) data));
+            return indexables;
         }
         if (Double.class.isAssignableFrom(clazz)) {
-            fields.add(new DoublePoint(path, (Double) data));
-            return fields;
+            indexables.add(new DoublePoint(path, (double) data));
+            return indexables;
         }
         throw new SearchException();
     }

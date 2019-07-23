@@ -24,7 +24,7 @@ public class StringIndexConverter implements IndexConverter {
 
     @Override
     public Iterable<IndexableField> convert(SearchContext context, String path, Field field, SearchIndex annotation, Type type, Object data) {
-        Collection<IndexableField> fields = new LinkedList<>();
+        Collection<IndexableField> indexables = new LinkedList<>();
         FieldType configuration = new FieldType();
         configuration.setIndexOptions(IndexOptions.DOCS);
         if (annotation.analyze()) {
@@ -50,8 +50,8 @@ public class StringIndexConverter implements IndexConverter {
                 configuration.setStoreTermVectors(true);
             }
         }
-        fields.add(new org.apache.lucene.document.Field(path, (String) data, configuration));
-        return fields;
+        indexables.add(new org.apache.lucene.document.Field(path, (String) data, configuration));
+        return indexables;
     }
 
 }

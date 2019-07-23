@@ -27,32 +27,32 @@ public class NumberSortConverter implements SortConverter {
 
     @Override
     public Iterable<IndexableField> convert(SearchContext context, String path, Field field, SearchSort annotation, Type type, Object data) {
-        Collection<IndexableField> fields = new LinkedList<>();
+        Collection<IndexableField> indexables = new LinkedList<>();
         Class<?> clazz = TypeUtility.getRawType(type, null);
         clazz = ClassUtility.primitiveToWrapper(clazz);
         if (Byte.class.isAssignableFrom(clazz)) {
-            fields.add(new NumericDocValuesField(path, (Byte) data));
-            return fields;
+            indexables.add(new NumericDocValuesField(path, (byte) data));
+            return indexables;
         }
         if (Short.class.isAssignableFrom(clazz)) {
-            fields.add(new NumericDocValuesField(path, (Short) data));
-            return fields;
+            indexables.add(new NumericDocValuesField(path, (short) data));
+            return indexables;
         }
         if (Integer.class.isAssignableFrom(clazz)) {
-            fields.add(new NumericDocValuesField(path, (Integer) data));
-            return fields;
+            indexables.add(new NumericDocValuesField(path, (int) data));
+            return indexables;
         }
         if (Long.class.isAssignableFrom(clazz)) {
-            fields.add(new NumericDocValuesField(path, (Long) data));
-            return fields;
+            indexables.add(new NumericDocValuesField(path, (long) data));
+            return indexables;
         }
         if (Float.class.isAssignableFrom(clazz)) {
-            fields.add(new FloatDocValuesField(path, (Float) data));
-            return fields;
+            indexables.add(new FloatDocValuesField(path, (float) data));
+            return indexables;
         }
         if (Double.class.isAssignableFrom(clazz)) {
-            fields.add(new DoubleDocValuesField(path, (Double) data));
-            return fields;
+            indexables.add(new DoubleDocValuesField(path, (double) data));
+            return indexables;
         }
         throw new SearchException();
     }

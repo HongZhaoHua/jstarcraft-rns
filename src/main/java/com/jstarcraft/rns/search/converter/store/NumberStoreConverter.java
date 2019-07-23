@@ -61,27 +61,27 @@ public class NumberStoreConverter implements StoreConverter {
         Class<?> clazz = TypeUtility.getRawType(type, null);
         clazz = ClassUtility.primitiveToWrapper(clazz);
         if (Byte.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (Byte) data));
+            indexables.put(path, new StoredField(path, (byte) data));
             return indexables;
         }
         if (Short.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (Short) data));
+            indexables.put(path, new StoredField(path, (short) data));
             return indexables;
         }
         if (Integer.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (Integer) data));
+            indexables.put(path, new StoredField(path, (int) data));
             return indexables;
         }
         if (Long.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (Long) data));
+            indexables.put(path, new StoredField(path, (long) data));
             return indexables;
         }
         if (Float.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (Float) data));
+            indexables.put(path, new StoredField(path, (float) data));
             return indexables;
         }
         if (Double.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (Double) data));
+            indexables.put(path, new StoredField(path, (double) data));
             return indexables;
         }
         throw new SearchException();

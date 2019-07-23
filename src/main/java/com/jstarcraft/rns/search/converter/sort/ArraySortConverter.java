@@ -23,7 +23,7 @@ public class ArraySortConverter implements SortConverter {
 
     @Override
     public Iterable<IndexableField> convert(SearchContext context, String path, Field field, SearchSort annotation, Type type, Object data) {
-        Collection<IndexableField> fields = new LinkedList<>();
+        Collection<IndexableField> indexables = new LinkedList<>();
         Class<?> componentClass = null;
         Type componentType = null;
         if (type instanceof GenericArrayType) {
