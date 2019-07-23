@@ -15,6 +15,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.jstarcraft.core.utility.StringUtility;
@@ -34,6 +35,7 @@ public class ConverterTestCase {
         MockComplexObject protoss = MockComplexObject.instanceOf(-1, "protoss", "jstarcraft", size, now, MockEnumeration.PROTOSS);
         MockComplexObject terran = MockComplexObject.instanceOf(0, "terran", "jstarcraft", size, now, MockEnumeration.TERRAN);
         MockComplexObject zerg = MockComplexObject.instanceOf(1, "zerg", "jstarcraft", size, now, MockEnumeration.ZERG);
+        MockComplexObject[] objects = new MockComplexObject[] { protoss, terran, zerg };
 
         indexWriter.addDocument(codec.encode(protoss));
         indexWriter.addDocument(codec.encode(terran));
@@ -43,14 +45,12 @@ public class ConverterTestCase {
 
         IndexSearcher indexSearcher = new IndexSearcher(indexReader);
         TopDocs search = indexSearcher.search(IntPoint.newRangeQuery("id", -1, 1), 1000);
+        int index = 0;
         for (ScoreDoc scoreDoc : search.scoreDocs) {
             Document document = indexReader.document(scoreDoc.doc);
-            document.forEach((field) -> {
-                System.out.println(field.getClass());
-                System.out.println(field.name());
-            });
-            System.out.println(StringUtility.reflect(codec.decode(document)));
+            Assert.assertEquals(objects[index++], codec.decode(document));
         }
+
         indexReader.close();
         indexWriter.close();
     }

@@ -2,6 +2,7 @@ package com.jstarcraft.rns.search.converter;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.jstarcraft.rns.search.annotation.SearchIndex;
 import com.jstarcraft.rns.search.annotation.SearchSort;
@@ -62,6 +63,14 @@ public class MockSimpleObject {
         hash.append(id);
         hash.append(name);
         return hash.toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder string = new ToStringBuilder(this);
+        string.append(id);
+        string.append(name);
+        return string.toString();
     }
 
     public static MockSimpleObject instanceOf(long id, String name) {

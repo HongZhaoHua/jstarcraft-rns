@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.jstarcraft.rns.search.annotation.SearchIndex;
 import com.jstarcraft.rns.search.annotation.SearchSort;
@@ -129,6 +130,20 @@ public class MockComplexObject {
         hash.append(instant);
         hash.append(race);
         return hash.toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder string = new ToStringBuilder(this);
+        string.append(id);
+        string.append(firstName);
+        string.append(lastName);
+        string.append(names);
+        string.append(money);
+        string.append(currencies);
+        string.append(instant);
+        string.append(race);
+        return string.toString();
     }
 
     public static MockComplexObject instanceOf(Integer id, String firstName, String lastName, int money, Instant instant, MockEnumeration race) {
