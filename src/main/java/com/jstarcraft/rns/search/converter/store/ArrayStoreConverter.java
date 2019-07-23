@@ -26,12 +26,12 @@ import com.jstarcraft.rns.search.converter.StoreConverter;
 public class ArrayStoreConverter implements StoreConverter {
 
     @Override
-    public Object decode(SearchContext context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document) {
+    public Object decode(SearchContext context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> indexables) {
         String from = path;
         char character = path.charAt(path.length() - 1);
         character++;
         String to = path.substring(0, path.length() - 1) + character;
-        document = document.subMap(from, true, to, false);
+        indexables = indexables.subMap(from, true, to, false);
         Class<?> componentClass = null;
         Type componentType = null;
         if (type instanceof GenericArrayType) {
@@ -45,18 +45,18 @@ public class ArrayStoreConverter implements StoreConverter {
         }
         Specification specification = Specification.getSpecification(componentClass);
         StoreConverter converter = context.getStoreConverter(specification);
-        IndexableField indexable = document.get(path + ".size");
+        IndexableField indexable = indexables.get(path + ".size");
         int size = indexable.numericValue().intValue();
         Object array = Array.newInstance(componentClass, size);
         for (int index = 0; index < size; index++) {
-            Object element = converter.decode(context, path + "[" + index + "]", field, annotation, componentType, document);
+            Object element = converter.decode(context, path + "[" + index + "]", field, annotation, componentType, indexables);
             Array.set(array, index, element);
         }
         return array;
     }
 
     @Override
-    public NavigableMap<String, IndexableField> encode(SearchContext context, String path, Field field, SearchStore annotation, Type type, Object data) {
+    public NavigableMap<String, IndexableField> encode(SearchContext context, String path, Field field, SearchStore annotation, Type type, Object instance) {
         NavigableMap<String, IndexableField> indexables = new TreeMap<>();
         Class<?> componentClass = null;
         Type componentType = null;
@@ -71,11 +71,11 @@ public class ArrayStoreConverter implements StoreConverter {
         }
         Specification specification = Specification.getSpecification(componentClass);
         StoreConverter converter = context.getStoreConverter(specification);
-        int size = Array.getLength(data);
+        int size = Array.getLength(instance);
         IndexableField indexable = new StoredField(path + ".size", size);
         indexables.put(path + ".size", indexable);
         for (int index = 0; index < size; index++) {
-            Object element = Array.get(data, index);
+            Object element = Array.get(instance, index);
             indexables.putAll(converter.encode(context, path + "[" + index + "]", field, annotation, componentType, element));
         }
         return indexables;

@@ -21,20 +21,20 @@ import com.jstarcraft.rns.search.converter.StoreConverter;
 public class StringStoreConverter implements StoreConverter {
 
     @Override
-    public Object decode(SearchContext context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document) {
+    public Object decode(SearchContext context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> indexables) {
         String from = path;
         char character = path.charAt(path.length() - 1);
         character++;
         String to = path.substring(0, path.length() - 1) + character;
-        document = document.subMap(from, true, to, false);
-        IndexableField indexable = document.firstEntry().getValue();
+        indexables = indexables.subMap(from, true, to, false);
+        IndexableField indexable = indexables.firstEntry().getValue();
         return indexable.stringValue();
     }
 
     @Override
-    public NavigableMap<String, IndexableField> encode(SearchContext context, String path, Field field, SearchStore annotation, Type type, Object data) {
+    public NavigableMap<String, IndexableField> encode(SearchContext context, String path, Field field, SearchStore annotation, Type type, Object instance) {
         NavigableMap<String, IndexableField> indexables = new TreeMap<>();
-        indexables.put(path, new StoredField(path, data.toString()));
+        indexables.put(path, new StoredField(path, instance.toString()));
         return indexables;
     }
 

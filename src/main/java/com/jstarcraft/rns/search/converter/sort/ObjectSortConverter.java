@@ -23,7 +23,7 @@ import com.jstarcraft.rns.search.exception.SearchException;
 public class ObjectSortConverter implements SortConverter {
 
     @Override
-    public Iterable<IndexableField> convert(SearchContext context, String path, Field field, SearchSort annotation, Type type, Object instance) {
+    public Iterable<IndexableField> convert(SearchContext context, String path, Field field, SearchSort annotation, Type type, Object data) {
         Collection<IndexableField> indexables = new LinkedList<>();
         Class<?> clazz = TypeUtility.getRawType(type, null);
 
@@ -35,9 +35,7 @@ public class ObjectSortConverter implements SortConverter {
                 SortConverter converter = keyValue.getValue();
                 annotation = field.getAnnotation(SearchSort.class);
                 String name = field.getName();
-                type = field.getGenericType();
-                Object data = field.get(instance);
-                for (IndexableField indexable : converter.convert(context, path + "." + name, field, annotation, type, data)) {
+                for (IndexableField indexable : converter.convert(context, path + "." + name, field, annotation, field.getGenericType(), field.get(data))) {
                     indexables.add(indexable);
                 }
             }

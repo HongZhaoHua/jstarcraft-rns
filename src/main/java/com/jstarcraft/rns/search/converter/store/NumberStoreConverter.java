@@ -24,13 +24,13 @@ import com.jstarcraft.rns.search.exception.SearchException;
 public class NumberStoreConverter implements StoreConverter {
 
     @Override
-    public Object decode(SearchContext context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document) {
+    public Object decode(SearchContext context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> indexables) {
         String from = path;
         char character = path.charAt(path.length() - 1);
         character++;
         String to = path.substring(0, path.length() - 1) + character;
-        document = document.subMap(from, true, to, false);
-        IndexableField indexable = document.firstEntry().getValue();
+        indexables = indexables.subMap(from, true, to, false);
+        IndexableField indexable = indexables.firstEntry().getValue();
         Class<?> clazz = TypeUtility.getRawType(type, null);
         clazz = ClassUtility.primitiveToWrapper(clazz);
         Number number = indexable.numericValue();
@@ -56,32 +56,32 @@ public class NumberStoreConverter implements StoreConverter {
     }
 
     @Override
-    public NavigableMap<String, IndexableField> encode(SearchContext context, String path, Field field, SearchStore annotation, Type type, Object data) {
+    public NavigableMap<String, IndexableField> encode(SearchContext context, String path, Field field, SearchStore annotation, Type type, Object instance) {
         NavigableMap<String, IndexableField> indexables = new TreeMap<>();
         Class<?> clazz = TypeUtility.getRawType(type, null);
         clazz = ClassUtility.primitiveToWrapper(clazz);
         if (Byte.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (byte) data));
+            indexables.put(path, new StoredField(path, (byte) instance));
             return indexables;
         }
         if (Short.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (short) data));
+            indexables.put(path, new StoredField(path, (short) instance));
             return indexables;
         }
         if (Integer.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (int) data));
+            indexables.put(path, new StoredField(path, (int) instance));
             return indexables;
         }
         if (Long.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (long) data));
+            indexables.put(path, new StoredField(path, (long) instance));
             return indexables;
         }
         if (Float.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (float) data));
+            indexables.put(path, new StoredField(path, (float) instance));
             return indexables;
         }
         if (Double.class.isAssignableFrom(clazz)) {
-            indexables.put(path, new StoredField(path, (double) data));
+            indexables.put(path, new StoredField(path, (double) instance));
             return indexables;
         }
         throw new SearchException();

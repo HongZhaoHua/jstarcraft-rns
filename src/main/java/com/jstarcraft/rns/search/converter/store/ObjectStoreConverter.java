@@ -23,12 +23,12 @@ import com.jstarcraft.rns.search.exception.SearchException;
 public class ObjectStoreConverter implements StoreConverter {
 
     @Override
-    public Object decode(SearchContext context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document) {
+    public Object decode(SearchContext context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> indexables) {
         String from = path;
         char character = path.charAt(path.length() - 1);
         character++;
         String to = path.substring(0, path.length() - 1) + character;
-        document = document.subMap(from, true, to, false);
+        indexables = indexables.subMap(from, true, to, false);
         Class<?> clazz = TypeUtility.getRawType(type, null);
 
         try {
@@ -41,7 +41,7 @@ public class ObjectStoreConverter implements StoreConverter {
                 annotation = field.getAnnotation(SearchStore.class);
                 String name = field.getName();
                 type = field.getGenericType();
-                Object data = converter.decode(context, path + "." + name, field, annotation, type, document);
+                Object data = converter.decode(context, path + "." + name, field, annotation, type, indexables);
                 field.set(instance, data);
             }
             return instance;

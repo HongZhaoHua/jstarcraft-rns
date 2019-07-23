@@ -27,12 +27,12 @@ import com.jstarcraft.rns.search.exception.SearchException;
 public class MapStoreConverter implements StoreConverter {
 
     @Override
-    public Object decode(SearchContext context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document) {
+    public Object decode(SearchContext context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> indexables) {
         String from = path;
         char character = path.charAt(path.length() - 1);
         character++;
         String to = path.substring(0, path.length() - 1) + character;
-        document = document.subMap(from, true, to, false);
+        indexables = indexables.subMap(from, true, to, false);
         Class<?> clazz = TypeUtility.getRawType(type, null);
         // 兼容UniMi
         type = TypeUtility.refineType(type, Map.class);
@@ -51,12 +51,12 @@ public class MapStoreConverter implements StoreConverter {
             Specification valueSpecification = Specification.getSpecification(valueClazz);
             StoreConverter valueConverter = context.getStoreConverter(valueSpecification);
 
-            IndexableField indexable = document.get(path + ".size");
+            IndexableField indexable = indexables.get(path + ".size");
             int size = indexable.numericValue().intValue();
             for (int index = 0; index < size; index++) {
-                Object key = keyConverter.decode(context, path + "[" + index + "key]", field, annotation, keyType, document);
-                Object element = valueConverter.decode(context, path + "[" + index + "value]", field, annotation, valueType, document);
-                map.put(key, element);
+                Object key = keyConverter.decode(context, path + "[" + index + "key]", field, annotation, keyType, indexables);
+                Object value = valueConverter.decode(context, path + "[" + index + "value]", field, annotation, valueType, indexables);
+                map.put(key, value);
             }
             return map;
         } catch (Exception exception) {
@@ -66,7 +66,7 @@ public class MapStoreConverter implements StoreConverter {
     }
 
     @Override
-    public NavigableMap<String, IndexableField> encode(SearchContext context, String path, Field field, SearchStore annotation, Type type, Object data) {
+    public NavigableMap<String, IndexableField> encode(SearchContext context, String path, Field field, SearchStore annotation, Type type, Object instance) {
         NavigableMap<String, IndexableField> indexables = new TreeMap<>();
         // 兼容UniMi
         type = TypeUtility.refineType(type, Map.class);
@@ -79,7 +79,7 @@ public class MapStoreConverter implements StoreConverter {
 
         try {
             // TODO 此处需要代码重构
-            Map<Object, Object> map = Map.class.cast(data);
+            Map<Object, Object> map = Map.class.cast(instance);
             Specification keySpecification = Specification.getSpecification(keyClazz);
             StoreConverter keyConverter = context.getStoreConverter(keySpecification);
             Specification valueSpecification = Specification.getSpecification(valueClazz);
@@ -92,8 +92,8 @@ public class MapStoreConverter implements StoreConverter {
             for (Entry<Object, Object> keyValue : map.entrySet()) {
                 Object key = keyValue.getKey();
                 indexables.putAll(keyConverter.encode(context, path + "[" + index + "key]", field, annotation, keyType, key));
-                Object element = keyValue.getValue();
-                indexables.putAll(valueConverter.encode(context, path + "[" + index + "value]", field, annotation, valueType, element));
+                Object value = keyValue.getValue();
+                indexables.putAll(valueConverter.encode(context, path + "[" + index + "value]", field, annotation, valueType, value));
                 index++;
             }
             return indexables;

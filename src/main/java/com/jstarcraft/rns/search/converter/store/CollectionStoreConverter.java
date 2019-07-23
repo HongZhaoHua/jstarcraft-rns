@@ -26,12 +26,12 @@ import com.jstarcraft.rns.search.exception.SearchException;
 public class CollectionStoreConverter implements StoreConverter {
 
     @Override
-    public Object decode(SearchContext context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> document) {
+    public Object decode(SearchContext context, String path, Field field, SearchStore annotation, Type type, NavigableMap<String, IndexableField> indexables) {
         String from = path;
         char character = path.charAt(path.length() - 1);
         character++;
         String to = path.substring(0, path.length() - 1) + character;
-        document = document.subMap(from, true, to, false);
+        indexables = indexables.subMap(from, true, to, false);
         Class<?> clazz = TypeUtility.getRawType(type, null);
         // 兼容UniMi
         type = TypeUtility.refineType(type, Collection.class);
@@ -46,10 +46,10 @@ public class CollectionStoreConverter implements StoreConverter {
             Specification specification = Specification.getSpecification(elementClazz);
             StoreConverter converter = context.getStoreConverter(specification);
 
-            IndexableField indexable = document.get(path + ".size");
+            IndexableField indexable = indexables.get(path + ".size");
             int size = indexable.numericValue().intValue();
             for (int index = 0; index < size; index++) {
-                Object element = converter.decode(context, path + "[" + index + "]", field, annotation, elementType, document);
+                Object element = converter.decode(context, path + "[" + index + "]", field, annotation, elementType, indexables);
                 collection.add(element);
             }
             return collection;
@@ -60,7 +60,7 @@ public class CollectionStoreConverter implements StoreConverter {
     }
 
     @Override
-    public NavigableMap<String, IndexableField> encode(SearchContext context, String path, Field field, SearchStore annotation, Type type, Object data) {
+    public NavigableMap<String, IndexableField> encode(SearchContext context, String path, Field field, SearchStore annotation, Type type, Object instance) {
         NavigableMap<String, IndexableField> indexables = new TreeMap<>();
         // 兼容UniMi
         type = TypeUtility.refineType(type, Collection.class);
@@ -71,7 +71,7 @@ public class CollectionStoreConverter implements StoreConverter {
 
         try {
             // TODO 此处需要代码重构
-            Collection<?> collection = Collection.class.cast(data);
+            Collection<?> collection = Collection.class.cast(instance);
             Specification specification = Specification.getSpecification(elementClazz);
             StoreConverter converter = context.getStoreConverter(specification);
 
