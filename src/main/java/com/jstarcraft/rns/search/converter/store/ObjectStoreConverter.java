@@ -7,7 +7,6 @@ import java.util.TreeMap;
 
 import org.apache.lucene.index.IndexableField;
 
-import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.common.reflection.TypeUtility;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.search.annotation.SearchStore;
@@ -32,8 +31,8 @@ public class ObjectStoreConverter implements StoreConverter {
         document = document.subMap(from, true, to, false);
         Class<?> clazz = TypeUtility.getRawType(type, null);
 
-        // TODO 此处需要代码重构
         try {
+            // TODO 此处需要代码重构
             Object instance = context.getInstance(clazz);
             for (KeyValue<Field, StoreConverter> keyValue : context.getStoreKeyValues(clazz)) {
                 // TODO 此处代码可以优反射次数.
@@ -57,8 +56,8 @@ public class ObjectStoreConverter implements StoreConverter {
         NavigableMap<String, IndexableField> indexables = new TreeMap<>();
         Class<?> clazz = TypeUtility.getRawType(type, null);
 
-        // TODO 此处需要代码重构
         try {
+            // TODO 此处需要代码重构
             for (KeyValue<Field, StoreConverter> keyValue : context.getStoreKeyValues(clazz)) {
                 // TODO 此处代码可以优反射次数.
                 field = keyValue.getKey();

@@ -29,7 +29,7 @@ public class ConverterTestCase {
         IndexWriter indexWriter = new IndexWriter(directory, config);
 
         SearchCodec<MockComplexObject, MockComplexObject> codec = new SearchCodec<>(MockComplexObject.class, MockComplexObject.class);
-        int size = 100;
+        int size = 5;
         Instant now = Instant.now();
         MockComplexObject protoss = MockComplexObject.instanceOf(-1, "protoss", "jstarcraft", size, now, MockEnumeration.PROTOSS);
         MockComplexObject terran = MockComplexObject.instanceOf(0, "terran", "jstarcraft", size, now, MockEnumeration.TERRAN);
@@ -51,7 +51,6 @@ public class ConverterTestCase {
             });
             System.out.println(StringUtility.reflect(codec.decode(document)));
         }
-
         indexReader.close();
         indexWriter.close();
     }

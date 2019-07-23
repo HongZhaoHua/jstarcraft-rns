@@ -58,6 +58,7 @@ public class MockComplexObject {
     @SearchStore
     private LinkedList<MockSimpleObject> list;
 
+    @SearchStore
     private HashMap<Integer, MockSimpleObject> map;
 
     public MockComplexObject() {

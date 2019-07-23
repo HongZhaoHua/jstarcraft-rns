@@ -10,7 +10,6 @@ import java.util.TreeMap;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.index.IndexableField;
 
-import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.common.reflection.Specification;
 import com.jstarcraft.core.common.reflection.TypeUtility;
 import com.jstarcraft.rns.search.annotation.SearchStore;
@@ -43,7 +42,7 @@ public class CollectionStoreConverter implements StoreConverter {
 
         try {
             // TODO 此处需要代码重构
-            Collection<Object> collection = (Collection<Object>) context.getInstance(clazz);
+            Collection<Object> collection = (Collection) context.getInstance(clazz);
             Specification specification = Specification.getSpecification(elementClazz);
             StoreConverter converter = context.getStoreConverter(specification);
 
@@ -70,17 +69,19 @@ public class CollectionStoreConverter implements StoreConverter {
         Type elementType = types[0];
         Class<?> elementClazz = TypeUtility.getRawType(elementType, null);
 
-        Collection<?> collection = Collection.class.cast(data);
-        Specification specification = Specification.getSpecification(elementClazz);
-        StoreConverter converter = context.getStoreConverter(specification);
-
         try {
+            // TODO 此处需要代码重构
+            Collection<?> collection = Collection.class.cast(data);
+            Specification specification = Specification.getSpecification(elementClazz);
+            StoreConverter converter = context.getStoreConverter(specification);
+
             int size = collection.size();
             IndexableField indexable = new StoredField(path + ".size", size);
             indexables.put(path + ".size", indexable);
             int index = 0;
             for (Object element : collection) {
-                indexables.putAll(converter.encode(context, path + "[" + index++ + "]", field, annotation, elementType, element));
+                indexables.putAll(converter.encode(context, path + "[" + index + "]", field, annotation, elementType, element));
+                index++;
             }
             return indexables;
         } catch (Exception exception) {
