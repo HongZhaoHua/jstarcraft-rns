@@ -29,6 +29,24 @@ import com.jstarcraft.rns.search.exception.SearchException;
  */
 public class ArrayIndexConverter implements IndexConverter {
 
+    private int[] wrappers2Primitives(boolean[] oldArray) {
+        int size = oldArray.length;
+        int[] newArray = new int[size];
+        for (int index = 0; index < size; index++) {
+            newArray[index] = oldArray[index] ? 1 : 0;
+        }
+        return newArray;
+    }
+
+    private int[] wrappers2Primitives(Boolean[] oldArray) {
+        int size = oldArray.length;
+        int[] newArray = new int[size];
+        for (int index = 0; index < size; index++) {
+            newArray[index] = oldArray[index] ? 1 : 0;
+        }
+        return newArray;
+    }
+
     private int[] wrappers2Primitives(byte[] oldArray) {
         int size = oldArray.length;
         int[] newArray = new int[size];
@@ -79,6 +97,16 @@ public class ArrayIndexConverter implements IndexConverter {
             componentType = clazz.getComponentType();
             componentClass = clazz.getComponentType();
 
+            if (Boolean[].class == clazz) {
+                int[] array = wrappers2Primitives((Boolean[]) data);
+                indexables.add(new IntPoint(path, array));
+                return indexables;
+            }
+            if (boolean[].class == clazz) {
+                int[] array = wrappers2Primitives((boolean[]) data);
+                indexables.add(new IntPoint(path, array));
+                return indexables;
+            }
             if (Byte[].class == clazz) {
                 int[] array = wrappers2Primitives((Byte[]) data);
                 indexables.add(new IntPoint(path, array));
