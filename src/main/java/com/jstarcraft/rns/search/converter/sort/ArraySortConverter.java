@@ -12,6 +12,7 @@ import com.jstarcraft.core.common.reflection.TypeUtility;
 import com.jstarcraft.rns.search.annotation.SearchSort;
 import com.jstarcraft.rns.search.converter.SearchContext;
 import com.jstarcraft.rns.search.converter.SortConverter;
+import com.jstarcraft.rns.search.exception.SearchException;
 
 /**
  * 数组排序转换器
@@ -35,7 +36,7 @@ public class ArraySortConverter implements SortConverter {
             componentType = clazz.getComponentType();
             componentClass = clazz.getComponentType();
         }
-        return null;
+        throw new SearchException();
     }
 
 }

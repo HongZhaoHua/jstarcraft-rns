@@ -11,6 +11,7 @@ import org.apache.lucene.index.IndexableField;
 import com.jstarcraft.rns.search.annotation.SearchSort;
 import com.jstarcraft.rns.search.converter.SearchContext;
 import com.jstarcraft.rns.search.converter.SortConverter;
+import com.jstarcraft.rns.search.exception.SearchException;
 
 /**
  * 映射排序转换器
@@ -25,7 +26,7 @@ public class MapSortConverter implements SortConverter {
         Collection<IndexableField> indexables = new LinkedList<>();
         ParameterizedType parameterizedType = ParameterizedType.class.cast(type);
         Type[] types = parameterizedType.getActualTypeArguments();
-        return null;
+        throw new SearchException();
     }
 
 }
