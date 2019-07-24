@@ -75,10 +75,10 @@ public class SearchCodec<S, L> {
     /**
      * 编码
      * 
-     * @param instance
+     * @param object
      * @return
      */
-    public Document encode(S instance) {
+    public Document encode(S object) {
         try {
             Document document = new Document();
             for (KeyValue<Field, IndexConverter> keyValue : this.context.getIndexKeyValues(this.saveDefinition.getType())) {
@@ -88,7 +88,7 @@ public class SearchCodec<S, L> {
                 SearchIndex annotation = field.getAnnotation(SearchIndex.class);
                 String path = field.getName();
                 Type type = field.getGenericType();
-                Object data = field.get(instance);
+                Object data = field.get(object);
                 for (IndexableField indexable : converter.convert(this.context, path, field, annotation, type, data)) {
                     document.add(indexable);
                 }
@@ -100,7 +100,7 @@ public class SearchCodec<S, L> {
                 SearchSort annotation = field.getAnnotation(SearchSort.class);
                 String path = field.getName();
                 Type type = field.getGenericType();
-                Object data = field.get(instance);
+                Object data = field.get(object);
                 for (IndexableField indexable : converter.convert(this.context, path, field, annotation, type, data)) {
                     document.add(indexable);
                 }
@@ -112,7 +112,7 @@ public class SearchCodec<S, L> {
                 SearchStore annotation = field.getAnnotation(SearchStore.class);
                 String path = field.getName();
                 Type type = field.getGenericType();
-                Object data = field.get(instance);
+                Object data = field.get(object);
                 for (IndexableField indexable : converter.encode(this.context, path, field, annotation, type, data).values()) {
                     document.add(indexable);
                 }
