@@ -54,8 +54,8 @@ public class MapStoreConverter implements StoreConverter {
             IndexableField indexable = indexables.get(path + ".size");
             int size = indexable.numericValue().intValue();
             for (int index = 0; index < size; index++) {
-                Object key = keyConverter.decode(context, path + "[" + index + "key]", field, annotation, keyType, indexables);
-                Object value = valueConverter.decode(context, path + "[" + index + "value]", field, annotation, valueType, indexables);
+                Object key = keyConverter.decode(context, path + "[" + index + "_key]", field, annotation, keyType, indexables);
+                Object value = valueConverter.decode(context, path + "[" + index + "_value]", field, annotation, valueType, indexables);
                 map.put(key, value);
             }
             return map;
@@ -91,9 +91,9 @@ public class MapStoreConverter implements StoreConverter {
             int index = 0;
             for (Entry<Object, Object> keyValue : map.entrySet()) {
                 Object key = keyValue.getKey();
-                indexables.putAll(keyConverter.encode(context, path + "[" + index + "key]", field, annotation, keyType, key));
+                indexables.putAll(keyConverter.encode(context, path + "[" + index + "_key]", field, annotation, keyType, key));
                 Object value = keyValue.getValue();
-                indexables.putAll(valueConverter.encode(context, path + "[" + index + "value]", field, annotation, valueType, value));
+                indexables.putAll(valueConverter.encode(context, path + "[" + index + "_value]", field, annotation, valueType, value));
                 index++;
             }
             return indexables;
