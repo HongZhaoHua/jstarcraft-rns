@@ -15,6 +15,7 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.IndexableField;
 
 import com.jstarcraft.core.common.reflection.TypeUtility;
+import com.jstarcraft.core.utility.ArrayUtility;
 import com.jstarcraft.rns.search.annotation.SearchIndex;
 import com.jstarcraft.rns.search.converter.IndexConverter;
 import com.jstarcraft.rns.search.converter.SearchContext;
@@ -64,42 +65,6 @@ public class ArrayIndexConverter implements IndexConverter {
         return newArray;
     }
 
-    private int[] wrappers2Primitives(Integer[] oldArray) {
-        int size = oldArray.length;
-        int[] newArray = new int[size];
-        for (int index = 0; index < size; index++) {
-            newArray[index] = oldArray[index].intValue();
-        }
-        return newArray;
-    }
-
-    private long[] wrappers2Primitives(Long[] oldArray) {
-        int size = oldArray.length;
-        long[] newArray = new long[size];
-        for (int index = 0; index < size; index++) {
-            newArray[index] = oldArray[index].longValue();
-        }
-        return newArray;
-    }
-
-    private float[] wrappers2Primitives(Float[] oldArray) {
-        int size = oldArray.length;
-        float[] newArray = new float[size];
-        for (int index = 0; index < size; index++) {
-            newArray[index] = oldArray[index].floatValue();
-        }
-        return newArray;
-    }
-
-    private double[] wrappers2Primitives(Double[] oldArray) {
-        int size = oldArray.length;
-        double[] newArray = new double[size];
-        for (int index = 0; index < size; index++) {
-            newArray[index] = oldArray[index].doubleValue();
-        }
-        return newArray;
-    }
-
     @Override
     public Iterable<IndexableField> convert(SearchContext context, String path, Field field, SearchIndex annotation, Type type, Object data) {
         Collection<IndexableField> indexables = new LinkedList<>();
@@ -135,7 +100,7 @@ public class ArrayIndexConverter implements IndexConverter {
                 return indexables;
             }
             if (Integer[].class == clazz) {
-                int[] array = wrappers2Primitives((Integer[]) data);
+                int[] array = ArrayUtility.toPrimitive((Integer[]) data);
                 indexables.add(new IntPoint(path, array));
                 return indexables;
             }
@@ -144,7 +109,7 @@ public class ArrayIndexConverter implements IndexConverter {
                 return indexables;
             }
             if (Long[].class == clazz) {
-                long[] array = wrappers2Primitives((Long[]) data);
+                long[] array = ArrayUtility.toPrimitive((Long[]) data);
                 indexables.add(new LongPoint(path, array));
             }
             if (long[].class == clazz) {
@@ -152,7 +117,7 @@ public class ArrayIndexConverter implements IndexConverter {
                 return indexables;
             }
             if (Float[].class == clazz) {
-                float[] array = wrappers2Primitives((Float[]) data);
+                float[] array = ArrayUtility.toPrimitive((Float[]) data);
                 indexables.add(new FloatPoint(path, array));
             }
             if (float[].class == clazz) {
@@ -160,7 +125,7 @@ public class ArrayIndexConverter implements IndexConverter {
                 return indexables;
             }
             if (Double[].class == clazz) {
-                double[] array = wrappers2Primitives((Double[]) data);
+                double[] array = ArrayUtility.toPrimitive((Double[]) data);
                 indexables.add(new DoublePoint(path, array));
             }
             if (double[].class == clazz) {

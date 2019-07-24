@@ -46,6 +46,12 @@ import com.jstarcraft.rns.search.converter.store.ObjectStoreConverter;
 import com.jstarcraft.rns.search.converter.store.StringStoreConverter;
 import com.jstarcraft.rns.search.exception.SearchException;
 
+/**
+ * 搜索上下文
+ * 
+ * @author Birdy
+ *
+ */
 public class SearchContext {
 
     public static final EnumMap<Specification, IndexConverter> INDEX_CONVERTERS = new EnumMap<>(Specification.class);
@@ -171,30 +177,73 @@ public class SearchContext {
         }
     }
 
+    /**
+     * 根据类型获取实例
+     * 
+     * @param clazz
+     * @return
+     * @throws Exception
+     */
     public <T> T getInstance(Class<T> clazz) throws Exception {
         return (T) classDefinitions.get(clazz).getInstance();
     }
 
+    /**
+     * 根据规范获取索引转换器
+     * 
+     * @param specification
+     * @return
+     */
     public IndexConverter getIndexConverter(Specification specification) {
         return INDEX_CONVERTERS.get(specification);
     }
 
+    /**
+     * 根据规范获取排序转换器
+     * 
+     * @param specification
+     * @return
+     */
     public SortConverter getSortConverter(Specification specification) {
         return SORT_CONVERTERS.get(specification);
     }
 
+    /**
+     * 根据规范获取存储转换器
+     * 
+     * @param specification
+     * @return
+     */
     public StoreConverter getStoreConverter(Specification specification) {
         return STORE_CONVERTERS.get(specification);
     }
 
+    /**
+     * 根据类型获取索引转换器
+     * 
+     * @param clazz
+     * @return
+     */
     public List<KeyValue<Field, IndexConverter>> getIndexKeyValues(Class<?> clazz) {
         return this.indexKeyValues.get(clazz);
     }
 
+    /**
+     * 根据类型获取排序转换器
+     * 
+     * @param clazz
+     * @return
+     */
     public List<KeyValue<Field, SortConverter>> getSortKeyValues(Class<?> clazz) {
         return this.sortKeyValues.get(clazz);
     }
 
+    /**
+     * 根据类型获取存储转换器
+     * 
+     * @param clazz
+     * @return
+     */
     public List<KeyValue<Field, StoreConverter>> getStoreKeyValues(Class<?> clazz) {
         return this.storeKeyValues.get(clazz);
     }
