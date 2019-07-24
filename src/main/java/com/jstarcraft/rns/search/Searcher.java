@@ -118,6 +118,7 @@ public class Searcher implements AutoCloseable {
         } finally {
             unlockRead();
         }
+        
         this.persistenceManager.mergeManager();
 
         try {
