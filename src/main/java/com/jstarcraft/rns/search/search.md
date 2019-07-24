@@ -1,4 +1,4 @@
-# JStarCraft Search
+# JStarCraft RNS Search教程
 
 ****
 
@@ -30,14 +30,14 @@
 
 ## 介绍
 
-JStarCraft Search是一款基于Lucene的检索工具,兼容JStarCraft ORM模块.
+JStarCraft RNS Search是一款基于Lucene的检索工具,兼容JStarCraft ORM模块.
 目标是**自动化管理**Lucene引擎,降低研发人员使用Lucene的难度.
 
 ****
 
 ## 特性
 
-JStarCraft Search具有如下特点:
+JStarCraft RNS Search具有如下特点:
 1. 支持对象与文档的自动转换;
 2. 能够根据配置同步或异步的自动更新;
 
@@ -74,17 +74,49 @@ compile group: 'com.jstarcraft', name: 'rns', version: '1.0'
 @Data
 public class Mock {
 
-    /** 需要用于索引的属性 */
+    /** 需要索引的属性 */
     @SearchIndex
     private long index;
 
-    /** 需要用于排序的属性 */
+    /** 需要排序的属性 */
     @SearchSort
     private Instant sort;
-    
-    /** 需要用于存储的属性 */
+
+    /** 需要存储的属性 */
     @SearchStore
     private Collection<String> store;
+
+     /** 需要索引,排序,存储的属性 */
+    @SearchIndex
+    @SearchSort
+    @SearchStore
+    private float[] coordinate;
+
+     /** 需要索引,排序,存储的属性 */
+    @SearchIndex
+    @SearchSort
+    @SearchStore
+    private Address address;
+
+}
+
+@Data
+public class Address {
+
+    @SearchIndex
+    @SearchSort
+    @SearchStore
+    private String country;
+
+    @SearchIndex
+    @SearchSort
+    @SearchStore
+    private String province;
+
+    @SearchIndex
+    @SearchSort
+    @SearchStore
+    private String city;
 
 }
 ```
@@ -102,7 +134,7 @@ Mock object = ...
 Document document = codec.encode(object);
 ```
 
-将对象转换为文档
+将文档转换为对象
 
 ```java
 Document document = ...
@@ -111,29 +143,37 @@ Mock object  = codec.decode(document);
 
 #### 命名规则
 
-JStarCraft Search具有如下命名规则:
-1. 支持多层对象嵌套,各层属性之间使用**.**分隔;
-2. 数组(Array)属性会投影为**name[index]**形式(name为属性名称,index为元素位置);
-3. 集合(Collection)属性会投影为**name[index]**形式(name为属性名称,index为元素位置);
-4. 映射(Map)属性会投影为**name[index_key]**和**name[index_value]**形式(name为属性名称,index为键值位置);
+在使用Lucene搜索时,需要了解JStarCraft RNS Search的命名规则.
+
+JStarCraft RNS Search默认具有如下命名规则:
+1. 使用对象属性名称作为文档字段名称,支持多层嵌套,各层之间使用**.**分隔;
+2. 存在4种形式的名称
+    * **name**,可以用于任意类型属性;
+    * **name[index]**,可以用于数组/集合/映射类型;
+    * **name[index_key]**可以用于映射类型;
+    * **name[index_value]**可以用于映射类型;
 
 ###### 索引命名规则
 
 ```java
-
+Query query = IntPoint.newRangeQuery("coordinate", new float[] {-90F, -180}, new float[] {90F, 180});
 ```
 
 ###### 排序命名规则
 
 ```java
+SortField country = new SortField("address.country", SortField.Type.STRING);
+SortField city = new SortField("address.city", SortField.Type.STRING);
+Sort sort = new Sort(country, city);
+```
 
-````
-
-###### 保存命名规则
+###### 存储命名规则
 
 ```java
-
-````
+Document document = ...
+IndexableField latitude = document.getField("coordinate[0]");
+IndexableField longitude = document.getField("coordinate[1]");
+```
 
 #### 自动更新
 
