@@ -12,9 +12,6 @@
 * [使用](#使用)
     * [自动编解码](#自动编解码)
     * [命名规则](#命名规则)
-        * [索引命名规则](#索引命名规则)
-        * [排序命名规则](#排序命名规则)
-        * [保存命名规则](#保存命名规则)
     * [自动更新](#自动更新)
 * [架构](#架构)
 * [概念](#概念)
@@ -86,13 +83,13 @@ public class Mock {
     @SearchStore
     private Collection<String> store;
 
-     /** 需要索引,排序,存储的属性 */
+    /** 需要索引,排序,存储的属性 */
     @SearchIndex
     @SearchSort
     @SearchStore
     private float[] coordinate;
 
-     /** 需要索引,排序,存储的属性 */
+    /** 需要索引,排序,存储的属性 */
     @SearchIndex
     @SearchSort
     @SearchStore
@@ -103,16 +100,19 @@ public class Mock {
 @Data
 public class Address {
 
+    /** 需要索引,排序,存储的属性 */
     @SearchIndex
     @SearchSort
     @SearchStore
     private String country;
 
+    /** 需要索引,排序,存储的属性 */
     @SearchIndex
     @SearchSort
     @SearchStore
     private String province;
 
+    /** 需要索引,排序,存储的属性 */
     @SearchIndex
     @SearchSort
     @SearchStore
@@ -146,12 +146,12 @@ Mock object  = codec.decode(document);
 在使用Lucene搜索时,需要了解JStarCraft RNS Search的命名规则.
 
 JStarCraft RNS Search默认具有如下命名规则:
-1. 使用对象属性名称作为文档字段名称,支持多层嵌套,各层之间使用**.**分隔;
+1. 名称支持多层嵌套,各层之间使用**`·`**分隔;
 2. 存在4种形式的名称
-    * **name**,可以用于任意类型属性;
-    * **name[index]**,可以用于数组/集合/映射类型;
-    * **name[index_key]**可以用于映射类型;
-    * **name[index_value]**可以用于映射类型;
+    * **`name`**,可以用于任意类型属性;
+    * **`name[index]`**,可以用于数组/集合/映射类型;
+    * **`name[index_key]`**可以用于映射类型;
+    * **`name[index_value]`**可以用于映射类型;
 
 ###### 索引命名规则
 
