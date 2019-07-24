@@ -189,6 +189,10 @@ IndexableField longitude = document.getField("coordinate[1]");
 
 ## 示例
 
+[编解码示例](https://github.com/HongZhaoHua/jstarcraft-rns/blob/master/src/test/java/com/jstarcraft/rns/search/converter/ConverterTestCase.java)
+
+[实时搜索示例](https://github.com/HongZhaoHua/jstarcraft-rns/blob/master/src/test/java/com/jstarcraft/rns/search/SearcherTestCase.java)
+
 ****
 
 ## 对比
