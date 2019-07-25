@@ -18,15 +18,19 @@ import com.jstarcraft.rns.recommend.content.EFMRecommender;
 public class EFMRatingRecommender extends EFMRecommender {
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float value = predict(userIndex, itemIndex);
-        if (value < minimumOfScore)
-            return minimumOfScore;
-        if (value > maximumOfScore)
-            return maximumOfScore;
-        return value;
+        if (value < minimumOfScore) {
+            instance.setQuantityMark(minimumOfScore);
+            return;
+        }
+        if (value > maximumOfScore) {
+            instance.setQuantityMark(maximumOfScore);
+            return;
+        }
+        instance.setQuantityMark(value);
     }
 
 }

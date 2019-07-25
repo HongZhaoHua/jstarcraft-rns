@@ -24,11 +24,11 @@ public class RandomGuessRecommender extends AbstractRecommender {
     }
 
     @Override
-    public synchronized float predict(DataInstance instance) {
+    public synchronized void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         RandomUtility.setSeed(userIndex * numberOfItems + itemIndex);
-        return RandomUtility.randomFloat(minimumOfScore, maximumOfScore);
+        instance.setQuantityMark(RandomUtility.randomFloat(minimumOfScore, maximumOfScore));
     }
 
 }

@@ -368,7 +368,7 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
      * @throws RecommendException if error occurs
      */
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         DefaultScalar scalar = DefaultScalar.getInstance();
@@ -410,7 +410,7 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
         } else if (value < minimumOfScore) {
             value = minimumOfScore;
         }
-        return value;
+        instance.setQuantityMark(value);
     }
 
     /**

@@ -308,13 +308,13 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         DefaultScalar scalar = DefaultScalar.getInstance();
         float value = scalar.dotProduct(explicitUserFactors.getRowVector(userIndex), itemFactors.getRowVector(itemIndex)).getValue();
         value += scalar.dotProduct(implicitUserFactors.getRowVector(userIndex), geoInfluences.getRowVector(itemIndex)).getValue();
-        return value;
+        instance.setQuantityMark(value);
     }
 
 }

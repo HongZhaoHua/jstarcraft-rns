@@ -102,7 +102,7 @@ public class AssociationRuleRecommender extends AbstractRecommender {
      * @throws RecommendException if error occurs
      */
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float value = 0F;
@@ -112,7 +112,7 @@ public class AssociationRuleRecommender extends AbstractRecommender {
             double rate = term.getValue();
             value += rate * association;
         }
-        return value;
+        instance.setQuantityMark(value);
     }
 
 }

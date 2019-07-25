@@ -345,7 +345,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         List<Integer> items = userItemMap.get(userIndex);
@@ -357,7 +357,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
             value += userTopicProbabilities.getValue(userIndex, topicIndex) * topicItemBigramProbabilities[topicIndex][rateIndex][itemIndex];
         }
 
-        return value;
+        instance.setQuantityMark(value);
     }
 
 }

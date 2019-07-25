@@ -339,7 +339,7 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float[] socreProbabilities = new float[numberOfScores];
@@ -396,7 +396,7 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
         } else if (predict < minimumOfScore) {
             predict = minimumOfScore;
         }
-        return predict;
+        instance.setQuantityMark(predict);
     }
 
     @Override

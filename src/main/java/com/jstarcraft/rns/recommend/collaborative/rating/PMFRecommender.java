@@ -49,7 +49,7 @@ public class PMFRecommender extends MatrixFactorizationRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float value = super.predict(userIndex, itemIndex);
@@ -58,7 +58,7 @@ public class PMFRecommender extends MatrixFactorizationRecommender {
         } else if (value < minimumOfScore) {
             value = minimumOfScore;
         }
-        return value;
+        instance.setQuantityMark(value);
     }
 
 }

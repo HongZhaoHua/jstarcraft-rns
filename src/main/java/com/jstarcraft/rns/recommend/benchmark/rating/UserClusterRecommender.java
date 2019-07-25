@@ -166,7 +166,7 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float value = 0F;
@@ -180,7 +180,7 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
             }
             value += topicProbability * topicValue;
         }
-        return value;
+        instance.setQuantityMark(value);
     }
 
 }

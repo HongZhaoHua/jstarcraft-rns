@@ -64,7 +64,7 @@ public class PersonalityDiagnosisRecommender extends AbstractRecommender {
      * @throws RecommendException if error occurs
      */
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float[] probabilities = new float[scoreIndexes.size()];
@@ -122,7 +122,7 @@ public class PersonalityDiagnosisRecommender extends AbstractRecommender {
                 valueIndex = rateIndex;
             }
         }
-        return values.get(valueIndex);
+        instance.setQuantityMark(values.get(valueIndex));
     }
 
     /**

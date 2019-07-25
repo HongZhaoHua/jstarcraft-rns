@@ -19,23 +19,23 @@ import com.jstarcraft.rns.recommend.collaborative.BHFreeRecommender;
  */
 public class BHFreeRatingRecommender extends BHFreeRecommender {
 
-	@Override
-	public float predict(DataInstance instance) {
+    @Override
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
-		float value = 0F, probabilities = 0F;
-		for (Entry<Float, Integer> entry : scoreIndexes.entrySet()) {
-			float rate = entry.getKey();
-			float probability = 0F;
-			for (int userTopic = 0; userTopic < numberOfUserTopics; userTopic++) {
-				for (int itemTopic = 0; itemTopic < numberOfItemTopics; itemTopic++) {
-					probability += user2TopicProbabilities.getValue(userIndex, userTopic) * userTopic2ItemTopicProbabilities.getValue(userTopic, itemTopic) * userTopic2ItemTopicRateProbabilities[userTopic][itemTopic][entry.getValue()];
-				}
-			}
-			value += rate * probability;
-			probabilities += probability;
-		}
-		return value / probabilities;
-	}
+        float value = 0F, probabilities = 0F;
+        for (Entry<Float, Integer> entry : scoreIndexes.entrySet()) {
+            float rate = entry.getKey();
+            float probability = 0F;
+            for (int userTopic = 0; userTopic < numberOfUserTopics; userTopic++) {
+                for (int itemTopic = 0; itemTopic < numberOfItemTopics; itemTopic++) {
+                    probability += user2TopicProbabilities.getValue(userIndex, userTopic) * userTopic2ItemTopicProbabilities.getValue(userTopic, itemTopic) * userTopic2ItemTopicRateProbabilities[userTopic][itemTopic][entry.getValue()];
+                }
+            }
+            value += rate * probability;
+            probabilities += probability;
+        }
+        instance.setQuantityMark(value / probabilities);
+    }
 
 }

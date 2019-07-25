@@ -20,46 +20,48 @@ import com.jstarcraft.rns.recommend.collaborative.ItemKNNRecommender;
  */
 public class ItemKNNRankingRecommender extends ItemKNNRecommender {
 
-	@Override
-	public float predict(DataInstance instance) {
+    @Override
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
-		SparseVector userVector = userVectors[userIndex];
-		int[] neighbors = itemNeighbors[itemIndex];
-		if (userVector.getElementSize() == 0 || neighbors == null) {
-			return 0F;
-		}
+        SparseVector userVector = userVectors[userIndex];
+        int[] neighbors = itemNeighbors[itemIndex];
+        if (userVector.getElementSize() == 0 || neighbors == null) {
+            instance.setQuantityMark(0F);
+            return;
+        }
 
-		float sum = 0F, absolute = 0F;
-		int count = 0;
-		int leftIndex = 0, rightIndex = 0, leftSize = userVector.getElementSize(), rightSize = neighbors.length;
-		Iterator<VectorScalar> iterator = userVector.iterator();
-		VectorScalar term = iterator.next();
-		// 判断两个有序数组中是否存在相同的数字
-		while (leftIndex < leftSize && rightIndex < rightSize) {
-			if (term.getIndex() == neighbors[rightIndex]) {
-				count++;
-				sum += similarityMatrix.getValue(itemIndex, neighbors[rightIndex]);
-				if (iterator.hasNext()) {
-					term = iterator.next();
-				}
-				leftIndex++;
-				rightIndex++;
-			} else if (term.getIndex() > neighbors[rightIndex]) {
-				rightIndex++;
-			} else if (term.getIndex() < neighbors[rightIndex]) {
-				if (iterator.hasNext()) {
-					term = iterator.next();
-				}
-				leftIndex++;
-			}
-		}
+        float sum = 0F, absolute = 0F;
+        int count = 0;
+        int leftIndex = 0, rightIndex = 0, leftSize = userVector.getElementSize(), rightSize = neighbors.length;
+        Iterator<VectorScalar> iterator = userVector.iterator();
+        VectorScalar term = iterator.next();
+        // 判断两个有序数组中是否存在相同的数字
+        while (leftIndex < leftSize && rightIndex < rightSize) {
+            if (term.getIndex() == neighbors[rightIndex]) {
+                count++;
+                sum += similarityMatrix.getValue(itemIndex, neighbors[rightIndex]);
+                if (iterator.hasNext()) {
+                    term = iterator.next();
+                }
+                leftIndex++;
+                rightIndex++;
+            } else if (term.getIndex() > neighbors[rightIndex]) {
+                rightIndex++;
+            } else if (term.getIndex() < neighbors[rightIndex]) {
+                if (iterator.hasNext()) {
+                    term = iterator.next();
+                }
+                leftIndex++;
+            }
+        }
 
-		if (count == 0) {
-			return 0F;
-		}
+        if (count == 0) {
+            instance.setQuantityMark(0F);
+            return;
+        }
 
-		return sum;
-	}
+        instance.setQuantityMark(sum);
+    }
 
 }

@@ -171,7 +171,7 @@ public class FISMrmseRecommender extends MatrixFactorizationRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         DefaultScalar scalar = DefaultScalar.getInstance();
@@ -189,7 +189,7 @@ public class FISMrmseRecommender extends MatrixFactorizationRecommender {
             }
         }
         sum *= (float) (count > 0 ? Math.pow(count, -alpha) : 0F);
-        return bias + sum;
+        instance.setQuantityMark(bias + sum);
     }
 
 }

@@ -98,7 +98,8 @@ public class RankingTask extends AbstractTask<IntSet, IntList> {
                 continue;
             }
             copy.setQualityFeature(itemDimension, itemIndex);
-            rankList.add(new Integer2FloatKeyValue(itemIndex, recommender.predict(copy)));
+            recommender.predict(copy);
+            rankList.add(new Integer2FloatKeyValue(itemIndex, copy.getQuantityMark()));
         }
         Collections.sort(rankList, (left, right) -> {
             return Float.compare(right.getValue(), left.getValue());

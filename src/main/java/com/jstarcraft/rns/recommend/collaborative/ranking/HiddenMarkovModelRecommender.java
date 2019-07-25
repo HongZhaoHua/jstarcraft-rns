@@ -984,7 +984,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float score = 0F;
@@ -992,7 +992,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
             score += Math.exp(norms.getValue(userIndex, state) - viewProbabilities.getValue(state, itemIndex));
         }
         score = 1F - score;
-        return score;
+        instance.setQuantityMark(score);
     }
 
 }

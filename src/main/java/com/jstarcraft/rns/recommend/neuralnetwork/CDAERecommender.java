@@ -170,10 +170,10 @@ public class CDAERecommender extends ModelRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
-        return outputData.getValue(userIndex, itemIndex);
+        instance.setQuantityMark(outputData.getValue(userIndex, itemIndex));
     }
 
 }

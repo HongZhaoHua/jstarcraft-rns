@@ -33,150 +33,150 @@ import it.unimi.dsi.fastutil.ints.IntSet;
  *
  */
 public class WBPRRecommender extends MatrixFactorizationRecommender {
-	/**
-	 * user items Set
-	 */
-	// private LoadingCache<Integer, IntSet> userItemsSet;
+    /**
+     * user items Set
+     */
+    // private LoadingCache<Integer, IntSet> userItemsSet;
 
-	/**
-	 * pre-compute and sort by item's popularity
-	 */
-	private List<KeyValue<Integer, Double>> itemPopularities;
+    /**
+     * pre-compute and sort by item's popularity
+     */
+    private List<KeyValue<Integer, Double>> itemPopularities;
 
-	private List<KeyValue<Integer, Double>>[] itemProbabilities;
+    private List<KeyValue<Integer, Double>>[] itemProbabilities;
 
-	/**
-	 * items biases
-	 */
-	private DenseVector itemBiases;
+    /**
+     * items biases
+     */
+    private DenseVector itemBiases;
 
-	/**
-	 * bias regularization
-	 */
-	private float biasRegularization;
+    /**
+     * bias regularization
+     */
+    private float biasRegularization;
 
-	/**
-	 * Guava cache configuration
-	 */
-	// protected static String cacheSpec;
+    /**
+     * Guava cache configuration
+     */
+    // protected static String cacheSpec;
 
-	@Override
-	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
-		super.prepare(configuration, model, space);
-		biasRegularization = configuration.getFloat("recommender.bias.regularization", 0.01F);
+    @Override
+    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+        super.prepare(configuration, model, space);
+        biasRegularization = configuration.getFloat("recommender.bias.regularization", 0.01F);
 
-		itemBiases = DenseVector.valueOf(numberOfItems);
-		itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
-			scalar.setValue(RandomUtility.randomFloat(0.01F));
-		});
+        itemBiases = DenseVector.valueOf(numberOfItems);
+        itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
+            scalar.setValue(RandomUtility.randomFloat(0.01F));
+        });
 
-		// pre-compute and sort by item's popularity
-		itemPopularities = new ArrayList<>(numberOfItems);
-		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-			itemPopularities.add(new KeyValue<>(itemIndex, Double.valueOf(scoreMatrix.getColumnScope(itemIndex))));
-		}
-		Collections.sort(itemPopularities, (left, right) -> {
-			// 降序
-			return right.getValue().compareTo(left.getValue());
-		});
+        // pre-compute and sort by item's popularity
+        itemPopularities = new ArrayList<>(numberOfItems);
+        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            itemPopularities.add(new KeyValue<>(itemIndex, Double.valueOf(scoreMatrix.getColumnScope(itemIndex))));
+        }
+        Collections.sort(itemPopularities, (left, right) -> {
+            // 降序
+            return right.getValue().compareTo(left.getValue());
+        });
 
-		itemProbabilities = new List[numberOfUsers];
-		List<IntSet> userItemSet = getUserItemSet(scoreMatrix);
-		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
-			IntSet scoreSet = userItemSet.get(userIndex);
-			List<KeyValue<Integer, Double>> probabilities = new LinkedList<>();
-			itemProbabilities[userIndex] = probabilities;
-			// filter candidate items
-			double sum = 0;
-			for (KeyValue<Integer, Double> term : itemPopularities) {
-				int itemIndex = term.getKey();
-				double popularity = term.getValue();
-				if (!scoreSet.contains(itemIndex) && popularity > 0D) {
-					// make a clone to prevent bugs from normalization
-					probabilities.add(term);
-					sum += popularity;
-				}
-			}
-			// normalization
-			for (KeyValue<Integer, Double> term : probabilities) {
-				term.setValue(term.getValue() / sum);
-			}
-		}
-	}
+        itemProbabilities = new List[numberOfUsers];
+        List<IntSet> userItemSet = getUserItemSet(scoreMatrix);
+        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            IntSet scoreSet = userItemSet.get(userIndex);
+            List<KeyValue<Integer, Double>> probabilities = new LinkedList<>();
+            itemProbabilities[userIndex] = probabilities;
+            // filter candidate items
+            double sum = 0;
+            for (KeyValue<Integer, Double> term : itemPopularities) {
+                int itemIndex = term.getKey();
+                double popularity = term.getValue();
+                if (!scoreSet.contains(itemIndex) && popularity > 0D) {
+                    // make a clone to prevent bugs from normalization
+                    probabilities.add(term);
+                    sum += popularity;
+                }
+            }
+            // normalization
+            for (KeyValue<Integer, Double> term : probabilities) {
+                term.setValue(term.getValue() / sum);
+            }
+        }
+    }
 
-	@Override
-	protected void doPractice() {
-		for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-			totalLoss = 0F;
-			for (int sampleIndex = 0, sampleTimes = numberOfUsers * 100; sampleIndex < sampleTimes; sampleIndex++) {
-				// randomly draw (userIdx, posItemIdx, negItemIdx)
-				int userIndex, positiveItemIndex, negativeItemIndex = 0;
-				List<KeyValue<Integer, Double>> probabilities;
-				while (true) {
-					userIndex = RandomUtility.randomInteger(numberOfUsers);
-					SparseVector userVector = scoreMatrix.getRowVector(userIndex);
-					if (userVector.getElementSize() == 0) {
-						continue;
-					}
-					positiveItemIndex = userVector.getIndex(RandomUtility.randomInteger(userVector.getElementSize()));
-					// sample j by popularity (probability)
-					probabilities = itemProbabilities[userIndex];
-					double random = RandomUtility.randomDouble(1D);
-					for (KeyValue<Integer, Double> term : probabilities) {
-						if ((random -= term.getValue()) <= 0D) {
-							negativeItemIndex = term.getKey();
-							break;
-						}
-					}
-					break;
-				}
+    @Override
+    protected void doPractice() {
+        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
+            totalLoss = 0F;
+            for (int sampleIndex = 0, sampleTimes = numberOfUsers * 100; sampleIndex < sampleTimes; sampleIndex++) {
+                // randomly draw (userIdx, posItemIdx, negItemIdx)
+                int userIndex, positiveItemIndex, negativeItemIndex = 0;
+                List<KeyValue<Integer, Double>> probabilities;
+                while (true) {
+                    userIndex = RandomUtility.randomInteger(numberOfUsers);
+                    SparseVector userVector = scoreMatrix.getRowVector(userIndex);
+                    if (userVector.getElementSize() == 0) {
+                        continue;
+                    }
+                    positiveItemIndex = userVector.getIndex(RandomUtility.randomInteger(userVector.getElementSize()));
+                    // sample j by popularity (probability)
+                    probabilities = itemProbabilities[userIndex];
+                    double random = RandomUtility.randomDouble(1D);
+                    for (KeyValue<Integer, Double> term : probabilities) {
+                        if ((random -= term.getValue()) <= 0D) {
+                            negativeItemIndex = term.getKey();
+                            break;
+                        }
+                    }
+                    break;
+                }
 
-				// update parameters
-				float positiveRate = predict(userIndex, positiveItemIndex);
-				float negativeRate = predict(userIndex, negativeItemIndex);
-				float error = positiveRate - negativeRate;
-				float value = (float) -Math.log(LogisticUtility.getValue(error));
-				totalLoss += value;
-				value = LogisticUtility.getValue(-error);
+                // update parameters
+                float positiveRate = predict(userIndex, positiveItemIndex);
+                float negativeRate = predict(userIndex, negativeItemIndex);
+                float error = positiveRate - negativeRate;
+                float value = (float) -Math.log(LogisticUtility.getValue(error));
+                totalLoss += value;
+                value = LogisticUtility.getValue(-error);
 
-				// update bias
-				float positiveBias = itemBiases.getValue(positiveItemIndex), negativeBias = itemBiases.getValue(negativeItemIndex);
-				itemBiases.shiftValue(positiveItemIndex, learnRate * (value - biasRegularization * positiveBias));
-				itemBiases.shiftValue(negativeItemIndex, learnRate * (-value - biasRegularization * negativeBias));
-				totalLoss += biasRegularization * (positiveBias * positiveBias + negativeBias * negativeBias);
+                // update bias
+                float positiveBias = itemBiases.getValue(positiveItemIndex), negativeBias = itemBiases.getValue(negativeItemIndex);
+                itemBiases.shiftValue(positiveItemIndex, learnRate * (value - biasRegularization * positiveBias));
+                itemBiases.shiftValue(negativeItemIndex, learnRate * (-value - biasRegularization * negativeBias));
+                totalLoss += biasRegularization * (positiveBias * positiveBias + negativeBias * negativeBias);
 
-				// update user/item vectors
-				for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
-					float userFactor = userFactors.getValue(userIndex, factorIndex);
-					float positiveItemFactor = itemFactors.getValue(positiveItemIndex, factorIndex);
-					float negativeItemFactor = itemFactors.getValue(negativeItemIndex, factorIndex);
-					userFactors.shiftValue(userIndex, factorIndex, learnRate * (value * (positiveItemFactor - negativeItemFactor) - userRegularization * userFactor));
-					itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRate * (value * userFactor - itemRegularization * positiveItemFactor));
-					itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRate * (value * (-userFactor) - itemRegularization * negativeItemFactor));
-					totalLoss += userRegularization * userFactor * userFactor + itemRegularization * positiveItemFactor * positiveItemFactor + itemRegularization * negativeItemFactor * negativeItemFactor;
-				}
-			}
-			if (isConverged(iterationStep) && isConverged) {
-				break;
-			}
-			isLearned(iterationStep);
-			currentLoss = totalLoss;
-		}
-	}
+                // update user/item vectors
+                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                    float userFactor = userFactors.getValue(userIndex, factorIndex);
+                    float positiveItemFactor = itemFactors.getValue(positiveItemIndex, factorIndex);
+                    float negativeItemFactor = itemFactors.getValue(negativeItemIndex, factorIndex);
+                    userFactors.shiftValue(userIndex, factorIndex, learnRate * (value * (positiveItemFactor - negativeItemFactor) - userRegularization * userFactor));
+                    itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRate * (value * userFactor - itemRegularization * positiveItemFactor));
+                    itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRate * (value * (-userFactor) - itemRegularization * negativeItemFactor));
+                    totalLoss += userRegularization * userFactor * userFactor + itemRegularization * positiveItemFactor * positiveItemFactor + itemRegularization * negativeItemFactor * negativeItemFactor;
+                }
+            }
+            if (isConverged(iterationStep) && isConverged) {
+                break;
+            }
+            isLearned(iterationStep);
+            currentLoss = totalLoss;
+        }
+    }
 
-	@Override
-	protected float predict(int userIndex, int itemIndex) {
-		DefaultScalar scalar = DefaultScalar.getInstance();
-		DenseVector userVector = userFactors.getRowVector(userIndex);
-		DenseVector itemVector = itemFactors.getRowVector(itemIndex);
-		return itemBiases.getValue(itemIndex) + scalar.dotProduct(userVector, itemVector).getValue();
-	}
+    @Override
+    protected float predict(int userIndex, int itemIndex) {
+        DefaultScalar scalar = DefaultScalar.getInstance();
+        DenseVector userVector = userFactors.getRowVector(userIndex);
+        DenseVector itemVector = itemFactors.getRowVector(itemIndex);
+        return itemBiases.getValue(itemIndex) + scalar.dotProduct(userVector, itemVector).getValue();
+    }
 
-	@Override
-	public float predict(DataInstance instance) {
+    @Override
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
-		return predict(userIndex, itemIndex);
-	}
+        instance.setQuantityMark(predict(userIndex, itemIndex));
+    }
 
 }

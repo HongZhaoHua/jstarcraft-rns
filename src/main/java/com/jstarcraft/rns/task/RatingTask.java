@@ -27,50 +27,51 @@ import it.unimi.dsi.fastutil.floats.FloatList;
  */
 public class RatingTask extends AbstractTask<FloatList, FloatList> {
 
-	public RatingTask(Class<? extends Recommender> clazz, Configuration configuration) {
-		super(clazz, configuration);
-	}
+    public RatingTask(Class<? extends Recommender> clazz, Configuration configuration) {
+        super(clazz, configuration);
+    }
 
-	@Override
-	protected Collection<Evaluator> getEvaluators(SparseMatrix featureMatrix) {
-		Collection<Evaluator> evaluators = new LinkedList<>();
-		evaluators.add(new MAEEvaluator());
-		evaluators.add(new MPEEvaluator(0.01F));
-		evaluators.add(new MSEEvaluator());
-		return evaluators;
-	}
+    @Override
+    protected Collection<Evaluator> getEvaluators(SparseMatrix featureMatrix) {
+        Collection<Evaluator> evaluators = new LinkedList<>();
+        evaluators.add(new MAEEvaluator());
+        evaluators.add(new MPEEvaluator(0.01F));
+        evaluators.add(new MSEEvaluator());
+        return evaluators;
+    }
 
-	@Override
-	protected FloatList check(int userIndex) {
-	    DataInstance instance = testMarker.getInstance(0);
-		int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
-		FloatList scoreList = new FloatArrayList(to - from);
-		for (int index = from, size = to; index < size; index++) {
-			int position = testPositions[index];
-			instance.setCursor(position);
-			scoreList.add(instance.getQuantityMark());
-		}
-		return scoreList;
-	}
+    @Override
+    protected FloatList check(int userIndex) {
+        DataInstance instance = testMarker.getInstance(0);
+        int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
+        FloatList scoreList = new FloatArrayList(to - from);
+        for (int index = from, size = to; index < size; index++) {
+            int position = testPositions[index];
+            instance.setCursor(position);
+            scoreList.add(instance.getQuantityMark());
+        }
+        return scoreList;
+    }
 
-	@Override
-	protected FloatList recommend(Recommender recommender, int userIndex) {
-	    DataInstance instance = testMarker.getInstance(0);
-	    int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
+    @Override
+    protected FloatList recommend(Recommender recommender, int userIndex) {
+        DataInstance instance = testMarker.getInstance(0);
+        int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
         ArrayInstance copy = new ArrayInstance(testMarker.getQualityOrder(), testMarker.getQuantityOrder());
         List<Integer2FloatKeyValue> rateList = new ArrayList<>(to - from);
         for (int index = from, size = to; index < size; index++) {
             int position = testPositions[index];
             instance.setCursor(position);
             copy.copyInstance(instance);
-            rateList.add(new Integer2FloatKeyValue(copy.getQualityFeature(itemDimension), recommender.predict(copy)));
+            recommender.predict(copy);
+            rateList.add(new Integer2FloatKeyValue(copy.getQualityFeature(itemDimension), copy.getQuantityMark()));
         }
-        
+
         FloatList recommendList = new FloatArrayList(rateList.size());
         for (Integer2FloatKeyValue keyValue : rateList) {
             recommendList.add(keyValue.getValue());
         }
         return recommendList;
-	}
+    }
 
 }

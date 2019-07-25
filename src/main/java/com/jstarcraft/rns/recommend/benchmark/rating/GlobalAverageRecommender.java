@@ -23,8 +23,8 @@ public class GlobalAverageRecommender extends AbstractRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
-        return meanOfScore;
+    public void predict(DataInstance instance) {
+        instance.setQuantityMark(meanOfScore);
     }
 
 }

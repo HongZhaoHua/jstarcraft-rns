@@ -39,7 +39,7 @@ public class EFMRankingRecommender extends EFMRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         DefaultScalar scalar = DefaultScalar.getInstance();
@@ -65,7 +65,7 @@ public class EFMRankingRecommender extends EFMRecommender {
         }
         value = threshold * (value / (featureLimit * maximumOfScore));
         value = value + (1F - threshold) * predict(userIndex, itemIndex);
-        return value;
+        instance.setQuantityMark(value);
     }
 
 }

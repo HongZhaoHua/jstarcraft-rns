@@ -82,7 +82,7 @@ public class SlopeOneRecommender extends AbstractRecommender {
      * @throws RecommendException if error occurs
      */
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         SparseVector userVector = scoreMatrix.getRowVector(userIndex);
@@ -97,7 +97,7 @@ public class SlopeOneRecommender extends AbstractRecommender {
                 sum += cardinary;
             }
         }
-        return sum > 0F ? value / sum : meanOfScore;
+        instance.setQuantityMark(sum > 0F ? value / sum : meanOfScore);
     }
 
 }

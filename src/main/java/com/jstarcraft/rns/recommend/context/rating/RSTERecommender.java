@@ -147,7 +147,7 @@ public class RSTERecommender extends SocialRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         DefaultScalar scalar = DefaultScalar.getInstance();
@@ -163,7 +163,7 @@ public class RSTERecommender extends SocialRecommender {
             socialWeight += rate;
         }
         predict = userSocialRatio * predict + (1 - userSocialRatio) * (socialWeight > 0 ? sum / socialWeight : 0);
-        return denormalize(LogisticUtility.getValue(predict));
+        instance.setQuantityMark(denormalize(LogisticUtility.getValue(predict)));
     }
 
 }

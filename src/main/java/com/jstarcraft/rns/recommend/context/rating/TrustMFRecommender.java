@@ -321,12 +321,12 @@ public class TrustMFRecommender extends SocialRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float predict = predict(userIndex, itemIndex);
         predict = denormalize(LogisticUtility.getValue(predict));
-        return predict;
+        instance.setQuantityMark(predict);
     }
 
 }

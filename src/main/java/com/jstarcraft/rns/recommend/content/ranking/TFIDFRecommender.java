@@ -231,10 +231,10 @@ public class TFIDFRecommender extends MatrixFactorizationRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
-        return predict(userIndex, itemIndex);
+        instance.setQuantityMark(predict(userIndex, itemIndex));
     }
 
 }

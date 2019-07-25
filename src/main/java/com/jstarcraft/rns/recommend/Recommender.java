@@ -46,7 +46,7 @@ public interface Recommender {
 	 * @param featureIndexes
 	 * @return
 	 */
-	float predict(DataInstance instance);
+	void predict(DataInstance instance);
 	// double predict(int userIndex, int itemIndex, int... featureIndexes);
 
 }

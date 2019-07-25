@@ -115,7 +115,7 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         SparseVector userVector = scoreMatrix.getRowVector(userIndex);
@@ -130,7 +130,7 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
         if (scale > 0F) {
             factorVector.scaleValues(1F / scale);
         }
-        return predict(userIndex, itemIndex, factorVector);
+        instance.setQuantityMark(predict(userIndex, itemIndex, factorVector));
     }
 
 }

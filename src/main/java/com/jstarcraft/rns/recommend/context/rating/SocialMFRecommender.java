@@ -134,11 +134,11 @@ public class SocialMFRecommender extends SocialRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float predict = super.predict(userIndex, itemIndex);
-        return denormalize(LogisticUtility.getValue(predict));
+        instance.setQuantityMark(denormalize(LogisticUtility.getValue(predict)));
     }
 
 }

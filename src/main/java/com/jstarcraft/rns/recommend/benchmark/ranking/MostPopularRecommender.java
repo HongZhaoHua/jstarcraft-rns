@@ -37,9 +37,9 @@ public class MostPopularRecommender extends AbstractRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int itemIndex = instance.getQualityFeature(itemDimension);
-        return populars[itemIndex];
+        instance.setQuantityMark(populars[itemIndex]);
     }
 
 }

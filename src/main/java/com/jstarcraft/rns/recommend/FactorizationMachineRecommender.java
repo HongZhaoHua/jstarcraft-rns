@@ -180,11 +180,11 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         DefaultScalar scalar = DefaultScalar.getInstance();
         // TODO 暂时不支持连续特征,考虑将连续特征离散化.
         MathVector featureVector = getFeatureVector(instance);
-        return predict(scalar, featureVector);
+        instance.setQuantityMark(predict(scalar, featureVector));
     }
 
 }

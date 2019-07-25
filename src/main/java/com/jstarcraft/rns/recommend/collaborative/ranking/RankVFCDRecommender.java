@@ -309,7 +309,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         DefaultScalar scalar = DefaultScalar.getInstance();
@@ -319,7 +319,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
         } else {
             score = scalar.dotProduct(userFactors.getRowVector(userIndex), explicitItemFactors.getRowVector(itemIndex)).getValue();
         }
-        return score;
+        instance.setQuantityMark(score);
     }
 
 }

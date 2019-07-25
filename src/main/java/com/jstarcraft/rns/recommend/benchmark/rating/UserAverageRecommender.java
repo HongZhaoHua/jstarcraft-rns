@@ -40,9 +40,9 @@ public class UserAverageRecommender extends AbstractRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
-        return userMeans[userIndex];
+        instance.setQuantityMark(userMeans[userIndex]);
     }
 
 }

@@ -32,44 +32,44 @@ import com.jstarcraft.rns.recommend.NeuralNetworkRecommender;
  */
 public class AutoRecRecommender extends NeuralNetworkRecommender {
 
-	/**
-	 * the data structure that indicates which element in the user-item is non-zero
-	 */
-	private INDArray maskData;
+    /**
+     * the data structure that indicates which element in the user-item is non-zero
+     */
+    private INDArray maskData;
 
-	@Override
-	protected int getInputDimension() {
-		return numberOfUsers;
-	}
+    @Override
+    protected int getInputDimension() {
+        return numberOfUsers;
+    }
 
-	@Override
-	protected MultiLayerConfiguration getNetworkConfiguration() {
-		NeuralNetConfiguration.ListBuilder factory = new NeuralNetConfiguration.Builder().seed(6).updater(new Nesterovs(learnRate, momentum)).weightInit(WeightInit.XAVIER_UNIFORM).optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).l2(weightRegularization).list();
-		factory.layer(0, new DenseLayer.Builder().nIn(inputDimension).nOut(hiddenDimension).activation(Activation.fromString(hiddenActivation)).build());
-		factory.layer(1, new OutputLayer.Builder(new AutoRecLearner(maskData)).nIn(hiddenDimension).nOut(inputDimension).activation(Activation.fromString(outputActivation)).build());
-		MultiLayerConfiguration configuration = factory.pretrain(false).backprop(true).build();
-		return configuration;
-	}
+    @Override
+    protected MultiLayerConfiguration getNetworkConfiguration() {
+        NeuralNetConfiguration.ListBuilder factory = new NeuralNetConfiguration.Builder().seed(6).updater(new Nesterovs(learnRate, momentum)).weightInit(WeightInit.XAVIER_UNIFORM).optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).l2(weightRegularization).list();
+        factory.layer(0, new DenseLayer.Builder().nIn(inputDimension).nOut(hiddenDimension).activation(Activation.fromString(hiddenActivation)).build());
+        factory.layer(1, new OutputLayer.Builder(new AutoRecLearner(maskData)).nIn(hiddenDimension).nOut(inputDimension).activation(Activation.fromString(outputActivation)).build());
+        MultiLayerConfiguration configuration = factory.pretrain(false).backprop(true).build();
+        return configuration;
+    }
 
-	@Override
-	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
-		super.prepare(configuration, model, space);
-		// transform the sparse matrix to INDArray
-		int[] matrixShape = new int[] { numberOfItems, numberOfUsers };
-		inputData = Nd4j.zeros(matrixShape);
-		maskData = Nd4j.zeros(matrixShape);
-		for (MatrixScalar term : scoreMatrix) {
-			if (term.getValue() > 0D) {
-				inputData.putScalar(term.getColumn(), term.getRow(), term.getValue());
-				maskData.putScalar(term.getColumn(), term.getRow(), 1D);
-			}
-		}
-	}
+    @Override
+    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+        super.prepare(configuration, model, space);
+        // transform the sparse matrix to INDArray
+        int[] matrixShape = new int[] { numberOfItems, numberOfUsers };
+        inputData = Nd4j.zeros(matrixShape);
+        maskData = Nd4j.zeros(matrixShape);
+        for (MatrixScalar term : scoreMatrix) {
+            if (term.getValue() > 0D) {
+                inputData.putScalar(term.getColumn(), term.getRow(), term.getValue());
+                maskData.putScalar(term.getColumn(), term.getRow(), 1D);
+            }
+        }
+    }
 
-	@Override
-	public float predict(DataInstance instance) {
+    @Override
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
-		return outputData.getFloat(itemIndex, userIndex);
-	}
+        instance.setQuantityMark(outputData.getFloat(itemIndex, userIndex));
+    }
 }

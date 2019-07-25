@@ -21,13 +21,14 @@ import com.jstarcraft.rns.recommend.collaborative.UserKNNRecommender;
 public class UserKNNRatingRecommender extends UserKNNRecommender {
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         SparseVector itemVector = itemVectors[itemIndex];
         int[] neighbors = userNeighbors[userIndex];
         if (itemVector.getElementSize() == 0 || neighbors == null) {
-            return meanOfScore;
+            instance.setQuantityMark(meanOfScore);
+            return;
         }
 
         float sum = 0F, absolute = 0F;
@@ -59,10 +60,11 @@ public class UserKNNRatingRecommender extends UserKNNRecommender {
         }
 
         if (count == 0) {
-            return meanOfScore;
+            instance.setQuantityMark(meanOfScore);
+            return;
         }
 
-        return absolute > 0 ? userMeans.getValue(userIndex) + sum / absolute : meanOfScore;
+        instance.setQuantityMark(absolute > 0 ? userMeans.getValue(userIndex) + sum / absolute : meanOfScore);
     }
 
 }

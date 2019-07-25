@@ -20,21 +20,21 @@ import com.jstarcraft.rns.recommend.collaborative.BUCMRecommender;
  */
 public class BUCMRatingRecommender extends BUCMRecommender {
 
-	@Override
-	public float predict(DataInstance instance) {
+    @Override
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
-		float value = 0F, probabilities = 0F;
-		for (Entry<Float, Integer> term : scoreIndexes.entrySet()) {
-			float rate = term.getKey();
-			float probability = 0F;
-			for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
-				probability += userTopicProbabilities.getValue(userIndex, topicIndex) * topicItemProbabilities.getValue(topicIndex, itemIndex) * topicItemRateProbabilities[topicIndex][itemIndex][term.getValue()];
-			}
-			value += probability * rate;
-			probabilities += probability;
-		}
-		return value / probabilities;
-	}
+        float value = 0F, probabilities = 0F;
+        for (Entry<Float, Integer> term : scoreIndexes.entrySet()) {
+            float rate = term.getKey();
+            float probability = 0F;
+            for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+                probability += userTopicProbabilities.getValue(userIndex, topicIndex) * topicItemProbabilities.getValue(topicIndex, itemIndex) * topicItemRateProbabilities[topicIndex][itemIndex][term.getValue()];
+            }
+            value += probability * rate;
+            probabilities += probability;
+        }
+        instance.setQuantityMark(value / probabilities);
+    }
 
 }

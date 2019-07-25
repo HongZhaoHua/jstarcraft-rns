@@ -40,9 +40,9 @@ public class ItemAverageRecommender extends AbstractRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int itemIndex = instance.getQualityFeature(itemDimension);
-        return itemMeans[itemIndex];
+        instance.setQuantityMark(itemMeans[itemIndex]);
     }
 
 }

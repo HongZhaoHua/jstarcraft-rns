@@ -285,7 +285,7 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         DefaultScalar scalar = DefaultScalar.getInstance();
@@ -295,7 +295,7 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
             DenseVector itemVector = itemMatrixes[iterationStep].getRowVector(itemIndex);
             value = (value * (iterationStep) + meanOfScore + scalar.dotProduct(userVector, itemVector).getValue()) / (iterationStep + 1);
         }
-        return value;
+        instance.setQuantityMark(value);
     }
 
 }

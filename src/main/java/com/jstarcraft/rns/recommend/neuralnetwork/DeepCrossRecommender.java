@@ -314,11 +314,11 @@ public class DeepCrossRecommender extends ModelRecommender {
     }
 
     @Override
-    public float predict(DataInstance instance) {
+    public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float value = outputData.getValue(userIndex, itemIndex);
-        return value;
+        instance.setQuantityMark(value);
     }
 
 }
