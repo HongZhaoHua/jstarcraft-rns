@@ -1,12 +1,15 @@
 package com.jstarcraft.rns.search;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.ByteBuffersDirectory;
@@ -118,7 +121,7 @@ public class Searcher implements AutoCloseable {
         } finally {
             unlockRead();
         }
-        
+
         this.persistenceManager.mergeManager();
 
         try {
@@ -189,7 +192,7 @@ public class Searcher implements AutoCloseable {
      * @return
      * @throws Exception
      */
-    public TopDocs retrieveDocuments(Query query, Sort sort, int size) {
+    public List<Document> retrieveDocuments(Query query, Sort sort, int size) {
         try {
             lockRead();
             synchronized (this.semaphore) {
@@ -197,7 +200,19 @@ public class Searcher implements AutoCloseable {
                     this.searcher = new LuceneSearcher(this.transienceManager, this.persistenceManager);
                 }
             }
-            return this.searcher.search(query, size, sort);
+            TopDocs search = null;
+            if (sort == null) {
+                search = this.searcher.search(query, size);
+            } else {
+                search = this.searcher.search(query, size, sort);
+            }
+            ScoreDoc[] scores = search.scoreDocs;
+            ArrayList<Document> documents = new ArrayList<>(scores.length);
+            for (ScoreDoc score : scores) {
+                Document document = this.searcher.doc(score.doc);
+                documents.add(document);
+            }
+            return documents;
         } catch (Exception exception) {
             throw new SearchException(exception);
         } finally {
