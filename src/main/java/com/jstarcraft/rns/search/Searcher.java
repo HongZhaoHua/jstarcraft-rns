@@ -11,12 +11,15 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
+import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.search.exception.SearchException;
+
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.floats.FloatList;
 
 /**
  * 搜索器
@@ -192,7 +195,7 @@ public class Searcher implements AutoCloseable {
      * @return
      * @throws Exception
      */
-    public List<Document> retrieveDocuments(Query query, Sort sort, int size) {
+    public KeyValue<List<Document>, FloatList> retrieveDocuments(Query query, Sort sort, int size) {
         try {
             lockRead();
             synchronized (this.semaphore) {
@@ -200,19 +203,20 @@ public class Searcher implements AutoCloseable {
                     this.searcher = new LuceneSearcher(this.transienceManager, this.persistenceManager);
                 }
             }
-            TopDocs search = null;
+            ScoreDoc[] search = null;
             if (sort == null) {
-                search = this.searcher.search(query, size);
+                search = this.searcher.search(query, size).scoreDocs;
             } else {
-                search = this.searcher.search(query, size, sort);
+                search = this.searcher.search(query, size, sort).scoreDocs;
             }
-            ScoreDoc[] scores = search.scoreDocs;
-            ArrayList<Document> documents = new ArrayList<>(scores.length);
-            for (ScoreDoc score : scores) {
+            ArrayList<Document> documents = new ArrayList<>(search.length);
+            FloatList scores = new FloatArrayList(search.length);
+            for (ScoreDoc score : search) {
                 Document document = this.searcher.doc(score.doc);
                 documents.add(document);
+                scores.add(score.score);
             }
-            return documents;
+            return new KeyValue<>(documents, scores);
         } catch (Exception exception) {
             throw new SearchException(exception);
         } finally {
