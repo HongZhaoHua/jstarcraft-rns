@@ -8,7 +8,7 @@ import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.FactorizationMachineRecommender;
 
 /**
@@ -34,7 +34,7 @@ public class FFMRecommender extends FactorizationMachineRecommender {
     private int[] featureOrders;
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
         // Matrix for p * (factor * filed)

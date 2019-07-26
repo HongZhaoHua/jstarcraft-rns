@@ -16,7 +16,7 @@ import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.content.ranking.EFMRankingRecommender;
 import com.jstarcraft.rns.recommend.content.rating.EFMRatingRecommender;
 import com.jstarcraft.rns.task.RankingTask;
@@ -26,7 +26,7 @@ public class EFMTestCase {
 
 	@Test
 	public void testRecommenderByRanking() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommend/content/efmranking-test.properties");
+		Configurator configuration = Configurator.valueOf("recommend/content/efmranking-test.properties");
 		RankingTask job = new RankingTask(EFMRankingRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.6127146F));
@@ -40,7 +40,7 @@ public class EFMTestCase {
 
 	@Test
 	public void testRecommenderByRating() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommend/content/efmrating-test.properties");
+		Configurator configuration = Configurator.valueOf("recommend/content/efmrating-test.properties");
 		RatingTask job = new RatingTask(EFMRatingRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.6154602F));

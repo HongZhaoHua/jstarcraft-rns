@@ -14,7 +14,7 @@ import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.ai.modem.ModemCodec;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.Recommender;
 import com.jstarcraft.rns.recommend.benchmark.ranking.MostPopularRecommender;
 import com.jstarcraft.rns.task.RankingTask;
@@ -23,7 +23,7 @@ public class MostPopularTestCase {
 
     @Test
     public void testRecommender() throws Exception {
-        Configuration configuration = Configuration.valueOf("recommend/benchmark/mostpopular-test.properties");
+        Configurator configuration = Configurator.valueOf("recommend/benchmark/mostpopular-test.properties");
         RankingTask job = new RankingTask(MostPopularRecommender.class, configuration);
         Map<String, Float> measures = job.execute();
         Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9350321F));

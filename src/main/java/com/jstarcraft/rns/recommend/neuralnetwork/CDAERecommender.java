@@ -29,7 +29,7 @@ import com.jstarcraft.ai.model.neuralnetwork.parameter.XavierParameterFactory;
 import com.jstarcraft.ai.model.neuralnetwork.schedule.ConstantSchedule;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.LayerVertex;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.ModelRecommender;
 
 /**
@@ -105,7 +105,7 @@ public class CDAERecommender extends ModelRecommender {
     }
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         inputDimension = getInputDimension();
         hiddenDimension = configuration.getInteger("recommender.hidden.dimension");

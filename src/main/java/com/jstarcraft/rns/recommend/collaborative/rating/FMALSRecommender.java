@@ -11,7 +11,7 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.FactorizationMachineRecommender;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
@@ -36,7 +36,7 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
     private SparseMatrix featureMatrix;
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // init Q
         // TODO 此处为rateFactors

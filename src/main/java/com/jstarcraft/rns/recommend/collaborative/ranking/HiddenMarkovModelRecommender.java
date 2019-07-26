@@ -22,7 +22,7 @@ import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.ProbabilisticGraphicalRecommender;
 import com.jstarcraft.rns.recommend.exception.RecommendException;
 import com.jstarcraft.rns.utility.GammaUtility;
@@ -363,7 +363,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
     }
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // 上下文维度
         contextField = configuration.getString("data.model.fields.context");

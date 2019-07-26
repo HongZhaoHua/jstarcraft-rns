@@ -36,7 +36,7 @@ import com.jstarcraft.core.common.reflection.TypeUtility;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.data.processor.DataMatcher;
 import com.jstarcraft.rns.data.processor.DataSorter;
 import com.jstarcraft.rns.data.splitter.DataSplitter;
@@ -62,7 +62,7 @@ public abstract class AbstractTask<L, R> {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    protected Configuration configuration;
+    protected Configurator configuration;
 
     protected String userField, itemField;
 
@@ -74,7 +74,7 @@ public abstract class AbstractTask<L, R> {
 
     protected Recommender recommender;
 
-    protected AbstractTask(Class<? extends Recommender> clazz, Configuration configuration) {
+    protected AbstractTask(Class<? extends Recommender> clazz, Configurator configuration) {
         this.configuration = configuration;
         Long seed = configuration.getLong("recommender.random.seed");
         if (seed != null) {

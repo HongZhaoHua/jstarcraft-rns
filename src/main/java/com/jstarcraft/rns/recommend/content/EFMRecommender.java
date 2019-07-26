@@ -20,7 +20,7 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.utility.MathUtility;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.MatrixFactorizationRecommender;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
@@ -59,7 +59,7 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 	protected float featureRegularization;
 
 	@Override
-	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+	public void prepare(Configurator configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
 
 		commentField = configuration.getString("data.model.fields.comment");

@@ -7,7 +7,7 @@ import com.jstarcraft.ai.data.module.ArrayInstance;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.utility.LogisticUtility;
 
 /**
@@ -29,7 +29,7 @@ public class LambdaFMWeightRecommender extends LambdaFMRecommender {
     private int Y, N;
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         epsilon = configuration.getFloat("epsilon");
         orderLosses = new float[itemSize - 1];

@@ -14,7 +14,7 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.ai.modem.ModemDefinition;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.ProbabilisticGraphicalRecommender;
 
 /**
@@ -77,7 +77,7 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
     }
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         topicScoreMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfScores);
         for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {

@@ -11,7 +11,7 @@ import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.MatrixFactorizationRecommender;
 import com.jstarcraft.rns.utility.MatrixUtility;
 
@@ -42,7 +42,7 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
 	private List<Integer> itemList;
 
 	@Override
-	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+	public void prepare(Configurator configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
 		weight = configuration.getBoolean("recommender.rankals.support.weight", true);
 		weightVector = DenseVector.valueOf(itemSize);

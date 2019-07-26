@@ -3,7 +3,7 @@ package com.jstarcraft.rns.recommend;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.exception.RecommendException;
 
 /**
@@ -43,7 +43,7 @@ public abstract class ProbabilisticGraphicalRecommender extends ModelRecommender
 	 *             if error occurs during setting up
 	 */
 	@Override
-	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+	public void prepare(Configurator configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
 		numberOfFactors = configuration.getInteger("recommender.topic.number", 10);
 		numberOfScores = scoreIndexes.size();

@@ -4,7 +4,7 @@ import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.modem.ModemDefinition;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.AbstractRecommender;
 
 /**
@@ -24,7 +24,7 @@ public class ConstantGuessRecommender extends AbstractRecommender {
     private float constant;
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // 默认使用最高最低分的平均值
         constant = (minimumOfScore + maximumOfScore) / 2F;

@@ -20,7 +20,7 @@ import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.utility.Integer2FloatKeyValue;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.Recommender;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -36,7 +36,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
  */
 public class RankingTask extends AbstractTask<IntSet, IntList> {
 
-    public RankingTask(Class<? extends Recommender> clazz, Configuration configuration) {
+    public RankingTask(Class<? extends Recommender> clazz, Configurator configuration) {
         super(clazz, configuration);
     }
 

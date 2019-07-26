@@ -3,7 +3,7 @@ package com.jstarcraft.rns.recommend;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 
 /**
  * 推荐器
@@ -23,9 +23,9 @@ public interface Recommender {
 	/**
 	 * 准备
 	 * 
-	 * @param configuration
+	 * @param configurator
 	 */
-	void prepare(Configuration configuration, DataModule module, DataSpace space);
+	void prepare(Configurator configurator, DataModule module, DataSpace space);
 	// void prepare(Configuration configuration, SparseTensor trainTensor,
 	// SparseTensor testTensor, DataSpace storage);
 

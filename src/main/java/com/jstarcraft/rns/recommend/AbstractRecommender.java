@@ -16,7 +16,7 @@ import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.core.resource.annotation.ResourceConfiguration;
 import com.jstarcraft.core.resource.annotation.ResourceId;
 import com.jstarcraft.core.utility.KeyValue;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.data.processor.DataMatcher;
 import com.jstarcraft.rns.data.processor.DataSorter;
 
@@ -66,7 +66,7 @@ public abstract class AbstractRecommender implements Recommender {
     protected int[] dataPositions;
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         userField = configuration.getString("data.model.fields.user", "user");
         itemField = configuration.getString("data.model.fields.item", "item");
 

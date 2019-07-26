@@ -12,7 +12,7 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.MatrixFactorizationRecommender;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
@@ -45,7 +45,7 @@ public class FISMrmseRecommender extends MatrixFactorizationRecommender {
     private DenseVector itemBiases, userBiases;
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // 注意:FISM使用itemFactors来组成userFactors
         userFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);

@@ -16,7 +16,7 @@ import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.benchmark.RandomGuessRecommender;
 import com.jstarcraft.rns.task.RankingTask;
 import com.jstarcraft.rns.task.RatingTask;
@@ -25,7 +25,7 @@ public class RandomGuessTestCase {
 
 	@Test
 	public void testRecommenderByRanking() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommend/benchmark/randomguess-test.properties");
+		Configurator configuration = Configurator.valueOf("recommend/benchmark/randomguess-test.properties");
 		RankingTask job = new RankingTask(RandomGuessRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.5205948F));
@@ -39,7 +39,7 @@ public class RandomGuessTestCase {
 
 	@Test
 	public void testRecommenderByRating() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommend/benchmark/randomguess-test.properties");
+		Configurator configuration = Configurator.valueOf("recommend/benchmark/randomguess-test.properties");
 		RatingTask job = new RatingTask(RandomGuessRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(1.2708743F));

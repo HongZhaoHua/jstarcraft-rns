@@ -15,7 +15,7 @@ import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.NeuralNetworkRecommender;
 
 /**
@@ -52,7 +52,7 @@ public class AutoRecRecommender extends NeuralNetworkRecommender {
     }
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // transform the sparse matrix to INDArray
         int[] matrixShape = new int[] { itemSize, userSize };

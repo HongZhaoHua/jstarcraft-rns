@@ -9,7 +9,7 @@ import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.MatrixFactorizationRecommender;
 import com.jstarcraft.rns.utility.SampleUtility;
 
@@ -33,7 +33,7 @@ public class RankSGDRecommender extends MatrixFactorizationRecommender {
 	protected DenseVector itemProbabilities;
 
 	@Override
-	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+	public void prepare(Configurator configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
 		// compute item sampling probability
 		DefaultScalar sum = DefaultScalar.getInstance();

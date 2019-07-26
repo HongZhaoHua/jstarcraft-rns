@@ -17,7 +17,7 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.KeyValue;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.exception.RecommendException;
 
 /**
@@ -79,7 +79,7 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
     protected int[] dimensionSizes;
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
         maximumOfScore = configuration.getFloat("recommender.recommender.maxrate", 12F);

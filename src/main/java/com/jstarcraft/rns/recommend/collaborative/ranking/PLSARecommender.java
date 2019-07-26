@@ -10,7 +10,7 @@ import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.table.SparseTable;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.ProbabilisticGraphicalRecommender;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
@@ -55,7 +55,7 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
     private DenseVector userRateTimes;
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
         // TODO 此处代码可以消除(使用常量Marker代替或者使用binarize.threshold)

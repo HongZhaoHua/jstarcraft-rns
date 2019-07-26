@@ -15,7 +15,7 @@ import com.jstarcraft.ai.math.structure.matrix.RowArrayMatrix;
 import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.MatrixFactorizationRecommender;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatAVLTreeMap;
@@ -170,7 +170,7 @@ public class TFIDFRecommender extends MatrixFactorizationRecommender {
     }
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
         try {

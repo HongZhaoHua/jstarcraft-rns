@@ -13,7 +13,7 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.collaborative.ranking.RankSGDRecommender;
 import com.jstarcraft.rns.recommend.exception.RecommendException;
 import com.jstarcraft.rns.utility.SampleUtility;
@@ -58,7 +58,7 @@ public class PRankDRecommender extends RankSGDRecommender {
 	 *             if error occurs
 	 */
 	@Override
-	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+	public void prepare(Configurator configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
 		similarityFilter = configuration.getFloat("recommender.sim.filter", 4F);
 		float denominator = 0F;

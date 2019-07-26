@@ -10,7 +10,7 @@ import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.content.EFMRecommender;
 
 /**
@@ -32,7 +32,7 @@ public class EFMRankingRecommender extends EFMRecommender {
     private int featureLimit;
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         threshold = configuration.getFloat("efmranking.threshold", 1F);
         featureLimit = configuration.getInteger("efmranking.featureLimit", 250);

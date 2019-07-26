@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.context.rating.SocialMFRecommender;
 import com.jstarcraft.rns.task.RatingTask;
 
@@ -17,7 +17,7 @@ public class SocialMFTestCase {
 
 	@Test
 	public void testRecommender() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommend/context/rating/socialmf-test.properties");
+		Configurator configuration = Configurator.valueOf("recommend/context/rating/socialmf-test.properties");
 		RatingTask job = new RatingTask(SocialMFRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.6361589F));

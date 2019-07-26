@@ -9,7 +9,7 @@ import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.SocialRecommender;
 import com.jstarcraft.rns.recommend.exception.RecommendException;
 import com.jstarcraft.rns.utility.LogisticUtility;
@@ -75,7 +75,7 @@ public class TrustMFRecommender extends SocialRecommender {
     }
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         mode = configuration.getString("recommender.social.model", "T");
         // algoName = "TrustMF (" + model + ")";

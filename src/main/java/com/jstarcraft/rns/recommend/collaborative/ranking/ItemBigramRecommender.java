@@ -21,7 +21,7 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.ProbabilisticGraphicalRecommender;
 import com.jstarcraft.rns.utility.GammaUtility;
 import com.jstarcraft.rns.utility.SampleUtility;
@@ -103,7 +103,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
     private DenseVector randomProbabilities;
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         initAlpha = configuration.getFloat("recommender.user.dirichlet.prior", 0.01F);
         initBeta = configuration.getFloat("recommender.topic.dirichlet.prior", 0.01F);

@@ -22,7 +22,7 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.MatrixFactorizationRecommender;
 import com.jstarcraft.rns.utility.LogisticUtility;
 
@@ -83,7 +83,7 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
     Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow();

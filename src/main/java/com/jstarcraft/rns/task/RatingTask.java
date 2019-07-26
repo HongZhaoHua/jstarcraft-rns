@@ -13,7 +13,7 @@ import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.utility.Integer2FloatKeyValue;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.Recommender;
 
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
@@ -27,7 +27,7 @@ import it.unimi.dsi.fastutil.floats.FloatList;
  */
 public class RatingTask extends AbstractTask<FloatList, FloatList> {
 
-    public RatingTask(Class<? extends Recommender> clazz, Configuration configuration) {
+    public RatingTask(Class<? extends Recommender> clazz, Configurator configuration) {
         super(clazz, configuration);
     }
 

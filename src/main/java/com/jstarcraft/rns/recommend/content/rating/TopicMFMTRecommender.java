@@ -20,7 +20,7 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.ai.model.neuralnetwork.activation.ActivationFunction;
 import com.jstarcraft.ai.model.neuralnetwork.activation.SoftMaxActivationFunction;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.MatrixFactorizationRecommender;
 
 /**
@@ -64,7 +64,7 @@ public class TopicMFMTRecommender extends MatrixFactorizationRecommender {
     protected ActivationFunction function;
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
         commentField = configuration.getString("data.model.fields.comment");

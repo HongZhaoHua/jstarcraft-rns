@@ -6,7 +6,7 @@ import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.FactorizationMachineRecommender;
 
 /**
@@ -28,7 +28,7 @@ public class FMSGDRecommender extends FactorizationMachineRecommender {
 	private float learnRate;
 
 	@Override
-	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+	public void prepare(Configurator configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
 		learnRate = configuration.getFloat("recommender.iterator.learnRate");
 	}

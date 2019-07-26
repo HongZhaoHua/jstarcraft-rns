@@ -14,7 +14,7 @@ import com.jstarcraft.ai.evaluate.ranking.NDCGEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.collaborative.ranking.FISMaucRecommender;
 import com.jstarcraft.rns.task.RankingTask;
 
@@ -22,7 +22,7 @@ public class FISMAUCTestCase {
 
 	@Test
 	public void testRecommender() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommend/collaborative/ranking/fismauc-test.properties");
+		Configurator configuration = Configurator.valueOf("recommend/collaborative/ranking/fismauc-test.properties");
 		RankingTask job = new RankingTask(FISMaucRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9249077F));

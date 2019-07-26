@@ -20,7 +20,7 @@ import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.ModelRecommender;
 import com.jstarcraft.rns.recommend.exception.RecommendException;
 
@@ -84,7 +84,7 @@ public class SLIMRecommender extends ModelRecommender {
      * @throws RecommendException if error occurs
      */
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         neighborSize = configuration.getInteger("recommender.neighbors.knn.number", 50);
         regL1Norm = configuration.getFloat("recommender.slim.regularization.l1", 1.0F);

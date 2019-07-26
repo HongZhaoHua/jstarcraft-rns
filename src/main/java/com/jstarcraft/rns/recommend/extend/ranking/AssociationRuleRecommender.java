@@ -8,7 +8,7 @@ import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.AbstractRecommender;
 import com.jstarcraft.rns.recommend.exception.RecommendException;
 
@@ -37,7 +37,7 @@ public class AssociationRuleRecommender extends AbstractRecommender {
      * @throws RecommendException if error occurs
      */
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         associationMatrix = DenseMatrix.valueOf(itemSize, itemSize);
     }

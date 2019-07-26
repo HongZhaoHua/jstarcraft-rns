@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.collaborative.rating.SVDPlusPlusRecommender;
 import com.jstarcraft.rns.task.RatingTask;
 
@@ -17,7 +17,7 @@ public class SVDPlusPlusTestCase {
 
 	@Test
 	public void testRecommender() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommend/collaborative/rating/svdpp-test.properties");
+		Configurator configuration = Configurator.valueOf("recommend/collaborative/rating/svdpp-test.properties");
 		RatingTask job = new RatingTask(SVDPlusPlusRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.62119037F));

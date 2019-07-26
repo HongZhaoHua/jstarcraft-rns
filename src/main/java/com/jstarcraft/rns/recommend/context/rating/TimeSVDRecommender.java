@@ -16,7 +16,7 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.collaborative.rating.BiasedMFRecommender;
 import com.jstarcraft.rns.recommend.exception.RecommendException;
 
@@ -119,7 +119,7 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
      * @see net.librecommender.recommender.cf.rating.BiasedMFRecommender#setup()
      */
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         decay = configuration.getFloat("recommender.learnrate.decay", 0.015F);
         numSections = configuration.getInteger("recommender.numBins", 6);

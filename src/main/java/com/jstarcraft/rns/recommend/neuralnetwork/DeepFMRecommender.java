@@ -35,7 +35,7 @@ import com.jstarcraft.ai.model.neuralnetwork.vertex.accumulation.InnerProductVer
 import com.jstarcraft.ai.model.neuralnetwork.vertex.transformation.HorizontalAttachVertex;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.ModelRecommender;
 
 /**
@@ -91,7 +91,7 @@ public class DeepFMRecommender extends ModelRecommender {
     protected int[] dimensionSizes;
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         learnRate = configuration.getFloat("recommender.iterator.learnrate");
         momentum = configuration.getFloat("recommender.iterator.momentum");

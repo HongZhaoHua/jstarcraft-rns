@@ -10,7 +10,7 @@ import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.table.SparseTable;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.ProbabilisticGraphicalRecommender;
 import com.jstarcraft.rns.utility.SampleUtility;
 
@@ -114,7 +114,7 @@ public abstract class BHFreeRecommender extends ProbabilisticGraphicalRecommende
     private DenseVector itemProbabilities;
 
     @Override
-    public void prepare(Configuration configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         numberOfUserTopics = configuration.getInteger("recommender.bhfree.user.topic.number", 10);
         numberOfItemTopics = configuration.getInteger("recommender.bhfree.item.topic.number", 10);

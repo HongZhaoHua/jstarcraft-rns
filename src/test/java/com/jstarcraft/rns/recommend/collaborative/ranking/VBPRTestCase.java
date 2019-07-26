@@ -13,7 +13,7 @@ import com.jstarcraft.ai.evaluate.ranking.NDCGEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
-import com.jstarcraft.rns.configure.Configuration;
+import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.collaborative.ranking.VBPRRecommender;
 import com.jstarcraft.rns.task.RankingTask;
 
@@ -21,7 +21,7 @@ public class VBPRTestCase {
 
 	@Test
 	public void testRecommender() throws Exception {
-		Configuration configuration = Configuration.valueOf("recommend/collaborative/ranking/vbpr-test.properties");
+		Configurator configuration = Configurator.valueOf("recommend/collaborative/ranking/vbpr-test.properties");
 		RankingTask job = new RankingTask(VBPRRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.54307634F));
