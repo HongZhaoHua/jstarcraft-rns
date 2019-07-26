@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
@@ -44,7 +45,9 @@ public class InstantSortConverter implements SortConverter {
             return indexables;
         }
         if (LocalDate.class.isAssignableFrom(clazz)) {
-
+            LocalDate instant = (LocalDate) data;
+            indexables.add(new NumericDocValuesField(path, instant.getLong(ChronoField.EPOCH_DAY)));
+            return indexables;
         }
         if (LocalTime.class.isAssignableFrom(clazz)) {
 
