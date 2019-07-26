@@ -102,25 +102,25 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
         super.prepare(configuration, model, space);
         // cumulative parameters
         // TODO 考虑重构
-        userTopicSums = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-        topicItemSums = DenseMatrix.valueOf(numberOfFactors, numberOfItems);
-        topicItemRateSums = new float[numberOfFactors][numberOfItems][numberOfScores];
+        userTopicSums = DenseMatrix.valueOf(userSize, numberOfFactors);
+        topicItemSums = DenseMatrix.valueOf(numberOfFactors, itemSize);
+        topicItemRateSums = new float[numberOfFactors][itemSize][numberOfScores];
 
         // initialize count varialbes
-        userTopicNumbers = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-        userNumbers = DenseVector.valueOf(numberOfUsers);
+        userTopicNumbers = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userNumbers = DenseVector.valueOf(userSize);
 
-        topicItemNumbers = DenseMatrix.valueOf(numberOfFactors, numberOfItems);
+        topicItemNumbers = DenseMatrix.valueOf(numberOfFactors, itemSize);
         topicNumbers = DenseVector.valueOf(numberOfFactors);
 
-        topicItemRateNumbers = new int[numberOfFactors][numberOfItems][numberOfScores];
+        topicItemRateNumbers = new int[numberOfFactors][itemSize][numberOfScores];
 
         float initAlpha = configuration.getFloat("recommender.bucm.alpha", 1F / numberOfFactors);
         alpha = DenseVector.valueOf(numberOfFactors);
         alpha.setValues(initAlpha);
 
-        float initBeta = configuration.getFloat("re.bucm.beta", 1F / numberOfItems);
-        beta = DenseVector.valueOf(numberOfItems);
+        float initBeta = configuration.getFloat("re.bucm.beta", 1F / itemSize);
+        beta = DenseVector.valueOf(itemSize);
         beta.setValues(initBeta);
 
         float initGamma = configuration.getFloat("recommender.bucm.gamma", 1F / numberOfFactors);
@@ -139,7 +139,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
             // k-1
 
             // Assign a topic t to pair (u, i)
-            topicAssignments.put(userIndex * numberOfItems + itemIndex, topicIndex);
+            topicAssignments.put(userIndex * itemSize + itemIndex, topicIndex);
             // for users
             userTopicNumbers.shiftValue(userIndex, topicIndex, 1F);
             userNumbers.shiftValue(userIndex, 1F);
@@ -168,7 +168,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
             float rate = term.getValue();
             int rateIndex = scoreIndexes.get(rate); // rating level 0 ~
                                                     // numLevels
-            int topicIndex = topicAssignments.get(userIndex * numberOfItems + itemIndex);
+            int topicIndex = topicAssignments.get(userIndex * itemSize + itemIndex);
 
             // for user
             userTopicNumbers.shiftValue(userIndex, topicIndex, -1F);
@@ -196,7 +196,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
             topicIndex = SampleUtility.binarySearch(probabilities, 0, probabilities.getElementSize() - 1, RandomUtility.randomFloat(sum.getValue()));
 
             // new topic t
-            topicAssignments.put(userIndex * numberOfItems + itemIndex, topicIndex);
+            topicAssignments.put(userIndex * itemSize + itemIndex, topicIndex);
 
             // add newly estimated z_i to count variables
             userTopicNumbers.shiftValue(userIndex, topicIndex, 1F);
@@ -222,7 +222,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
         float alphaSum = alpha.getSum(false);
         float alphaDigamma = GammaUtility.digamma(alphaSum);
         denominator = 0F;
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             value = userNumbers.getValue(userIndex);
             if (value != 0F) {
                 denominator += GammaUtility.digamma(value + alphaSum) - alphaDigamma;
@@ -232,7 +232,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
             alphaValue = alpha.getValue(topicIndex);
             alphaDigamma = GammaUtility.digamma(alphaValue);
             float numerator = 0F;
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 value = userTopicNumbers.getValue(userIndex, topicIndex);
                 if (value != 0F) {
                     numerator += GammaUtility.digamma(value + alphaValue) - alphaDigamma;
@@ -254,7 +254,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
                 denominator += GammaUtility.digamma(value + bataSum) - betaDigamma;
             }
         }
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             betaValue = beta.getValue(itemIndex);
             betaDigamma = GammaUtility.digamma(betaValue);
             float numerator = 0F;
@@ -274,7 +274,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
         float gammaSum = gamma.getSum(false);
         float gammaDigamma = GammaUtility.digamma(gammaSum);
         denominator = 0F;
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
                 value = topicItemNumbers.getValue(topicIndex, itemIndex);
                 if (value != 0F) {
@@ -286,7 +286,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
             gammaValue = gamma.getValue(rateIndex);
             gammaDigamma = GammaUtility.digamma(gammaValue);
             float numerator = 0F;
-            for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
                     value = topicItemRateNumbers[topicIndex][itemIndex][rateIndex];
                     if (value != 0F) {
@@ -335,11 +335,11 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
         float sumGamma = gamma.getSum(false);
 
         for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 value = (userTopicNumbers.getValue(userIndex, topicIndex) + alpha.getValue(topicIndex)) / (userNumbers.getValue(userIndex) + sumAlpha);
                 userTopicSums.shiftValue(userIndex, topicIndex, value);
             }
-            for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 value = (topicItemNumbers.getValue(topicIndex, itemIndex) + beta.getValue(itemIndex)) / (topicNumbers.getValue(topicIndex) + sumBeta);
                 topicItemSums.shiftValue(topicIndex, itemIndex, value);
                 for (int rateIndex = 0; rateIndex < numberOfScores; rateIndex++) {
@@ -358,9 +358,9 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
         topicItemProbabilities = DenseMatrix.copyOf(topicItemSums);
         topicItemProbabilities.scaleValues(1F / numberOfStatistics);
 
-        topicItemRateProbabilities = new float[numberOfFactors][numberOfItems][numberOfScores];
+        topicItemRateProbabilities = new float[numberOfFactors][itemSize][numberOfScores];
         for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
-            for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 for (int rateIndex = 0; rateIndex < numberOfScores; rateIndex++) {
                     topicItemRateProbabilities[topicIndex][itemIndex][rateIndex] = topicItemRateSums[topicIndex][itemIndex][rateIndex] / numberOfStatistics;
                 }

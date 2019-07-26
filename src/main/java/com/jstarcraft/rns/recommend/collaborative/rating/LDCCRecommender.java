@@ -68,10 +68,10 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
         itemAlpha = configuration.getFloat("recommender.pgm.item.alpha", 1F / numberOfItemTopics);
         ratingBeta = configuration.getFloat("recommender.pgm.rating.beta", 1F / numberOfActions);
 
-        userTopicTimes = DenseMatrix.valueOf(numberOfUsers, numberOfUserTopics);
-        itemTopicTimes = DenseMatrix.valueOf(numberOfItems, numberOfItemTopics);
-        userRateTimes = DenseVector.valueOf(numberOfUsers);
-        itemRateTimes = DenseVector.valueOf(numberOfItems);
+        userTopicTimes = DenseMatrix.valueOf(userSize, numberOfUserTopics);
+        itemTopicTimes = DenseMatrix.valueOf(itemSize, numberOfItemTopics);
+        userRateTimes = DenseVector.valueOf(userSize);
+        itemRateTimes = DenseVector.valueOf(itemSize);
 
         rateTopicTimes = new int[numberOfUserTopics][numberOfItemTopics][numberOfActions];
         topicTimes = DenseMatrix.valueOf(numberOfUserTopics, numberOfItemTopics);
@@ -100,13 +100,13 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
             rateTopicTimes[userTopic][itemTopic][rateIndex]++;
             topicTimes.shiftValue(userTopic, itemTopic, 1);
 
-            userTopics.put(userIndex * numberOfItems + itemIndex, userTopic);
-            itemTopics.put(userIndex * numberOfItems + itemIndex, itemTopic);
+            userTopics.put(userIndex * itemSize + itemIndex, userTopic);
+            itemTopics.put(userIndex * itemSize + itemIndex, itemTopic);
         }
 
         // parameters
-        userTopicSums = DenseMatrix.valueOf(numberOfUsers, numberOfUserTopics);
-        itemTopicSums = DenseMatrix.valueOf(numberOfItems, numberOfItemTopics);
+        userTopicSums = DenseMatrix.valueOf(userSize, numberOfUserTopics);
+        itemTopicSums = DenseMatrix.valueOf(itemSize, numberOfItemTopics);
         rateTopicProbabilities = new float[numberOfUserTopics][numberOfItemTopics][numberOfActions];
         rateTopicSums = new float[numberOfUserTopics][numberOfItemTopics][numberOfActions];
     }
@@ -124,8 +124,8 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
             int rateIndex = scoreIndexes.get(rate);
             // TODO 此处可以重构
             // user and item's factors
-            int userTopic = userTopics.get(userIndex * numberOfItems + itemIndex);
-            int itemTopic = itemTopics.get(userIndex * numberOfItems + itemIndex);
+            int userTopic = userTopics.get(userIndex * itemSize + itemIndex);
+            int itemTopic = itemTopics.get(userIndex * itemSize + itemIndex);
 
             // remove this observation
             userTopicTimes.shiftValue(userIndex, userTopic, -1);
@@ -182,8 +182,8 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
             rateTopicTimes[userTopic][itemTopic][rateIndex]++;
             topicTimes.shiftValue(userTopic, itemTopic, 1);
 
-            userTopics.put(userIndex * numberOfItems + itemIndex, userTopic);
-            itemTopics.put(userIndex * numberOfItems + itemIndex, itemTopic);
+            userTopics.put(userIndex * itemSize + itemIndex, userTopic);
+            itemTopics.put(userIndex * itemSize + itemIndex, itemTopic);
         }
     }
 
@@ -195,13 +195,13 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
 
     @Override
     protected void readoutParams() {
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             for (int topicIndex = 0; topicIndex < numberOfUserTopics; topicIndex++) {
                 userTopicSums.shiftValue(userIndex, topicIndex, (userTopicTimes.getValue(userIndex, topicIndex) + userAlpha) / (userRateTimes.getValue(userIndex) + numberOfUserTopics * userAlpha));
             }
         }
 
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             for (int topicIndex = 0; topicIndex < numberOfItemTopics; topicIndex++) {
                 itemTopicSums.shiftValue(itemIndex, topicIndex, (itemTopicTimes.getValue(itemIndex, topicIndex) + itemAlpha) / (itemRateTimes.getValue(itemIndex) + numberOfItemTopics * itemAlpha));
             }

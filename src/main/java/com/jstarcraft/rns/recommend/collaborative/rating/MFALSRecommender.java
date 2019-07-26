@@ -33,7 +33,7 @@ public class MFALSRecommender extends MatrixFactorizationRecommender {
         // TODO 可以考虑只获取有评分的用户?
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             // fix item matrix M, solve user matrix U
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 // number of items rated by user userIdx
                 SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                 int size = userVector.getElementSize();
@@ -66,7 +66,7 @@ public class MFALSRecommender extends MatrixFactorizationRecommender {
 
             // TODO 可以考虑只获取有评分的条目?
             // fix user matrix U, solve item matrix M
-            for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 // latent factor of users that have rated item itemIdx
                 // number of users rate item j
                 SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);

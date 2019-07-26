@@ -44,11 +44,11 @@ public class BiasedMFRecommender extends MatrixFactorizationRecommender {
         regBias = configuration.getFloat("recommender.bias.regularization", 0.01F);
 
         // initialize the userBiased and itemBiased
-        userBiases = DenseVector.valueOf(numberOfUsers);
+        userBiases = DenseVector.valueOf(userSize);
         userBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemBiases = DenseVector.valueOf(numberOfItems);
+        itemBiases = DenseVector.valueOf(itemSize);
         itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });

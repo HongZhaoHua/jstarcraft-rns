@@ -88,14 +88,14 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
             term.setValue(1F);
         }
 
-        userTopicSums = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-        topicItemSums = DenseMatrix.valueOf(numberOfFactors, numberOfItems);
+        userTopicSums = DenseMatrix.valueOf(userSize, numberOfFactors);
+        topicItemSums = DenseMatrix.valueOf(numberOfFactors, itemSize);
 
         // initialize count variables.
-        userTopicNumbers = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-        userTokenNumbers = DenseVector.valueOf(numberOfUsers);
+        userTopicNumbers = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userTokenNumbers = DenseVector.valueOf(userSize);
 
-        topicItemNumbers = DenseMatrix.valueOf(numberOfFactors, numberOfItems);
+        topicItemNumbers = DenseMatrix.valueOf(numberOfFactors, itemSize);
         topicTokenNumbers = DenseVector.valueOf(numberOfFactors);
 
         // default value:
@@ -113,7 +113,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
         alpha = DenseVector.valueOf(numberOfFactors);
         alpha.setValues(initAlpha);
 
-        beta = DenseVector.valueOf(numberOfItems);
+        beta = DenseVector.valueOf(itemSize);
         beta.setValues(initBeta);
 
         // The z_u,i are initialized to values in [0, K-1] to determine the
@@ -200,7 +200,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
         float alphaDigamma = GammaUtility.digamma(alphaSum);
         float alphaValue;
         denominator = 0F;
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             value = userTokenNumbers.getValue(userIndex);
             if (value != 0F) {
                 denominator += GammaUtility.digamma(value + alphaSum) - alphaDigamma;
@@ -210,7 +210,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
             alphaValue = alpha.getValue(topicIndex);
             alphaDigamma = GammaUtility.digamma(alphaValue);
             float numerator = 0F;
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 value = userTopicNumbers.getValue(userIndex, topicIndex);
                 if (value != 0F) {
                     numerator += GammaUtility.digamma(value + alphaValue) - alphaDigamma;
@@ -232,7 +232,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
                 denominator += GammaUtility.digamma(value + betaSum) - betaDigamma;
             }
         }
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             betaValue = beta.getValue(itemIndex);
             betaDigamma = GammaUtility.digamma(betaValue);
             float numerator = 0F;
@@ -256,7 +256,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
         float sumAlpha = alpha.getSum(false);
         float sumBeta = beta.getSum(false);
         float value;
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
                 value = (userTopicNumbers.getValue(userIndex, topicIndex) + alpha.getValue(topicIndex)) / (userTokenNumbers.getValue(userIndex) + sumAlpha);
                 userTopicSums.shiftValue(userIndex, topicIndex, value);
@@ -264,7 +264,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
         }
 
         for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
-            for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 value = (topicItemNumbers.getValue(topicIndex, itemIndex) + beta.getValue(itemIndex)) / (topicTokenNumbers.getValue(topicIndex) + sumBeta);
                 topicItemSums.shiftValue(topicIndex, itemIndex, value);
             }

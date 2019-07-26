@@ -70,7 +70,7 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
         featureRegularization = 1000;
         sampleRatio = configuration.getInteger("recommender.vbpr.alpha", 5);
 
-        itemBiases = DenseVector.valueOf(numberOfItems);
+        itemBiases = DenseVector.valueOf(itemSize);
         itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -80,7 +80,7 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
             scalar.setValue(distribution.sample().floatValue());
         });
 
-        userFeatures = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        userFeatures = DenseMatrix.valueOf(userSize, numberOfFactors);
         userFeatures.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -92,7 +92,7 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
 
         float minimumValue = Float.MAX_VALUE;
         float maximumValue = Float.MIN_VALUE;
-        featureTable = new HashMatrix(true, numberOfItems, numberOfFeatures, new Int2FloatRBTreeMap());
+        featureTable = new HashMatrix(true, itemSize, numberOfFeatures, new Int2FloatRBTreeMap());
         DataModule featureModel = space.getModule("article");
         String articleField = configuration.getString("data.model.fields.article");
         String featureField = configuration.getString("data.model.fields.feature");
@@ -116,7 +116,7 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
             float value = (cell.getValue() - minimumValue) / (maximumValue - minimumValue);
             featureTable.setValue(cell.getRow(), cell.getColumn(), value);
         }
-        factorMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfItems);
+        factorMatrix = DenseMatrix.valueOf(numberOfFactors, itemSize);
         factorMatrix.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -126,8 +126,8 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
     protected void doPractice() {
         DefaultScalar scalar = DefaultScalar.getInstance();
         DenseVector factorVector = DenseVector.valueOf(featureFactors.getRowSize());
-        ArrayVector[] featureVectors = new ArrayVector[numberOfItems];
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        ArrayVector[] featureVectors = new ArrayVector[itemSize];
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             MathVector keyValues = featureTable.getRowVector(itemIndex);
             int[] featureIndexes = new int[keyValues.getElementSize()];
             float[] featureValues = new float[keyValues.getElementSize()];
@@ -143,17 +143,17 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
 
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
-            for (int sampleIndex = 0, numberOfSamples = numberOfUsers * sampleRatio; sampleIndex < numberOfSamples; sampleIndex++) {
+            for (int sampleIndex = 0, numberOfSamples = userSize * sampleRatio; sampleIndex < numberOfSamples; sampleIndex++) {
                 // randomly draw (u, i, j)
                 int userKey, positiveItemKey, negativeItemKey;
                 while (true) {
-                    userKey = RandomUtility.randomInteger(numberOfUsers);
+                    userKey = RandomUtility.randomInteger(userSize);
                     SparseVector userVector = scoreMatrix.getRowVector(userKey);
                     if (userVector.getElementSize() == 0) {
                         continue;
                     }
                     positiveItemKey = userVector.getIndex(RandomUtility.randomInteger(userVector.getElementSize()));
-                    negativeItemKey = RandomUtility.randomInteger(numberOfItems - userVector.getElementSize());
+                    negativeItemKey = RandomUtility.randomInteger(itemSize - userVector.getElementSize());
                     for (VectorScalar term : userVector) {
                         if (negativeItemKey >= term.getIndex()) {
                             negativeItemKey++;
@@ -245,7 +245,7 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
             }
             element.setValue(value);
         });
-        featureVector = DenseVector.valueOf(numberOfItems);
+        featureVector = DenseVector.valueOf(itemSize);
         featureVector.iterateElement(MathCalculator.SERIAL, (element) -> {
             element.dotProduct(itemFeatures, featureVectors[element.getIndex()]).getValue();
         });

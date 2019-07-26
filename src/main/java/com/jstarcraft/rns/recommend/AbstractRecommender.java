@@ -44,7 +44,7 @@ public abstract class AbstractRecommender implements Recommender {
     protected int userDimension, itemDimension;
 
     /** 用户数量, 物品数量 */
-    protected int numberOfUsers, numberOfItems;
+    protected int userSize, itemSize;
 
     /** 最低分数, 最高分数, 平均分数 */
     protected float minimumOfScore, maximumOfScore, meanOfScore;
@@ -72,10 +72,10 @@ public abstract class AbstractRecommender implements Recommender {
 
         userDimension = model.getQualityInner(userField);
         itemDimension = model.getQualityInner(itemField);
-        numberOfUsers = space.getQualityAttribute(userField).getSize();
-        numberOfItems = space.getQualityAttribute(itemField).getSize();
+        userSize = space.getQualityAttribute(userField).getSize();
+        itemSize = space.getQualityAttribute(itemField).getSize();
 
-        dataPaginations = new int[numberOfUsers + 1];
+        dataPaginations = new int[userSize + 1];
         dataPositions = new int[model.getSize()];
         for (int index = 0; index < model.getSize(); index++) {
             dataPositions[index] = index;
@@ -84,7 +84,7 @@ public abstract class AbstractRecommender implements Recommender {
         matcher.match(dataPaginations, dataPositions);
         DataSorter sorter = DataSorter.featureOf(model);
         sorter.sort(dataPaginations, dataPositions);
-        HashMatrix dataTable = new HashMatrix(true, numberOfUsers, numberOfItems, new Int2FloatRBTreeMap());
+        HashMatrix dataTable = new HashMatrix(true, userSize, itemSize, new Int2FloatRBTreeMap());
         DataInstance instance = model.getInstance(0);
         for (int position : dataPositions) {
             instance.setCursor(position);
@@ -92,7 +92,7 @@ public abstract class AbstractRecommender implements Recommender {
             int columnIndex = instance.getQualityFeature(itemDimension);
             dataTable.setValue(rowIndex, columnIndex, instance.getQuantityMark());
         }
-        scoreMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfItems, dataTable);
+        scoreMatrix = SparseMatrix.valueOf(userSize, itemSize, dataTable);
         numberOfActions = scoreMatrix.getElementSize();
 
         // TODO 此处会与scoreIndexes一起重构,本质为连续特征离散化.

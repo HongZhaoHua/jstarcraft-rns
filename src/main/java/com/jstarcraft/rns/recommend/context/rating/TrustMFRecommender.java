@@ -44,15 +44,15 @@ public class TrustMFRecommender extends SocialRecommender {
 
     // TODO 需要重构
     private void prepareByTruster() {
-        trusterUserFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        trusterUserFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
         trusterUserFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        trusteeUserDeltas = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        trusteeUserDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
         trusteeUserDeltas.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        trusterItemFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        trusterItemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         trusterItemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
@@ -60,15 +60,15 @@ public class TrustMFRecommender extends SocialRecommender {
 
     // TODO 需要重构
     private void prepareByTrustee() {
-        trusterUserDeltas = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        trusterUserDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
         trusterUserDeltas.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        trusteeUserFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        trusteeUserFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
         trusteeUserFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        trusteeItemFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        trusteeItemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         trusteeItemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
@@ -103,9 +103,9 @@ public class TrustMFRecommender extends SocialRecommender {
             totalLoss = 0F;
             // gradients of trusterUserTrusterFactors,
             // trusterUserTrusteeFactors, trusterItemFactors
-            DenseMatrix trusterGradients = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-            DenseMatrix trusteeGradients = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-            DenseMatrix itemGradients = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+            DenseMatrix trusterGradients = DenseMatrix.valueOf(userSize, numberOfFactors);
+            DenseMatrix trusteeGradients = DenseMatrix.valueOf(userSize, numberOfFactors);
+            DenseMatrix itemGradients = DenseMatrix.valueOf(itemSize, numberOfFactors);
 
             // rate matrix
             for (MatrixScalar term : scoreMatrix) {
@@ -182,9 +182,9 @@ public class TrustMFRecommender extends SocialRecommender {
             totalLoss = 0F;
             // gradients of trusteeUserTrusterFactors,
             // trusteeUserTrusteeFactors, trusteeItemFactors
-            DenseMatrix trusterGradients = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-            DenseMatrix trusteeGradients = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-            DenseMatrix itemGradients = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+            DenseMatrix trusterGradients = DenseMatrix.valueOf(userSize, numberOfFactors);
+            DenseMatrix trusteeGradients = DenseMatrix.valueOf(userSize, numberOfFactors);
+            DenseMatrix itemGradients = DenseMatrix.valueOf(itemSize, numberOfFactors);
 
             // rate matrix
             for (MatrixScalar term : scoreMatrix) {

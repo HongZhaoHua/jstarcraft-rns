@@ -28,12 +28,12 @@ public class ItemAverageRecommender extends AbstractRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        itemMeans = new float[numberOfItems];
+        itemMeans = new float[itemSize];
     }
 
     @Override
     protected void doPractice() {
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
             itemMeans[itemIndex] = itemVector.getElementSize() == 0 ? meanOfScore : itemVector.getSum(false) / itemVector.getElementSize();
         }

@@ -51,11 +51,11 @@ public abstract class SocialRecommender extends MatrixFactorizationRecommender {
         trusterDimension = 0;
         trusteeDimension = 1;
         coefficientDimension = socialModel.getQuantityInner(coefficientField);
-        HashMatrix matrix = new HashMatrix(true, numberOfUsers, numberOfUsers, new Int2FloatAVLTreeMap());
+        HashMatrix matrix = new HashMatrix(true, userSize, userSize, new Int2FloatAVLTreeMap());
         for (DataInstance instance : socialModel) {
             matrix.setValue(instance.getQualityFeature(trusterDimension), instance.getQualityFeature(trusteeDimension), instance.getQuantityFeature(coefficientDimension));
         }
-        socialMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfUsers, matrix);
+        socialMatrix = SparseMatrix.valueOf(userSize, userSize, matrix);
     }
 
     /**

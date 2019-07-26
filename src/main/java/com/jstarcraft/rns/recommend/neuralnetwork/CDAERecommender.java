@@ -101,7 +101,7 @@ public class CDAERecommender extends ModelRecommender {
     private float binarie;
 
     protected int getInputDimension() {
-        return numberOfItems;
+        return itemSize;
     }
 
     @Override
@@ -118,16 +118,16 @@ public class CDAERecommender extends ModelRecommender {
         // transform the sparse matrix to INDArray
         // the sparse training matrix has been binarized
 
-        INDArray array = Nd4j.create(numberOfUsers, numberOfItems);
+        INDArray array = Nd4j.create(userSize, itemSize);
         inputData = new Nd4jMatrix(array);
 
-        array = Nd4j.create(numberOfUsers, numberOfItems);
+        array = Nd4j.create(userSize, itemSize);
         labelData = new Nd4jMatrix(array);
         for (MatrixScalar term : scoreMatrix) {
             labelData.setValue(term.getRow(), term.getColumn(), 1F);
         }
 
-        array = Nd4j.create(numberOfUsers, numberOfItems);
+        array = Nd4j.create(userSize, itemSize);
         outputData = new Nd4jMatrix(array);
     }
 
@@ -140,8 +140,8 @@ public class CDAERecommender extends ModelRecommender {
         configurators.put(CDAELayer.BIAS_KEY, new ParameterConfigurator(0F, 0F));
         configurators.put(CDAELayer.USER_KEY, parameterConfigurator);
         MathCache factory = new Nd4jCache();
-        Layer cdaeLayer = new CDAELayer(numberOfUsers, numberOfItems, hiddenDimension, factory, configurators, new SigmoidActivationFunction());
-        Layer outputLayer = new WeightLayer(hiddenDimension, numberOfItems, factory, configurators, new IdentityActivationFunction());
+        Layer cdaeLayer = new CDAELayer(userSize, itemSize, hiddenDimension, factory, configurators, new SigmoidActivationFunction());
+        Layer outputLayer = new WeightLayer(hiddenDimension, itemSize, factory, configurators, new IdentityActivationFunction());
 
         configurator.connect(new LayerVertex("cdae", factory, cdaeLayer, new NesterovLearner(new ConstantSchedule(momentum), new ConstantSchedule(learnRate)), new IgnoreNormalizer()));
         configurator.connect(new LayerVertex("output", factory, outputLayer, new NesterovLearner(new ConstantSchedule(momentum), new ConstantSchedule(learnRate)), new IgnoreNormalizer()), "cdae");

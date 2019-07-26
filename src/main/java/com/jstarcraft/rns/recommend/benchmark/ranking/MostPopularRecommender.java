@@ -26,12 +26,12 @@ public class MostPopularRecommender extends AbstractRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        populars = new int[numberOfItems];
+        populars = new int[itemSize];
     }
 
     @Override
     protected void doPractice() {
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             populars[itemIndex] = scoreMatrix.getColumnScope(itemIndex);
         }
     }

@@ -60,25 +60,25 @@ public class RFRecRecommender extends MatrixFactorizationRecommender {
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // Calculate the average ratings
-        userMeans = DenseVector.valueOf(numberOfUsers);
-        itemMeans = DenseVector.valueOf(numberOfItems);
-        userWeights = DenseVector.valueOf(numberOfUsers);
-        itemWeights = DenseVector.valueOf(numberOfItems);
+        userMeans = DenseVector.valueOf(userSize);
+        itemMeans = DenseVector.valueOf(itemSize);
+        userWeights = DenseVector.valueOf(userSize);
+        itemWeights = DenseVector.valueOf(itemSize);
 
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             SparseVector userVector = scoreMatrix.getRowVector(userIndex);
             userMeans.setValue(userIndex, userVector.getSum(false) / userVector.getElementSize());
             userWeights.setValue(userIndex, 0.6F + RandomUtility.randomFloat(0.01F));
         }
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
             itemMeans.setValue(itemIndex, itemVector.getSum(false) / itemVector.getElementSize());
             itemWeights.setValue(itemIndex, 0.4F + RandomUtility.randomFloat(0.01F));
         }
         // Calculate the frequencies.
         // Users,items
-        userRateFrequencies = DenseMatrix.valueOf(numberOfUsers, numberOfActions);
-        itemRateFrequencies = DenseMatrix.valueOf(numberOfItems, numberOfActions);
+        userRateFrequencies = DenseMatrix.valueOf(userSize, numberOfActions);
+        itemRateFrequencies = DenseMatrix.valueOf(itemSize, numberOfActions);
         for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow();
             int itemIndex = term.getColumn();

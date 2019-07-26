@@ -64,22 +64,22 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
         balance = configuration.getFloat("recommender.regularization.balance", 0.2F);
         knn = configuration.getInteger("recommender.item.nearest.neighbour.number", 300);
 
-        geoInfluences = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        geoInfluences = DenseMatrix.valueOf(itemSize, numberOfFactors);
 
-        explicitUserFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        explicitUserFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
         explicitUserFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        implicitUserFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        implicitUserFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
         implicitUserFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
 
-        itemLocations = new Float2FloatKeyValue[numberOfItems];
+        itemLocations = new Float2FloatKeyValue[itemSize];
         DataModule locationModel = space.getModule("location");
         for (DataInstance instance : locationModel) {
             int itemIndex = instance.getQualityFeature(0);
@@ -88,13 +88,13 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
         }
         calculateNeighborWeightMatrix(knn);
 
-        E = DenseVector.valueOf(numberOfItems + 1);
+        E = DenseVector.valueOf(itemSize + 1);
         E.setValue(1, 1F);
-        for (int itemIndex = 2; itemIndex <= numberOfItems; itemIndex++) {
+        for (int itemIndex = 2; itemIndex <= itemSize; itemIndex++) {
             E.setValue(itemIndex, E.getValue(itemIndex - 1) + 1F / itemIndex);
         }
 
-        geoInfluences = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        geoInfluences = DenseMatrix.valueOf(itemSize, numberOfFactors);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
                 element.setValue(itemFactors.getValue(element.getRow(), element.getColumn()));
             });
 
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                 for (VectorScalar term : userVector) {
                     int positiveItemIndex = term.getIndex();
@@ -132,7 +132,7 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
                     float negativeValue;
 
                     while (true) {
-                        negativeItemIndex = RandomUtility.randomInteger(numberOfItems);
+                        negativeItemIndex = RandomUtility.randomInteger(itemSize);
                         negativeScore = scalar.dotProduct(explicitUserDeltas.getRowVector(userIndex), itemDeltas.getRowVector(negativeItemIndex)).getValue() + scalar.dotProduct(implicitUserDeltas.getRowVector(userIndex), geoInfluences.getRowVector(negativeItemIndex)).getValue();
                         negativeValue = 0F;
                         for (VectorScalar rateTerm : userVector) {
@@ -142,13 +142,13 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
                         }
 
                         sampleCount++;
-                        if ((indicator(positiveValue, negativeValue) && indicator(negativeScore + margin, positiveScore)) || sampleCount > numberOfItems) {
+                        if ((indicator(positiveValue, negativeValue) && indicator(negativeScore + margin, positiveScore)) || sampleCount > itemSize) {
                             break;
                         }
                     }
 
                     if (indicator(positiveValue, negativeValue) && indicator(negativeScore + margin, positiveScore)) {
-                        int sampleIndex = numberOfItems / sampleCount;
+                        int sampleIndex = itemSize / sampleCount;
 
                         float s = LogisticUtility.getValue(negativeScore + margin - positiveScore);
                         totalLoss += E.getValue(sampleIndex) * s;
@@ -231,11 +231,11 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
      * @return
      */
     private void calculateNeighborWeightMatrix(Integer k_nearest) {
-        HashMatrix dataTable = new HashMatrix(true, numberOfItems, numberOfItems, new Int2FloatRBTreeMap());
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
-            List<KeyValue<Integer, Float>> locationNeighbors = new ArrayList<>(numberOfItems);
+        HashMatrix dataTable = new HashMatrix(true, itemSize, itemSize, new Int2FloatRBTreeMap());
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
+            List<KeyValue<Integer, Float>> locationNeighbors = new ArrayList<>(itemSize);
             Float2FloatKeyValue location = itemLocations[itemIndex];
-            for (int neighborIndex = 0; neighborIndex < numberOfItems; neighborIndex++) {
+            for (int neighborIndex = 0; neighborIndex < itemSize; neighborIndex++) {
                 if (itemIndex != neighborIndex) {
                     Float2FloatKeyValue neighborLocation = itemLocations[neighborIndex];
                     float distance = getDistance(location.getKey(), location.getValue(), neighborLocation.getKey(), neighborLocation.getValue());
@@ -260,9 +260,9 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
             }
         }
 
-        SparseMatrix matrix = SparseMatrix.valueOf(numberOfItems, numberOfItems, dataTable);
-        neighborWeights = new ArrayVector[numberOfItems];
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        SparseMatrix matrix = SparseMatrix.valueOf(itemSize, itemSize, dataTable);
+        neighborWeights = new ArrayVector[itemSize];
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             ArrayVector neighborVector = new ArrayVector(matrix.getRowVector(itemIndex));
             neighborVector.scaleValues(1F / neighborVector.getSum(false));
             neighborWeights[itemIndex] = neighborVector;
@@ -270,7 +270,7 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
     }
 
     private void calculateGeoInfluenceMatrix() throws RecommendException {
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             ArrayVector neighborVector = neighborWeights[itemIndex];
             if (neighborVector.getElementSize() == 0) {
                 continue;

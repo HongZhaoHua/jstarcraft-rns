@@ -31,11 +31,11 @@ public class ASVDPlusPlusRecommender extends BiasedMFRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        positiveFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        positiveFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         positiveFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        negativeFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        negativeFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         negativeFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });

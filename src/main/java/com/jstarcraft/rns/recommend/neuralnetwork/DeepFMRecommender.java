@@ -207,9 +207,9 @@ public class DeepFMRecommender extends ModelRecommender {
 
             for (int batchIndex = 0; batchIndex < batchSize;) {
                 // 随机用户
-                int userIndex = RandomUtility.randomInteger(numberOfUsers);
+                int userIndex = RandomUtility.randomInteger(userSize);
                 SparseVector userVector = scoreMatrix.getRowVector(userIndex);
-                if (userVector.getElementSize() == 0 || userVector.getElementSize() == numberOfItems) {
+                if (userVector.getElementSize() == 0 || userVector.getElementSize() == itemSize) {
                     continue;
                 }
 
@@ -222,7 +222,7 @@ public class DeepFMRecommender extends ModelRecommender {
                 }
 
                 // 获取负样本
-                int negativeItemIndex = RandomUtility.randomInteger(numberOfItems - userVector.getElementSize());
+                int negativeItemIndex = RandomUtility.randomInteger(itemSize - userVector.getElementSize());
                 for (int position = 0, size = userVector.getElementSize(); position < size; position++) {
                     if (negativeItemIndex >= userVector.getIndex(position)) {
                         negativeItemIndex++;
@@ -276,14 +276,14 @@ public class DeepFMRecommender extends ModelRecommender {
             currentLoss = totalLoss;
         }
 
-        inputData[dimensionSizes.length] = DenseMatrix.valueOf(numberOfUsers, dimensionSizes.length);
+        inputData[dimensionSizes.length] = DenseMatrix.valueOf(userSize, dimensionSizes.length);
         for (int index = 0; index < dimensionSizes.length; index++) {
-            inputData[index] = DenseMatrix.valueOf(numberOfUsers, 1);
+            inputData[index] = DenseMatrix.valueOf(userSize, 1);
         }
 
         for (int dimension = 0; dimension < dimensionSizes.length; dimension++) {
             if (dimension != itemDimension) {
-                for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+                for (int userIndex = 0; userIndex < userSize; userIndex++) {
                     int position = dataPositions[dataPaginations[userIndex + 1] - 1];
                     instance.setCursor(position);
                     int feature = instance.getQualityFeature(dimension);
@@ -295,10 +295,10 @@ public class DeepFMRecommender extends ModelRecommender {
             }
         }
 
-        DenseMatrix labelData = DenseMatrix.valueOf(numberOfUsers, 1);
-        outputData = DenseMatrix.valueOf(numberOfUsers, numberOfItems);
+        DenseMatrix labelData = DenseMatrix.valueOf(userSize, 1);
+        outputData = DenseMatrix.valueOf(userSize, itemSize);
 
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             inputData[dimensionSizes.length].getColumnVector(itemDimension).setValues(itemIndex);
             inputData[itemDimension].setValues(itemIndex);
             graph.predict(inputData, new DenseMatrix[] { labelData });

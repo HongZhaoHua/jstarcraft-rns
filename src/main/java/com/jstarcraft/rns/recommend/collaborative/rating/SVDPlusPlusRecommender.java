@@ -42,7 +42,7 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         regImpItem = configuration.getFloat("recommender.impItem.regularization", 0.015F);
-        factorMatrix = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        factorMatrix = DenseMatrix.valueOf(itemSize, numberOfFactors);
         factorMatrix.iterateElement(MathCalculator.SERIAL, (element) -> {
             element.setValue(distribution.sample().floatValue());
         });
@@ -53,7 +53,7 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
         DenseVector factorVector = DenseVector.valueOf(numberOfFactors);
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                 if (userVector.getElementSize() == 0) {
                     continue;

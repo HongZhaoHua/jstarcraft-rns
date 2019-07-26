@@ -29,7 +29,7 @@ public class ListwiseMFRecommender extends MatrixFactorizationRecommender {
 	@Override
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
-		userExponentials = DenseVector.valueOf(numberOfUsers);
+		userExponentials = DenseVector.valueOf(userSize);
 		for (MatrixScalar matrixentry : scoreMatrix) {
 			int userIndex = matrixentry.getRow();
 			float score = matrixentry.getValue();
@@ -41,7 +41,7 @@ public class ListwiseMFRecommender extends MatrixFactorizationRecommender {
 	protected void doPractice() {
 		for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
 			totalLoss = 0F;
-			for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+			for (int userIndex = 0; userIndex < userSize; userIndex++) {
 				SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 				if (userVector.getElementSize() == 0) {
 					continue;

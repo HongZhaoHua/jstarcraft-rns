@@ -64,9 +64,9 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
     protected float getGradientValue(DataInstance instance, ArrayInstance positive, ArrayInstance negative, DefaultScalar scalar, int[] dataPaginations, int[] dataPositions) {
         int userIndex;
         while (true) {
-            userIndex = RandomUtility.randomInteger(numberOfUsers);
+            userIndex = RandomUtility.randomInteger(userSize);
             SparseVector userVector = scoreMatrix.getRowVector(userIndex);
-            if (userVector.getElementSize() == 0 || userVector.getElementSize() == numberOfItems) {
+            if (userVector.getElementSize() == 0 || userVector.getElementSize() == itemSize) {
                 continue;
             }
 
@@ -76,7 +76,7 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
             positive.copyInstance(instance);
             // TODO negativeGroup.size()可能永远达不到numberOfNegatives,需要处理
             for (int orderIndex = 0; orderIndex < numberOfOrders; orderIndex++) {
-                int negativeItemIndex = RandomUtility.randomInteger(numberOfItems - userVector.getElementSize());
+                int negativeItemIndex = RandomUtility.randomInteger(itemSize - userVector.getElementSize());
                 for (int position = 0, size = userVector.getElementSize(); position < size; position++) {
                     if (negativeItemIndex >= userVector.getIndex(position)) {
                         negativeItemIndex++;

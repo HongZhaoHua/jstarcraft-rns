@@ -32,11 +32,11 @@ public class RSTERecommender extends SocialRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        itemFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
@@ -49,11 +49,11 @@ public class RSTERecommender extends SocialRecommender {
         DenseVector socialFactors = DenseVector.valueOf(numberOfFactors);
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
-            DenseMatrix userDeltas = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-            DenseMatrix itemDeltas = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+            DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
+            DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, numberOfFactors);
 
             // ratings
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector socialVector = socialMatrix.getRowVector(userIndex);
                 float socialWeight = 0F;
                 socialFactors.setValues(0F);
@@ -93,7 +93,7 @@ public class RSTERecommender extends SocialRecommender {
             }
 
             // social
-            for (int trusterIndex = 0; trusterIndex < numberOfUsers; trusterIndex++) {
+            for (int trusterIndex = 0; trusterIndex < userSize; trusterIndex++) {
                 SparseVector trusterVector = socialMatrix.getColumnVector(trusterIndex);
                 for (VectorScalar term : trusterVector) {
                     int trusteeIndex = term.getIndex();

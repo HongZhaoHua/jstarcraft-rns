@@ -82,40 +82,40 @@ public class TrustSVDRecommender extends SocialRecommender {
 
         // initialize userBiases and itemBiases
         // TODO 考虑重构
-        userBiases = DenseVector.valueOf(numberOfUsers);
+        userBiases = DenseVector.valueOf(userSize);
         userBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemBiases = DenseVector.valueOf(numberOfItems);
+        itemBiases = DenseVector.valueOf(itemSize);
         itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
 
         // initialize trusteeFactors and impitemExplicitFactors
         trusterFactors = userFactors;
-        trusteeFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        trusteeFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
         trusteeFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
         itemExplicitFactors = itemFactors;
-        itemImplicitFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        itemImplicitFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         itemImplicitFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
 
         // initialize trusteeWeights, trusterWeights, impItemWeights
         // TODO 考虑重构
-        trusteeWeights = DenseVector.valueOf(numberOfUsers);
-        trusterWeights = DenseVector.valueOf(numberOfUsers);
-        itemWeights = DenseVector.valueOf(numberOfItems);
+        trusteeWeights = DenseVector.valueOf(userSize);
+        trusterWeights = DenseVector.valueOf(userSize);
+        itemWeights = DenseVector.valueOf(itemSize);
         int socialCount;
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             socialCount = socialMatrix.getColumnScope(userIndex);
             trusteeWeights.setValue(userIndex, (float) (socialCount > 0 ? 1F / Math.sqrt(socialCount) : 1F));
             socialCount = socialMatrix.getRowScope(userIndex);
             trusterWeights.setValue(userIndex, (float) (socialCount > 0 ? 1F / Math.sqrt(socialCount) : 1F));
         }
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             int count = scoreMatrix.getColumnScope(itemIndex);
             itemWeights.setValue(itemIndex, (float) (count > 0 ? 1F / Math.sqrt(count) : 1F));
         }
@@ -132,8 +132,8 @@ public class TrustSVDRecommender extends SocialRecommender {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
             // temp user Factors and trustee factors
-            DenseMatrix trusterDeltas = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-            DenseMatrix trusteeDeltas = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+            DenseMatrix trusterDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
+            DenseMatrix trusteeDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
 
             for (MatrixScalar term : scoreMatrix) {
                 int trusterIndex = term.getRow(); // user userIdx

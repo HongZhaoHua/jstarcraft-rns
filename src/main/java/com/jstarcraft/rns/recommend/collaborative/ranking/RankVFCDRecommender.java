@@ -56,15 +56,15 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
         lamutaE = configuration.getFloat("recommender.rankvfcd.lamutaE", 50F);
         numberOfFeatures = 4096;
 
-        userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        explicitItemFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        explicitItemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         explicitItemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        implicitItemFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        implicitItemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         implicitItemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -82,19 +82,19 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
         int leftDimension = 0;
         int rightDimension = 1;
         int coefficientDimension = relationModel.getQuantityInner(coefficientField);
-        HashMatrix relationTable = new HashMatrix(true, numberOfItems, numberOfItems, new Int2FloatRBTreeMap());
+        HashMatrix relationTable = new HashMatrix(true, itemSize, itemSize, new Int2FloatRBTreeMap());
         for (DataInstance instance : relationModel) {
             int itemIndex = instance.getQualityFeature(leftDimension);
             int neighborIndex = instance.getQualityFeature(rightDimension);
             relationTable.setValue(itemIndex, neighborIndex, instance.getQuantityFeature(coefficientDimension));
         }
-        relationMatrix = SparseMatrix.valueOf(numberOfItems, numberOfItems, relationTable);
+        relationMatrix = SparseMatrix.valueOf(itemSize, itemSize, relationTable);
         relationTable = null;
 
         // 特征矩阵
         float minimumValue = Float.MAX_VALUE;
         float maximumValue = Float.MIN_VALUE;
-        HashMatrix visualTable = new HashMatrix(true, numberOfFeatures, numberOfItems, new Int2FloatRBTreeMap());
+        HashMatrix visualTable = new HashMatrix(true, numberOfFeatures, itemSize, new Int2FloatRBTreeMap());
         DataModule featureModel = space.getModule("article");
         String articleField = configuration.getString("data.model.fields.article");
         String featureField = configuration.getString("data.model.fields.feature");
@@ -114,7 +114,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
             }
             visualTable.setValue(featureIndex, itemIndex, featureValue);
         }
-        featureMatrix = SparseMatrix.valueOf(numberOfFeatures, numberOfItems, visualTable);
+        featureMatrix = SparseMatrix.valueOf(numberOfFeatures, itemSize, visualTable);
         visualTable = null;
         float maximum = maximumValue;
         float minimum = minimumValue;
@@ -122,7 +122,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
             scalar.setValue((scalar.getValue() - minimum) / (maximum - minimum));
         });
 
-        factorMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfItems);
+        factorMatrix = DenseMatrix.valueOf(numberOfFactors, itemSize);
         featureVector = DenseVector.valueOf(numberOfFeatures);
         for (MatrixScalar term : featureMatrix) {
             int featureIndex = term.getRow();
@@ -135,14 +135,14 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
     protected void doPractice() {
         DefaultScalar scalar = DefaultScalar.getInstance();
         // Init caches
-        float[] prediction_users = new float[numberOfUsers];
-        float[] prediction_items = new float[numberOfItems];
-        float[] prediction_itemrelated = new float[numberOfItems];
-        float[] prediction_relateditem = new float[numberOfItems];
-        float[] w_users = new float[numberOfUsers];
-        float[] w_items = new float[numberOfItems];
-        float[] q_itemrelated = new float[numberOfItems];
-        float[] q_relateditem = new float[numberOfItems];
+        float[] prediction_users = new float[userSize];
+        float[] prediction_items = new float[itemSize];
+        float[] prediction_itemrelated = new float[itemSize];
+        float[] prediction_relateditem = new float[itemSize];
+        float[] w_users = new float[userSize];
+        float[] w_items = new float[itemSize];
+        float[] q_itemrelated = new float[itemSize];
+        float[] q_relateditem = new float[itemSize];
 
         DenseMatrix explicitItemDeltas = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
         DenseMatrix implicitItemDeltas = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
@@ -152,7 +152,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
             // Update the Sq cache
             explicitItemDeltas.dotProduct(explicitItemFactors, true, explicitItemFactors, false, MathCalculator.SERIAL);
             // Step 1: update user factors;
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                 for (VectorScalar term : userVector) {
                     int itemIndex = term.getIndex();
@@ -191,7 +191,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
             DenseMatrix ETF = factorMatrix;
             ETF.dotProduct(featureFactors, true, featureMatrix, false, MathCalculator.PARALLEL);
             // Step 2: update item factors;
-            for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
                 SparseVector relationVector = relationMatrix.getRowVector(itemIndex);
                 for (VectorScalar term : itemVector) {
@@ -246,7 +246,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
 
             explicitItemDeltas.dotProduct(explicitItemFactors, true, explicitItemFactors, false, MathCalculator.SERIAL);
             // Step 1: update Z factors;
-            for (int neighborIndex = 0; neighborIndex < numberOfItems; neighborIndex++) {
+            for (int neighborIndex = 0; neighborIndex < itemSize; neighborIndex++) {
                 SparseVector relationVector = relationMatrix.getColumnVector(neighborIndex);
                 for (VectorScalar term : relationVector) {
                     int itemIndex = term.getIndex();

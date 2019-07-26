@@ -65,14 +65,14 @@ public class WBPRRecommender extends MatrixFactorizationRecommender {
         super.prepare(configuration, model, space);
         biasRegularization = configuration.getFloat("recommender.bias.regularization", 0.01F);
 
-        itemBiases = DenseVector.valueOf(numberOfItems);
+        itemBiases = DenseVector.valueOf(itemSize);
         itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(0.01F));
         });
 
         // pre-compute and sort by item's popularity
-        itemPopularities = new ArrayList<>(numberOfItems);
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        itemPopularities = new ArrayList<>(itemSize);
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             itemPopularities.add(new KeyValue<>(itemIndex, Double.valueOf(scoreMatrix.getColumnScope(itemIndex))));
         }
         Collections.sort(itemPopularities, (left, right) -> {
@@ -80,9 +80,9 @@ public class WBPRRecommender extends MatrixFactorizationRecommender {
             return right.getValue().compareTo(left.getValue());
         });
 
-        itemProbabilities = new List[numberOfUsers];
+        itemProbabilities = new List[userSize];
         List<IntSet> userItemSet = getUserItemSet(scoreMatrix);
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             IntSet scoreSet = userItemSet.get(userIndex);
             List<KeyValue<Integer, Double>> probabilities = new LinkedList<>();
             itemProbabilities[userIndex] = probabilities;
@@ -108,12 +108,12 @@ public class WBPRRecommender extends MatrixFactorizationRecommender {
     protected void doPractice() {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
-            for (int sampleIndex = 0, sampleTimes = numberOfUsers * 100; sampleIndex < sampleTimes; sampleIndex++) {
+            for (int sampleIndex = 0, sampleTimes = userSize * 100; sampleIndex < sampleTimes; sampleIndex++) {
                 // randomly draw (userIdx, posItemIdx, negItemIdx)
                 int userIndex, positiveItemIndex, negativeItemIndex = 0;
                 List<KeyValue<Integer, Double>> probabilities;
                 while (true) {
-                    userIndex = RandomUtility.randomInteger(numberOfUsers);
+                    userIndex = RandomUtility.randomInteger(userSize);
                     SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                     if (userVector.getElementSize() == 0) {
                         continue;

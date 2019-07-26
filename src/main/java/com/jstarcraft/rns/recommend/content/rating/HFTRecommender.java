@@ -140,17 +140,17 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
         userRegularization = configuration.getFloat("recommender.user.regularization", 0.01F);
         itemRegularization = configuration.getFloat("recommender.item.regularization", 0.01F);
 
-        userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-        itemFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
 
         // TODO 此处需要重构initMean与initStd
         initMean = 0.0F;
         initStd = 0.1F;
-        userBiases = DenseVector.valueOf(numberOfUsers);
+        userBiases = DenseVector.valueOf(userSize);
         userBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemBiases = DenseVector.valueOf(numberOfItems);
+        itemBiases = DenseVector.valueOf(itemSize);
         itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -179,7 +179,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
                 wordIndexes[index] = Integer.valueOf(words[index]);
             }
             Content content = new Content(wordIndexes);
-            contentMatrix.put(userIndex * numberOfItems + itemIndex, content);
+            contentMatrix.put(userIndex * itemSize + itemIndex, content);
         }
 
         // TODO 此处保证所有特征都会被识别
@@ -194,8 +194,8 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
             }
         }
 
-        logger.info("number of users : " + numberOfUsers);
-        logger.info("number of items : " + numberOfItems);
+        logger.info("number of users : " + userSize);
+        logger.info("number of items : " + itemSize);
         logger.info("number of words : " + numberOfWords);
 
         wordFactors = DenseMatrix.valueOf(numberOfFactors, numberOfWords);
@@ -203,7 +203,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
             scalar.setValue(RandomUtility.randomFloat(0.1F));
         });
 
-        userProbabilities = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        userProbabilities = DenseMatrix.valueOf(userSize, numberOfFactors);
         wordProbabilities = DenseMatrix.valueOf(numberOfFactors, numberOfWords);
         probability = DenseVector.valueOf(numberOfFactors);
         probability.setValues(1F);
@@ -213,7 +213,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
         for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow(); // user
             int itemIndex = term.getColumn(); // item
-            Content content = contentMatrix.get(userIndex * numberOfItems + itemIndex);
+            Content content = contentMatrix.get(userIndex * itemSize + itemIndex);
             int[] wordIndexes = content.getWordIndexes();
             int[] topicIndexes = new int[wordIndexes.length];
             for (int wordIndex = 0; wordIndex < wordIndexes.length; wordIndex++) {
@@ -231,7 +231,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
         for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow(); // user
             int itemIndex = term.getColumn(); // item
-            Content content = contentMatrix.get(userIndex * numberOfItems + itemIndex);
+            Content content = contentMatrix.get(userIndex * itemSize + itemIndex);
             int[] wordIndexes = content.getWordIndexes();
             int[] topicIndexes = content.getTopicIndexes();
             sampleTopicsToWords(userIndex, wordIndexes, topicIndexes);
@@ -258,7 +258,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
     }
 
     private void calculateThetas() {
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             DenseVector factorVector = userFactors.getRowVector(userIndex);
             function.forward(factorVector, userProbabilities.getRowVector(userIndex));
         }
@@ -319,7 +319,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
                     // loss += regB * bj * bj;
 
                     // TODO 此处应该重构
-                    Content content = contentMatrix.get(userIndex * numberOfItems + itemIndex);
+                    Content content = contentMatrix.get(userIndex * itemSize + itemIndex);
                     int[] wordIndexes = content.getWordIndexes();
                     if (wordIndexes.length == 0) {
                         continue;

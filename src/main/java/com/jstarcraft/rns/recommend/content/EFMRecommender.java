@@ -129,19 +129,19 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 		featureFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			scalar.setValue(RandomUtility.randomFloat(0.01F));
 		});
-		userExplicitFactors = DenseMatrix.valueOf(numberOfUsers, numberOfExplicitFeatures);
+		userExplicitFactors = DenseMatrix.valueOf(userSize, numberOfExplicitFeatures);
 		userExplicitFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			scalar.setValue(RandomUtility.randomFloat(1F));
 		});
-		userImplicitFactors = DenseMatrix.valueOf(numberOfUsers, numberOfImplicitFeatures);
+		userImplicitFactors = DenseMatrix.valueOf(userSize, numberOfImplicitFeatures);
 		userImplicitFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			scalar.setValue(RandomUtility.randomFloat(1F));
 		});
-		itemExplicitFactors = DenseMatrix.valueOf(numberOfItems, numberOfExplicitFeatures);
+		itemExplicitFactors = DenseMatrix.valueOf(itemSize, numberOfExplicitFeatures);
 		itemExplicitFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			scalar.setValue(RandomUtility.randomFloat(1F));
 		});
-		itemImplicitFactors = DenseMatrix.valueOf(numberOfItems, numberOfImplicitFeatures);
+		itemImplicitFactors = DenseMatrix.valueOf(itemSize, numberOfImplicitFeatures);
 		itemImplicitFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			scalar.setValue(RandomUtility.randomFloat(1F));
 		});
@@ -149,7 +149,7 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 		float[] featureValues = new float[numberOfFeatures];
 
 		// compute UserFeatureAttention
-		HashMatrix userTable = new HashMatrix(true, numberOfUsers, numberOfFeatures, new Int2FloatRBTreeMap());
+		HashMatrix userTable = new HashMatrix(true, userSize, numberOfFeatures, new Int2FloatRBTreeMap());
 		for (Entry<Integer, StringBuilder> term : userDictionaries.entrySet()) {
 			int userIndex = term.getKey();
 			String[] words = term.getValue().toString().split(" ");
@@ -167,9 +167,9 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 				}
 			}
 		}
-		userFeatures = SparseMatrix.valueOf(numberOfUsers, numberOfFeatures, userTable);
+		userFeatures = SparseMatrix.valueOf(userSize, numberOfFeatures, userTable);
 		// compute ItemFeatureQuality
-		HashMatrix itemTable = new HashMatrix(true, numberOfItems, numberOfFeatures, new Int2FloatRBTreeMap());
+		HashMatrix itemTable = new HashMatrix(true, itemSize, numberOfFeatures, new Int2FloatRBTreeMap());
 		for (Entry<Integer, StringBuilder> term : itemDictionaries.entrySet()) {
 			int itemIndex = term.getKey();
 			String[] words = term.getValue().toString().split(" ");
@@ -187,10 +187,10 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 				}
 			}
 		}
-		itemFeatures = SparseMatrix.valueOf(numberOfItems, numberOfFeatures, itemTable);
+		itemFeatures = SparseMatrix.valueOf(itemSize, numberOfFeatures, itemTable);
 
-		logger.info("numUsers:" + numberOfUsers);
-		logger.info("numItems:" + numberOfItems);
+		logger.info("numUsers:" + userSize);
+		logger.info("numItems:" + itemSize);
 		logger.info("numFeatures:" + numberOfFeatures);
 	}
 
@@ -224,7 +224,7 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 			}
 
 			// Update UserFeatureMatrix by fixing the others
-			for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+			for (int userIndex = 0; userIndex < userSize; userIndex++) {
 				if (scoreMatrix.getRowScope(userIndex) > 0 && userFeatures.getRowScope(userIndex) > 0) {
 					SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 					SparseVector attentionVector = userFeatures.getRowVector(userIndex);
@@ -249,7 +249,7 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 			}
 
 			// Update ItemFeatureMatrix by fixing the others
-			for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+			for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 				if (scoreMatrix.getColumnScope(itemIndex) > 0 && itemFeatures.getRowScope(itemIndex) > 0) {
 					SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
 					SparseVector qualityVector = itemFeatures.getRowVector(itemIndex);
@@ -274,7 +274,7 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 			}
 
 			// Update UserHiddenMatrix by fixing the others
-			for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+			for (int userIndex = 0; userIndex < userSize; userIndex++) {
 				if (scoreMatrix.getRowScope(userIndex) > 0) {
 					SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 					// TODO 此处需要重构,应该避免不断构建SparseVector.
@@ -293,7 +293,7 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 			}
 
 			// Update ItemHiddenMatrix by fixing the others
-			for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+			for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 				if (scoreMatrix.getColumnScope(itemIndex) > 0) {
 					SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
 					// TODO 此处需要重构,应该避免不断构建SparseVector.

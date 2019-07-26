@@ -38,7 +38,7 @@ public class RankSGDRecommender extends MatrixFactorizationRecommender {
 		// compute item sampling probability
 		DefaultScalar sum = DefaultScalar.getInstance();
 		sum.setValue(0F);
-		itemProbabilities = DenseVector.valueOf(numberOfItems);
+		itemProbabilities = DenseVector.valueOf(itemSize);
 		itemProbabilities.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			int index = scalar.getIndex();
 			float userSize = scoreMatrix.getColumnScope(index);

@@ -68,23 +68,23 @@ public class AspectModelRatingRecommender extends ProbabilisticGraphicalRecommen
         topicSums = DenseVector.valueOf(numberOfFactors);
 
         // intialize conditional distribution P(u|z)
-        userProbabilities = DenseMatrix.valueOf(numberOfFactors, numberOfUsers);
-        userSums = DenseMatrix.valueOf(numberOfFactors, numberOfUsers);
+        userProbabilities = DenseMatrix.valueOf(numberOfFactors, userSize);
+        userSums = DenseMatrix.valueOf(numberOfFactors, userSize);
         for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
             DenseVector probabilityVector = userProbabilities.getRowVector(topicIndex);
             probabilityVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
-                scalar.setValue(RandomUtility.randomInteger(numberOfUsers) + 1);
+                scalar.setValue(RandomUtility.randomInteger(userSize) + 1);
             });
             probabilityVector.scaleValues(1F / probabilityVector.getSum(false));
         }
 
         // initialize conditional distribution P(i|z)
-        itemProbabilities = DenseMatrix.valueOf(numberOfFactors, numberOfItems);
-        itemSums = DenseMatrix.valueOf(numberOfFactors, numberOfItems);
+        itemProbabilities = DenseMatrix.valueOf(numberOfFactors, itemSize);
+        itemSums = DenseMatrix.valueOf(numberOfFactors, itemSize);
         for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
             DenseVector probabilityVector = itemProbabilities.getRowVector(topicIndex);
             probabilityVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
-                scalar.setValue(RandomUtility.randomInteger(numberOfItems) + 1);
+                scalar.setValue(RandomUtility.randomInteger(itemSize) + 1);
             });
             probabilityVector.scaleValues(1F / probabilityVector.getSum(false));
         }
@@ -159,10 +159,10 @@ public class AspectModelRatingRecommender extends ProbabilisticGraphicalRecommen
         for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
             varianceProbabilities.setValue(topicIndex, varianceSums.getValue(topicIndex) / topicSums.getValue(topicIndex));
             topicProbabilities.setValue(topicIndex, topicSums.getValue(topicIndex) / numberOfActions);
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 userProbabilities.setValue(topicIndex, userIndex, userSums.getValue(topicIndex, userIndex) / topicSums.getValue(topicIndex));
             }
-            for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 itemProbabilities.setValue(topicIndex, itemIndex, itemSums.getValue(topicIndex, itemIndex) / topicSums.getValue(topicIndex));
             }
         }

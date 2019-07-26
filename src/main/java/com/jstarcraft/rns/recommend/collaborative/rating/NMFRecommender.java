@@ -31,11 +31,11 @@ public class NMFRecommender extends MatrixFactorizationRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(0.01F));
         });
-        itemFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(0.01F));
         });
@@ -46,7 +46,7 @@ public class NMFRecommender extends MatrixFactorizationRecommender {
         DefaultScalar scalar = DefaultScalar.getInstance();
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; ++iterationStep) {
             // update userFactors by fixing itemFactors
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                 if (userVector.getElementSize() == 0) {
                     continue;
@@ -65,7 +65,7 @@ public class NMFRecommender extends MatrixFactorizationRecommender {
             }
 
             // update itemFactors by fixing userFactors
-            for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
                 if (itemVector.getElementSize() == 0) {
                     continue;

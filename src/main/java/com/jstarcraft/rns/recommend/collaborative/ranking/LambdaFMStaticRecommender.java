@@ -39,8 +39,8 @@ public class LambdaFMStaticRecommender extends LambdaFMRecommender {
         super.prepare(configuration, model, space);
         staticRho = configuration.getFloat("recommender.item.distribution.parameter");
         // calculate popularity
-        Integer[] orderItems = new Integer[numberOfItems];
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        Integer[] orderItems = new Integer[itemSize];
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             orderItems[itemIndex] = itemIndex;
         }
         Arrays.sort(orderItems, new Comparator<Integer>() {
@@ -49,17 +49,17 @@ public class LambdaFMStaticRecommender extends LambdaFMRecommender {
                 return (scoreMatrix.getColumnScope(leftItemIndex) > scoreMatrix.getColumnScope(rightItemIndex) ? -1 : (scoreMatrix.getColumnScope(leftItemIndex) < scoreMatrix.getColumnScope(rightItemIndex) ? 1 : 0));
             }
         });
-        Integer[] itemOrders = new Integer[numberOfItems];
-        for (int index = 0; index < numberOfItems; index++) {
+        Integer[] itemOrders = new Integer[itemSize];
+        for (int index = 0; index < itemSize; index++) {
             int itemIndex = orderItems[index];
             itemOrders[itemIndex] = index;
         }
         DefaultScalar sum = DefaultScalar.getInstance();
         sum.setValue(0F);
-        itemProbabilities = DenseVector.valueOf(numberOfItems);
+        itemProbabilities = DenseVector.valueOf(itemSize);
         itemProbabilities.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             int index = scalar.getIndex();
-            float value = (float) Math.exp(-(itemOrders[index] + 1) / (numberOfItems * staticRho));
+            float value = (float) Math.exp(-(itemOrders[index] + 1) / (itemSize * staticRho));
             sum.shiftValue(value);
             scalar.setValue(sum.getValue());
         });
@@ -73,9 +73,9 @@ public class LambdaFMStaticRecommender extends LambdaFMRecommender {
     protected float getGradientValue(DataInstance instance, ArrayInstance positive, ArrayInstance negative, DefaultScalar scalar, int[] dataPaginations, int[] dataPositions) {
         int userIndex;
         while (true) {
-            userIndex = RandomUtility.randomInteger(numberOfUsers);
+            userIndex = RandomUtility.randomInteger(userSize);
             SparseVector userVector = scoreMatrix.getRowVector(userIndex);
-            if (userVector.getElementSize() == 0 || userVector.getElementSize() == numberOfItems) {
+            if (userVector.getElementSize() == 0 || userVector.getElementSize() == itemSize) {
                 continue;
             }
 

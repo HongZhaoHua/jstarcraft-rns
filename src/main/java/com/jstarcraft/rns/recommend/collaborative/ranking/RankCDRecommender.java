@@ -51,10 +51,10 @@ public class RankCDRecommender extends MatrixFactorizationRecommender {
     @Override
     protected void doPractice() {
         // Init caches
-        double[] userScores = new double[numberOfUsers];
-        double[] itemScores = new double[numberOfItems];
-        double[] userConfidences = new double[numberOfUsers];
-        double[] itemConfidences = new double[numberOfItems];
+        double[] userScores = new double[userSize];
+        double[] itemScores = new double[itemSize];
+        double[] userConfidences = new double[userSize];
+        double[] itemConfidences = new double[itemSize];
 
         // Init Sq
         DenseMatrix itemDeltas = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
@@ -64,7 +64,7 @@ public class RankCDRecommender extends MatrixFactorizationRecommender {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             itemDeltas.dotProduct(itemFactors, true, itemFactors, false, MathCalculator.SERIAL);
             // Step 1: update user factors;
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector userVector = weightMatrix.getRowVector(userIndex);
                 for (VectorScalar term : userVector) {
                     int itemIndex = term.getIndex();
@@ -97,7 +97,7 @@ public class RankCDRecommender extends MatrixFactorizationRecommender {
             // Update the Sp cache
             userDeltas.dotProduct(userFactors, true, userFactors, false, MathCalculator.SERIAL);
             // Step 2: update item factors;
-            for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 SparseVector itemVector = weightMatrix.getColumnVector(itemIndex);
                 for (VectorScalar term : itemVector) {
                     int userIndex = term.getIndex();

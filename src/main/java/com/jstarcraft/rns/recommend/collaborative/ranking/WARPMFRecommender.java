@@ -33,13 +33,13 @@ public class WARPMFRecommender extends MatrixFactorizationRecommender {
 
 		lossType = configuration.getInteger("losstype", 3);
 		epsilon = configuration.getFloat("epsilon");
-		orderLosses = new float[numberOfItems - 1];
+		orderLosses = new float[itemSize - 1];
 		float orderLoss = 0F;
-		for (int orderIndex = 1; orderIndex < numberOfItems; orderIndex++) {
+		for (int orderIndex = 1; orderIndex < itemSize; orderIndex++) {
 			orderLoss += 1D / orderIndex;
 			orderLosses[orderIndex - 1] = orderLoss;
 		}
-		for (int rankIndex = 1; rankIndex < numberOfItems; rankIndex++) {
+		for (int rankIndex = 1; rankIndex < itemSize; rankIndex++) {
 			orderLosses[rankIndex - 1] /= orderLoss;
 		}
 	}
@@ -50,24 +50,24 @@ public class WARPMFRecommender extends MatrixFactorizationRecommender {
 
 		for (int epochIndex = 1; epochIndex <= numberOfEpoches; epochIndex++) {
 			totalLoss = 0F;
-			for (int sampleIndex = 0, sampleTimes = numberOfUsers * 100; sampleIndex < sampleTimes; sampleIndex++) {
+			for (int sampleIndex = 0, sampleTimes = userSize * 100; sampleIndex < sampleTimes; sampleIndex++) {
 				int userIndex, positiveItemIndex, negativeItemIndex;
 				float positiveScore;
 				float negativeScore;
 				while (true) {
-					userIndex = RandomUtility.randomInteger(numberOfUsers);
+					userIndex = RandomUtility.randomInteger(userSize);
 					SparseVector userVector = scoreMatrix.getRowVector(userIndex);
-					if (userVector.getElementSize() == 0 || userVector.getElementSize() == numberOfItems) {
+					if (userVector.getElementSize() == 0 || userVector.getElementSize() == itemSize) {
 						continue;
 					}
 
 					N = 0;
-					Y = numberOfItems - scoreMatrix.getRowScope(userIndex);
+					Y = itemSize - scoreMatrix.getRowScope(userIndex);
 					positiveItemIndex = userVector.getIndex(RandomUtility.randomInteger(userVector.getElementSize()));
 					positiveScore = predict(userIndex, positiveItemIndex);
 					do {
 						N++;
-						negativeItemIndex = RandomUtility.randomInteger(numberOfItems - userVector.getElementSize());
+						negativeItemIndex = RandomUtility.randomInteger(itemSize - userVector.getElementSize());
 						for (int index = 0, size = userVector.getElementSize(); index < size; index++) {
 							if (negativeItemIndex >= userVector.getIndex(index)) {
 								negativeItemIndex++;

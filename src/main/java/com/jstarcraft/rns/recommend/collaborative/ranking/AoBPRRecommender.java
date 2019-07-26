@@ -49,21 +49,21 @@ public class AoBPRRecommender extends MatrixFactorizationRecommender {
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
 		// set for this alg
-		lambdaItem = (int) (configuration.getFloat("recommender.item.distribution.parameter") * numberOfItems);
+		lambdaItem = (int) (configuration.getFloat("recommender.item.distribution.parameter") * itemSize);
 		// lamda_Item=500;
-		loopNumber = (int) (numberOfItems * Math.log(numberOfItems));
+		loopNumber = (int) (itemSize * Math.log(itemSize));
 
 		factorVariances = new float[numberOfFactors];
-		factorRanks = new int[numberOfFactors][numberOfItems];
+		factorRanks = new int[numberOfFactors][itemSize];
 	}
 
 	@Override
 	protected void doPractice() {
 		// 排序列表
-		List<KeyValue<Integer, Float>> sortList = new ArrayList<>(numberOfItems);
+		List<KeyValue<Integer, Float>> sortList = new ArrayList<>(itemSize);
 		DefaultScalar sum = DefaultScalar.getInstance();
 		sum.setValue(0F);
-		rankProbabilities = DenseVector.valueOf(numberOfItems);
+		rankProbabilities = DenseVector.valueOf(itemSize);
 		rankProbabilities.iterateElement(MathCalculator.SERIAL, (scalar) -> {
 			int index = scalar.getIndex();
 			sortList.add(new KeyValue<>(index, 0F));
@@ -88,7 +88,7 @@ public class AoBPRRecommender extends MatrixFactorizationRecommender {
 		int sampleCount = 0;
 		for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
 			totalLoss = 0F;
-			for (int sampleIndex = 0, sampleTimes = numberOfUsers * 100; sampleIndex < sampleTimes; sampleIndex++) {
+			for (int sampleIndex = 0, sampleTimes = userSize * 100; sampleIndex < sampleTimes; sampleIndex++) {
 				// update Ranking every |I|log|I|
 				if (sampleCount % loopNumber == 0) {
 					updateSortListByFactor(sortList);
@@ -102,7 +102,7 @@ public class AoBPRRecommender extends MatrixFactorizationRecommender {
 					int random = RandomUtility.randomInteger(numberOfActions);
 					userIndex = userIndexes.get(random);
 					IntSet itemSet = userItemSet.get(userIndex);
-					if (itemSet.size() == 0 || itemSet.size() == numberOfItems) {
+					if (itemSet.size() == 0 || itemSet.size() == itemSize) {
 						continue;
 					}
 					positiveItemIndex = itemIndexes.get(random);
@@ -123,7 +123,7 @@ public class AoBPRRecommender extends MatrixFactorizationRecommender {
 						if (userFactors.getValue(userIndex, factorIndex) > 0) {
 							negativeItemIndex = factorRanks[factorIndex][rankIndex];
 						} else {
-							negativeItemIndex = factorRanks[factorIndex][numberOfItems - rankIndex - 1];
+							negativeItemIndex = factorRanks[factorIndex][itemSize - rankIndex - 1];
 						}
 					} while (itemSet.contains(negativeItemIndex));
 					break;
@@ -162,7 +162,7 @@ public class AoBPRRecommender extends MatrixFactorizationRecommender {
 		for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
 			float sum = 0F;
 			DenseVector factorVector = itemFactors.getColumnVector(factorIndex);
-			for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+			for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 				float value = factorVector.getValue(itemIndex);
 				sortList.get(itemIndex).setValue(value);
 				sum += value;
@@ -173,7 +173,7 @@ public class AoBPRRecommender extends MatrixFactorizationRecommender {
 			});
 			float mean = sum / factorVector.getElementSize();
 			sum = 0F;
-			for (int sortIndex = 0; sortIndex < numberOfItems; sortIndex++) {
+			for (int sortIndex = 0; sortIndex < itemSize; sortIndex++) {
 				float value = factorVector.getValue(sortIndex);
 				sum += (value - mean) * (value - mean);
 				factorRanks[factorIndex][sortIndex] = sortList.get(sortIndex).getKey();

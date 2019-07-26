@@ -33,7 +33,7 @@ public class CLiMFRecommender extends MatrixFactorizationRecommender {
 
 		for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
 			totalLoss = 0F;
-			for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+			for (int userIndex = 0; userIndex < userSize; userIndex++) {
 				// TODO 此处应该考虑重构,不再使用itemSet
 				IntSet itemSet = userItemSet.get(userIndex);
 
@@ -110,7 +110,7 @@ public class CLiMFRecommender extends MatrixFactorizationRecommender {
 					float predictValue = predict(userIndex, itemIndex);
 					predictMap.put(itemIndex, predictValue);
 				}
-				for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+				for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 					if (itemSet.contains(itemIndex)) {
 						float predictValue = predictMap.get(itemIndex);
 						totalLoss += (float) Math.log(LogisticUtility.getValue(predictValue));

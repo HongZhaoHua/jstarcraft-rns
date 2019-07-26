@@ -113,17 +113,17 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
         Int2IntRBTreeMap instantTabel = new Int2IntRBTreeMap();
         instantTabel.defaultReturnValue(-1);
         for (DataInstance sample : model) {
-            int instant = instantTabel.get(sample.getQualityFeature(userDimension) * numberOfItems + sample.getQualityFeature(itemDimension));
+            int instant = instantTabel.get(sample.getQualityFeature(userDimension) * itemSize + sample.getQualityFeature(itemDimension));
             if (instant == -1) {
                 instant = sample.getQualityFeature(instantDimension);
             } else {
                 instant = sample.getQualityFeature(instantDimension) > instant ? sample.getQualityFeature(instantDimension) : instant;
             }
-            instantTabel.put(sample.getQualityFeature(userDimension) * numberOfItems + sample.getQualityFeature(itemDimension), instant);
+            instantTabel.put(sample.getQualityFeature(userDimension) * itemSize + sample.getQualityFeature(itemDimension), instant);
         }
         // build the training data, sorting by date
         userItemMap = new HashMap<>();
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             // TODO 考虑优化
             SparseVector userVector = scoreMatrix.getRowVector(userIndex);
             if (userVector.getElementSize() == 0) {
@@ -134,7 +134,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
             List<KeyValue<Integer, Integer>> instants = new ArrayList<>(userVector.getElementSize());
             for (VectorScalar term : userVector) {
                 int itemIndex = term.getIndex();
-                instants.add(new KeyValue<>(itemIndex, instantTabel.get(userIndex * numberOfItems + itemIndex)));
+                instants.add(new KeyValue<>(itemIndex, instantTabel.get(userIndex * itemSize + itemIndex)));
             }
             Collections.sort(instants, (left, right) -> {
                 // 升序
@@ -150,26 +150,26 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
 
         // count variables
         // initialize count variables.
-        userTopicTimes = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-        userTokenNumbers = DenseVector.valueOf(numberOfUsers);
+        userTopicTimes = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userTokenNumbers = DenseVector.valueOf(userSize);
 
         // 注意:numItems + 1的最后一个元素代表没有任何记录的概率
-        topicItemBigramTimes = new int[numberOfFactors][numberOfItems + 1][numberOfItems];
-        topicItemProbabilities = DenseMatrix.valueOf(numberOfFactors, numberOfItems + 1);
+        topicItemBigramTimes = new int[numberOfFactors][itemSize + 1][itemSize];
+        topicItemProbabilities = DenseMatrix.valueOf(numberOfFactors, itemSize + 1);
 
         // Logs.debug("topicPreItemCurItemNum consumes {} bytes",
         // Strings.toString(Memory.bytes(topicPreItemCurItemNum)));
 
         // parameters
-        userTopicSums = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-        topicItemBigramSums = new float[numberOfFactors][numberOfItems + 1][numberOfItems];
-        topicItemBigramProbabilities = new float[numberOfFactors][numberOfItems + 1][numberOfItems];
+        userTopicSums = DenseMatrix.valueOf(userSize, numberOfFactors);
+        topicItemBigramSums = new float[numberOfFactors][itemSize + 1][itemSize];
+        topicItemBigramProbabilities = new float[numberOfFactors][itemSize + 1][itemSize];
 
         // hyper-parameters
         alpha = DenseVector.valueOf(numberOfFactors);
         alpha.setValues(initAlpha);
 
-        beta = DenseMatrix.valueOf(numberOfFactors, numberOfItems + 1);
+        beta = DenseMatrix.valueOf(numberOfFactors, itemSize + 1);
         beta.setValues(initBeta);
 
         // initialization
@@ -182,12 +182,12 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
                 int nextItemIndex = items.get(index);
                 // TODO 需要重构
                 int topicIndex = RandomUtility.randomInteger(numberOfFactors);
-                topicAssignments.put(userIndex * numberOfItems + nextItemIndex, topicIndex);
+                topicAssignments.put(userIndex * itemSize + nextItemIndex, topicIndex);
 
                 userTopicTimes.shiftValue(userIndex, topicIndex, 1F);
                 userTokenNumbers.shiftValue(userIndex, 1F);
 
-                int previousItemIndex = index > 0 ? items.get(index - 1) : numberOfItems;
+                int previousItemIndex = index > 0 ? items.get(index - 1) : itemSize;
                 topicItemBigramTimes[topicIndex][previousItemIndex][nextItemIndex]++;
                 topicItemProbabilities.shiftValue(topicIndex, previousItemIndex, 1F);
             }
@@ -210,12 +210,12 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
 
             for (int index = 0; index < items.size(); index++) {
                 int nextItemIndex = items.get(index);
-                int assignmentIndex = topicAssignments.get(userIndex * numberOfItems + nextItemIndex);
+                int assignmentIndex = topicAssignments.get(userIndex * itemSize + nextItemIndex);
 
                 userTopicTimes.shiftValue(userIndex, assignmentIndex, -1F);
                 userTokenNumbers.shiftValue(userIndex, -1F);
 
-                int previousItemIndex = index > 0 ? items.get(index - 1) : numberOfItems;
+                int previousItemIndex = index > 0 ? items.get(index - 1) : itemSize;
                 topicItemBigramTimes[assignmentIndex][previousItemIndex][nextItemIndex]--;
                 topicItemProbabilities.shiftValue(assignmentIndex, previousItemIndex, -1F);
 
@@ -232,7 +232,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
                 });
 
                 int randomIndex = SampleUtility.binarySearch(randomProbabilities, 0, randomProbabilities.getElementSize() - 1, RandomUtility.randomFloat(sum.getValue()));
-                topicAssignments.put(userIndex * numberOfItems + nextItemIndex, randomIndex);
+                topicAssignments.put(userIndex * itemSize + nextItemIndex, randomIndex);
                 userTopicTimes.shiftValue(userIndex, randomIndex, 1F);
                 userTokenNumbers.shiftValue(userIndex, 1F);
                 topicItemBigramTimes[randomIndex][previousItemIndex][nextItemIndex]++;
@@ -249,7 +249,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
         float alphaSum = alpha.getSum(false);
         float alphaDigamma = GammaUtility.digamma(alphaSum);
         float alphaValue;
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             // TODO 应该修改为稀疏向量
             value = userTokenNumbers.getValue(userIndex);
             if (value != 0F) {
@@ -260,7 +260,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
             alphaValue = alpha.getValue(topicIndex);
             alphaDigamma = GammaUtility.digamma(alphaValue);
             float numerator = 0F;
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 // TODO 应该修改为稀疏矩阵
                 value = userTopicTimes.getValue(userIndex, topicIndex);
                 if (value != 0F) {
@@ -276,20 +276,20 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
             float betaSum = beta.getRowVector(topicIndex).getSum(false);
             float betaDigamma = GammaUtility.digamma(betaSum);
             float betaValue;
-            float[] denominators = new float[numberOfItems + 1];
-            for (int itemIndex = 0; itemIndex < numberOfItems + 1; itemIndex++) {
+            float[] denominators = new float[itemSize + 1];
+            for (int itemIndex = 0; itemIndex < itemSize + 1; itemIndex++) {
                 // TODO 应该修改为稀疏矩阵
                 value = topicItemProbabilities.getValue(topicIndex, itemIndex);
                 if (value != 0F) {
                     denominators[itemIndex] = GammaUtility.digamma(value + betaSum) - betaDigamma;
                 }
             }
-            for (int previousItemIndex = 0; previousItemIndex < numberOfItems + 1; previousItemIndex++) {
+            for (int previousItemIndex = 0; previousItemIndex < itemSize + 1; previousItemIndex++) {
                 betaValue = beta.getValue(topicIndex, previousItemIndex);
                 betaDigamma = GammaUtility.digamma(betaValue);
                 float numerator = 0F;
                 denominator = 0F;
-                for (int nextItemIndex = 0; nextItemIndex < numberOfItems; nextItemIndex++) {
+                for (int nextItemIndex = 0; nextItemIndex < itemSize; nextItemIndex++) {
                     // TODO 应该修改为稀疏张量
                     value = topicItemBigramTimes[topicIndex][previousItemIndex][nextItemIndex];
                     if (value != 0F) {
@@ -308,7 +308,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
     protected void readoutParams() {
         float value;
         float sumAlpha = alpha.getSum(false);
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
                 value = (userTopicTimes.getValue(userIndex, topicIndex) + alpha.getValue(topicIndex)) / (userTokenNumbers.getValue(userIndex) + sumAlpha);
                 userTopicSums.shiftValue(userIndex, topicIndex, value);
@@ -316,8 +316,8 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
         }
         for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
             float betaTopicValue = beta.getRowVector(topicIndex).getSum(false);
-            for (int previousItemIndex = 0; previousItemIndex < numberOfItems + 1; previousItemIndex++) {
-                for (int nextItemIndex = 0; nextItemIndex < numberOfItems; nextItemIndex++) {
+            for (int previousItemIndex = 0; previousItemIndex < itemSize + 1; previousItemIndex++) {
+                for (int nextItemIndex = 0; nextItemIndex < itemSize; nextItemIndex++) {
                     value = (topicItemBigramTimes[topicIndex][previousItemIndex][nextItemIndex] + beta.getValue(topicIndex, previousItemIndex)) / (topicItemProbabilities.getValue(topicIndex, previousItemIndex) + betaTopicValue);
                     topicItemBigramSums[topicIndex][previousItemIndex][nextItemIndex] += value;
                 }
@@ -336,8 +336,8 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
         userTopicProbabilities.scaleValues(1F / numberOfStatistics);
 
         for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
-            for (int previousItemIndex = 0; previousItemIndex < numberOfItems + 1; previousItemIndex++) {
-                for (int nextItemIndex = 0; nextItemIndex < numberOfItems; nextItemIndex++) {
+            for (int previousItemIndex = 0; previousItemIndex < itemSize + 1; previousItemIndex++) {
+                for (int nextItemIndex = 0; nextItemIndex < itemSize; nextItemIndex++) {
                     topicItemBigramProbabilities[topicIndex][previousItemIndex][nextItemIndex] = topicItemBigramSums[topicIndex][previousItemIndex][nextItemIndex] / numberOfStatistics;
                 }
             }
@@ -349,7 +349,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         List<Integer> items = userItemMap.get(userIndex);
-        int rateIndex = items == null ? numberOfItems : items.get(items.size() - 1); // last
+        int rateIndex = items == null ? itemSize : items.get(items.size() - 1); // last
         // rated
         // item
         float value = 0F;

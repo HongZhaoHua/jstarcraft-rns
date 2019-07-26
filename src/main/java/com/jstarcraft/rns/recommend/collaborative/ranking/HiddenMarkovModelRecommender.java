@@ -234,7 +234,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
         probabilityNumeratorStorage.set(DenseVector.valueOf(numberOfStates));
         probabilityDenominatorStorage.set(new AtomicDouble());
         stateNumeratorStorage.set(DenseMatrix.valueOf(numberOfStates, numberOfStates));
-        viewNumeratorStorage.set(DenseMatrix.valueOf(numberOfStates, numberOfItems));
+        viewNumeratorStorage.set(DenseMatrix.valueOf(numberOfStates, itemSize));
         viewDenominatorStorage.set(DenseVector.valueOf(numberOfStates));
     }
 
@@ -270,7 +270,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
         probabilityDenominator = new AtomicDouble();
         stateNumerator = DenseMatrix.valueOf(numberOfStates, numberOfStates);
         stateDenominator = DenseVector.valueOf(numberOfStates);
-        viewNumerator = DenseMatrix.valueOf(numberOfStates, numberOfItems);
+        viewNumerator = DenseMatrix.valueOf(numberOfStates, itemSize);
         viewDenominator = DenseVector.valueOf(numberOfStates);
 
         // probabilities => {numberOfStates}
@@ -299,10 +299,10 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
         });
 
         // viewNumerator => {numberOfItems}
-        DenseVector viewNumerator = DenseVector.valueOf(numberOfItems);
+        DenseVector viewNumerator = DenseVector.valueOf(itemSize);
         // viewDenominator => sum(sizeOfContexts)
         float viewDenominator = 0F;
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             SparseMatrix dataMatrix = dataMatrixes[userIndex];
             for (MatrixScalar term : dataMatrix) {
                 viewNumerator.shiftValue(term.getColumn(), term.getValue());
@@ -317,7 +317,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
             scalar.setValue(value == 0F ? nearZero : value);
         });
         viewNumerator.scaleValues(1F / viewNumerator.getSum(false));
-        viewProbabilities = DenseMatrix.valueOf(numberOfStates, numberOfItems);
+        viewProbabilities = DenseMatrix.valueOf(numberOfStates, itemSize);
         for (int stateIndex = 0; stateIndex < numberOfStates; stateIndex++) {
             viewProbabilities.getRowVector(stateIndex).copyVector(viewNumerator);
         }
@@ -344,9 +344,9 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
         alpha = DenseVector.valueOf(numberOfStates);
         beta = DenseVector.valueOf(numberOfStates);
 
-        gammas = new DenseMatrix[numberOfUsers];
-        nuts = new DenseVector[numberOfUsers];
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        gammas = new DenseMatrix[userSize];
+        nuts = new DenseVector[userSize];
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             SparseMatrix dataMatrix = dataMatrixes[userIndex];
             int sizeOfContexts = dataMatrix.getRowSize();
             DenseMatrix gamma = DenseMatrix.valueOf(sizeOfContexts, numberOfStates);
@@ -374,12 +374,12 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
         viewRegularization = configuration.getFloat("recommender.view.regularization", 100F);
 
         // 检查参数配置
-        if (probabilityRegularization < numberOfStates || stateRegularization < numberOfStates || viewRegularization < numberOfItems) {
+        if (probabilityRegularization < numberOfStates || stateRegularization < numberOfStates || viewRegularization < itemSize) {
             throw new IllegalArgumentException();
         }
 
         // 按照上下文划分数据
-        dataMatrixes = new SparseMatrix[numberOfUsers];
+        dataMatrixes = new SparseMatrix[userSize];
         contextSize = 0;
 
         MemoryQualityAttribute attribute = (MemoryQualityAttribute) space.getQualityAttribute(contextField);
@@ -388,7 +388,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
         Table<Integer, Integer, Float> data = HashBasedTable.create();
 
         DataInstance instance = model.getInstance(0);
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             for (int from = dataPaginations[userIndex], to = dataPaginations[userIndex + 1]; from < to; from++) {
                 instance.setCursor(from);
                 int rowKey = (Integer) levels[instance.getQualityFeature(contextDimension)];
@@ -409,7 +409,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
             table.clear();
 
             // 使用稀疏矩阵
-            SparseMatrix matrix = SparseMatrix.valueOf(keys.size(), numberOfItems, data);
+            SparseMatrix matrix = SparseMatrix.valueOf(keys.size(), itemSize, data);
             if (contextSize < matrix.getRowSize()) {
                 contextSize = matrix.getRowSize();
             }
@@ -468,7 +468,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
             for (VectorScalar term : vector) {
                 value += GammaUtility.logGamma(term.getValue() + 1F);
             }
-            value += (GammaUtility.logGamma(1F) * (numberOfItems - vector.getElementSize()));
+            value += (GammaUtility.logGamma(1F) * (itemSize - vector.getElementSize()));
             gammaSumVector.setValue(contextIndex, value);
         }
 
@@ -616,7 +616,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
         // calculate the expected likelihood.
         // Formula 1.12
         float likelihood = 0F;
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             // gamma => {sizeOfContexts, numberOfStates}
             DenseMatrix gamma = gammas[userIndex];
             if (gamma.getRowSize() == 0) {
@@ -677,7 +677,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
         averageDenominator.setValues(0F);
 
         // TODO 此处可以并发
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             DenseMatrix gamma = gammas[userIndex];
             DenseVector nut = nuts[userIndex];
 
@@ -737,8 +737,8 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
 
             {
                 // 并发计算
-                CountDownLatch latch = new CountDownLatch(numberOfUsers);
-                for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+                CountDownLatch latch = new CountDownLatch(userSize);
+                for (int userIndex = 0; userIndex < userSize; userIndex++) {
                     DenseMatrix gamma = gammas[userIndex];
                     DenseVector nut = nuts[userIndex];
                     context.doAlgorithmByAny(userIndex, () -> {
@@ -814,8 +814,8 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
         super.doPractice();
 
         // Formula 1.13 and Formula 1.14
-        norms = DenseMatrix.valueOf(numberOfUsers, numberOfStates);
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        norms = DenseMatrix.valueOf(userSize, numberOfStates);
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             gammas[userIndex].iterateElement(MathCalculator.SERIAL, (scalar) -> {
                 scalar.setValue((float) Math.log(scalar.getValue()));
             });
@@ -842,8 +842,8 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
     protected void eStep() {
         EnvironmentContext context = EnvironmentContext.getContext();
         // 并发计算
-        CountDownLatch latch = new CountDownLatch(numberOfUsers);
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        CountDownLatch latch = new CountDownLatch(userSize);
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             int user = userIndex;
             context.doAlgorithmByAny(userIndex, () -> {
                 calculateGammaRho(user, dataMatrixes[user]);
@@ -884,8 +884,8 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
 
         {
             // 并发计算
-            CountDownLatch latch = new CountDownLatch(numberOfUsers);
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            CountDownLatch latch = new CountDownLatch(userSize);
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 // gamma => {sizeOfContexts, numberOfStates}
                 DenseMatrix gamma = gammas[userIndex];
                 if (gamma.getRowSize() == 0) {
@@ -901,7 +901,7 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
                     probabilityDenominatorStorage.get().addAndGet(gammaVector.getSum(false));
                     // viewNumerator => {numberOfStates, numberOfItems}
                     // 利用稀疏矩阵减少计算.
-                    for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+                    for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                         if (dataMatrix.getColumnScope(itemIndex) > 0) {
                             SparseVector itemVector = dataMatrix.getColumnVector(itemIndex);
                             viewNumeratorStorage.get().getColumnVector(itemIndex).iterateElement(MathCalculator.SERIAL, (scalar) -> {
@@ -973,8 +973,8 @@ public class HiddenMarkovModelRecommender extends ProbabilisticGraphicalRecommen
         viewProbabilities.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             int row = scalar.getRow();
             int column = scalar.getColumn();
-            float value = viewNumerator.getValue(row, column) + (viewRegularization / numberOfItems - 1F);
-            value = (float) (value / (viewDenominator.getValue(row) + viewRegularization - numberOfItems));
+            float value = viewNumerator.getValue(row, column) + (viewRegularization / itemSize - 1F);
+            value = (float) (value / (viewDenominator.getValue(row) + viewRegularization - itemSize));
             value = (float) Math.log(value);
             scalar.setValue(value);
         });

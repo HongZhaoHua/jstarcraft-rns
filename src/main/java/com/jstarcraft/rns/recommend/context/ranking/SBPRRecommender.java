@@ -59,7 +59,7 @@ public class SBPRRecommender extends SocialRecommender {
         // cacheSpec = conf.get("guava.cache.spec",
         // "maximumSize=5000,expireAfterAccess=50m");
 
-        itemBiases = DenseVector.valueOf(numberOfItems);
+        itemBiases = DenseVector.valueOf(itemSize);
         itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
@@ -68,9 +68,9 @@ public class SBPRRecommender extends SocialRecommender {
 
         // TODO 考虑重构
         // find items rated by trusted neighbors only
-        socialItemList = new ArrayList<>(numberOfUsers);
+        socialItemList = new ArrayList<>(userSize);
 
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             SparseVector userVector = scoreMatrix.getRowVector(userIndex);
             IntSet itemSet = userItemSet.get(userIndex);
             // find items rated by trusted neighbors only
@@ -96,13 +96,13 @@ public class SBPRRecommender extends SocialRecommender {
     protected void doPractice() {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
-            for (int sampleIndex = 0, sampleTimes = numberOfUsers * 100; sampleIndex < sampleTimes; sampleIndex++) {
+            for (int sampleIndex = 0, sampleTimes = userSize * 100; sampleIndex < sampleTimes; sampleIndex++) {
                 // uniformly draw (userIdx, posItemIdx, k, negItemIdx)
                 int userIndex, positiveItemIndex, negativeItemIndex;
                 // userIdx
                 SparseVector userVector;
                 do {
-                    userIndex = RandomUtility.randomInteger(numberOfUsers);
+                    userIndex = RandomUtility.randomInteger(userSize);
                     userVector = scoreMatrix.getRowVector(userIndex);
                 } while (userVector.getElementSize() == 0);
 
@@ -115,7 +115,7 @@ public class SBPRRecommender extends SocialRecommender {
                 List<Integer> socialList = socialItemList.get(userIndex);
                 IntSet itemSet = userItemSet.get(userIndex);
                 do {
-                    negativeItemIndex = RandomUtility.randomInteger(numberOfItems);
+                    negativeItemIndex = RandomUtility.randomInteger(itemSize);
                 } while (itemSet.contains(negativeItemIndex) || socialList.contains(negativeItemIndex));
                 float negativeRate = predict(userIndex, negativeItemIndex);
 

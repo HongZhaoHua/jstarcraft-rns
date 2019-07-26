@@ -24,17 +24,17 @@ public class BPRRecommender extends MatrixFactorizationRecommender {
 	protected void doPractice() {
 		for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
 			totalLoss = 0F;
-			for (int sampleIndex = 0, sampleTimes = numberOfUsers * 100; sampleIndex < sampleTimes; sampleIndex++) {
+			for (int sampleIndex = 0, sampleTimes = userSize * 100; sampleIndex < sampleTimes; sampleIndex++) {
 				// randomly draw (userIdx, posItemIdx, negItemIdx)
 				int userIndex, positiveItemIndex, negativeItemIndex;
 				while (true) {
-					userIndex = RandomUtility.randomInteger(numberOfUsers);
+					userIndex = RandomUtility.randomInteger(userSize);
 					SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 					if (userVector.getElementSize() == 0) {
 						continue;
 					}
 					positiveItemIndex = userVector.getIndex(RandomUtility.randomInteger(userVector.getElementSize()));
-					negativeItemIndex = RandomUtility.randomInteger(numberOfItems - userVector.getElementSize());
+					negativeItemIndex = RandomUtility.randomInteger(itemSize - userVector.getElementSize());
 					for (VectorScalar term : userVector) {
 						if (negativeItemIndex >= term.getIndex()) {
 							negativeItemIndex++;

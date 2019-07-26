@@ -31,11 +31,11 @@ public class SocialMFRecommender extends SocialRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        itemFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
@@ -47,8 +47,8 @@ public class SocialMFRecommender extends SocialRecommender {
         DenseVector socialFactors = DenseVector.valueOf(numberOfFactors);
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
-            DenseMatrix userDeltas = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-            DenseMatrix itemDeltas = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+            DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
+            DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, numberOfFactors);
 
             // rated items
             for (MatrixScalar term : scoreMatrix) {
@@ -69,7 +69,7 @@ public class SocialMFRecommender extends SocialRecommender {
             }
 
             // social regularization
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector trusterVector = socialMatrix.getRowVector(userIndex);
                 int numTrusters = trusterVector.getElementSize();
                 if (numTrusters == 0) {

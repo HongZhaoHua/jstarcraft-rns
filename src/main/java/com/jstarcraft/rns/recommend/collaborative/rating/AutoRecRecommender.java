@@ -39,7 +39,7 @@ public class AutoRecRecommender extends NeuralNetworkRecommender {
 
     @Override
     protected int getInputDimension() {
-        return numberOfUsers;
+        return userSize;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class AutoRecRecommender extends NeuralNetworkRecommender {
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // transform the sparse matrix to INDArray
-        int[] matrixShape = new int[] { numberOfItems, numberOfUsers };
+        int[] matrixShape = new int[] { itemSize, userSize };
         inputData = Nd4j.zeros(matrixShape);
         maskData = Nd4j.zeros(matrixShape);
         for (MatrixScalar term : scoreMatrix) {

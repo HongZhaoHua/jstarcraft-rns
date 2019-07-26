@@ -48,7 +48,7 @@ public class GBPRRecommender extends MatrixFactorizationRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        itemBiases = DenseVector.valueOf(numberOfItems);
+        itemBiases = DenseVector.valueOf(itemSize);
         itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
@@ -62,14 +62,14 @@ public class GBPRRecommender extends MatrixFactorizationRecommender {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
             // TODO 考虑重构
-            DenseMatrix userDeltas = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-            DenseMatrix itemDeltas = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+            DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
+            DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, numberOfFactors);
 
-            for (int sampleIndex = 0, sampleTimes = numberOfUsers * 100; sampleIndex < sampleTimes; sampleIndex++) {
+            for (int sampleIndex = 0, sampleTimes = userSize * 100; sampleIndex < sampleTimes; sampleIndex++) {
                 int userIndex, positiveItemIndex, negativeItemIndex;
                 SparseVector userVector;
                 do {
-                    userIndex = RandomUtility.randomInteger(numberOfUsers);
+                    userIndex = RandomUtility.randomInteger(userSize);
                     userVector = scoreMatrix.getRowVector(userIndex);
                 } while (userVector.getElementSize() == 0);
                 positiveItemIndex = userVector.getIndex(RandomUtility.randomInteger(userVector.getElementSize()));
@@ -88,7 +88,7 @@ public class GBPRRecommender extends MatrixFactorizationRecommender {
                     }
                 }
                 float positiveRate = predict(userIndex, positiveItemIndex, memberSet);
-                negativeItemIndex = RandomUtility.randomInteger(numberOfItems - userVector.getElementSize());
+                negativeItemIndex = RandomUtility.randomInteger(itemSize - userVector.getElementSize());
                 for (VectorScalar term : userVector) {
                     if (negativeItemIndex >= term.getIndex()) {
                         negativeItemIndex++;

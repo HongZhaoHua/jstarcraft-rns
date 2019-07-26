@@ -56,10 +56,10 @@ public class TFIDFRecommender extends MatrixFactorizationRecommender {
         private Object2IntMap<String> worldIndexes = new Object2IntOpenHashMap<>();
         private Int2FloatSortedMap keyValues = new Int2FloatAVLTreeMap();
         private Int2FloatSortedMap factors = new Int2FloatAVLTreeMap();
-        private int[] userCounts = new int[numberOfUsers];
-        private int[] itemCounts = new int[numberOfItems];
-        private ArrayVector[] userVectors = new ArrayVector[numberOfUsers];
-        private ArrayVector[] itemVectors = new ArrayVector[numberOfItems];
+        private int[] userCounts = new int[userSize];
+        private int[] itemCounts = new int[itemSize];
+        private ArrayVector[] userVectors = new ArrayVector[userSize];
+        private ArrayVector[] itemVectors = new ArrayVector[itemSize];
 
         private DocumentIterator(Iterator<DataInstance> iterator, Object[] documentValues) {
             this.iterator = iterator;
@@ -195,7 +195,7 @@ public class TFIDFRecommender extends MatrixFactorizationRecommender {
         ArrayVector[] userVectors = iterator.getUserVectors();
         ArrayVector[] itemVectors = iterator.getItemVectors();
         ArrayVector emptyVector = new ArrayVector(0, new int[] {}, new float[] {});
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             ArrayVector userVector = userVectors[userIndex];
             if (userVector == null) {
                 userVectors[userIndex] = emptyVector;
@@ -205,7 +205,7 @@ public class TFIDFRecommender extends MatrixFactorizationRecommender {
                 }
             }
         }
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             ArrayVector itemVector = itemVectors[itemIndex];
             if (itemVector == null) {
                 itemVectors[itemIndex] = emptyVector;

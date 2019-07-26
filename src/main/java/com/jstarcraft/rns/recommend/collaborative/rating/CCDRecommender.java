@@ -32,11 +32,11 @@ public class CCDRecommender extends MatrixFactorizationRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -45,7 +45,7 @@ public class CCDRecommender extends MatrixFactorizationRecommender {
     @Override
     protected void doPractice() {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                     float userFactor = 0F;
@@ -64,7 +64,7 @@ public class CCDRecommender extends MatrixFactorizationRecommender {
                     userFactors.setValue(userIndex, factorIndex, userFactor);
                 }
             }
-            for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                     float itemFactor = 0F;

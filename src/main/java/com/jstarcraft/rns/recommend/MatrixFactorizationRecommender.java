@@ -96,11 +96,11 @@ public abstract class MatrixFactorizationRecommender extends ModelRecommender {
         initStd = configuration.getFloat("recommender.init.std", 0.1F);
 
         distribution = new QuantityProbability(JDKRandomGenerator.class, 0, NormalDistribution.class, initMean, initStd);
-        userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -152,8 +152,8 @@ public abstract class MatrixFactorizationRecommender extends ModelRecommender {
     @Deprecated
     // TODO 此方法准备取消,利用向量的有序性代替
     protected List<IntSet> getUserItemSet(SparseMatrix sparseMatrix) {
-        List<IntSet> userItemSet = new ArrayList<>(numberOfUsers);
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        List<IntSet> userItemSet = new ArrayList<>(userSize);
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             SparseVector userVector = sparseMatrix.getRowVector(userIndex);
             IntSet indexes = new IntOpenHashSet();
             for (int position = 0, size = userVector.getElementSize(); position < size; position++) {

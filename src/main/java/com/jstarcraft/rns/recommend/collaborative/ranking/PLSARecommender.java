@@ -63,24 +63,24 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
             term.setValue(1F);
         }
 
-        userTopicSums = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-        topicItemSums = DenseMatrix.valueOf(numberOfFactors, numberOfItems);
+        userTopicSums = DenseMatrix.valueOf(userSize, numberOfFactors);
+        topicItemSums = DenseMatrix.valueOf(numberOfFactors, itemSize);
         topicProbabilities = DenseVector.valueOf(numberOfFactors);
 
-        userTopicProbabilities = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        userTopicProbabilities = DenseMatrix.valueOf(userSize, numberOfFactors);
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             DenseVector probabilityVector = userTopicProbabilities.getRowVector(userIndex);
             probabilityVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
-                scalar.setValue(RandomUtility.randomInteger(numberOfUsers) + 1);
+                scalar.setValue(RandomUtility.randomInteger(userSize) + 1);
             });
             probabilityVector.scaleValues(1F / probabilityVector.getSum(false));
         }
 
-        topicItemProbabilities = DenseMatrix.valueOf(numberOfFactors, numberOfItems);
+        topicItemProbabilities = DenseMatrix.valueOf(numberOfFactors, itemSize);
         for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
             DenseVector probabilityVector = topicItemProbabilities.getRowVector(topicIndex);
             probabilityVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
-                scalar.setValue(RandomUtility.randomInteger(numberOfItems) + 1);
+                scalar.setValue(RandomUtility.randomInteger(itemSize) + 1);
             });
             probabilityVector.scaleValues(1F / probabilityVector.getSum(false));
         }
@@ -88,8 +88,8 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
         // initialize Q
 
         // initialize Q
-        probabilityTensor = new SparseTable<>(true, numberOfUsers, numberOfItems, new Int2ObjectRBTreeMap<>());
-        userRateTimes = DenseVector.valueOf(numberOfUsers);
+        probabilityTensor = new SparseTable<>(true, userSize, itemSize, new Int2ObjectRBTreeMap<>());
+        userRateTimes = DenseVector.valueOf(userSize);
         for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow();
             int itemIndex = term.getColumn();
@@ -131,7 +131,7 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
             }
         }
 
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             float denominator = userRateTimes.getValue(userIndex);
             for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
                 float value = denominator > 0F ? userTopicSums.getValue(userIndex, topicIndex) / denominator : 0F;
@@ -141,7 +141,7 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
 
         for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
             float probability = topicProbabilities.getValue(topicIndex);
-            for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 float value = probability > 0F ? topicItemSums.getValue(topicIndex, itemIndex) / probability : 0F;
                 topicItemProbabilities.setValue(topicIndex, itemIndex, value);
             }

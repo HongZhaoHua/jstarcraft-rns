@@ -37,8 +37,8 @@ public class SlopeOneRecommender extends AbstractRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        deviationMatrix = DenseMatrix.valueOf(numberOfItems, numberOfItems);
-        cardinalMatrix = DenseMatrix.valueOf(numberOfItems, numberOfItems);
+        deviationMatrix = DenseMatrix.valueOf(itemSize, itemSize);
+        cardinalMatrix = DenseMatrix.valueOf(itemSize, itemSize);
     }
 
     /**
@@ -49,7 +49,7 @@ public class SlopeOneRecommender extends AbstractRecommender {
     @Override
     protected void doPractice() {
         // compute items' differences
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             SparseVector itemVector = scoreMatrix.getRowVector(userIndex);
             for (VectorScalar leftTerm : itemVector) {
                 float leftRate = leftTerm.getValue();

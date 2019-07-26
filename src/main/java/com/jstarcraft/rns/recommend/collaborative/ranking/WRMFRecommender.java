@@ -95,8 +95,8 @@ public class WRMFRecommender extends MatrixFactorizationRecommender {
 			// 按照用户切割任务实现并发计算.
 			DenseMatrix itemSymmetryMatrix = transposeMatrix;
 			itemSymmetryMatrix.dotProduct(itemFactors, true, itemFactors, false, MathCalculator.SERIAL);
-			CountDownLatch userLatch = new CountDownLatch(numberOfUsers);
-			for (int index = 0; index < numberOfUsers; index++) {
+			CountDownLatch userLatch = new CountDownLatch(userSize);
+			for (int index = 0; index < userSize; index++) {
 				int userIndex = index;
 				context.doAlgorithmByAny(index, () -> {
 					DenseMatrix factorMatrix = factorMatrixStorage.get();
@@ -146,8 +146,8 @@ public class WRMFRecommender extends MatrixFactorizationRecommender {
 			// 按照物品切割任务实现并发计算.
 			DenseMatrix userSymmetryMatrix = transposeMatrix;
 			userSymmetryMatrix.dotProduct(userFactors, true, userFactors, false, MathCalculator.SERIAL);
-			CountDownLatch itemLatch = new CountDownLatch(numberOfItems);
-			for (int index = 0; index < numberOfItems; index++) {
+			CountDownLatch itemLatch = new CountDownLatch(itemSize);
+			for (int index = 0; index < itemSize; index++) {
 				int itemIndex = index;
 				context.doAlgorithmByAny(index, () -> {
 					DenseMatrix factorMatrix = factorMatrixStorage.get();

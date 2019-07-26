@@ -119,19 +119,19 @@ public class TopicMFATRecommender extends MatrixFactorizationRecommender {
         // init parameters
         initMean = configuration.getFloat("recommender.init.mean", 0F);
         initStd = configuration.getFloat("recommender.init.std", 0.01F);
-        userBiases = DenseVector.valueOf(numberOfUsers);
+        userBiases = DenseVector.valueOf(userSize);
         userBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemBiases = DenseVector.valueOf(numberOfItems);
+        itemBiases = DenseVector.valueOf(itemSize);
         itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfTopics);
+        userFactors = DenseMatrix.valueOf(userSize, numberOfTopics);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemFactors = DenseMatrix.valueOf(numberOfItems, numberOfTopics);
+        itemFactors = DenseMatrix.valueOf(itemSize, numberOfTopics);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -152,8 +152,8 @@ public class TopicMFATRecommender extends MatrixFactorizationRecommender {
             scalar.setValue(RandomUtility.randomFloat(0.01F));
         });
 
-        logger.info("number of users : " + numberOfUsers);
-        logger.info("number of Items : " + numberOfItems);
+        logger.info("number of users : " + userSize);
+        logger.info("number of Items : " + itemSize);
         logger.info("number of words : " + wordDictionaries.size());
     }
 

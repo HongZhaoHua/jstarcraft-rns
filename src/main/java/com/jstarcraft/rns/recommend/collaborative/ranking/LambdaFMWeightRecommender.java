@@ -32,13 +32,13 @@ public class LambdaFMWeightRecommender extends LambdaFMRecommender {
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         epsilon = configuration.getFloat("epsilon");
-        orderLosses = new float[numberOfItems - 1];
+        orderLosses = new float[itemSize - 1];
         float orderLoss = 0F;
-        for (int orderIndex = 1; orderIndex < numberOfItems; orderIndex++) {
+        for (int orderIndex = 1; orderIndex < itemSize; orderIndex++) {
             orderLoss += 1F / orderIndex;
             orderLosses[orderIndex - 1] = orderLoss;
         }
-        for (int rankIndex = 1; rankIndex < numberOfItems; rankIndex++) {
+        for (int rankIndex = 1; rankIndex < itemSize; rankIndex++) {
             orderLosses[rankIndex - 1] /= orderLoss;
         }
     }
@@ -49,14 +49,14 @@ public class LambdaFMWeightRecommender extends LambdaFMRecommender {
         float positiveScore;
         float negativeScore;
         while (true) {
-            userIndex = RandomUtility.randomInteger(numberOfUsers);
+            userIndex = RandomUtility.randomInteger(userSize);
             SparseVector userVector = scoreMatrix.getRowVector(userIndex);
-            if (userVector.getElementSize() == 0 || userVector.getElementSize() == numberOfItems) {
+            if (userVector.getElementSize() == 0 || userVector.getElementSize() == itemSize) {
                 continue;
             }
 
             N = 0;
-            Y = numberOfItems - scoreMatrix.getRowScope(userIndex);
+            Y = itemSize - scoreMatrix.getRowScope(userIndex);
             int from = dataPaginations[userIndex], to = dataPaginations[userIndex + 1];
             int positivePosition = dataPositions[RandomUtility.randomInteger(from, to)];
             instance.setCursor(positivePosition);
@@ -65,7 +65,7 @@ public class LambdaFMWeightRecommender extends LambdaFMRecommender {
             positiveScore = predict(scalar, positiveVector);
             do {
                 N++;
-                int negativeItemIndex = RandomUtility.randomInteger(numberOfItems - userVector.getElementSize());
+                int negativeItemIndex = RandomUtility.randomInteger(itemSize - userVector.getElementSize());
                 for (int position = 0, size = userVector.getElementSize(); position < size; position++) {
                     if (negativeItemIndex >= userVector.getIndex(position)) {
                         negativeItemIndex++;

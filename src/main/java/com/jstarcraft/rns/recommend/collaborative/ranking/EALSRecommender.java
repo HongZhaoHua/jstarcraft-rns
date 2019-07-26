@@ -68,21 +68,21 @@ public class EALSRecommender extends MatrixFactorizationRecommender {
 		overallWeight = configuration.getFloat("recommender.eals.overall", 128.0f);
 		type = configuration.getInteger("recommender.eals.wrmf.judge", 1);
 
-		confidences = new float[numberOfItems];
+		confidences = new float[itemSize];
 
 		// get ci
 		if (type == 0 || type == 2) {
 			float sumPopularity = 0F;
-			for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+			for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 				float alphaPopularity = (float) Math.pow(scoreMatrix.getColumnScope(itemIndex) * 1.0 / numberOfActions, ratio);
 				confidences[itemIndex] = overallWeight * alphaPopularity;
 				sumPopularity += alphaPopularity;
 			}
-			for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+			for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 				confidences[itemIndex] = confidences[itemIndex] / sumPopularity;
 			}
 		} else {
-			for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+			for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 				confidences[itemIndex] = 1;
 			}
 		}
@@ -105,10 +105,10 @@ public class EALSRecommender extends MatrixFactorizationRecommender {
 	@Override
 	protected void constructEnvironment() {
 		// TODO 可以继续节省数组分配的大小(按照稀疏矩阵的最大向量作为缓存大小).
-		itemScoreStorage.set(new float[numberOfItems]);
-		itemWeightStorage.set(new float[numberOfItems]);
-		userScoreStorage.set(new float[numberOfUsers]);
-		userWeightStorage.set(new float[numberOfUsers]);
+		itemScoreStorage.set(new float[itemSize]);
+		itemWeightStorage.set(new float[itemSize]);
+		userScoreStorage.set(new float[userSize]);
+		userWeightStorage.set(new float[userSize]);
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class EALSRecommender extends MatrixFactorizationRecommender {
 			for (int leftFactorIndex = 0; leftFactorIndex < numberOfFactors; leftFactorIndex++) {
 				for (int rightFactorIndex = leftFactorIndex; rightFactorIndex < numberOfFactors; rightFactorIndex++) {
 					float value = 0F;
-					for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+					for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 						value += confidences[itemIndex] * itemFactors.getValue(itemIndex, leftFactorIndex) * itemFactors.getValue(itemIndex, rightFactorIndex);
 					}
 					itemDeltas.setValue(leftFactorIndex, rightFactorIndex, value);
@@ -139,8 +139,8 @@ public class EALSRecommender extends MatrixFactorizationRecommender {
 			}
 			// Step 1: update user factors;
 			// 按照用户切割任务实现并发计算.
-			CountDownLatch userLatch = new CountDownLatch(numberOfUsers);
-			for (int index = 0; index < numberOfUsers; index++) {
+			CountDownLatch userLatch = new CountDownLatch(userSize);
+			for (int index = 0; index < userSize; index++) {
 				int userIndex = index;
 				context.doAlgorithmByAny(index, () -> {
 					DefaultScalar scalar = DefaultScalar.getInstance();
@@ -187,8 +187,8 @@ public class EALSRecommender extends MatrixFactorizationRecommender {
 			userDeltas.dotProduct(userFactors, true, userFactors, false, MathCalculator.SERIAL);
 			// Step 2: update item factors;
 			// 按照物品切割任务实现并发计算.
-			CountDownLatch itemLatch = new CountDownLatch(numberOfItems);
-			for (int index = 0; index < numberOfItems; index++) {
+			CountDownLatch itemLatch = new CountDownLatch(itemSize);
+			for (int index = 0; index < itemSize; index++) {
 				int itemIndex = index;
 				context.doAlgorithmByAny(index, () -> {
 					DefaultScalar scalar = DefaultScalar.getInstance();

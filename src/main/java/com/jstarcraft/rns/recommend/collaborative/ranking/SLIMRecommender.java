@@ -91,11 +91,11 @@ public class SLIMRecommender extends ModelRecommender {
         regL2Norm = configuration.getFloat("recommender.slim.regularization.l2", 1.0F);
 
         // TODO 考虑重构
-        coefficientMatrix = DenseMatrix.valueOf(numberOfItems, numberOfItems);
+        coefficientMatrix = DenseMatrix.valueOf(itemSize, itemSize);
         coefficientMatrix.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             coefficientMatrix.setValue(itemIndex, itemIndex, 0F);
         }
 
@@ -111,7 +111,7 @@ public class SLIMRecommender extends ModelRecommender {
         }
 
         // TODO 设置容量
-        itemNeighbors = new int[numberOfItems][];
+        itemNeighbors = new int[itemSize][];
         HashMap<Integer, TreeSet<Entry<Integer, Double>>> itemNNs = new HashMap<>();
         for (MatrixScalar term : similarityMatrix) {
             int row = term.getRow();
@@ -150,13 +150,13 @@ public class SLIMRecommender extends ModelRecommender {
             itemNeighbors[term.getKey()] = value;
         }
 
-        userVectors = new ArrayVector[numberOfUsers];
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        userVectors = new ArrayVector[userSize];
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             userVectors[userIndex] = new ArrayVector(scoreMatrix.getRowVector(userIndex));
         }
 
-        itemVectors = new ArrayVector[numberOfItems];
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        itemVectors = new ArrayVector[itemSize];
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             itemVectors[itemIndex] = new ArrayVector(scoreMatrix.getColumnVector(itemIndex));
         }
     }
@@ -168,12 +168,12 @@ public class SLIMRecommender extends ModelRecommender {
      */
     @Override
     protected void doPractice() {
-        float[] rates = new float[numberOfUsers];
+        float[] rates = new float[userSize];
         // number of iteration cycles
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
             // each cycle iterates through one coordinate direction
-            for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 int[] neighborIndexes = itemNeighbors[itemIndex];
                 if (neighborIndexes == null) {
                     continue;

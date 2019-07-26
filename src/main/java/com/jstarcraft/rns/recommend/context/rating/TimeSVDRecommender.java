@@ -134,45 +134,45 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
         getMaxAndMinTimeStamp();
         numDays = days(maxTimestamp, minTimestamp) + 1;
         // TODO 考虑重构
-        userBiases = DenseVector.valueOf(numberOfUsers);
+        userBiases = DenseVector.valueOf(userSize);
         userBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        itemBiases = DenseVector.valueOf(numberOfItems);
+        itemBiases = DenseVector.valueOf(itemSize);
         itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        userBiasWeights = DenseVector.valueOf(numberOfUsers);
+        userBiasWeights = DenseVector.valueOf(userSize);
         userBiasWeights.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        itemSectionBiases = DenseMatrix.valueOf(numberOfItems, numSections);
+        itemSectionBiases = DenseMatrix.valueOf(itemSize, numSections);
         itemSectionBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        itemImplicitFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        itemImplicitFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         itemImplicitFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        userImplicitFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        userImplicitFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
         userImplicitFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
         userDayBiases = HashBasedTable.create();
         userDayFactors = HashBasedTable.create();
-        userScales = DenseVector.valueOf(numberOfUsers);
+        userScales = DenseVector.valueOf(userSize);
         userScales.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        userDayScales = DenseMatrix.valueOf(numberOfUsers, numDays);
+        userDayScales = DenseMatrix.valueOf(userSize, numDays);
         userDayScales.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        userExplicitFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        userExplicitFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
         userExplicitFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        itemExplicitFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        itemExplicitFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         itemExplicitFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
@@ -188,8 +188,8 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
         }
         float globalMeanDays = sum / count;
         // compute user's mean of rating timestamps
-        userMeanDays = DenseVector.valueOf(numberOfUsers);
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        userMeanDays = DenseVector.valueOf(userSize);
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             sum = 0F;
             SparseVector userVector = scoreMatrix.getRowVector(userIndex);
             for (VectorScalar term : userVector) {
@@ -206,7 +206,7 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
         DefaultScalar scalar = DefaultScalar.getInstance();
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector rateVector = scoreMatrix.getRowVector(userIndex);
                 int size = rateVector.getElementSize();
                 if (size == 0) {

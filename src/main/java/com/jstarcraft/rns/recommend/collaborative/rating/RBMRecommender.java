@@ -78,28 +78,28 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
         lamtaBias = configuration.getFloat("recommender.lamtab", 0F);
         predictionType = PredictionType.valueOf(configuration.getString("recommender.predictiontype", "mean").toUpperCase());
 
-        weightProbabilities = new float[numberOfItems][numberOfScores][numberOfFactors];
-        explicitBiasProbabilities = new float[numberOfItems][numberOfScores];
+        weightProbabilities = new float[itemSize][numberOfScores][numberOfFactors];
+        explicitBiasProbabilities = new float[itemSize][numberOfScores];
         implicitBiasProbabilities = new float[numberOfFactors];
 
-        weightSums = new float[numberOfItems][numberOfScores][numberOfFactors];
+        weightSums = new float[itemSize][numberOfScores][numberOfFactors];
         implicitBiasSums = new float[numberOfFactors];
-        explicitBiasSums = new float[numberOfItems][numberOfScores];
+        explicitBiasSums = new float[itemSize][numberOfScores];
 
-        positiveWeights = new float[numberOfItems][numberOfScores][numberOfFactors];
-        negativeWeights = new float[numberOfItems][numberOfScores][numberOfFactors];
+        positiveWeights = new float[itemSize][numberOfScores][numberOfFactors];
+        negativeWeights = new float[itemSize][numberOfScores][numberOfFactors];
 
         positiveImplicitActs = new float[numberOfFactors];
         negativeImplicitActs = new float[numberOfFactors];
 
-        positiveExplicitActs = new float[numberOfItems][numberOfScores];
-        negativeExplicitActs = new float[numberOfItems][numberOfScores];
+        positiveExplicitActs = new float[itemSize][numberOfScores];
+        negativeExplicitActs = new float[itemSize][numberOfScores];
 
-        itemCount = new int[numberOfItems];
+        itemCount = new int[itemSize];
 
         // TODO 此处需要重构
-        int[][] itemScoreCount = new int[numberOfItems][numberOfScores];
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        int[][] itemScoreCount = new int[itemSize][numberOfScores];
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             SparseVector userVector = scoreMatrix.getRowVector(userIndex);
             if (userVector.getElementSize() == 0) {
                 continue;
@@ -110,7 +110,7 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
             }
         }
         QuantityProbability distribution = new QuantityProbability(JDKRandomGenerator.class, 0, NormalDistribution.class, 0D, 0.01D);
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                 for (int scoreIndex = 0; scoreIndex < numberOfScores; scoreIndex++) {
                     weightProbabilities[itemIndex][scoreIndex][factorIndex] = distribution.sample().floatValue();
@@ -118,7 +118,7 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
             }
         }
 
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             double totalScore = 0D;
             for (int scoreIndex = 0; scoreIndex < numberOfScores; scoreIndex++) {
                 totalScore += itemScoreCount[itemIndex][scoreIndex];
@@ -141,12 +141,12 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
         Collection<Integer> positiveImplicitStates = new ArrayList<>(numberOfFactors);
         Collection<Integer> negativeImplicitStates = new ArrayList<>(numberOfFactors);
         DenseVector negativeExplicitProbabilities = DenseVector.valueOf(numberOfScores);
-        int[] negativeExplicitScores = new int[numberOfItems];
+        int[] negativeExplicitScores = new int[itemSize];
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             reset();
             // 随机遍历顺序
-            Integer[] userIndexes = new Integer[numberOfUsers];
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            Integer[] userIndexes = new Integer[userSize];
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 userIndexes[userIndex] = userIndex;
             }
             RandomUtility.shuffle(userIndexes);
@@ -261,7 +261,7 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
 
     private void update(int userIndex) {
         // TODO size是否应该由参数指定?
-        if (((userIndex + 1) % numberOfSamples) == 0 || (userIndex + 1) == numberOfUsers) {
+        if (((userIndex + 1) % numberOfSamples) == 0 || (userIndex + 1) == userSize) {
             int numCases = userIndex % numberOfSamples;
             numCases++;
 
@@ -272,7 +272,7 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
             float positiveWeight;
             float negativeWeight;
 
-            for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 if (itemCount[itemIndex] == 0) {
                     continue;
                 }
@@ -320,7 +320,7 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
     }
 
     private void reset() {
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             itemCount[itemIndex] = 0;
             for (int scoreIndex = 0; scoreIndex < numberOfScores; scoreIndex++) {
                 positiveExplicitActs[itemIndex][scoreIndex] = 0F;

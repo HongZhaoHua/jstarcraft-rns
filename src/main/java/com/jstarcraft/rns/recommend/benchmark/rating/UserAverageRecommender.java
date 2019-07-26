@@ -28,12 +28,12 @@ public class UserAverageRecommender extends AbstractRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        userMeans = new float[numberOfUsers];
+        userMeans = new float[userSize];
     }
 
     @Override
     protected void doPractice() {
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             SparseVector userVector = scoreMatrix.getRowVector(userIndex);
             userMeans[userIndex] = userVector.getElementSize() == 0 ? meanOfScore : userVector.getSum(false) / userVector.getElementSize();
         }

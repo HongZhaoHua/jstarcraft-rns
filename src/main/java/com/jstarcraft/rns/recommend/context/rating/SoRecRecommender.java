@@ -40,15 +40,15 @@ public class SoRecRecommender extends SocialRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        userFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        itemFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        socialFactors = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+        socialFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
         socialFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
@@ -56,10 +56,10 @@ public class SoRecRecommender extends SocialRecommender {
         regRate = configuration.getFloat("recommender.rate.social.regularization", 0.01F);
         regSocial = configuration.getFloat("recommender.user.social.regularization", 0.01F);
 
-        inDegrees = new ArrayList<>(numberOfUsers);
-        outDegrees = new ArrayList<>(numberOfUsers);
+        inDegrees = new ArrayList<>(userSize);
+        outDegrees = new ArrayList<>(userSize);
 
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             int in = socialMatrix.getColumnScope(userIndex);
             int out = socialMatrix.getRowScope(userIndex);
             inDegrees.add(in);
@@ -72,9 +72,9 @@ public class SoRecRecommender extends SocialRecommender {
         DefaultScalar scalar = DefaultScalar.getInstance();
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
-            DenseMatrix userDeltas = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-            DenseMatrix itemDeltas = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
-            DenseMatrix socialDeltas = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
+            DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
+            DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, numberOfFactors);
+            DenseMatrix socialDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
 
             // ratings
             for (MatrixScalar term : scoreMatrix) {

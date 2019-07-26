@@ -48,19 +48,19 @@ public class FISMrmseRecommender extends MatrixFactorizationRecommender {
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // 注意:FISM使用itemFactors来组成userFactors
-        userFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        userBiases = DenseVector.valueOf(numberOfUsers);
+        userBiases = DenseVector.valueOf(userSize);
         userBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemBiases = DenseVector.valueOf(numberOfItems);
+        itemBiases = DenseVector.valueOf(itemSize);
         itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -77,8 +77,8 @@ public class FISMrmseRecommender extends MatrixFactorizationRecommender {
     protected void doPractice() {
         DefaultScalar scalar = DefaultScalar.getInstance();
         int sampleSize = (int) (rho * numNeighbors);
-        int totalSize = numberOfUsers * numberOfItems;
-        HashMatrix rateMatrix = new HashMatrix(true, numberOfUsers, numberOfItems, new Int2FloatRBTreeMap());
+        int totalSize = userSize * itemSize;
+        HashMatrix rateMatrix = new HashMatrix(true, userSize, itemSize, new Int2FloatRBTreeMap());
         for (MatrixScalar cell : scoreMatrix) {
             rateMatrix.setValue(cell.getRow(), cell.getColumn(), cell.getValue());
         }
@@ -94,8 +94,8 @@ public class FISMrmseRecommender extends MatrixFactorizationRecommender {
             for (int sampleIndex = 0; sampleIndex < sampleSize; sampleIndex++) {
                 while (true) {
                     int randomIndex = RandomUtility.randomInteger(totalSize - numNeighbors);
-                    int rowIndex = randomIndex / numberOfItems;
-                    int columnIndex = randomIndex % numberOfItems;
+                    int rowIndex = randomIndex / itemSize;
+                    int columnIndex = randomIndex % itemSize;
 
                     if (Float.isNaN(rateMatrix.getValue(rowIndex, columnIndex))) {
                         sampleIndexes[sampleIndex] = randomIndex;
@@ -156,8 +156,8 @@ public class FISMrmseRecommender extends MatrixFactorizationRecommender {
             }
 
             for (int sampleIndex : sampleIndexes) {
-                int rowIndex = sampleIndex / numberOfItems;
-                int columnIndex = sampleIndex % numberOfItems;
+                int rowIndex = sampleIndex / itemSize;
+                int columnIndex = sampleIndex % itemSize;
                 rateMatrix.setValue(rowIndex, columnIndex, Float.NaN);
             }
 

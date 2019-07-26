@@ -72,7 +72,7 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
         ArrayInstance negative = new ArrayInstance(instance.getQualityOrder(), instance.getQuantityOrder());
 
         DefaultScalar scalar = DefaultScalar.getInstance();
-        int[] dataPaginations = new int[numberOfUsers + 1];
+        int[] dataPaginations = new int[userSize + 1];
         int size = marker.getSize();
         int[] dataPositions = new int[size];
         for (int index = 0; index < size; index++) {
@@ -103,7 +103,7 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
         for (int iterationStep = 0; iterationStep < numberOfEpoches; iterationStep++) {
             long totalTime = 0;
             totalLoss = 0F;
-            for (int sampleIndex = 0, sampleTimes = numberOfUsers * 50; sampleIndex < sampleTimes; sampleIndex++) {
+            for (int sampleIndex = 0, sampleTimes = userSize * 50; sampleIndex < sampleTimes; sampleIndex++) {
                 long current = System.currentTimeMillis();
                 float gradient = getGradientValue(instance, positive, negative, scalar, dataPaginations, dataPositions);
                 totalTime += (System.currentTimeMillis() - current);

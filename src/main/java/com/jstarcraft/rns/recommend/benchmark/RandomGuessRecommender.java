@@ -27,7 +27,7 @@ public class RandomGuessRecommender extends AbstractRecommender {
     public synchronized void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
-        RandomUtility.setSeed(userIndex * numberOfItems + itemIndex);
+        RandomUtility.setSeed(userIndex * itemSize + itemIndex);
         instance.setQuantityMark(RandomUtility.randomFloat(minimumOfScore, maximumOfScore));
     }
 

@@ -48,16 +48,16 @@ public class FISMaucRecommender extends MatrixFactorizationRecommender {
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // 注意:FISM使用itemFactors来组成userFactors
-        userFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemFactors = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
         // TODO
-        itemBiases = DenseVector.valueOf(numberOfItems);
+        itemBiases = DenseVector.valueOf(itemSize);
         itemBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -81,7 +81,7 @@ public class FISMaucRecommender extends MatrixFactorizationRecommender {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
             // for all u in C
-            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+            for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector rateVector = scoreMatrix.getRowVector(userIndex);
                 int size = rateVector.getElementSize();
                 if (size == 0 || size == 1) {
@@ -104,7 +104,7 @@ public class FISMaucRecommender extends MatrixFactorizationRecommender {
                     // make a random sample of negative feedback for Ru-
                     List<Integer> negativeIndexes = new LinkedList<>();
                     for (int sampleIndex = 0; sampleIndex < sampleSize; sampleIndex++) {
-                        int negativeItemIndex = RandomUtility.randomInteger(numberOfItems - negativeIndexes.size());
+                        int negativeItemIndex = RandomUtility.randomInteger(itemSize - negativeIndexes.size());
                         int index = 0;
                         for (int negativeIndex : negativeIndexes) {
                             if (negativeItemIndex >= negativeIndex) {
@@ -205,7 +205,7 @@ public class FISMaucRecommender extends MatrixFactorizationRecommender {
                     }
                 }
             }
-            for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 double itemBias = itemBiases.getValue(itemIndex);
                 totalLoss += gamma * itemBias * itemBias;
                 totalLoss += beta * scalar.dotProduct(itemFactors.getRowVector(itemIndex), itemFactors.getRowVector(itemIndex)).getValue();

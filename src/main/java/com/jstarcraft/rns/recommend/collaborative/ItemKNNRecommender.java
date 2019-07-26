@@ -69,10 +69,10 @@ public abstract class ItemKNNRecommender extends AbstractRecommender {
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
-		itemMeans = DenseVector.valueOf(numberOfItems);
+		itemMeans = DenseVector.valueOf(itemSize);
 
 		// TODO 设置容量
-		itemNeighbors = new int[numberOfItems][];
+		itemNeighbors = new int[itemSize][];
 		HashMap<Integer, TreeSet<Entry<Integer, Double>>> itemNNs = new HashMap<>();
 		for (MatrixScalar term : similarityMatrix) {
 			int row = term.getRow();
@@ -114,13 +114,13 @@ public abstract class ItemKNNRecommender extends AbstractRecommender {
 			itemNeighbors[term.getKey()] = value;
 		}
 
-		userVectors = new SparseVector[numberOfUsers];
-		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+		userVectors = new SparseVector[userSize];
+		for (int userIndex = 0; userIndex < userSize; userIndex++) {
 			userVectors[userIndex] = scoreMatrix.getRowVector(userIndex);
 		}
 
-		itemVectors = new SparseVector[numberOfItems];
-		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+		itemVectors = new SparseVector[itemSize];
+		for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 			itemVectors[itemIndex] = scoreMatrix.getColumnVector(itemIndex);
 		}
 	}
@@ -128,7 +128,7 @@ public abstract class ItemKNNRecommender extends AbstractRecommender {
 	@Override
 	protected void doPractice() {
 		meanOfScore = scoreMatrix.getSum(false) / scoreMatrix.getElementSize();
-		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+		for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 			SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
 			itemMeans.setValue(itemIndex, itemVector.getElementSize() > 0 ? itemVector.getSum(false) / itemVector.getElementSize() : meanOfScore);
 		}

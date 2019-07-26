@@ -70,11 +70,11 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
         numberOfThreads = numberOfThreads > numberOfModels ? numberOfModels : numberOfThreads;
 
         // global svd P Q to calculate the kernel value between users (or items)
-        globalUserFactors = DenseMatrix.valueOf(numberOfUsers, numberOfGlobalFactors);
+        globalUserFactors = DenseMatrix.valueOf(userSize, numberOfGlobalFactors);
         globalUserFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        globalItemFactors = DenseMatrix.valueOf(numberOfItems, numberOfGlobalFactors);
+        globalItemFactors = DenseMatrix.valueOf(itemSize, numberOfGlobalFactors);
         globalItemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -191,7 +191,7 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
 
         // Parallel training:
         while (completeModelCount < numberOfModels) {
-            int randomUserIndex = RandomUtility.randomInteger(numberOfUsers);
+            int randomUserIndex = RandomUtility.randomInteger(userSize);
             // TODO 考虑重构
             SparseVector userVector = scoreMatrix.getRowVector(randomUserIndex);
             if (userVector.getElementSize() == 0) {
@@ -205,13 +205,13 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
                 anchorUsers[modelCount] = randomUserIndex;
                 anchorItems[modelCount] = randomItemIndex;
                 // Preparing weight vectors:
-                DenseVector userWeights = kernelSmoothing(scalar, numberOfUsers, randomUserIndex, KernelSmoother.EPANECHNIKOV_KERNEL, 0.8F, false);
-                DenseVector itemWeights = kernelSmoothing(scalar, numberOfItems, randomItemIndex, KernelSmoother.EPANECHNIKOV_KERNEL, 0.8F, true);
-                DenseMatrix localUserFactors = DenseMatrix.valueOf(numberOfUsers, numberOfLocalFactors);
+                DenseVector userWeights = kernelSmoothing(scalar, userSize, randomUserIndex, KernelSmoother.EPANECHNIKOV_KERNEL, 0.8F, false);
+                DenseVector itemWeights = kernelSmoothing(scalar, itemSize, randomItemIndex, KernelSmoother.EPANECHNIKOV_KERNEL, 0.8F, true);
+                DenseMatrix localUserFactors = DenseMatrix.valueOf(userSize, numberOfLocalFactors);
                 localUserFactors.iterateElement(MathCalculator.SERIAL, (element) -> {
                     element.setValue(distribution.sample().floatValue());
                 });
-                DenseMatrix localItemFactors = DenseMatrix.valueOf(numberOfItems, numberOfLocalFactors);
+                DenseMatrix localItemFactors = DenseMatrix.valueOf(itemSize, numberOfLocalFactors);
                 localItemFactors.iterateElement(MathCalculator.SERIAL, (element) -> {
                     element.setValue(distribution.sample().floatValue());
                 });

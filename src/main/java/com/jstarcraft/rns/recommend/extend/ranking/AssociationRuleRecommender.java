@@ -39,18 +39,18 @@ public class AssociationRuleRecommender extends AbstractRecommender {
     @Override
     public void prepare(Configuration configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        associationMatrix = DenseMatrix.valueOf(numberOfItems, numberOfItems);
+        associationMatrix = DenseMatrix.valueOf(itemSize, itemSize);
     }
 
     @Override
     protected void doPractice() {
         // simple rule: X => Y, given that each user vector is regarded as a
         // transaction
-        for (int leftItemIndex = 0; leftItemIndex < numberOfItems; leftItemIndex++) {
+        for (int leftItemIndex = 0; leftItemIndex < itemSize; leftItemIndex++) {
             // all transactions for item itemIdx
             SparseVector leftVector = scoreMatrix.getColumnVector(leftItemIndex);
             int size = leftVector.getElementSize();
-            for (int rightItemIndex = 0; rightItemIndex < numberOfItems; rightItemIndex++) {
+            for (int rightItemIndex = 0; rightItemIndex < itemSize; rightItemIndex++) {
                 SparseVector rightVector = scoreMatrix.getColumnVector(rightItemIndex);
                 int leftIndex = 0, rightIndex = 0, leftSize = size, rightSize = rightVector.getElementSize();
                 if (leftSize != 0 && rightSize != 0) {

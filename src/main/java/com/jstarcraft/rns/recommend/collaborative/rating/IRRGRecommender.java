@@ -104,7 +104,7 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
         computeAssociationRuleByGroup();
         sortAssociationRuleByGroup();
         complementAssociationRule();
-        complementMatrix = SparseMatrix.valueOf(numberOfItems, numberOfItems, itemCorrsAR_added);
+        complementMatrix = SparseMatrix.valueOf(itemSize, itemSize, itemCorrsAR_added);
     }
 
     @Override
@@ -112,8 +112,8 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
         for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
             totalLoss = 0F;
 
-            DenseMatrix userDeltas = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-            DenseMatrix itemDeltas = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+            DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
+            DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, numberOfFactors);
             for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();
@@ -135,7 +135,7 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
                 }
             }
 
-            for (int leftItemIndex = 0; leftItemIndex < numberOfItems; leftItemIndex++) { // complementary
+            for (int leftItemIndex = 0; leftItemIndex < itemSize; leftItemIndex++) { // complementary
                 // item-to-item
                 // AR
                 SparseVector itemVector = complementMatrix.getColumnVector(leftItemIndex);
@@ -214,13 +214,13 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
      */
     private void computeAssociationRuleByItem() {
         // TODO 此处可以参考Abstract.getScoreList的相似度计算.
-        for (int leftItemIndex = 0; leftItemIndex < numberOfItems; leftItemIndex++) {
+        for (int leftItemIndex = 0; leftItemIndex < itemSize; leftItemIndex++) {
             if (scoreMatrix.getColumnScope(leftItemIndex) == 0) {
                 continue;
             }
             SparseVector itemVector = scoreMatrix.getColumnVector(leftItemIndex);
             int total = itemVector.getElementSize();
-            for (int rightItemIndex = 0; rightItemIndex < numberOfItems; rightItemIndex++) {
+            for (int rightItemIndex = 0; rightItemIndex < itemSize; rightItemIndex++) {
                 if (leftItemIndex == rightItemIndex) {
                     continue;
                 }
@@ -348,14 +348,14 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
                 list = list.subList(0, neighborSize);
             }
 
-            HashMatrix groupTable = new HashMatrix(true, numberOfItems, numberOfItems, new Int2FloatRBTreeMap());
+            HashMatrix groupTable = new HashMatrix(true, itemSize, itemSize, new Int2FloatRBTreeMap());
             for (KeyValue<KeyValue<Integer, Integer>, Float> keyValue : list) {
                 int leftItemIndex = keyValue.getKey().getKey();
                 int rightItemIndex = keyValue.getKey().getValue();
                 float correlation = keyValue.getValue();
                 groupTable.setValue(leftItemIndex, rightItemIndex, correlation);
             }
-            itemCorrsGAR_Sorted.put(groupIndex, SparseMatrix.valueOf(numberOfItems, numberOfItems, groupTable));
+            itemCorrsGAR_Sorted.put(groupIndex, SparseMatrix.valueOf(itemSize, itemSize, groupTable));
         }
     }
 
@@ -366,7 +366,7 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
      * 选择物品关联规则补充分组关联规则.
      */
     private void complementAssociationRule() {
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             if (scoreMatrix.getColumnScope(itemIndex) == 0) {
                 continue;
             }

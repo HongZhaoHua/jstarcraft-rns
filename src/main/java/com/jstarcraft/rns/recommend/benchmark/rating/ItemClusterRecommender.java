@@ -48,7 +48,7 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
     protected boolean isConverged(int iter) {
         // TODO 需要重构
         float loss = 0F;
-        for (int i = 0; i < numberOfItems; i++) {
+        for (int i = 0; i < itemSize; i++) {
             for (int k = 0; k < numberOfFactors; k++) {
                 float rik = itemTopicProbabilities.getValue(i, k);
                 float pi_k = topicScoreVector.getValue(k);
@@ -97,8 +97,8 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
             scalar.setValue((float) Math.log(scalar.getValue()));
         });
 
-        itemScoreMatrix = DenseMatrix.valueOf(numberOfItems, numberOfScores);
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        itemScoreMatrix = DenseMatrix.valueOf(itemSize, numberOfScores);
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             SparseVector scoreVector = scoreMatrix.getColumnVector(itemIndex);
             for (VectorScalar term : scoreVector) {
                 float score = term.getValue();
@@ -106,18 +106,18 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
                 itemScoreMatrix.shiftValue(itemIndex, scoreIndex, 1);
             }
         }
-        itemScoreVector = DenseVector.valueOf(numberOfItems);
+        itemScoreVector = DenseVector.valueOf(itemSize);
         itemScoreVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(scoreMatrix.getColumnVector(scalar.getIndex()).getElementSize());
         });
         currentLoss = Float.MIN_VALUE;
 
-        itemTopicProbabilities = DenseMatrix.valueOf(numberOfItems, numberOfFactors);
+        itemTopicProbabilities = DenseMatrix.valueOf(itemSize, numberOfFactors);
     }
 
     @Override
     protected void eStep() {
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             DenseVector probabilityVector = itemTopicProbabilities.getRowVector(itemIndex);
             SparseVector scoreVector = scoreMatrix.getColumnVector(itemIndex);
             if (scoreVector.getElementSize() == 0) {
@@ -144,7 +144,7 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
             int index = scalar.getIndex();
             for (int scoreIndex = 0; scoreIndex < numberOfScores; scoreIndex++) {
                 float numerator = 0F, denorminator = 0F;
-                for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+                for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                     float probability = (float) FastMath.exp(itemTopicProbabilities.getValue(itemIndex, index));
                     numerator += probability * itemScoreMatrix.getValue(itemIndex, scoreIndex);
                     denorminator += probability * itemScoreVector.getValue(itemIndex);
@@ -153,7 +153,7 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
                 topicScoreMatrix.setValue(index, scoreIndex, probability);
             }
             float sumProbability = 0F;
-            for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+            for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 float probability = (float) FastMath.exp(itemTopicProbabilities.getValue(itemIndex, index));
                 sumProbability += probability;
             }

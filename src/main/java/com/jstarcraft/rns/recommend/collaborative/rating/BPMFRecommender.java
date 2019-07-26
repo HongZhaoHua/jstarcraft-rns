@@ -232,23 +232,23 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
         userGammaDistributions = new QuantityProbability[numberOfFactors];
         itemGammaDistributions = new QuantityProbability[numberOfFactors];
         for (int index = 0; index < numberOfFactors; index++) {
-            userGammaDistributions[index] = new QuantityProbability(JDKRandomGenerator.class, index, GammaDistribution.class, (numberOfUsers + numberOfFactors - (index + 1D)) / 2D, 2D);
-            itemGammaDistributions[index] = new QuantityProbability(JDKRandomGenerator.class, index, GammaDistribution.class, (numberOfItems + numberOfFactors - (index + 1D)) / 2D, 2D);
+            userGammaDistributions[index] = new QuantityProbability(JDKRandomGenerator.class, index, GammaDistribution.class, (userSize + numberOfFactors - (index + 1D)) / 2D, 2D);
+            itemGammaDistributions[index] = new QuantityProbability(JDKRandomGenerator.class, index, GammaDistribution.class, (itemSize + numberOfFactors - (index + 1D)) / 2D, 2D);
         }
     }
 
     @Override
     protected void doPractice() {
         int cacheSize = 0;
-        SparseVector[] userVectors = new SparseVector[numberOfUsers];
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        SparseVector[] userVectors = new SparseVector[userSize];
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             SparseVector userVector = scoreMatrix.getRowVector(userIndex);
             cacheSize = cacheSize < userVector.getElementSize() ? userVector.getElementSize() : cacheSize;
             userVectors[userIndex] = userVector;
         }
 
-        SparseVector[] itemVectors = new SparseVector[numberOfItems];
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        SparseVector[] itemVectors = new SparseVector[itemSize];
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
             cacheSize = cacheSize < itemVector.getElementSize() ? itemVector.getElementSize() : cacheSize;
             itemVectors[itemIndex] = itemVector;
@@ -261,14 +261,14 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
             userParameter.sampleParameter(userGammaDistributions, userFactors, userMean, userBeta, userWishart);
             itemParameter.sampleParameter(itemGammaDistributions, itemFactors, itemMean, itemBeta, itemWishart);
             for (int gibbsIteration = 0; gibbsIteration < gibbsIterations; gibbsIteration++) {
-                for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+                for (int userIndex = 0; userIndex < userSize; userIndex++) {
                     SparseVector scoreVector = userVectors[userIndex];
                     if (scoreVector.getElementSize() == 0) {
                         continue;
                     }
                     userParameter.updateParameter(itemFactors, scoreVector, userFactors.getRowVector(userIndex));
                 }
-                for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+                for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                     SparseVector scoreVector = itemVectors[itemIndex];
                     if (scoreVector.getElementSize() == 0) {
                         continue;

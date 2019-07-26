@@ -62,14 +62,14 @@ public class PRankDRecommender extends RankSGDRecommender {
 		super.prepare(configuration, model, space);
 		similarityFilter = configuration.getFloat("recommender.sim.filter", 4F);
 		float denominator = 0F;
-		itemWeights = DenseVector.valueOf(numberOfItems);
-		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+		itemWeights = DenseVector.valueOf(itemSize);
+		for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 			float numerator = scoreMatrix.getColumnScope(itemIndex);
 			denominator = denominator < numerator ? numerator : denominator;
 			itemWeights.setValue(itemIndex, numerator);
 		}
 		// compute item relative importance
-		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+		for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 			itemWeights.setValue(itemIndex, itemWeights.getValue(itemIndex) / denominator);
 		}
 
@@ -84,7 +84,7 @@ public class PRankDRecommender extends RankSGDRecommender {
 		}
 
 		userIndexes = new LinkedList<>();
-		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+		for (int userIndex = 0; userIndex < userSize; userIndex++) {
 			if (scoreMatrix.getRowVector(userIndex).getElementSize() > 0) {
 				userIndexes.add(userIndex);
 			}

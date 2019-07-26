@@ -45,16 +45,16 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
 	public void prepare(Configuration configuration, DataModule model, DataSpace space) {
 		super.prepare(configuration, model, space);
 		weight = configuration.getBoolean("recommender.rankals.support.weight", true);
-		weightVector = DenseVector.valueOf(numberOfItems);
+		weightVector = DenseVector.valueOf(itemSize);
 		sumSupport = 0;
-		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+		for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 			float supportValue = weight ? scoreMatrix.getColumnScope(itemIndex) : 1F;
 			weightVector.setValue(itemIndex, supportValue);
 			sumSupport += supportValue;
 		}
 
 		userList = new LinkedList<>();
-		for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+		for (int userIndex = 0; userIndex < userSize; userIndex++) {
 			if (scoreMatrix.getRowVector(userIndex).getElementSize() > 0) {
 				userList.add(userIndex);
 			}
@@ -62,7 +62,7 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
 		userList = new ArrayList<>(userList);
 
 		itemList = new LinkedList<>();
-		for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+		for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 			if (scoreMatrix.getColumnVector(itemIndex).getElementSize() > 0) {
 				itemList.add(itemIndex);
 			}
@@ -83,7 +83,7 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
 			// 特征权重矩阵和特征权重向量
 			DenseMatrix factorWeightMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
 			DenseVector factorWeightVector = DenseVector.valueOf(numberOfFactors);
-			for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+			for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 				float weight = weightVector.getValue(itemIndex);
 				DenseVector itemVector = itemFactors.getRowVector(itemIndex);
 				factorWeightMatrix.iterateElement(MathCalculator.SERIAL, (scalar) -> {
@@ -100,10 +100,10 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
 			}
 
 			// 用户特征矩阵,用户权重向量,用户评分向量,用户次数向量.
-			DenseMatrix userDeltas = DenseMatrix.valueOf(numberOfUsers, numberOfFactors);
-			DenseVector userWeights = DenseVector.valueOf(numberOfUsers);
-			DenseVector userScores = DenseVector.valueOf(numberOfUsers);
-			DenseVector userTimes = DenseVector.valueOf(numberOfUsers);
+			DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
+			DenseVector userWeights = DenseVector.valueOf(userSize);
+			DenseVector userScores = DenseVector.valueOf(userSize);
+			DenseVector userTimes = DenseVector.valueOf(userSize);
 			// 根据物品特征构建用户特征
 			for (int userIndex : userList) {
 				// for each user
@@ -185,7 +185,7 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
 			}
 
 			// 根据用户特征构建物品特征
-			for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+			for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 				// for each item
 				SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
 
