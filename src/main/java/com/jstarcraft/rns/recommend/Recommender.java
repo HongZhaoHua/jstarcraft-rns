@@ -25,7 +25,7 @@ public interface Recommender {
 	 * 
 	 * @param configuration
 	 */
-	void prepare(Configuration configuration, DataModule model, DataSpace space);
+	void prepare(Configuration configuration, DataModule module, DataSpace space);
 	// void prepare(Configuration configuration, SparseTensor trainTensor,
 	// SparseTensor testTensor, DataSpace storage);
 
