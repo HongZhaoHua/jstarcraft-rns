@@ -85,6 +85,9 @@ http://www.cnblogs.com/forfuture1978/category/300665.html
 Lucene技术学习总结:
 https://www.mayou18.com/category/7pJjYrLb.html
 
+lucene4.x收集器概述:
+https://blog.csdn.net/asty9000/article/details/80044978
+
 ----- 5.x -----
 
 Lucene介绍与入门使用:
