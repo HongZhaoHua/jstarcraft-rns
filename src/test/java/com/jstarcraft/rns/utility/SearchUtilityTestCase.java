@@ -4,13 +4,13 @@ import java.util.concurrent.Future;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.nd4j.linalg.factory.Nd4j;
 
 import com.jstarcraft.ai.environment.EnvironmentContext;
+import com.jstarcraft.ai.environment.EnvironmentFactory;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
-import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
+import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 
 import it.unimi.dsi.fastutil.floats.Float2IntAVLTreeMap;
@@ -26,7 +26,7 @@ public class SearchUtilityTestCase {
     }
 
     private void testPageRank(MathCalculator mode) throws Exception {
-        EnvironmentContext context = Nd4j.getAffinityManager().getClass().getSimpleName().equals("CpuAffinityManager") ? EnvironmentContext.CPU : EnvironmentContext.GPU;
+        EnvironmentContext context = EnvironmentFactory.getContext();
         Future<?> task = context.doTask(() -> {
             int dimension = 7;
             HashMatrix table = new HashMatrix(true, dimension, dimension, new Int2FloatRBTreeMap());

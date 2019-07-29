@@ -13,6 +13,7 @@ import org.nd4j.linalg.factory.Nd4j;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.jstarcraft.ai.environment.EnvironmentContext;
+import com.jstarcraft.ai.environment.EnvironmentFactory;
 import com.jstarcraft.ai.math.algorithm.decomposition.SingularValueDecomposition;
 import com.jstarcraft.ai.math.algorithm.probability.QuantityProbability;
 import com.jstarcraft.ai.math.structure.MathAccessor;
@@ -40,7 +41,7 @@ public class MatrixUtilityTestCase {
 
     @Test
     public void test() throws Exception {
-        EnvironmentContext context = Nd4j.getAffinityManager().getClass().getSimpleName().equals("CpuAffinityManager") ? EnvironmentContext.CPU : EnvironmentContext.GPU;
+        EnvironmentContext context = EnvironmentFactory.getContext();
         Future<?> task = context.doTask(() -> {
             DenseMatrix matrix = DenseMatrix.valueOf(4, 4);
 
@@ -76,7 +77,7 @@ public class MatrixUtilityTestCase {
 
     @Test
     public void testSparseMatrix() throws Exception {
-        EnvironmentContext context = Nd4j.getAffinityManager().getClass().getSimpleName().equals("CpuAffinityManager") ? EnvironmentContext.CPU : EnvironmentContext.GPU;
+        EnvironmentContext context = EnvironmentFactory.getContext();
         Future<?> task = context.doTask(() -> {
             Table<Integer, Integer, Float> dataTable = HashBasedTable.create();
             dataTable.put(0, 0, 1F);
@@ -146,7 +147,7 @@ public class MatrixUtilityTestCase {
      */
     @Test
     public void testDotProduct() throws Exception {
-        EnvironmentContext context = Nd4j.getAffinityManager().getClass().getSimpleName().equals("CpuAffinityManager") ? EnvironmentContext.CPU : EnvironmentContext.GPU;
+        EnvironmentContext context = EnvironmentFactory.getContext();
         Future<?> task = context.doTask(() -> {
             DenseMatrix matrix = DenseMatrix.valueOf(3, 4);
             matrix.iterateElement(MathCalculator.SERIAL, (scalar) -> {
@@ -218,7 +219,7 @@ public class MatrixUtilityTestCase {
      */
     @Test
     public void testTransposeProduct() throws Exception {
-        EnvironmentContext context = Nd4j.getAffinityManager().getClass().getSimpleName().equals("CpuAffinityManager") ? EnvironmentContext.CPU : EnvironmentContext.GPU;
+        EnvironmentContext context = EnvironmentFactory.getContext();
         Future<?> task = context.doTask(() -> {
             DenseMatrix matrix = DenseMatrix.valueOf(4, 3);
             matrix.iterateElement(MathCalculator.SERIAL, (scalar) -> {
@@ -265,7 +266,7 @@ public class MatrixUtilityTestCase {
      */
     @Test
     public void testPseudoinverse() throws Exception {
-        EnvironmentContext context = Nd4j.getAffinityManager().getClass().getSimpleName().equals("CpuAffinityManager") ? EnvironmentContext.CPU : EnvironmentContext.GPU;
+        EnvironmentContext context = EnvironmentFactory.getContext();
         Future<?> task = context.doTask(() -> {
             // 伪逆矩阵
             DenseMatrix matrix = DenseMatrix.valueOf(4, 3);
@@ -315,7 +316,7 @@ public class MatrixUtilityTestCase {
      */
     @Test
     public void testSVD() throws Exception {
-        EnvironmentContext context = Nd4j.getAffinityManager().getClass().getSimpleName().equals("CpuAffinityManager") ? EnvironmentContext.CPU : EnvironmentContext.GPU;
+        EnvironmentContext context = EnvironmentFactory.getContext();
         Future<?> task = context.doTask(() -> {
             // 注意:矩阵必须row大于等于column
             int rowSize = 5;
@@ -373,7 +374,7 @@ public class MatrixUtilityTestCase {
 
     @Test
     public void testSymmetryMatrix() throws Exception {
-        EnvironmentContext context = Nd4j.getAffinityManager().getClass().getSimpleName().equals("CpuAffinityManager") ? EnvironmentContext.CPU : EnvironmentContext.GPU;
+        EnvironmentContext context = EnvironmentFactory.getContext();
         Future<?> task = context.doTask(() -> {
             SymmetryMatrix matrix = new SymmetryMatrix(5);
             Assert.assertThat(matrix.getElementSize(), CoreMatchers.equalTo(15));

@@ -15,7 +15,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.nd4j.linalg.factory.Nd4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +25,7 @@ import com.jstarcraft.ai.data.converter.ArffConverter;
 import com.jstarcraft.ai.data.converter.CsvConverter;
 import com.jstarcraft.ai.data.converter.DataConverter;
 import com.jstarcraft.ai.environment.EnvironmentContext;
+import com.jstarcraft.ai.environment.EnvironmentFactory;
 import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
@@ -242,7 +242,7 @@ public abstract class AbstractTask<L, R> {
         Double binarize = configuration.getDouble("data.convert.binarize.threshold");
         Map<String, Float> measures = new TreeMap<>();
 
-        EnvironmentContext context = Nd4j.getAffinityManager().getClass().getSimpleName().equals("CpuAffinityManager") ? EnvironmentContext.CPU : EnvironmentContext.GPU;
+        EnvironmentContext context = EnvironmentFactory.getContext();
         Future<?> task = context.doTask(() -> {
             try {
                 for (int index = 0; index < splitter.getSize(); index++) {
