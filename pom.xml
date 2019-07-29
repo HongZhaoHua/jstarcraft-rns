@@ -36,7 +36,13 @@
         <!-- 机器学习框架依赖 -->
         <dependency>
             <groupId>com.jstarcraft</groupId>
-            <artifactId>jstarcraft-ai</artifactId>
+            <artifactId>jstarcraft-ai-model</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jstarcraft</groupId>
+            <artifactId>jstarcraft-ai-evaluate</artifactId>
             <version>1.0</version>
         </dependency>
 
