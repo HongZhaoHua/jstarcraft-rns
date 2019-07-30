@@ -22,7 +22,7 @@ public class AutoRecLearner implements ILossFunction {
 
 	private INDArray maskData;
 
-	AutoRecLearner(INDArray maskData) {
+	public AutoRecLearner(INDArray maskData) {
 		this.maskData = maskData;
 	}
 

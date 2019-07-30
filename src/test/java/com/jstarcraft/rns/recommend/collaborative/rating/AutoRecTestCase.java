@@ -10,7 +10,8 @@ import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.rns.configure.Configurator;
-import com.jstarcraft.rns.recommend.collaborative.rating.AutoRecRecommender;
+//import com.jstarcraft.rns.recommend.collaborative.rating.AutoRecRecommender;
+import com.jstarcraft.rns.recommend.neuralnetwork.AutoRecRecommender;
 import com.jstarcraft.rns.task.RatingTask;
 
 public class AutoRecTestCase {
