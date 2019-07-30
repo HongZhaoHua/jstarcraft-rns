@@ -2,8 +2,8 @@ package com.jstarcraft.rns.data.splitter;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
+import com.jstarcraft.ai.data.IntegerArray;
 import com.jstarcraft.ai.data.module.ReferenceModule;
-import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.rns.data.processor.DataMatcher;
 import com.jstarcraft.rns.data.processor.DataSorter;
 

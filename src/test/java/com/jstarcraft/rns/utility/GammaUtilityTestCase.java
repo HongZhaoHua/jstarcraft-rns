@@ -4,7 +4,7 @@ import org.apache.commons.math3.special.Gamma;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.jstarcraft.ai.utility.MathUtility;
+import com.jstarcraft.ai.math.MathUtility;
 import com.jstarcraft.rns.utility.GammaUtility;
 
 import net.sourceforge.jdistlib.math.PolyGamma;

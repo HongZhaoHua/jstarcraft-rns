@@ -1,6 +1,6 @@
 package com.jstarcraft.rns.utility;
 
-import com.jstarcraft.ai.utility.MathUtility;
+import com.jstarcraft.ai.math.MathUtility;
 
 /**
  * 高斯工具

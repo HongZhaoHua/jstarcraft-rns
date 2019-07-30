@@ -1,8 +1,8 @@
 package com.jstarcraft.rns.data.splitter;
 
 import com.jstarcraft.ai.data.DataModule;
+import com.jstarcraft.ai.data.IntegerArray;
 import com.jstarcraft.ai.data.module.ReferenceModule;
-import com.jstarcraft.ai.utility.IntegerArray;
 import com.jstarcraft.core.utility.RandomUtility;
 
 /**
