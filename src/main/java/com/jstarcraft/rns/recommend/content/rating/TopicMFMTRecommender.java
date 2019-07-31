@@ -115,9 +115,6 @@ public class TopicMFMTRecommender extends MatrixFactorizationRecommender {
         // build W
         W = SparseMatrix.valueOf(numberOfDocuments, numberOfWords, documentTable);
 
-        // init parameters
-        initMean = configuration.getFloat("recommender.init.mean", 0.0F);
-        initStd = configuration.getFloat("recommender.init.std", 0.01F);
         userBiases = DenseVector.valueOf(userSize);
         userBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
