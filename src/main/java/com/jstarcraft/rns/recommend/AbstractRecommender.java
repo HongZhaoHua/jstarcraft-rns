@@ -58,10 +58,6 @@ public abstract class AbstractRecommender implements Recommender {
     /** 训练矩阵(TODO 准备改名为actionMatrix或者scoreMatrix) */
     protected SparseMatrix scoreMatrix;
 
-    /** 测试矩阵(TODO 准备取消) */
-    @Deprecated
-    protected SparseMatrix testMatrix;
-
     protected int[] dataPaginations;
     protected int[] dataPositions;
 
