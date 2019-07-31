@@ -36,6 +36,10 @@ import it.unimi.dsi.fastutil.ints.IntSet;
  */
 public class RankingTask extends AbstractTask<IntSet, IntList> {
 
+    public RankingTask(Recommender recommender, Configurator configuration) {
+        super(recommender, configuration);
+    }
+
     public RankingTask(Class<? extends Recommender> clazz, Configurator configuration) {
         super(clazz, configuration);
     }

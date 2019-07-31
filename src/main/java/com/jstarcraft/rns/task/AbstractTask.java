@@ -73,6 +73,15 @@ public abstract class AbstractTask<L, R> {
     protected DataModule dataMarker, trainMarker, testMarker;
 
     protected Recommender recommender;
+    
+    protected AbstractTask(Recommender recommender, Configurator configuration) {
+        this.configuration = configuration;
+        Long seed = configuration.getLong("recommender.random.seed");
+        if (seed != null) {
+            RandomUtility.setSeed(seed);
+        }
+        this.recommender = recommender;
+    }
 
     protected AbstractTask(Class<? extends Recommender> clazz, Configurator configuration) {
         this.configuration = configuration;

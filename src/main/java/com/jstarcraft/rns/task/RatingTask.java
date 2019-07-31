@@ -27,6 +27,10 @@ import it.unimi.dsi.fastutil.floats.FloatList;
  */
 public class RatingTask extends AbstractTask<FloatList, FloatList> {
 
+    public RatingTask(Recommender recommender, Configurator configuration) {
+        super(recommender, configuration);
+    }
+
     public RatingTask(Class<? extends Recommender> clazz, Configurator configuration) {
         super(clazz, configuration);
     }
