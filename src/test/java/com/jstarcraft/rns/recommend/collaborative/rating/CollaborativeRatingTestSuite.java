@@ -44,7 +44,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 		RBMTestCase.class,
 
-		RfRecTestCase.class,
+		RFRecTestCase.class,
 
 		SVDPlusPlusTestCase.class,
 

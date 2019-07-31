@@ -1,17 +1,21 @@
 package com.jstarcraft.rns.recommend.extend.rating;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map.Entry;
 
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
+import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.AbstractRecommender;
 import com.jstarcraft.rns.recommend.exception.RecommendException;
+
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.floats.FloatList;
+import it.unimi.dsi.fastutil.floats.FloatRBTreeSet;
+import it.unimi.dsi.fastutil.floats.FloatSet;
 
 /**
  * 
@@ -36,7 +40,7 @@ public class PersonalityDiagnosisRecommender extends AbstractRecommender {
      */
     private float prior;
 
-    private ArrayList<Float> values;
+    private FloatList scores;
 
     /**
      * initialization
@@ -48,7 +52,13 @@ public class PersonalityDiagnosisRecommender extends AbstractRecommender {
         super.prepare(configuration, model, space);
         prior = 1F / userSize;
         sigma = configuration.getFloat("recommender.PersonalityDiagnosis.sigma");
-        values = new ArrayList<>(scoreIndexes.keySet());
+
+        FloatSet sorts = new FloatRBTreeSet();
+        for (MatrixScalar term : scoreMatrix) {
+            sorts.add(term.getValue());
+        }
+        sorts.remove(0F);
+        scores = new FloatArrayList(sorts);
     }
 
     @Override
@@ -67,7 +77,8 @@ public class PersonalityDiagnosisRecommender extends AbstractRecommender {
     public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
-        float[] probabilities = new float[scoreIndexes.size()];
+        int scoreSize = scores.size();
+        float[] probabilities = new float[scoreSize];
         SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
         SparseVector rightUserVector = scoreMatrix.getRowVector(userIndex);
         for (VectorScalar term : itemVector) {
@@ -107,12 +118,12 @@ public class PersonalityDiagnosisRecommender extends AbstractRecommender {
                     }
                 }
             }
-            for (Entry<Float, Integer> entry : scoreIndexes.entrySet()) {
-                probabilities[entry.getValue()] += gaussian(entry.getKey(), rate, sigma) * probability;
+            for (int scoreIndex = 0; scoreIndex < scoreSize; scoreIndex++) {
+                probabilities[scoreIndex] += gaussian(scores.getFloat(scoreIndex), rate, sigma) * probability;
             }
         }
-        for (Entry<Float, Integer> entry : scoreIndexes.entrySet()) {
-            probabilities[entry.getValue()] *= prior;
+        for (int scoreIndex = 0; scoreIndex < scoreSize; scoreIndex++) {
+            probabilities[scoreIndex] *= prior;
         }
         int valueIndex = 0;
         float probability = Float.MIN_VALUE;
@@ -122,7 +133,7 @@ public class PersonalityDiagnosisRecommender extends AbstractRecommender {
                 valueIndex = rateIndex;
             }
         }
-        instance.setQuantityMark(values.get(valueIndex));
+        instance.setQuantityMark(scores.get(valueIndex));
     }
 
     /**

@@ -2,9 +2,14 @@ package com.jstarcraft.rns.recommend;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
+import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.exception.RecommendException;
+
+import it.unimi.dsi.fastutil.floats.Float2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.floats.FloatRBTreeSet;
+import it.unimi.dsi.fastutil.floats.FloatSet;
 
 /**
  * 概率图推荐器
@@ -14,117 +19,131 @@ import com.jstarcraft.rns.recommend.exception.RecommendException;
  */
 public abstract class ProbabilisticGraphicalRecommender extends ModelRecommender {
 
-	/**
-	 * burn-in period
-	 */
-	protected int burnIn;
+    /**
+     * burn-in period
+     */
+    protected int burnIn;
 
-	/**
-	 * size of statistics
-	 */
-	protected int numberOfStatistics = 0;
+    /**
+     * size of statistics
+     */
+    protected int numberOfStatistics = 0;
 
-	/**
-	 * number of topics
-	 */
-	protected int numberOfFactors;
+    /**
+     * number of topics
+     */
+    protected int numberOfFactors;
 
-	protected int numberOfScores;
+    /** 分数索引 (TODO 考虑取消或迁移.本质为连续特征离散化) */
+    protected Float2IntLinkedOpenHashMap scoreIndexes;
 
-	/**
-	 * sample lag (if -1 only one sample taken)
-	 */
-	protected int numberOfSamples;
+    protected int numberOfScores;
 
-	/**
-	 * setup init member method
-	 *
-	 * @throws RecommendException
-	 *             if error occurs during setting up
-	 */
-	@Override
-	public void prepare(Configurator configuration, DataModule model, DataSpace space) {
-		super.prepare(configuration, model, space);
-		numberOfFactors = configuration.getInteger("recommender.topic.number", 10);
-		numberOfScores = scoreIndexes.size();
-		burnIn = configuration.getInteger("recommender.pgm.burnin", 100);
-		numberOfSamples = configuration.getInteger("recommender.pgm.samplelag", 100);
-	}
+    /**
+     * sample lag (if -1 only one sample taken)
+     */
+    protected int numberOfSamples;
 
-	@Override
-	protected void doPractice() {
-		long now = System.currentTimeMillis();
-		for (int iter = 1; iter <= numberOfEpoches; iter++) {
-			// E-step: infer parameters
-			eStep();
-			if (logger.isInfoEnabled()) {
-				String message = StringUtility.format("eStep time is {}", System.currentTimeMillis() - now);
-				now = System.currentTimeMillis();
-				logger.info(message);
-			}
+    /**
+     * setup init member method
+     *
+     * @throws RecommendException if error occurs during setting up
+     */
+    @Override
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+        super.prepare(configuration, model, space);
+        numberOfFactors = configuration.getInteger("recommender.topic.number", 10);
+        burnIn = configuration.getInteger("recommender.pgm.burnin", 100);
+        numberOfSamples = configuration.getInteger("recommender.pgm.samplelag", 100);
 
-			// M-step: update hyper-parameters
-			mStep();
-			if (logger.isInfoEnabled()) {
-				String message = StringUtility.format("mStep time is {}", System.currentTimeMillis() - now);
-				now = System.currentTimeMillis();
-				logger.info(message);
-			}
-			// get statistics after burn-in
-			if ((iter > burnIn) && (iter % numberOfSamples == 0)) {
-				readoutParams();
-				if (logger.isInfoEnabled()) {
-					String message = StringUtility.format("readoutParams time is {}", System.currentTimeMillis() - now);
-					now = System.currentTimeMillis();
-					logger.info(message);
-				}
-				estimateParams();
-				if (logger.isInfoEnabled()) {
-					String message = StringUtility.format("estimateParams time is {}", System.currentTimeMillis() - now);
-					now = System.currentTimeMillis();
-					logger.info(message);
-				}
-			}
-			if (isConverged(iter) && isConverged) {
-				break;
-			}
-			currentLoss = totalLoss;
-		}
-		// retrieve posterior probability distributions
-		estimateParams();
-		if (logger.isInfoEnabled()) {
-			String message = StringUtility.format("estimateParams time is {}", System.currentTimeMillis() - now);
-			now = System.currentTimeMillis();
-			logger.info(message);
-		}
-	}
+        // TODO 此处会与scoreIndexes一起重构,本质为连续特征离散化.
+        FloatSet scores = new FloatRBTreeSet();
+        for (MatrixScalar term : scoreMatrix) {
+            scores.add(term.getValue());
+        }
+        scores.remove(0F);
+        scoreIndexes = new Float2IntLinkedOpenHashMap();
+        int index = 0;
+        for (float score : scores) {
+            scoreIndexes.put(score, index++);
+        }
+        numberOfScores = scoreIndexes.size();
+    }
 
-	protected boolean isConverged(int iter) {
-		return false;
-	}
+    @Override
+    protected void doPractice() {
+        long now = System.currentTimeMillis();
+        for (int iter = 1; iter <= numberOfEpoches; iter++) {
+            // E-step: infer parameters
+            eStep();
+            if (logger.isInfoEnabled()) {
+                String message = StringUtility.format("eStep time is {}", System.currentTimeMillis() - now);
+                now = System.currentTimeMillis();
+                logger.info(message);
+            }
 
-	/**
-	 * parameters estimation: used in the training phase
-	 */
-	protected abstract void eStep();
+            // M-step: update hyper-parameters
+            mStep();
+            if (logger.isInfoEnabled()) {
+                String message = StringUtility.format("mStep time is {}", System.currentTimeMillis() - now);
+                now = System.currentTimeMillis();
+                logger.info(message);
+            }
+            // get statistics after burn-in
+            if ((iter > burnIn) && (iter % numberOfSamples == 0)) {
+                readoutParams();
+                if (logger.isInfoEnabled()) {
+                    String message = StringUtility.format("readoutParams time is {}", System.currentTimeMillis() - now);
+                    now = System.currentTimeMillis();
+                    logger.info(message);
+                }
+                estimateParams();
+                if (logger.isInfoEnabled()) {
+                    String message = StringUtility.format("estimateParams time is {}", System.currentTimeMillis() - now);
+                    now = System.currentTimeMillis();
+                    logger.info(message);
+                }
+            }
+            if (isConverged(iter) && isConverged) {
+                break;
+            }
+            currentLoss = totalLoss;
+        }
+        // retrieve posterior probability distributions
+        estimateParams();
+        if (logger.isInfoEnabled()) {
+            String message = StringUtility.format("estimateParams time is {}", System.currentTimeMillis() - now);
+            now = System.currentTimeMillis();
+            logger.info(message);
+        }
+    }
 
-	/**
-	 * update the hyper-parameters
-	 */
-	protected abstract void mStep();
+    protected boolean isConverged(int iter) {
+        return false;
+    }
 
-	/**
-	 * read out parameters for each iteration
-	 */
-	protected void readoutParams() {
+    /**
+     * parameters estimation: used in the training phase
+     */
+    protected abstract void eStep();
 
-	}
+    /**
+     * update the hyper-parameters
+     */
+    protected abstract void mStep();
 
-	/**
-	 * estimate the model parameters
-	 */
-	protected void estimateParams() {
+    /**
+     * read out parameters for each iteration
+     */
+    protected void readoutParams() {
 
-	}
+    }
+
+    /**
+     * estimate the model parameters
+     */
+    protected void estimateParams() {
+
+    }
 
 }

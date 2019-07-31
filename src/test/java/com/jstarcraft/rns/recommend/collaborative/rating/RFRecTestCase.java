@@ -13,7 +13,7 @@ import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.collaborative.rating.RFRecRecommender;
 import com.jstarcraft.rns.task.RatingTask;
 
-public class RfRecTestCase {
+public class RFRecTestCase {
 
 	@Test
 	public void testRecommender() throws Exception {

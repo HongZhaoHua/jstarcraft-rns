@@ -1,7 +1,5 @@
 package com.jstarcraft.rns.recommend.collaborative.rating;
 
-import java.util.Map.Entry;
-
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
@@ -12,6 +10,10 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.MatrixFactorizationRecommender;
+
+import it.unimi.dsi.fastutil.floats.Float2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.floats.FloatRBTreeSet;
+import it.unimi.dsi.fastutil.floats.FloatSet;
 
 /**
  * 
@@ -36,15 +38,18 @@ public class RFRecRecommender extends MatrixFactorizationRecommender {
      */
     private DenseVector itemMeans;
 
+    /** 分数索引 (TODO 考虑取消或迁移.本质为连续特征离散化) */
+    protected Float2IntLinkedOpenHashMap scoreIndexes;
+
     /**
      * The number of ratings per rating value per user
      */
-    private DenseMatrix userRateFrequencies;
+    private DenseMatrix userScoreFrequencies;
 
     /**
      * The number of ratings per rating value per item
      */
-    private DenseMatrix itemRateFrequencies;
+    private DenseMatrix itemScoreFrequencies;
 
     /**
      * User weights learned by the gradient solver
@@ -75,16 +80,29 @@ public class RFRecRecommender extends MatrixFactorizationRecommender {
             itemMeans.setValue(itemIndex, itemVector.getSum(false) / itemVector.getElementSize());
             itemWeights.setValue(itemIndex, 0.4F + RandomUtility.randomFloat(0.01F));
         }
+
+        // TODO 此处会与scoreIndexes一起重构,本质为连续特征离散化.
+        FloatSet scores = new FloatRBTreeSet();
+        for (MatrixScalar term : scoreMatrix) {
+            scores.add(term.getValue());
+        }
+        scores.remove(0F);
+        scoreIndexes = new Float2IntLinkedOpenHashMap();
+        int index = 0;
+        for (float score : scores) {
+            scoreIndexes.put(score, index++);
+        }
+
         // Calculate the frequencies.
         // Users,items
-        userRateFrequencies = DenseMatrix.valueOf(userSize, numberOfActions);
-        itemRateFrequencies = DenseMatrix.valueOf(itemSize, numberOfActions);
+        userScoreFrequencies = DenseMatrix.valueOf(userSize, numberOfActions);
+        itemScoreFrequencies = DenseMatrix.valueOf(itemSize, numberOfActions);
         for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow();
             int itemIndex = term.getColumn();
-            int rateIndex = scoreIndexes.get(term.getValue());
-            userRateFrequencies.shiftValue(userIndex, rateIndex, 1F);
-            itemRateFrequencies.shiftValue(itemIndex, rateIndex, 1F);
+            int scoreIndex = scoreIndexes.get(term.getValue());
+            userScoreFrequencies.shiftValue(userIndex, scoreIndex, 1F);
+            itemScoreFrequencies.shiftValue(itemIndex, scoreIndex, 1F);
         }
     }
 
@@ -121,8 +139,8 @@ public class RFRecRecommender extends MatrixFactorizationRecommender {
     @Override
     protected float predict(int userIndex, int itemIndex) {
         float value = meanOfScore;
-        float userSum = userRateFrequencies.getRowVector(userIndex).getSum(false);
-        float itemSum = itemRateFrequencies.getRowVector(itemIndex).getSum(false);
+        float userSum = userScoreFrequencies.getRowVector(userIndex).getSum(false);
+        float itemSum = itemScoreFrequencies.getRowVector(itemIndex).getSum(false);
         float userMean = userMeans.getValue(userIndex);
         float itemMean = itemMeans.getValue(itemIndex);
 
@@ -133,18 +151,17 @@ public class RFRecRecommender extends MatrixFactorizationRecommender {
             float denominatorItem = 0F;
             float frequency = 0F;
             // Go through all the possible rating values
-            for (Entry<Float, Integer> term : scoreIndexes.entrySet()) {
-                int rateIndex = term.getValue();
+            for (int scoreIndex = 0, scoreSize = scoreIndexes.size(); scoreIndex < scoreSize; scoreIndex++) {
                 // user component
-                frequency = userRateFrequencies.getValue(userIndex, rateIndex);
-                frequency = frequency + 1 + isMean(userMean, rateIndex);
-                numeratorUser += frequency * rateIndex;
+                frequency = userScoreFrequencies.getValue(userIndex, scoreIndex);
+                frequency = frequency + 1 + isMean(userMean, scoreIndex);
+                numeratorUser += frequency * scoreIndex;
                 denominatorUser += frequency;
 
                 // item component
-                frequency = itemRateFrequencies.getValue(itemIndex, rateIndex);
-                frequency = frequency + 1 + isMean(itemMean, rateIndex);
-                numeratorItem += frequency * rateIndex;
+                frequency = itemScoreFrequencies.getValue(itemIndex, scoreIndex);
+                frequency = frequency + 1 + isMean(itemMean, scoreIndex);
+                numeratorItem += frequency * scoreIndex;
                 denominatorItem += frequency;
             }
 
