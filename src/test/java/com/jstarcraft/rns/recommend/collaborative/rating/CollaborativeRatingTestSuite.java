@@ -8,49 +8,49 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
 		// 推荐器测试集
 		// recommender.cf.rating
-		AspectModelRatingTestCase.class,
+		AspectModelRatingRecommenderTestCase.class,
 
-		ASVDPlusPlusTestCase.class,
+		ASVDPlusPlusRecommenderTestCase.class,
 
-		BiasedMFTestCase.class,
+		BiasedMFRecommenderTestCase.class,
 
-		BHFreeRatingTestCase.class,
+		BHFreeRatingRecommenderTestCase.class,
 
-		BPMFTestCase.class,
+		BPMFRecommenderTestCase.class,
 
-		BUCMRatingTestCase.class,
+		BUCMRatingRecommenderTestCase.class,
 
-		FFMTestCase.class,
+		FFMRecommenderTestCase.class,
 
-		FMALSTestCase.class,
+		FMALSRecommenderTestCase.class,
 
-		FMSGDTestCase.class,
+		FMSGDRecommenderTestCase.class,
 
-		GPLSATestCase.class,
+		GPLSARecommenderTestCase.class,
 
-		IRRGTestCase.class,
+		IRRGRecommenderTestCase.class,
 
-		ItemKNNRatingTestCase.class,
+		ItemKNNRatingRecommenderTestCase.class,
 
-		LDCCTestCase.class,
+		LDCCRecommenderTestCase.class,
 
-		LLORMATestCase.class,
+		LLORMARecommenderTestCase.class,
 
-		MFALSTestCase.class,
+		MFALSRecommenderTestCase.class,
 
-		NMFTestCase.class,
+		NMFRecommenderTestCase.class,
 
-		PMFTestCase.class,
+		PMFRecommenderTestCase.class,
 
-		RBMTestCase.class,
+		RBMRecommenderTestCase.class,
 
-		RFRecTestCase.class,
+		RFRecRecommenderTestCase.class,
 
-		SVDPlusPlusTestCase.class,
+		SVDPlusPlusRecommenderTestCase.class,
 
-		URPTestCase.class,
+		URPRecommenderTestCase.class,
 
-		UserKNNRatingTestCase.class, })
+		UserKNNRatingRecommenderTestCase.class, })
 public class CollaborativeRatingTestSuite {
 
 }

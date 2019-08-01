@@ -8,63 +8,63 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
         // 推荐器测试集
         // recommender.cf.ranking
-        AOBPRTestCase.class,
+        AoBPRRecommenderTestCase.class,
 
-        AspectModelRankingTestCase.class,
+        AspectModelRankingRecommenderTestCase.class,
 
-        BHFreeRankingTestCase.class,
+        BHFreeRankingRecommenderTestCase.class,
 
-        BPRTestCase.class,
+        BPRRecommenderTestCase.class,
 
-        BUCMRankingTestCase.class,
+        BUCMRankingRecommenderTestCase.class,
 
-        CDAETestCase.class,
+        CDAERecommenderTestCase.class,
 
-        CLiMFTestCase.class,
+        CLiMFRecommenderTestCase.class,
 
 //        DeepCrossTestCase.class,
 
-        DeepFMTestCase.class,
+        DeepFMRecommenderTestCase.class,
 
-        EALSTestCase.class,
+        EALSRecommenderTestCase.class,
 
-        FISMAUCTestCase.class,
+        FISMAUCRecommenderTestCase.class,
 
-        FISMRMSETestCase.class,
+        FISMRMSERecommenderTestCase.class,
 
-        GBPRTestCase.class,
+        GBPRRecommenderTestCase.class,
 
-        HMMTestCase.class,
+        HMMRecommenderTestCase.class,
 
-        ItemBigramTestCase.class,
+        ItemBigramRecommenderTestCase.class,
 
-        ItemKNNRankingTestCase.class,
+        ItemKNNRankingRecommenderTestCase.class,
 
-        LDATestCase.class,
+        LDARecommenderTestCase.class,
 
-        LambdaFMTestCase.class,
+        LambdaFMRecommenderTestCase.class,
 
-        ListwiseMFTestCase.class,
+        ListwiseMFRecommenderTestCase.class,
 
-        PLSATestCase.class,
+        PLSARecommenderTestCase.class,
 
-        RankALSTestCase.class,
+        RankALSRecommenderTestCase.class,
 
-        RankCDTestCase.class,
+        RankCDRecommenderTestCase.class,
 
-        RankSGDTestCase.class,
+        RankSGDRecommenderTestCase.class,
 
-        RankVFCDTestCase.class,
+        RankVFCDRecommenderTestCase.class,
 
-        SLIMTestCase.class,
+        SLIMRecommenderTestCase.class,
 
-        UserKNNRankingTestCase.class,
+        UserKNNRankingRecommenderTestCase.class,
 
-        VBPRTestCase.class,
+        VBPRRecommenderTestCase.class,
 
-        WBPRTestCase.class,
+        WBPRRecommenderTestCase.class,
 
-        WRMFTestCase.class, })
+        WRMFRecommenderTestCase.class, })
 public class CollaborativeRankingTestSuite {
 
 }

@@ -4,21 +4,21 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.jstarcraft.rns.recommend.extend.ranking.AssociationRuleTestCase;
-import com.jstarcraft.rns.recommend.extend.ranking.PRankDTestCase;
-import com.jstarcraft.rns.recommend.extend.rating.PersonalityDiagnosisTestCase;
-import com.jstarcraft.rns.recommend.extend.rating.SlopeOneTestCase;
+import com.jstarcraft.rns.recommend.extend.ranking.AssociationRuleRecommenderTestCase;
+import com.jstarcraft.rns.recommend.extend.ranking.PRankDRecommenderTestCase;
+import com.jstarcraft.rns.recommend.extend.rating.PersonalityDiagnosisRecommenderTestCase;
+import com.jstarcraft.rns.recommend.extend.rating.SlopeOneRecommenderTestCase;
 
 @RunWith(Suite.class)
 @SuiteClasses({
 		// 推荐器测试集
-		AssociationRuleTestCase.class,
+		AssociationRuleRecommenderTestCase.class,
 
-		PersonalityDiagnosisTestCase.class,
+		PersonalityDiagnosisRecommenderTestCase.class,
 
-		PRankDTestCase.class,
+		PRankDRecommenderTestCase.class,
 
-		SlopeOneTestCase.class })
+		SlopeOneRecommenderTestCase.class })
 public class ExtendTestSuite {
 
 }

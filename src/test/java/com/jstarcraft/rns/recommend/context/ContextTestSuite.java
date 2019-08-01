@@ -4,39 +4,39 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.jstarcraft.rns.recommend.context.ranking.RankGeoFMTestCase;
-import com.jstarcraft.rns.recommend.context.ranking.SBPRTestCase;
-import com.jstarcraft.rns.recommend.context.rating.RSTETestCase;
-import com.jstarcraft.rns.recommend.context.rating.SoRecTestCase;
-import com.jstarcraft.rns.recommend.context.rating.SoRegTestCase;
-import com.jstarcraft.rns.recommend.context.rating.SocialMFTestCase;
-import com.jstarcraft.rns.recommend.context.rating.TimeSVDTestCase;
-import com.jstarcraft.rns.recommend.context.rating.TrustMFTestCase;
-import com.jstarcraft.rns.recommend.context.rating.TrustSVDTestCase;
+import com.jstarcraft.rns.recommend.context.ranking.RankGeoFMRecommenderTestCase;
+import com.jstarcraft.rns.recommend.context.ranking.SBPRRecommenderTestCase;
+import com.jstarcraft.rns.recommend.context.rating.RSTERecommenderTestCase;
+import com.jstarcraft.rns.recommend.context.rating.SoRecRecommenderTestCase;
+import com.jstarcraft.rns.recommend.context.rating.SoRegRecommenderTestCase;
+import com.jstarcraft.rns.recommend.context.rating.SocialMFRecommenderTestCase;
+import com.jstarcraft.rns.recommend.context.rating.TimeSVDRecommenderTestCase;
+import com.jstarcraft.rns.recommend.context.rating.TrustMFRecommenderTestCase;
+import com.jstarcraft.rns.recommend.context.rating.TrustSVDRecommenderTestCase;
 
 @RunWith(Suite.class)
 @SuiteClasses({
 		// 推荐器测试集
 
 		// recommender.context.ranking
-		RankGeoFMTestCase.class,
+		RankGeoFMRecommenderTestCase.class,
 
-		SBPRTestCase.class,
+		SBPRRecommenderTestCase.class,
 
 		// recommender.context.rating
-		RSTETestCase.class,
+		RSTERecommenderTestCase.class,
 
-		SocialMFTestCase.class,
+		SocialMFRecommenderTestCase.class,
 
-		SoRecTestCase.class,
+		SoRecRecommenderTestCase.class,
 
-		SoRegTestCase.class,
+		SoRegRecommenderTestCase.class,
 
-		TimeSVDTestCase.class,
+		TimeSVDRecommenderTestCase.class,
 
-		TrustMFTestCase.class,
+		TrustMFRecommenderTestCase.class,
 
-		TrustSVDTestCase.class })
+		TrustSVDRecommenderTestCase.class })
 public class ContextTestSuite {
 
 }
