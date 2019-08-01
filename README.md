@@ -3,6 +3,8 @@ JStarCraft RNS
 
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
+希望路过的同学,顺手给JStarCraft框架点个Star,算是对作者的一种鼓励吧!
+
 *****
 
 **JStarCraft RNS是一个面向信息检索领域的轻量级引擎.遵循Apache 2.0协议.**
