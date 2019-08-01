@@ -66,7 +66,7 @@ public abstract class AbstractTask<L, R> {
 
     protected String userField, itemField;
 
-    protected int userDimension, itemDimension, numberOfUsers, numberOfItems;
+    protected int userDimension, itemDimension, userSize, itemSize;
 
     protected int[] trainPaginations, trainPositions, testPaginations, testPositions;
 
@@ -103,11 +103,11 @@ public abstract class AbstractTask<L, R> {
     private Map<Class<? extends Evaluator>, Integer2FloatKeyValue> evaluate(Collection<Evaluator> evaluators, Recommender recommender) {
         Map<Class<? extends Evaluator>, Integer2FloatKeyValue[]> values = new HashMap<>();
         for (Evaluator evaluator : evaluators) {
-            values.put(evaluator.getClass(), new Integer2FloatKeyValue[numberOfUsers]);
+            values.put(evaluator.getClass(), new Integer2FloatKeyValue[userSize]);
         }
         // 按照用户切割任务.
-        CountDownLatch latch = new CountDownLatch(numberOfUsers);
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++) {
+        CountDownLatch latch = new CountDownLatch(userSize);
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
             int index = userIndex;
             executor.submit(() -> {
                 try {
@@ -261,10 +261,10 @@ public abstract class AbstractTask<L, R> {
 
                     userDimension = model.getQualityInner(userField);
                     itemDimension = model.getQualityInner(itemField);
-                    numberOfUsers = space.getQualityAttribute(userField).getSize();
-                    numberOfItems = space.getQualityAttribute(itemField).getSize();
+                    userSize = space.getQualityAttribute(userField).getSize();
+                    itemSize = space.getQualityAttribute(itemField).getSize();
 
-                    trainPaginations = new int[numberOfUsers + 1];
+                    trainPaginations = new int[userSize + 1];
                     trainPositions = new int[trainMarker.getSize()];
                     for (int position = 0, size = trainMarker.getSize(); position < size; position++) {
                         trainPositions[position] = position;
@@ -272,7 +272,7 @@ public abstract class AbstractTask<L, R> {
                     DataMatcher trainMatcher = DataMatcher.discreteOf(trainMarker, userDimension);
                     trainMatcher.match(trainPaginations, trainPositions);
 
-                    testPaginations = new int[numberOfUsers + 1];
+                    testPaginations = new int[userSize + 1];
                     testPositions = new int[testMarker.getSize()];
                     for (int position = 0, size = testMarker.getSize(); position < size; position++) {
                         testPositions[position] = position;
@@ -280,7 +280,7 @@ public abstract class AbstractTask<L, R> {
                     DataMatcher testMatcher = DataMatcher.discreteOf(testMarker, userDimension);
                     testMatcher.match(testPaginations, testPositions);
 
-                    int[] dataPaginations = new int[numberOfUsers + 1];
+                    int[] dataPaginations = new int[userSize + 1];
                     int[] dataPositions = new int[dataMarker.getSize()];
                     for (int position = 0; position < dataMarker.getSize(); position++) {
                         dataPositions[position] = position;
@@ -289,14 +289,14 @@ public abstract class AbstractTask<L, R> {
                     dataMatcher.match(dataPaginations, dataPositions);
                     DataSorter dataSorter = DataSorter.featureOf(dataMarker);
                     dataSorter.sort(dataPaginations, dataPositions);
-                    HashMatrix dataTable = new HashMatrix(true, numberOfUsers, numberOfItems, new Int2FloatRBTreeMap());
+                    HashMatrix dataTable = new HashMatrix(true, userSize, itemSize, new Int2FloatRBTreeMap());
                     for (DataInstance instance : dataMarker) {
                         int rowIndex = instance.getQualityFeature(userDimension);
                         int columnIndex = instance.getQualityFeature(itemDimension);
                         // TODO 处理冲突
                         dataTable.setValue(rowIndex, columnIndex, instance.getQuantityMark());
                     }
-                    SparseMatrix featureMatrix = SparseMatrix.valueOf(numberOfUsers, numberOfItems, dataTable);
+                    SparseMatrix featureMatrix = SparseMatrix.valueOf(userSize, itemSize, dataTable);
 
                     recommender.prepare(configuration, trainMarker, space);
                     recommender.practice();

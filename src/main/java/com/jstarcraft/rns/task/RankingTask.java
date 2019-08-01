@@ -96,8 +96,8 @@ public class RankingTask extends AbstractTask<IntSet, IntList> {
         }
         copy.setQualityFeature(userDimension, userIndex);
 
-        List<Integer2FloatKeyValue> rankList = new ArrayList<>(numberOfItems - itemSet.size());
-        for (int itemIndex = 0; itemIndex < numberOfItems; itemIndex++) {
+        List<Integer2FloatKeyValue> rankList = new ArrayList<>(itemSize - itemSet.size());
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             if (itemSet.contains(itemIndex)) {
                 continue;
             }
