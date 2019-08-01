@@ -21,7 +21,7 @@ import com.jstarcraft.rns.recommend.benchmark.RandomGuessRecommender;
 import com.jstarcraft.rns.task.RankingTask;
 import com.jstarcraft.rns.task.RatingTask;
 
-public class RandomGuessTestCase {
+public class RandomGuessRecommenderTestCase {
 
 	@Test
 	public void testRecommenderByRanking() throws Exception {

@@ -4,32 +4,32 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.jstarcraft.rns.recommend.benchmark.ranking.MostPopularTestCase;
-import com.jstarcraft.rns.recommend.benchmark.rating.ConstantGuessTestCase;
-import com.jstarcraft.rns.recommend.benchmark.rating.GlobalAverageTestCase;
-import com.jstarcraft.rns.recommend.benchmark.rating.ItemAverageTestCase;
-import com.jstarcraft.rns.recommend.benchmark.rating.ItemClusterTestCase;
-import com.jstarcraft.rns.recommend.benchmark.rating.UserAverageTestCase;
-import com.jstarcraft.rns.recommend.benchmark.rating.UserClusterTestCase;
+import com.jstarcraft.rns.recommend.benchmark.ranking.MostPopularRecommenderTestCase;
+import com.jstarcraft.rns.recommend.benchmark.rating.ConstantGuessRecommenderTestCase;
+import com.jstarcraft.rns.recommend.benchmark.rating.GlobalAverageRecommenderTestCase;
+import com.jstarcraft.rns.recommend.benchmark.rating.ItemAverageRecommenderTestCase;
+import com.jstarcraft.rns.recommend.benchmark.rating.ItemClusterRecommenderTestCase;
+import com.jstarcraft.rns.recommend.benchmark.rating.UserAverageRecommenderTestCase;
+import com.jstarcraft.rns.recommend.benchmark.rating.UserClusterRecommenderTestCase;
 
 @RunWith(Suite.class)
 @SuiteClasses({
 		// 推荐器测试集
-		ConstantGuessTestCase.class,
+		ConstantGuessRecommenderTestCase.class,
 
-		GlobalAverageTestCase.class,
+		GlobalAverageRecommenderTestCase.class,
 
-		ItemAverageTestCase.class,
+		ItemAverageRecommenderTestCase.class,
 
-		ItemClusterTestCase.class,
+		ItemClusterRecommenderTestCase.class,
 
-		MostPopularTestCase.class,
+		MostPopularRecommenderTestCase.class,
 
-		RandomGuessTestCase.class,
+		RandomGuessRecommenderTestCase.class,
 
-		UserAverageTestCase.class,
+		UserAverageRecommenderTestCase.class,
 
-		UserClusterTestCase.class })
+		UserClusterRecommenderTestCase.class })
 public class BenchmarkTestSuite {
 
 }

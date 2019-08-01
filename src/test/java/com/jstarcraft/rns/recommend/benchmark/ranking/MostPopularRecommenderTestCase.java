@@ -19,7 +19,7 @@ import com.jstarcraft.rns.recommend.Recommender;
 import com.jstarcraft.rns.recommend.benchmark.ranking.MostPopularRecommender;
 import com.jstarcraft.rns.task.RankingTask;
 
-public class MostPopularTestCase {
+public class MostPopularRecommenderTestCase {
 
     @Test
     public void testRecommender() throws Exception {

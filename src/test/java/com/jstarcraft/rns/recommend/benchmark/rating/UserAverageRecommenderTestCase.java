@@ -13,7 +13,7 @@ import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.benchmark.rating.UserAverageRecommender;
 import com.jstarcraft.rns.task.RatingTask;
 
-public class UserAverageTestCase {
+public class UserAverageRecommenderTestCase {
 
 	@Test
 	public void testRecommender() throws Exception {

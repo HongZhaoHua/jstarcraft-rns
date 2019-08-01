@@ -13,7 +13,7 @@ import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.benchmark.rating.ConstantGuessRecommender;
 import com.jstarcraft.rns.task.RatingTask;
 
-public class ConstantGuessTestCase {
+public class ConstantGuessRecommenderTestCase {
 
 	@Test
 	public void testRecommender() throws Exception {

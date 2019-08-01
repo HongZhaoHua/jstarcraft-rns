@@ -13,7 +13,7 @@ import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.benchmark.rating.ItemClusterRecommender;
 import com.jstarcraft.rns.task.RatingTask;
 
-public class ItemClusterTestCase {
+public class ItemClusterRecommenderTestCase {
 
 	@Test
 	public void testRecommender() throws Exception {
