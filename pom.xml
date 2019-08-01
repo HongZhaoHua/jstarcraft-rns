@@ -91,6 +91,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>5.1.6.RELEASE</version>
+        </dependency>
+
+        <dependency>
             <groupId>net.sourceforge.jdistlib</groupId>
             <artifactId>jdistlib</artifactId>
             <version>0.4.5</version>
