@@ -39,13 +39,13 @@ import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.data.processor.DataMatcher;
 import com.jstarcraft.rns.data.processor.DataSorter;
-import com.jstarcraft.rns.data.splitter.DataSplitter;
-import com.jstarcraft.rns.data.splitter.GivenDataSplitter;
-import com.jstarcraft.rns.data.splitter.GivenNumberSplitter;
-import com.jstarcraft.rns.data.splitter.KFoldCrossValidationSplitter;
-import com.jstarcraft.rns.data.splitter.LeaveOneCrossValidationSplitter;
-import com.jstarcraft.rns.data.splitter.RandomSplitter;
-import com.jstarcraft.rns.data.splitter.RatioSplitter;
+import com.jstarcraft.rns.data.separator.DataSeparator;
+import com.jstarcraft.rns.data.separator.GivenDataSeparator;
+import com.jstarcraft.rns.data.separator.GivenNumberSeparator;
+import com.jstarcraft.rns.data.separator.KFoldCrossValidationSeparator;
+import com.jstarcraft.rns.data.separator.LeaveOneCrossValidationSeparator;
+import com.jstarcraft.rns.data.separator.RandomSeparator;
+import com.jstarcraft.rns.data.separator.RatioSeparator;
 import com.jstarcraft.rns.recommend.Recommender;
 import com.jstarcraft.rns.recommend.exception.RecommendException;
 
@@ -208,35 +208,35 @@ public abstract class AbstractTask<L, R> {
         // TODO 数据切割器部分
         SplitterConfigurer splitterConfigurer = JsonUtility.string2Object(configuration.getString("data.splitter"), SplitterConfigurer.class);
         DataModule model = space.getModule(splitterConfigurer.getName());
-        DataSplitter splitter;
+        DataSeparator splitter;
         switch (splitterConfigurer.getType()) {
         case "kcv": {
             int size = configuration.getInteger("data.splitter.kcv.number", 1);
-            splitter = new KFoldCrossValidationSplitter(model, size);
+            splitter = new KFoldCrossValidationSeparator(model, size);
             break;
         }
         case "loocv": {
-            splitter = new LeaveOneCrossValidationSplitter(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField());
+            splitter = new LeaveOneCrossValidationSeparator(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField());
             break;
         }
         case "testset": {
             int threshold = configuration.getInteger("data.splitter.threshold");
-            splitter = new GivenDataSplitter(model, threshold);
+            splitter = new GivenDataSeparator(model, threshold);
             break;
         }
         case "givenn": {
             int number = configuration.getInteger("data.splitter.given-number.number");
-            splitter = new GivenNumberSplitter(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField(), number);
+            splitter = new GivenNumberSeparator(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField(), number);
             break;
         }
         case "random": {
             double random = configuration.getDouble("data.splitter.random.value", 0.8D);
-            splitter = new RandomSplitter(space, model, splitterConfigurer.getMatchField(), random);
+            splitter = new RandomSeparator(space, model, splitterConfigurer.getMatchField(), random);
             break;
         }
         case "ratio": {
             double ratio = configuration.getDouble("data.splitter.ratio.value", 0.8D);
-            splitter = new RatioSplitter(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField(), ratio);
+            splitter = new RatioSeparator(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField(), ratio);
             break;
         }
         default: {

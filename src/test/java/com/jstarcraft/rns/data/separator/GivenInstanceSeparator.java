@@ -1,4 +1,4 @@
-package com.jstarcraft.rns.data.splitter;
+package com.jstarcraft.rns.data.separator;
 
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
@@ -13,7 +13,7 @@ import com.jstarcraft.ai.data.processor.DataSelector;
  *
  */
 // TODO 准备改名为SpecificInstanceSplitter
-public class GivenInstanceSplitter implements DataSplitter {
+public class GivenInstanceSeparator implements DataSeparator {
 
     private DataModule dataModel;
 
@@ -21,7 +21,7 @@ public class GivenInstanceSplitter implements DataSplitter {
 
     private IntegerArray testReference;
 
-    public GivenInstanceSplitter(DataModule model, DataSelector selector) {
+    public GivenInstanceSeparator(DataModule model, DataSelector selector) {
         this.dataModel = model;
 
         this.trainReference = new IntegerArray();

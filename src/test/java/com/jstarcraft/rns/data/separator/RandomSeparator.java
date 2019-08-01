@@ -1,4 +1,4 @@
-package com.jstarcraft.rns.data.splitter;
+package com.jstarcraft.rns.data.separator;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
@@ -13,7 +13,7 @@ import com.jstarcraft.rns.data.processor.DataMatcher;
  * @author Birdy
  *
  */
-public class RandomSplitter implements DataSplitter {
+public class RandomSeparator implements DataSeparator {
 
     private DataModule dataModel;
 
@@ -21,7 +21,7 @@ public class RandomSplitter implements DataSplitter {
 
     private IntegerArray testReference;
 
-    public RandomSplitter(DataSpace space, DataModule model, String matchField, double random) {
+    public RandomSeparator(DataSpace space, DataModule model, String matchField, double random) {
         dataModel = model;
         int size = model.getSize();
         int[] paginations;

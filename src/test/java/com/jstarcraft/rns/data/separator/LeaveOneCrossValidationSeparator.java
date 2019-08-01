@@ -1,4 +1,4 @@
-package com.jstarcraft.rns.data.splitter;
+package com.jstarcraft.rns.data.separator;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
@@ -13,7 +13,7 @@ import com.jstarcraft.rns.data.processor.DataSorter;
  * @author Bridy
  *
  */
-public class LeaveOneCrossValidationSplitter implements DataSplitter {
+public class LeaveOneCrossValidationSeparator implements DataSeparator {
 
     private DataModule dataModel;
 
@@ -21,7 +21,7 @@ public class LeaveOneCrossValidationSplitter implements DataSplitter {
 
     private IntegerArray testReference;
 
-    public LeaveOneCrossValidationSplitter(DataSpace space, DataModule model, String matchField, String sortField) {
+    public LeaveOneCrossValidationSeparator(DataSpace space, DataModule model, String matchField, String sortField) {
         dataModel = model;
         int size = model.getSize();
         int[] paginations;

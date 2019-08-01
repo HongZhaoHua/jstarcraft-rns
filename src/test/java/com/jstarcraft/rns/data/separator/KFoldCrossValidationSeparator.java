@@ -1,4 +1,4 @@
-package com.jstarcraft.rns.data.splitter;
+package com.jstarcraft.rns.data.separator;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.IntegerArray;
@@ -10,7 +10,7 @@ import com.jstarcraft.core.utility.RandomUtility;
  *
  * @author Birdy
  */
-public class KFoldCrossValidationSplitter implements DataSplitter {
+public class KFoldCrossValidationSeparator implements DataSeparator {
 
     private DataModule dataModel;
 
@@ -18,7 +18,7 @@ public class KFoldCrossValidationSplitter implements DataSplitter {
 
     private int number;
 
-    public KFoldCrossValidationSplitter(DataModule model, int number) {
+    public KFoldCrossValidationSeparator(DataModule model, int number) {
         dataModel = model;
         this.number = number;
         folds = new Integer[dataModel.getSize()];

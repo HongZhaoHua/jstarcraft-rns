@@ -1,4 +1,4 @@
-package com.jstarcraft.rns.data.splitter;
+package com.jstarcraft.rns.data.separator;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.IntegerArray;
@@ -11,7 +11,7 @@ import com.jstarcraft.ai.data.module.ReferenceModule;
  *
  */
 // TODO 准备改名为SpecificThresholdSplitter
-public class GivenDataSplitter implements DataSplitter {
+public class GivenDataSeparator implements DataSeparator {
 
     private DataModule dataModel;
 
@@ -19,7 +19,7 @@ public class GivenDataSplitter implements DataSplitter {
 
     private IntegerArray testReference;
 
-    public GivenDataSplitter(DataModule model, int threshold) {
+    public GivenDataSeparator(DataModule model, int threshold) {
         dataModel = model;
         trainReference = new IntegerArray();
         testReference = new IntegerArray();

@@ -1,4 +1,4 @@
-package com.jstarcraft.rns.data.splitter;
+package com.jstarcraft.rns.data.separator;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
@@ -13,7 +13,7 @@ import com.jstarcraft.rns.data.processor.DataSorter;
  * @author Birdy
  *
  */
-public class RatioSplitter implements DataSplitter {
+public class RatioSeparator implements DataSeparator {
 
     private DataModule dataModel;
 
@@ -21,7 +21,7 @@ public class RatioSplitter implements DataSplitter {
 
     private IntegerArray testReference;
 
-    public RatioSplitter(DataSpace space, DataModule model, String matchField, String sortField, double ratio) {
+    public RatioSeparator(DataSpace space, DataModule model, String matchField, String sortField, double ratio) {
         dataModel = model;
         int size = model.getSize();
         int[] paginations;
