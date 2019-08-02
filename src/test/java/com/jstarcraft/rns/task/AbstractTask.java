@@ -38,7 +38,7 @@ import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.data.processor.DataMatcher;
-import com.jstarcraft.rns.data.processor.DataSorter;
+import com.jstarcraft.rns.data.processor.DataOrder;
 import com.jstarcraft.rns.data.separator.DataSeparator;
 import com.jstarcraft.rns.data.separator.GivenDataSeparator;
 import com.jstarcraft.rns.data.separator.GivenNumberSeparator;
@@ -287,7 +287,7 @@ public abstract class AbstractTask<L, R> {
                     }
                     DataMatcher dataMatcher = DataMatcher.discreteOf(dataMarker, userDimension);
                     dataMatcher.match(dataPaginations, dataPositions);
-                    DataSorter dataSorter = DataSorter.featureOf(dataMarker);
+                    DataOrder dataSorter = DataOrder.featureOf(dataMarker);
                     dataSorter.sort(dataPaginations, dataPositions);
                     HashMatrix dataTable = new HashMatrix(true, userSize, itemSize, new Int2FloatRBTreeMap());
                     for (DataInstance instance : dataMarker) {

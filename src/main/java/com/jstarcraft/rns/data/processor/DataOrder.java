@@ -10,9 +10,9 @@ import com.jstarcraft.core.utility.RandomUtility;
  * @author Birdy
  *
  */
-public interface DataSorter {
+public interface DataOrder {
 
-    public final static DataSorter RANDOM_SORTER = (paginations, positions) -> {
+    public final static DataOrder RANDOM_SORTER = (paginations, positions) -> {
         for (int index = 0, size = paginations.length - 1; index < size; index++) {
             int from = paginations[index], to = paginations[index + 1];
             RandomUtility.shuffle(positions, from, to);
@@ -25,7 +25,7 @@ public interface DataSorter {
      * @param accessor
      * @return
      */
-    public static DataSorter featureOf(DataModule accessor) {
+    public static DataOrder featureOf(DataModule accessor) {
         DataInstance instance = accessor.getInstance(0);
         return (paginations, positions) -> {
             for (int index = 0, size = paginations.length - 1; index < size; index++) {
@@ -85,7 +85,7 @@ public interface DataSorter {
      * @param dimension
      * @return
      */
-    public static DataSorter discreteOf(DataModule accessor, int dimension) {
+    public static DataOrder discreteOf(DataModule accessor, int dimension) {
         DataInstance instance = accessor.getInstance(0);
         return (paginations, positions) -> {
             for (int index = 0, size = paginations.length - 1; index < size; index++) {
@@ -115,7 +115,7 @@ public interface DataSorter {
      * @param dimension
      * @return
      */
-    public static DataSorter continuousOf(DataModule accessor, int dimension) {
+    public static DataOrder continuousOf(DataModule accessor, int dimension) {
         DataInstance instance = accessor.getInstance(0);
         return (paginations, positions) -> {
             for (int index = 0, size = paginations.length - 1; index < size; index++) {

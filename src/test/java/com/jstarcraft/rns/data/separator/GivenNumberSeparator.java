@@ -5,7 +5,7 @@ import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.IntegerArray;
 import com.jstarcraft.ai.data.module.ReferenceModule;
 import com.jstarcraft.rns.data.processor.DataMatcher;
-import com.jstarcraft.rns.data.processor.DataSorter;
+import com.jstarcraft.rns.data.processor.DataOrder;
 
 /**
  * 指定数量处理器
@@ -40,14 +40,14 @@ public class GivenNumberSeparator implements DataSeparator {
         }
         if (model.getQualityInner(sortField) >= 0) {
             int sortDimension = model.getQualityInner(sortField);
-            DataSorter sorter = DataSorter.discreteOf(model, sortDimension);
+            DataOrder sorter = DataOrder.discreteOf(model, sortDimension);
             sorter.sort(paginations, positions);
         } else if (model.getQuantityInner(sortField) >= 0) {
             int sortDimension = model.getQuantityInner(sortField);
-            DataSorter sorter = DataSorter.continuousOf(model, sortDimension);
+            DataOrder sorter = DataOrder.continuousOf(model, sortDimension);
             sorter.sort(paginations, positions);
         } else {
-            DataSorter sorter = DataSorter.RANDOM_SORTER;
+            DataOrder sorter = DataOrder.RANDOM_SORTER;
             sorter.sort(paginations, positions);
         }
 

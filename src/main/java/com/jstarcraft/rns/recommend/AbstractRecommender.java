@@ -14,7 +14,7 @@ import com.jstarcraft.core.resource.annotation.ResourceId;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.data.processor.DataMatcher;
-import com.jstarcraft.rns.data.processor.DataSorter;
+import com.jstarcraft.rns.data.processor.DataOrder;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
 
@@ -71,7 +71,7 @@ public abstract class AbstractRecommender implements Recommender {
         }
         DataMatcher matcher = DataMatcher.discreteOf(model, userDimension);
         matcher.match(dataPaginations, dataPositions);
-        DataSorter sorter = DataSorter.featureOf(model);
+        DataOrder sorter = DataOrder.featureOf(model);
         sorter.sort(dataPaginations, dataPositions);
         HashMatrix dataTable = new HashMatrix(true, userSize, itemSize, new Int2FloatRBTreeMap());
         DataInstance instance = model.getInstance(0);
