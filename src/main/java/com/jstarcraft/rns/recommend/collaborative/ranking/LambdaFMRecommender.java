@@ -78,23 +78,7 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
         for (int index = 0; index < size; index++) {
             dataPositions[index] = index;
         }
-        DataMatcher dataMatcher = (paginations, positions) -> {
-            for (int index = 0; index < size; index++) {
-                instance.setCursor(index);
-                int feature = instance.getQualityFeature(userDimension);
-                paginations[feature + 1]++;
-            }
-            int cursor = size;
-            for (int index = paginations.length - 1; index > 0; index--) {
-                cursor -= paginations[index];
-                paginations[index] = cursor;
-            }
-            for (int index = 0; index < size; index++) {
-                instance.setCursor(index);
-                int feature = instance.getQualityFeature(userDimension);
-                positions[paginations[feature + 1]++] = index;
-            }
-        };
+        DataMatcher dataMatcher = DataMatcher.discreteOf(marker, userDimension);
         dataMatcher.match(dataPaginations, dataPositions);
 
         DenseVector positiveSum = DenseVector.valueOf(numberOfFactors);
