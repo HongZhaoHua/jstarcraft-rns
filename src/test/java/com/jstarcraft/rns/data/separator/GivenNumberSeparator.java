@@ -6,8 +6,6 @@ import com.jstarcraft.ai.data.IntegerArray;
 import com.jstarcraft.ai.data.module.ReferenceModule;
 import com.jstarcraft.ai.data.processor.DataSorter;
 import com.jstarcraft.ai.data.processor.DataSplitter;
-import com.jstarcraft.rns.data.processor.DataMatcher;
-import com.jstarcraft.rns.data.processor.DataOrder;
 import com.jstarcraft.rns.data.processor.QualityFeatureDataSorter;
 import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
 import com.jstarcraft.rns.data.processor.QuantityFeatureDataSorter;
