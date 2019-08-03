@@ -31,8 +31,8 @@ public class CLiMFRecommender extends MatrixFactorizationRecommender {
 
 		float[] factorValues = new float[numberOfFactors];
 
-		for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-			totalLoss = 0F;
+		for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+			totalError = 0F;
 			for (int userIndex = 0; userIndex < userSize; userIndex++) {
 				// TODO 此处应该考虑重构,不再使用itemSet
 				IntSet itemSet = userItemSet.get(userIndex);
@@ -113,26 +113,26 @@ public class CLiMFRecommender extends MatrixFactorizationRecommender {
 				for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 					if (itemSet.contains(itemIndex)) {
 						float predictValue = predictMap.get(itemIndex);
-						totalLoss += (float) Math.log(LogisticUtility.getValue(predictValue));
+						totalError += (float) Math.log(LogisticUtility.getValue(predictValue));
 						// TODO 此处应该考虑对称性减少迭代次数
 						for (int compareIndex : itemSet) {
 							float compareValue = predictMap.get(compareIndex);
-							totalLoss += (float) Math.log(1 - LogisticUtility.getValue(compareValue - predictValue));
+							totalError += (float) Math.log(1 - LogisticUtility.getValue(compareValue - predictValue));
 						}
 					}
 					for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
 						float userFactorValue = userFactors.getValue(userIndex, factorIndex);
 						float itemFactorValue = itemFactors.getValue(itemIndex, factorIndex);
-						totalLoss += -0.5 * (userRegularization * userFactorValue * userFactorValue + itemRegularization * itemFactorValue * itemFactorValue);
+						totalError += -0.5 * (userRegularization * userFactorValue * userFactorValue + itemRegularization * itemFactorValue * itemFactorValue);
 					}
 				}
 			}
 
-			if (isConverged(iterationStep) && isConverged) {
+			if (isConverged(epocheIndex) && isConverged) {
 				break;
 			}
-			isLearned(iterationStep);
-			currentLoss = totalLoss;
+			isLearned(epocheIndex);
+			currentError = totalError;
 		}
 	}
 

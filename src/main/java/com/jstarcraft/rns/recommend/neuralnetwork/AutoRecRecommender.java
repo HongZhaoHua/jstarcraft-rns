@@ -152,12 +152,12 @@ public class AutoRecRecommender extends ModelRecommender {
     @Override
     protected void doPractice() {
         Graph graph = getComputationGraph();
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = graph.practice(1, new MathMatrix[] { inputData }, new MathMatrix[] { inputData });
-            if (isConverged(iterationStep) && isConverged) {
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = graph.practice(1, new MathMatrix[] { inputData }, new MathMatrix[] { inputData });
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            currentLoss = totalLoss;
+            currentError = totalError;
         }
         graph.predict(new MathMatrix[] { inputData }, new MathMatrix[] { outputData });
     }

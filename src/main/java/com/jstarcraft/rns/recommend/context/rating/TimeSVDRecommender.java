@@ -204,8 +204,8 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
     @Override
     protected void doPractice() {
         DefaultScalar scalar = DefaultScalar.getInstance();
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector rateVector = scoreMatrix.getRowVector(userIndex);
                 int size = rateVector.getElementSize();
@@ -265,43 +265,43 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
                     }
 
                     float error = predict - rate;
-                    totalLoss += error * error;
+                    totalError += error * error;
 
                     // update bi
                     float sgd = error * (userScale + dayScale) + regBias * itemBias;
                     itemBiases.shiftValue(itemExplicitIndex, -learnRate * sgd);
-                    totalLoss += regBias * itemBias * itemBias;
+                    totalError += regBias * itemBias * itemBias;
 
                     // update bi,bin(t)
                     sgd = error * (userScale + dayScale) + regBias * itemSectionBias;
                     itemSectionBiases.shiftValue(itemExplicitIndex, section, -learnRate * sgd);
-                    totalLoss += regBias * itemSectionBias * itemSectionBias;
+                    totalError += regBias * itemSectionBias * itemSectionBias;
 
                     // update cu
                     sgd = error * (itemBias + itemSectionBias) + regBias * userScale;
                     userScales.shiftValue(userIndex, -learnRate * sgd);
-                    totalLoss += regBias * userScale * userScale;
+                    totalError += regBias * userScale * userScale;
 
                     // update cut
                     sgd = error * (itemBias + itemSectionBias) + regBias * dayScale;
                     userDayScales.shiftValue(userIndex, days, -learnRate * sgd);
-                    totalLoss += regBias * dayScale * dayScale;
+                    totalError += regBias * dayScale * dayScale;
 
                     // update bu
                     sgd = error + regBias * userBias;
                     userBiases.shiftValue(userIndex, -learnRate * sgd);
-                    totalLoss += regBias * userBias * userBias;
+                    totalError += regBias * userBias * userBias;
 
                     // update au
                     sgd = error * deviation + regBias * userWeight;
                     userBiasWeights.shiftValue(userIndex, -learnRate * sgd);
-                    totalLoss += regBias * userWeight * userWeight;
+                    totalError += regBias * userWeight * userWeight;
 
                     // update but
                     sgd = error + regBias * userDayBias;
                     float delta = userDayBias - learnRate * sgd;
                     userDayBiases.put(userIndex, days, delta);
-                    totalLoss += regBias * userDayBias * userDayBias;
+                    totalError += regBias * userDayBias * userDayBias;
 
                     for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                         float userExplicitFactor = userExplicitFactors.getValue(userIndex, factorIndex);
@@ -314,7 +314,7 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
                         // update userExplicitFactor
                         sgd = error * itemExplicitFactor + userRegularization * userExplicitFactor;
                         userExplicitFactors.shiftValue(userIndex, factorIndex, -learnRate * sgd);
-                        totalLoss += userRegularization * userExplicitFactor * userExplicitFactor;
+                        totalError += userRegularization * userExplicitFactor * userExplicitFactor;
 
                         // update itemExplicitFactors
                         for (VectorScalar rateTerm : rateVector) {
@@ -323,12 +323,12 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
                         }
                         sgd = error * (userExplicitFactor + userImplicitFactor * deviation + delta + itemWeight * sum) + itemRegularization * itemExplicitFactor;
                         itemExplicitFactors.shiftValue(itemExplicitIndex, factorIndex, -learnRate * sgd);
-                        totalLoss += itemRegularization * itemExplicitFactor * itemExplicitFactor;
+                        totalError += itemRegularization * itemExplicitFactor * itemExplicitFactor;
 
                         // update userImplicitFactors
                         sgd = error * itemExplicitFactor * deviation + userRegularization * userImplicitFactor;
                         userImplicitFactors.shiftValue(userIndex, factorIndex, -learnRate * sgd);
-                        totalLoss += userRegularization * userImplicitFactor * userImplicitFactor;
+                        totalError += userRegularization * userImplicitFactor * userImplicitFactor;
 
                         // update itemImplicitFactors
                         // TODO 此处可以整合操作
@@ -337,12 +337,12 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
                             float itemImplicitFactor = itemImplicitFactors.getValue(itemImplicitIndex, factorIndex);
                             sgd = error * itemWeight * itemExplicitFactor + itemRegularization * itemImplicitFactor;
                             itemImplicitFactors.shiftValue(itemImplicitIndex, factorIndex, -learnRate * sgd);
-                            totalLoss += itemRegularization * itemImplicitFactor * itemImplicitFactor;
+                            totalError += itemRegularization * itemImplicitFactor * itemImplicitFactor;
                         }
 
                         // update pkt
                         sgd = error * itemExplicitFactor + userRegularization * delta;
-                        totalLoss += userRegularization * delta * delta;
+                        totalError += userRegularization * delta * delta;
                         delta = delta - learnRate * sgd;
                         dayFactors[factorIndex] = delta;
                     }
@@ -350,12 +350,12 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
                 }
             }
 
-            totalLoss *= 0.5D;
-            if (isConverged(iterationStep)) {
+            totalError *= 0.5D;
+            if (isConverged(epocheIndex)) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
         }
     }
 

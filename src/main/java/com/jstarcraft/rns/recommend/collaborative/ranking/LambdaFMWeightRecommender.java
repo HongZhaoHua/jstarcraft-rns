@@ -91,7 +91,7 @@ public class LambdaFMWeightRecommender extends LambdaFMRecommender {
         // 由于pij_real默认为1,所以简化了loss的计算.
         // loss += -pij_real * Math.log(pij) - (1 - pij_real) *
         // Math.log(1 - pij);
-        totalLoss += (float) -Math.log(LogisticUtility.getValue(error));
+        totalError += (float) -Math.log(LogisticUtility.getValue(error));
         float gradient = calaculateGradientValue(lossType, error);
         int orderIndex = (int) ((Y - 1) / N);
         float orderLoss = orderLosses[orderIndex];

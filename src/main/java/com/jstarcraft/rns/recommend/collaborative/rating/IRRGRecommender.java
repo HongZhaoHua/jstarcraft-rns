@@ -109,8 +109,8 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
 
     @Override
     protected void doPractice() {
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
 
             DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
             DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, numberOfFactors);
@@ -125,13 +125,13 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
                 float error = LogisticUtility.getValue(predict) - (score - minimumOfScore) / (maximumOfScore - minimumOfScore);
                 float csgd = LogisticUtility.getGradient(predict) * error;
 
-                totalLoss += error * error;
+                totalError += error * error;
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                     float userFactor = userFactors.getValue(userIndex, factorIndex);
                     float itemFactor = itemFactors.getValue(itemIndex, factorIndex);
                     userDeltas.shiftValue(userIndex, factorIndex, csgd * itemFactor + userRegularization * userFactor);
                     itemDeltas.shiftValue(itemIndex, factorIndex, csgd * userFactor + itemRegularization * itemFactor);
-                    totalLoss += userRegularization * userFactor * userFactor + itemRegularization * itemFactor * itemFactor;
+                    totalError += userRegularization * userFactor * userFactor + itemRegularization * itemFactor * itemFactor;
                 }
             }
 
@@ -145,7 +145,7 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
                     for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                         float ekj = itemFactors.getValue(leftItemIndex, factorIndex) - itemFactors.getValue(rightItemIndex, factorIndex);
                         itemDeltas.shiftValue(leftItemIndex, factorIndex, correlationRegularization * skj * ekj);
-                        totalLoss += correlationRegularization * skj * ekj * ekj;
+                        totalError += correlationRegularization * skj * ekj * ekj;
                     }
                 }
                 itemVector = complementMatrix.getRowVector(leftItemIndex);
@@ -168,7 +168,7 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
                         float egkj = (float) (itemFactors.getValue(leftItemIndex, factorIndex) - (itemFactors.getValue(term.getRow(), factorIndex) + itemFactors.getValue(term.getColumn(), factorIndex)) / Math.sqrt(2F));
                         float egkj_1 = correlationRegularization * term.getValue() * egkj;
                         itemDeltas.shiftValue(leftItemIndex, factorIndex, egkj_1);
-                        totalLoss += egkj_1 * egkj;
+                        totalError += egkj_1 * egkj;
                     }
                 }
                 for (Entry<Integer, SparseMatrix> rightKeyValue : itemCorrsGAR_Sorted.entrySet()) {
@@ -190,12 +190,12 @@ public class IRRGRecommender extends MatrixFactorizationRecommender {
             userFactors.addMatrix(userDeltas.scaleValues(-learnRate), false);
             itemFactors.addMatrix(itemDeltas.scaleValues(-learnRate), false);
 
-            totalLoss *= 0.5F;
-            if (isConverged(iterationStep) && isConverged) {
+            totalError *= 0.5F;
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
         }
     }
 

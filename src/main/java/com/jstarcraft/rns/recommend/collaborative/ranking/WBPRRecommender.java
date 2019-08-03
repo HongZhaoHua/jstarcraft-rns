@@ -106,8 +106,8 @@ public class WBPRRecommender extends MatrixFactorizationRecommender {
 
     @Override
     protected void doPractice() {
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             for (int sampleIndex = 0, sampleTimes = userSize * 100; sampleIndex < sampleTimes; sampleIndex++) {
                 // randomly draw (userIdx, posItemIdx, negItemIdx)
                 int userIndex, positiveItemIndex, negativeItemIndex = 0;
@@ -136,14 +136,14 @@ public class WBPRRecommender extends MatrixFactorizationRecommender {
                 float negativeRate = predict(userIndex, negativeItemIndex);
                 float error = positiveRate - negativeRate;
                 float value = (float) -Math.log(LogisticUtility.getValue(error));
-                totalLoss += value;
+                totalError += value;
                 value = LogisticUtility.getValue(-error);
 
                 // update bias
                 float positiveBias = itemBiases.getValue(positiveItemIndex), negativeBias = itemBiases.getValue(negativeItemIndex);
                 itemBiases.shiftValue(positiveItemIndex, learnRate * (value - biasRegularization * positiveBias));
                 itemBiases.shiftValue(negativeItemIndex, learnRate * (-value - biasRegularization * negativeBias));
-                totalLoss += biasRegularization * (positiveBias * positiveBias + negativeBias * negativeBias);
+                totalError += biasRegularization * (positiveBias * positiveBias + negativeBias * negativeBias);
 
                 // update user/item vectors
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
@@ -153,14 +153,14 @@ public class WBPRRecommender extends MatrixFactorizationRecommender {
                     userFactors.shiftValue(userIndex, factorIndex, learnRate * (value * (positiveItemFactor - negativeItemFactor) - userRegularization * userFactor));
                     itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRate * (value * userFactor - itemRegularization * positiveItemFactor));
                     itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRate * (value * (-userFactor) - itemRegularization * negativeItemFactor));
-                    totalLoss += userRegularization * userFactor * userFactor + itemRegularization * positiveItemFactor * positiveItemFactor + itemRegularization * negativeItemFactor * negativeItemFactor;
+                    totalError += userRegularization * userFactor * userFactor + itemRegularization * positiveItemFactor * positiveItemFactor + itemRegularization * negativeItemFactor * negativeItemFactor;
                 }
             }
-            if (isConverged(iterationStep) && isConverged) {
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
         }
     }
 

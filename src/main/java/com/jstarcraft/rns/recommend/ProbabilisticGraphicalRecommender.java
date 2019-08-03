@@ -73,7 +73,7 @@ public abstract class ProbabilisticGraphicalRecommender extends ModelRecommender
     @Override
     protected void doPractice() {
         long now = System.currentTimeMillis();
-        for (int iter = 1; iter <= numberOfEpoches; iter++) {
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             // E-step: infer parameters
             eStep();
             if (logger.isInfoEnabled()) {
@@ -90,7 +90,7 @@ public abstract class ProbabilisticGraphicalRecommender extends ModelRecommender
                 logger.info(message);
             }
             // get statistics after burn-in
-            if ((iter > burnIn) && (iter % numberOfSamples == 0)) {
+            if ((epocheIndex > burnIn) && (epocheIndex % numberOfSamples == 0)) {
                 readoutParams();
                 if (logger.isInfoEnabled()) {
                     String message = StringUtility.format("readoutParams time is {}", System.currentTimeMillis() - now);
@@ -104,10 +104,10 @@ public abstract class ProbabilisticGraphicalRecommender extends ModelRecommender
                     logger.info(message);
                 }
             }
-            if (isConverged(iter) && isConverged) {
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            currentLoss = totalLoss;
+            currentError = totalError;
         }
         // retrieve posterior probability distributions
         estimateParams();

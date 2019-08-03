@@ -20,31 +20,31 @@ public class PMFRecommender extends MatrixFactorizationRecommender {
 
     @Override
     protected void doPractice() {
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow(); // user
                 int itemIndex = term.getColumn(); // item
                 float rate = term.getValue();
                 float predict = predict(userIndex, itemIndex);
                 float error = rate - predict;
-                totalLoss += error * error;
+                totalError += error * error;
 
                 // update factors
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                     float userFactor = userFactors.getValue(userIndex, factorIndex), itemFactor = itemFactors.getValue(itemIndex, factorIndex);
                     userFactors.shiftValue(userIndex, factorIndex, learnRate * (error * itemFactor - userRegularization * userFactor));
                     itemFactors.shiftValue(itemIndex, factorIndex, learnRate * (error * userFactor - itemRegularization * itemFactor));
-                    totalLoss += userRegularization * userFactor * userFactor + itemRegularization * itemFactor * itemFactor;
+                    totalError += userRegularization * userFactor * userFactor + itemRegularization * itemFactor * itemFactor;
                 }
             }
 
-            totalLoss *= 0.5F;
-            if (isConverged(iterationStep) && isConverged) {
+            totalError *= 0.5F;
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
         }
     }
 

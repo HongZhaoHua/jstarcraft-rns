@@ -66,13 +66,13 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
             }
         }
 
-        float deltaLoss = (float) (loss - currentLoss);
+        float deltaLoss = (float) (loss - currentError);
 
         if (iter > 1 && (deltaLoss > 0 || Float.isNaN(deltaLoss))) {
             return true;
         }
 
-        currentLoss = loss;
+        currentError = loss;
         return false;
     }
 
@@ -113,7 +113,7 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
         userScoreVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(scoreMatrix.getRowVector(scalar.getIndex()).getElementSize());
         });
-        currentLoss = Float.MIN_VALUE;
+        currentError = Float.MIN_VALUE;
 
         userTopicProbabilities = DenseMatrix.valueOf(userSize, numberOfFactors);
     }

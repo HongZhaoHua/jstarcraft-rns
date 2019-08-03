@@ -78,8 +78,8 @@ public class FISMAUCRecommender extends MatrixFactorizationRecommender {
         // t <- (n - 1)^(-alpha) Σ pj (j!=i)
         DenseVector itemVector = DenseVector.valueOf(numberOfFactors);
 
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             // for all u in C
             for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector rateVector = scoreMatrix.getRowVector(userIndex);
@@ -160,7 +160,7 @@ public class FISMAUCRecommender extends MatrixFactorizationRecommender {
                         float negativeFactor = negativeBias + scalar.dotProduct(itemFactors.getRowVector(negativeIndex), itemVector).getValue();
 
                         float error = (positiveRate - negativeRate) - (positiveFactor - negativeFactor);
-                        totalLoss += error * error;
+                        totalError += error * error;
 
                         // update bi bj
                         itemBiases.shiftValue(positiveIndex, biasRegularization * (error - gamma * positiveBias));
@@ -207,16 +207,16 @@ public class FISMAUCRecommender extends MatrixFactorizationRecommender {
             }
             for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 double itemBias = itemBiases.getValue(itemIndex);
-                totalLoss += gamma * itemBias * itemBias;
-                totalLoss += beta * scalar.dotProduct(itemFactors.getRowVector(itemIndex), itemFactors.getRowVector(itemIndex)).getValue();
-                totalLoss += beta * scalar.dotProduct(userFactors.getRowVector(itemIndex), userFactors.getRowVector(itemIndex)).getValue();
+                totalError += gamma * itemBias * itemBias;
+                totalError += beta * scalar.dotProduct(itemFactors.getRowVector(itemIndex), itemFactors.getRowVector(itemIndex)).getValue();
+                totalError += beta * scalar.dotProduct(userFactors.getRowVector(itemIndex), userFactors.getRowVector(itemIndex)).getValue();
             }
 
-            totalLoss *= 0.5F;
-            if (isConverged(iterationStep) && isConverged) {
+            totalError *= 0.5F;
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            currentLoss = totalLoss;
+            currentError = totalError;
         }
     }
 

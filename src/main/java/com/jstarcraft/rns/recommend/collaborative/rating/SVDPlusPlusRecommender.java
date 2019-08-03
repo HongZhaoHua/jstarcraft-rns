@@ -51,8 +51,8 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
     @Override
     protected void doPractice() {
         DenseVector factorVector = DenseVector.valueOf(numberOfFactors);
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 10; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                 if (userVector.getElementSize() == 0) {
@@ -70,14 +70,14 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
                         factorVector.scaleValues(1F / scale);
                     }
                     float error = outerTerm.getValue() - predict(userIndex, itemIndex, factorVector);
-                    totalLoss += error * error;
+                    totalError += error * error;
                     // update user and item bias
                     float userBias = userBiases.getValue(userIndex);
                     userBiases.shiftValue(userIndex, learnRate * (error - regBias * userBias));
-                    totalLoss += regBias * userBias * userBias;
+                    totalError += regBias * userBias * userBias;
                     float itemBias = itemBiases.getValue(itemIndex);
                     itemBiases.shiftValue(itemIndex, learnRate * (error - regBias * itemBias));
-                    totalLoss += regBias * itemBias * itemBias;
+                    totalError += regBias * itemBias * itemBias;
 
                     // update user and item factors
                     for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
@@ -85,23 +85,23 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
                         float itemFactor = itemFactors.getValue(itemIndex, factorIndex);
                         userFactors.shiftValue(userIndex, factorIndex, learnRate * (error * itemFactor - userRegularization * userFactor));
                         itemFactors.shiftValue(itemIndex, factorIndex, learnRate * (error * (userFactor + factorVector.getValue(factorIndex)) - itemRegularization * itemFactor));
-                        totalLoss += userRegularization * userFactor * userFactor + itemRegularization * itemFactor * itemFactor;
+                        totalError += userRegularization * userFactor * userFactor + itemRegularization * itemFactor * itemFactor;
                         for (VectorScalar innerTerm : userVector) {
                             int index = innerTerm.getIndex();
                             float factor = factorMatrix.getValue(index, factorIndex);
                             factorMatrix.shiftValue(index, factorIndex, learnRate * (error * itemFactor / scale - regImpItem * factor));
-                            totalLoss += regImpItem * factor * factor;
+                            totalError += regImpItem * factor * factor;
                         }
                     }
                 }
             }
 
-            totalLoss *= 0.5F;
-            if (isConverged(iterationStep) && isConverged) {
+            totalError *= 0.5F;
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
         }
     }
 

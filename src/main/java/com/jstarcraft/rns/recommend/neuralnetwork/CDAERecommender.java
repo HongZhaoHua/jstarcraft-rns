@@ -153,18 +153,18 @@ public class CDAERecommender extends ModelRecommender {
     @Override
     protected void doPractice() {
         Graph graph = getComputationGraph();
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             inputData.getArray().assign(labelData.getArray());
             for (MatrixScalar term : scoreMatrix) {
                 if (RandomUtility.randomFloat(1F) < 0.2F) {
                     inputData.setValue(term.getRow(), term.getColumn(), 0F);
                 }
             }
-            totalLoss = graph.practice(1, new MathMatrix[] { inputData }, new MathMatrix[] { labelData });
-            if (isConverged(iterationStep) && isConverged) {
+            totalError = graph.practice(1, new MathMatrix[] { inputData }, new MathMatrix[] { labelData });
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            currentLoss = totalLoss;
+            currentError = totalError;
         }
         graph.predict(new MathMatrix[] { labelData }, new MathMatrix[] { outputData });
     }

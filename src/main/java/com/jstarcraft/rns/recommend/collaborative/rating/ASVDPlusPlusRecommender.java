@@ -43,9 +43,9 @@ public class ASVDPlusPlusRecommender extends BiasedMFRecommender {
 
     @Override
     protected void doPractice() {
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             // TODO 目前没有totalLoss.
-            totalLoss = 0f;
+            totalError = 0f;
             for (MatrixScalar matrixTerm : scoreMatrix) {
                 int userIndex = matrixTerm.getRow();
                 int itemIndex = matrixTerm.getColumn();

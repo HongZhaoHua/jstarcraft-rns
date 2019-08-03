@@ -320,11 +320,11 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
             sum++;
         }
         loss /= sum;
-        float delta = loss - currentLoss; // loss gets smaller, delta <= 0
+        float delta = loss - currentError; // loss gets smaller, delta <= 0
         if (numberOfStatistics > 1 && delta > 0) {
             return true;
         }
-        currentLoss = loss;
+        currentError = loss;
         return false;
     }
 

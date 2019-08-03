@@ -101,8 +101,8 @@ public class PRankDRecommender extends RankSGDRecommender {
 	@Override
 	protected void doPractice() {
 		List<IntSet> userItemSet = getUserItemSet(scoreMatrix);
-		for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-			totalLoss = 0F;
+		for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+			totalError = 0F;
 			// for each rated user-item (u,i) pair
 			for (int userIndex : userIndexes) {
 				SparseVector userVector = scoreMatrix.getRowVector(userIndex);
@@ -124,7 +124,7 @@ public class PRankDRecommender extends RankSGDRecommender {
 					float distance = (float) Math.sqrt(1 - Math.tanh(itemCorrelations.getValue(positiveItemIndex, negativeItemIndex) * similarityFilter));
 					float itemWeight = itemWeights.getValue(negativeItemIndex);
 					float error = itemWeight * (positivePredict - negativePredict - distance * (positiveRate - negativeRate));
-					totalLoss += error * error;
+					totalError += error * error;
 
 					// update vectors
 					float learnFactor = learnRate * error;
@@ -139,12 +139,12 @@ public class PRankDRecommender extends RankSGDRecommender {
 				}
 			}
 
-			totalLoss *= 0.5F;
-			if (isConverged(iterationStep) && isConverged) {
+			totalError *= 0.5F;
+			if (isConverged(epocheIndex) && isConverged) {
 				break;
 			}
-			isLearned(iterationStep);
-			currentLoss = totalLoss;
+			isLearned(epocheIndex);
+			currentError = totalError;
 		}
 	}
 

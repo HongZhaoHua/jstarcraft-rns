@@ -22,8 +22,8 @@ public class BPRRecommender extends MatrixFactorizationRecommender {
 
 	@Override
 	protected void doPractice() {
-		for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-			totalLoss = 0F;
+		for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+			totalError = 0F;
 			for (int sampleIndex = 0, sampleTimes = userSize * 100; sampleIndex < sampleTimes; sampleIndex++) {
 				// randomly draw (userIdx, posItemIdx, negItemIdx)
 				int userIndex, positiveItemIndex, negativeItemIndex;
@@ -50,7 +50,7 @@ public class BPRRecommender extends MatrixFactorizationRecommender {
 				float negativeRate = predict(userIndex, negativeItemIndex);
 				float error = positiveRate - negativeRate;
 				float value = (float) -Math.log(LogisticUtility.getValue(error));
-				totalLoss += value;
+				totalError += value;
 				value = LogisticUtility.getValue(-error);
 
 				for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
@@ -60,14 +60,14 @@ public class BPRRecommender extends MatrixFactorizationRecommender {
 					userFactors.shiftValue(userIndex, factorIndex, learnRate * (value * (positiveFactor - negativeFactor) - userRegularization * userFactor));
 					itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRate * (value * userFactor - itemRegularization * positiveFactor));
 					itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRate * (value * (-userFactor) - itemRegularization * negativeFactor));
-					totalLoss += userRegularization * userFactor * userFactor + itemRegularization * positiveFactor * positiveFactor + itemRegularization * negativeFactor * negativeFactor;
+					totalError += userRegularization * userFactor * userFactor + itemRegularization * positiveFactor * positiveFactor + itemRegularization * negativeFactor * negativeFactor;
 				}
 			}
-			if (isConverged(iterationStep) && isConverged) {
+			if (isConverged(epocheIndex) && isConverged) {
 				break;
 			}
-			isLearned(iterationStep);
-			currentLoss = totalLoss;
+			isLearned(epocheIndex);
+			currentError = totalError;
 		}
 	}
 

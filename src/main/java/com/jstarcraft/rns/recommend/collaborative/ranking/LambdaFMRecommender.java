@@ -79,9 +79,9 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
         DenseVector positiveSum = DenseVector.valueOf(numberOfFactors);
         DenseVector negativeSum = DenseVector.valueOf(numberOfFactors);
 
-        for (int iterationStep = 0; iterationStep < numberOfEpoches; iterationStep++) {
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             long totalTime = 0;
-            totalLoss = 0F;
+            totalError = 0F;
             for (int sampleIndex = 0, sampleTimes = userSize * 50; sampleIndex < sampleTimes; sampleIndex++) {
                 long current = System.currentTimeMillis();
                 float gradient = getGradientValue(modules, positive, negative, scalar);
@@ -99,41 +99,41 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
                     rightIndex = rightTerm.getIndex();
                     if (leftIndex == rightIndex) {
                         weightVector.shiftValue(leftIndex, learnRate * (gradient * 0F - weightRegularization * weightVector.getValue(leftIndex)));
-                        totalLoss += weightRegularization * weightVector.getValue(leftIndex) * weightVector.getValue(leftIndex);
+                        totalError += weightRegularization * weightVector.getValue(leftIndex) * weightVector.getValue(leftIndex);
 
                         for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                             float positiveFactor = positiveSum.getValue(factorIndex) * leftTerm.getValue() - featureFactors.getValue(leftIndex, factorIndex) * leftTerm.getValue() * leftTerm.getValue();
                             float negativeFactor = negativeSum.getValue(factorIndex) * rightTerm.getValue() - featureFactors.getValue(rightIndex, factorIndex) * rightTerm.getValue() * rightTerm.getValue();
 
                             featureFactors.shiftValue(leftIndex, factorIndex, learnRate * (gradient * (positiveFactor - negativeFactor) - factorRegularization * featureFactors.getValue(leftIndex, factorIndex)));
-                            totalLoss += factorRegularization * featureFactors.getValue(leftIndex, factorIndex) * featureFactors.getValue(leftIndex, factorIndex);
+                            totalError += factorRegularization * featureFactors.getValue(leftIndex, factorIndex) * featureFactors.getValue(leftIndex, factorIndex);
                         }
                     } else {
                         weightVector.shiftValue(leftIndex, learnRate * (gradient * leftTerm.getValue() - weightRegularization * weightVector.getValue(leftIndex)));
-                        totalLoss += weightRegularization * weightVector.getValue(leftIndex) * weightVector.getValue(leftIndex);
+                        totalError += weightRegularization * weightVector.getValue(leftIndex) * weightVector.getValue(leftIndex);
                         weightVector.shiftValue(rightIndex, learnRate * (gradient * -rightTerm.getValue() - weightRegularization * weightVector.getValue(rightIndex)));
-                        totalLoss += weightRegularization * weightVector.getValue(rightIndex) * weightVector.getValue(rightIndex);
+                        totalError += weightRegularization * weightVector.getValue(rightIndex) * weightVector.getValue(rightIndex);
 
                         for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                             float positiveFactor = positiveSum.getValue(factorIndex) * leftTerm.getValue() - featureFactors.getValue(leftIndex, factorIndex) * leftTerm.getValue() * leftTerm.getValue();
                             featureFactors.shiftValue(leftIndex, factorIndex, learnRate * (gradient * positiveFactor - factorRegularization * featureFactors.getValue(leftIndex, factorIndex)));
-                            totalLoss += factorRegularization * featureFactors.getValue(leftIndex, factorIndex) * featureFactors.getValue(leftIndex, factorIndex);
+                            totalError += factorRegularization * featureFactors.getValue(leftIndex, factorIndex) * featureFactors.getValue(leftIndex, factorIndex);
 
                             float negativeFactor = negativeSum.getValue(factorIndex) * rightTerm.getValue() - featureFactors.getValue(rightIndex, factorIndex) * rightTerm.getValue() * rightTerm.getValue();
                             featureFactors.shiftValue(rightIndex, factorIndex, learnRate * (gradient * -negativeFactor - factorRegularization * featureFactors.getValue(rightIndex, factorIndex)));
-                            totalLoss += factorRegularization * featureFactors.getValue(rightIndex, factorIndex) * featureFactors.getValue(rightIndex, factorIndex);
+                            totalError += factorRegularization * featureFactors.getValue(rightIndex, factorIndex) * featureFactors.getValue(rightIndex, factorIndex);
                         }
                     }
                 }
             }
             System.out.println(totalTime);
 
-            totalLoss *= 0.5;
-            if (isConverged(iterationStep) && isConverged) {
+            totalError *= 0.5;
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
         }
     }
 
@@ -142,7 +142,7 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
             return;
         }
         if (isLearned && iteration > 1) {
-            learnRate = Math.abs(currentLoss) > Math.abs(totalLoss) ? learnRate * 1.05F : learnRate * 0.5F;
+            learnRate = Math.abs(currentError) > Math.abs(totalError) ? learnRate * 1.05F : learnRate * 0.5F;
         } else if (learnDecay > 0 && learnDecay < 1) {
             learnRate *= learnDecay;
         }

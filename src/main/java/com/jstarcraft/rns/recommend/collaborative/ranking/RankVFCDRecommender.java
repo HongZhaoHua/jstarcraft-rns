@@ -148,7 +148,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
         DenseMatrix implicitItemDeltas = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
         DenseMatrix userDeltas = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
 
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             // Update the Sq cache
             explicitItemDeltas.dotProduct(explicitItemFactors, true, explicitItemFactors, false, MathCalculator.SERIAL);
             // Step 1: update user factors;
@@ -299,10 +299,10 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
                 }
             }
 
-            if (isConverged(iterationStep) && isConverged) {
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            currentLoss = totalLoss;
+            currentError = totalError;
             // TODO 目前没有totalLoss.
         }
         factorMatrix.dotProduct(featureFactors, true, featureMatrix, false, MathCalculator.PARALLEL);

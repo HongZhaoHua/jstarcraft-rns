@@ -170,8 +170,8 @@ public class SLIMRecommender extends ModelRecommender {
     protected void doPractice() {
         float[] rates = new float[userSize];
         // number of iteration cycles
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             // each cycle iterates through one coordinate direction
             for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 int[] neighborIndexes = itemNeighbors[itemIndex];
@@ -203,7 +203,7 @@ public class SLIMRecommender extends ModelRecommender {
                     errorSum /= count;
                     // TODO 此处考虑重构
                     float coefficient = coefficientMatrix.getValue(neighborIndex, itemIndex);
-                    totalLoss += errorSum + 0.5F * regL2Norm * coefficient * coefficient + regL1Norm * coefficient;
+                    totalError += errorSum + 0.5F * regL2Norm * coefficient * coefficient + regL1Norm * coefficient;
                     if (regL1Norm < Math.abs(valueSum)) {
                         if (valueSum > 0) {
                             coefficient = (valueSum - regL1Norm) / (regL2Norm + rateSum);
@@ -223,10 +223,10 @@ public class SLIMRecommender extends ModelRecommender {
                 }
             }
 
-            if (isConverged(iterationStep) && isConverged) {
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            currentLoss = totalLoss;
+            currentError = totalError;
         }
     }
 

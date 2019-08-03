@@ -64,8 +64,8 @@ public class SoRegRecommender extends SocialRecommender {
 
     @Override
     protected void doPractice() {
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
             DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, numberOfFactors);
 
@@ -74,13 +74,13 @@ public class SoRegRecommender extends SocialRecommender {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();
                 float error = predict(userIndex, itemIndex) - term.getValue();
-                totalLoss += error * error;
+                totalError += error * error;
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                     float userFactorValue = userFactors.getValue(userIndex, factorIndex);
                     float itemFactorValue = itemFactors.getValue(itemIndex, factorIndex);
                     userDeltas.shiftValue(userIndex, factorIndex, error * itemFactorValue + userRegularization * userFactorValue);
                     itemDeltas.shiftValue(itemIndex, factorIndex, error * userFactorValue + itemRegularization * itemFactorValue);
-                    totalLoss += userRegularization * userFactorValue * userFactorValue + itemRegularization * itemFactorValue * itemFactorValue;
+                    totalError += userRegularization * userFactorValue * userFactorValue + itemRegularization * itemFactorValue * itemFactorValue;
                 }
             }
 
@@ -95,7 +95,7 @@ public class SoRegRecommender extends SocialRecommender {
                         for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                             float userFactor = userFactors.getValue(userIndex, factorIndex) - userFactors.getValue(trusterIndex, factorIndex);
                             userDeltas.shiftValue(userIndex, factorIndex, socialRegularization * trusterSimilarity * userFactor);
-                            totalLoss += socialRegularization * trusterSimilarity * userFactor * userFactor;
+                            totalError += socialRegularization * trusterSimilarity * userFactor * userFactor;
                         }
                     }
                 }
@@ -109,7 +109,7 @@ public class SoRegRecommender extends SocialRecommender {
                         for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                             float userFactor = userFactors.getValue(userIndex, factorIndex) - userFactors.getValue(trusteeIndex, factorIndex);
                             userDeltas.shiftValue(userIndex, factorIndex, socialRegularization * trusteeSimilarity * userFactor);
-                            totalLoss += socialRegularization * trusteeSimilarity * userFactor * userFactor;
+                            totalError += socialRegularization * trusteeSimilarity * userFactor * userFactor;
                         }
                     }
                 }
@@ -129,12 +129,12 @@ public class SoRegRecommender extends SocialRecommender {
                 scalar.setValue(value + itemDeltas.getValue(row, column) * -learnRate);
             });
 
-            totalLoss *= 0.5D;
-            if (isConverged(iterationStep) && isConverged) {
+            totalError *= 0.5D;
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
         }
     }
 

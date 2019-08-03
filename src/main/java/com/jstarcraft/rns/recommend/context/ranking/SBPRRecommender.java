@@ -94,8 +94,8 @@ public class SBPRRecommender extends SocialRecommender {
 
     @Override
     protected void doPractice() {
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             for (int sampleIndex = 0, sampleTimes = userSize * 100; sampleIndex < sampleTimes; sampleIndex++) {
                 // uniformly draw (userIdx, posItemIdx, k, negItemIdx)
                 int userIndex, positiveItemIndex, negativeItemIndex;
@@ -136,18 +136,18 @@ public class SBPRRecommender extends SocialRecommender {
                     float negativeError = socialRate - negativeRate;
                     float positiveGradient = LogisticUtility.getValue(-positiveError), negativeGradient = LogisticUtility.getValue(-negativeError);
                     float error = (float) (-Math.log(1 - positiveGradient) - Math.log(1 - negativeGradient));
-                    totalLoss += error;
+                    totalError += error;
 
                     // update bi, bk, bj
                     float positiveBias = itemBiases.getValue(positiveItemIndex);
                     itemBiases.shiftValue(positiveItemIndex, learnRate * (positiveGradient / (1F + socialWeight) - regBias * positiveBias));
-                    totalLoss += regBias * positiveBias * positiveBias;
+                    totalError += regBias * positiveBias * positiveBias;
                     float socialBias = itemBiases.getValue(itemIndex);
                     itemBiases.shiftValue(itemIndex, learnRate * (-positiveGradient / (1F + socialWeight) + negativeGradient - regBias * socialBias));
-                    totalLoss += regBias * socialBias * socialBias;
+                    totalError += regBias * socialBias * socialBias;
                     float negativeBias = itemBiases.getValue(negativeItemIndex);
                     itemBiases.shiftValue(negativeItemIndex, learnRate * (-negativeGradient - regBias * negativeBias));
-                    totalLoss += regBias * negativeBias * negativeBias;
+                    totalError += regBias * negativeBias * negativeBias;
 
                     // update P, Q
                     for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
@@ -161,21 +161,21 @@ public class SBPRRecommender extends SocialRecommender {
                         itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRate * (negativeGradient * (-userFactor) - itemRegularization * negativeFactor));
                         delta = positiveGradient * (-userFactor / (1F + socialWeight)) + negativeGradient * userFactor;
                         itemFactors.shiftValue(itemIndex, factorIndex, learnRate * (delta - itemRegularization * itemFactor));
-                        totalLoss += userRegularization * userFactor * userFactor + itemRegularization * positiveFactor * positiveFactor + itemRegularization * negativeFactor * negativeFactor + itemRegularization * itemFactor * itemFactor;
+                        totalError += userRegularization * userFactor * userFactor + itemRegularization * positiveFactor * positiveFactor + itemRegularization * negativeFactor * negativeFactor + itemRegularization * itemFactor * itemFactor;
                     }
                 } else {
                     // if no social neighbors, the same as BPR
                     float error = positiveRate - negativeRate;
-                    totalLoss += error;
+                    totalError += error;
                     float gradient = LogisticUtility.getValue(-error);
 
                     // update bi, bj
                     float positiveBias = itemBiases.getValue(positiveItemIndex);
                     itemBiases.shiftValue(positiveItemIndex, learnRate * (gradient - regBias * positiveBias));
-                    totalLoss += regBias * positiveBias * positiveBias;
+                    totalError += regBias * positiveBias * positiveBias;
                     float negativeBias = itemBiases.getValue(negativeItemIndex);
                     itemBiases.shiftValue(negativeItemIndex, learnRate * (-gradient - regBias * negativeBias));
-                    totalLoss += regBias * negativeBias * negativeBias;
+                    totalError += regBias * negativeBias * negativeBias;
 
                     // update user factors, item factors
                     for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
@@ -185,16 +185,16 @@ public class SBPRRecommender extends SocialRecommender {
                         userFactors.shiftValue(userIndex, factorIndex, learnRate * (gradient * (positiveFactor - negItemFactorValue) - userRegularization * userFactor));
                         itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRate * (gradient * userFactor - itemRegularization * positiveFactor));
                         itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRate * (gradient * (-userFactor) - itemRegularization * negItemFactorValue));
-                        totalLoss += userRegularization * userFactor * userFactor + itemRegularization * positiveFactor * positiveFactor + itemRegularization * negItemFactorValue * negItemFactorValue;
+                        totalError += userRegularization * userFactor * userFactor + itemRegularization * positiveFactor * positiveFactor + itemRegularization * negItemFactorValue * negItemFactorValue;
                     }
                 }
             }
 
-            if (isConverged(iterationStep) && isConverged) {
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
         }
     }
 

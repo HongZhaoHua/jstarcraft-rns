@@ -141,8 +141,8 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
         }
         float[] featureValues = new float[numberOfFeatures];
 
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             for (int sampleIndex = 0, numberOfSamples = userSize * sampleRatio; sampleIndex < numberOfSamples; sampleIndex++) {
                 // randomly draw (u, i, j)
                 int userKey, positiveItemKey, negativeItemKey;
@@ -170,12 +170,12 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
                 float positiveScore = predict(userIndex, positiveItemIndex, scalar.dotProduct(itemFeatures, positiveItemVector).getValue(), factorVector.dotProduct(featureFactors, false, positiveItemVector, MathCalculator.SERIAL));
                 float negativeScore = predict(userIndex, negativeItemIndex, scalar.dotProduct(itemFeatures, negativeItemVector).getValue(), factorVector.dotProduct(featureFactors, false, negativeItemVector, MathCalculator.SERIAL));
                 float error = LogisticUtility.getValue(positiveScore - negativeScore);
-                totalLoss += (float) -Math.log(error);
+                totalError += (float) -Math.log(error);
                 // update bias
                 float positiveBias = itemBiases.getValue(positiveItemIndex), negativeBias = itemBiases.getValue(negativeItemIndex);
                 itemBiases.shiftValue(positiveItemIndex, learnRate * (error - biasRegularization * positiveBias));
                 itemBiases.shiftValue(negativeItemIndex, learnRate * (-error - biasRegularization * negativeBias));
-                totalLoss += biasRegularization * positiveBias * positiveBias + biasRegularization * negativeBias * negativeBias;
+                totalError += biasRegularization * positiveBias * positiveBias + biasRegularization * negativeBias * negativeBias;
                 for (VectorScalar term : positiveItemVector) {
                     featureValues[term.getIndex()] = term.getValue();
                 }
@@ -193,16 +193,16 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
                     userFactors.shiftValue(userIndex, factorIndex, learnRate * (error * (positiveItemFactor - negativeItemFactor) - userRegularization * userFactor));
                     itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRate * (error * (userFactor) - itemRegularization * positiveItemFactor));
                     itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRate * (error * (-userFactor) - itemRegularization * negativeItemFactor));
-                    totalLoss += userRegularization * userFactor * userFactor + itemRegularization * positiveItemFactor * positiveItemFactor + itemRegularization * negativeItemFactor * negativeItemFactor;
+                    totalError += userRegularization * userFactor * userFactor + itemRegularization * positiveItemFactor * positiveItemFactor + itemRegularization * negativeItemFactor * negativeItemFactor;
 
                     float userFeature = userFeatures.getValue(userIndex, factorIndex);
                     DenseVector featureVector = featureFactors.getRowVector(factorIndex);
                     userFeatures.shiftValue(userIndex, factorIndex, learnRate * (error * (scalar.dotProduct(featureVector, positiveItemVector).getValue() - scalar.dotProduct(featureVector, negativeItemVector).getValue()) - userRegularization * userFeature));
-                    totalLoss += userRegularization * userFeature * userFeature;
+                    totalError += userRegularization * userFeature * userFeature;
                     featureVector.iterateElement(MathCalculator.SERIAL, (element) -> {
                         int index = element.getIndex();
                         float value = element.getValue();
-                        totalLoss += featureRegularization * value * value;
+                        totalError += featureRegularization * value * value;
                         value += learnRate * (error * userFeature * featureValues[index] - featureRegularization * value);
                         element.setValue(value);
                     });
@@ -211,7 +211,7 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
                 itemFeatures.iterateElement(MathCalculator.SERIAL, (element) -> {
                     int index = element.getIndex();
                     float value = element.getValue();
-                    totalLoss += featureRegularization * value * value;
+                    totalError += featureRegularization * value * value;
                     value += learnRate * (featureValues[index] - featureRegularization * value);
                     element.setValue(value);
                 });
@@ -228,11 +228,11 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
                 }
             }
 
-            if (isConverged(iterationStep) && isConverged) {
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
         }
 
         factorMatrix.iterateElement(MathCalculator.PARALLEL, (element) -> {

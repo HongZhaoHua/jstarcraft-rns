@@ -79,7 +79,7 @@ public class TopicMFATRecommender extends MatrixFactorizationRecommender {
         lambdaB = configuration.getFloat("recommender.regularization.lambdaB", 0.001F);
         numberOfTopics = configuration.getInteger("recommender.topic.number", 10);
         learnRate = configuration.getFloat("recommender.iterator.learnrate", 0.01F);
-        numberOfEpoches = configuration.getInteger("recommender.iterator.maximum", 10);
+        epocheSize = configuration.getInteger("recommender.iterator.maximum", 10);
 
         numberOfDocuments = scoreMatrix.getElementSize();
 
@@ -160,8 +160,8 @@ public class TopicMFATRecommender extends MatrixFactorizationRecommender {
         DenseMatrix transposeThis = DenseMatrix.valueOf(numberOfTopics, numberOfTopics);
         DenseMatrix thetaW = DenseMatrix.valueOf(numberOfTopics, numberOfWords);
         DenseMatrix thetaPhi = DenseMatrix.valueOf(numberOfTopics, numberOfWords);
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             float wordLoss = 0F;
             for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow(); // userIdx
@@ -171,16 +171,16 @@ public class TopicMFATRecommender extends MatrixFactorizationRecommender {
                 float y_pred = predict(userIndex, itemIndex);
 
                 float error = y_true - y_pred;
-                totalLoss += error * error;
+                totalError += error * error;
 
                 // update user item biases
                 float userBiasValue = userBiases.getValue(userIndex);
                 userBiases.shiftValue(userIndex, learnRate * (error - lambdaB * userBiasValue));
-                totalLoss += lambdaB * userBiasValue * userBiasValue;
+                totalError += lambdaB * userBiasValue * userBiasValue;
 
                 float itemBiasValue = itemBiases.getValue(itemIndex);
                 itemBiases.shiftValue(itemIndex, learnRate * (error - lambdaB * itemBiasValue));
-                totalLoss += lambdaB * itemBiasValue * itemBiasValue;
+                totalError += lambdaB * itemBiasValue * itemBiasValue;
 
                 // update user item factors
                 for (int factorIndex = 0; factorIndex < numberOfTopics; factorIndex++) {
@@ -189,7 +189,7 @@ public class TopicMFATRecommender extends MatrixFactorizationRecommender {
 
                     userFactors.shiftValue(userIndex, factorIndex, learnRate * (error * itemFactor - lambdaU * userFactor));
                     itemFactors.shiftValue(itemIndex, factorIndex, learnRate * (error * userFactor - lambdaV * itemFactor));
-                    totalLoss += lambdaU * userFactor * userFactor + lambdaV * itemFactor * itemFactor;
+                    totalError += lambdaU * userFactor * userFactor + lambdaV * itemFactor * itemFactor;
 
                     SparseVector documentVector = W.getRowVector(documentIndex);
                     for (VectorScalar documentTerm : documentVector) {
@@ -216,16 +216,16 @@ public class TopicMFATRecommender extends MatrixFactorizationRecommender {
                 }
             }
             // calculate theta
-            logger.info(" iter:" + iterationStep + ", finish factors update");
+            logger.info(" iter:" + epocheIndex + ", finish factors update");
 
             // calculate wordLoss and loss
             wordLoss = wordLoss / numberOfTopics;
-            totalLoss += wordLoss;
-            totalLoss *= 0.5F;
-            logger.info(" iter:" + iterationStep + ", loss:" + totalLoss + ", wordLoss:" + wordLoss / 2F);
+            totalError += wordLoss;
+            totalError *= 0.5F;
+            logger.info(" iter:" + epocheIndex + ", loss:" + totalError + ", wordLoss:" + wordLoss / 2F);
 
             calculateTheta();
-            logger.info(" iter:" + iterationStep + ", finish theta update");
+            logger.info(" iter:" + epocheIndex + ", finish theta update");
 
             // update phi by NMF
             // TODO 此处操作可以整合
@@ -239,7 +239,7 @@ public class TopicMFATRecommender extends MatrixFactorizationRecommender {
                     wordFactors.setValue(topicIndex, wordIndex, numerator / denominator);
                 }
             }
-            logger.info(" iter:" + iterationStep + ", finish phi update");
+            logger.info(" iter:" + epocheIndex + ", finish phi update");
         }
     }
 

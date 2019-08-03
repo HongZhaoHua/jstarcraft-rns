@@ -294,11 +294,11 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
      */
     @Override
     protected void doPractice() {
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             // SGD training
             // TODO 此处应该修改为配置
-            for (int iterationSDG = 1; iterationSDG <= 5; iterationSDG++) {
-                totalLoss = 0F;
+            for (int iterationSDG = 0; iterationSDG < 5; iterationSDG++) {
+                totalError = 0F;
                 for (MatrixScalar term : scoreMatrix) {
                     int userIndex = term.getRow(); // user
                     int itemIndex = term.getColumn(); // item
@@ -306,7 +306,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
 
                     float predict = predict(userIndex, itemIndex);
                     float error = rate - predict;
-                    totalLoss += error * error;
+                    totalError += error * error;
 
                     // update factors
                     float userBias = userBiases.getValue(userIndex);
@@ -340,7 +340,7 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
                             } else {
                                 userFactors.shiftValue(userIndex, factorIndex, learnRate * (-userProbabilities.getValue(userIndex, topicIndex)));
                             }
-                            totalLoss -= MathUtility.logarithm(userProbabilities.getValue(userIndex, topicIndex) * wordProbabilities.getValue(topicIndex, wordIndexes[wordIndex]), 2);
+                            totalError -= MathUtility.logarithm(userProbabilities.getValue(userIndex, topicIndex) * wordProbabilities.getValue(topicIndex, wordIndexes[wordIndex]), 2);
                         }
                     }
 
@@ -355,12 +355,12 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
                         }
                     }
                 }
-                totalLoss *= 0.5F;
+                totalError *= 0.5F;
             } // end of SGDtraining
-            logger.info(" iter:" + iterationStep + ", loss:" + totalLoss);
-            logger.info(" iter:" + iterationStep + ", sampling");
+            logger.info(" iter:" + epocheIndex + ", loss:" + totalError);
+            logger.info(" iter:" + epocheIndex + ", sampling");
             sample();
-            logger.info(" iter:" + iterationStep + ", sample finished");
+            logger.info(" iter:" + epocheIndex + ", sample finished");
         }
     }
 

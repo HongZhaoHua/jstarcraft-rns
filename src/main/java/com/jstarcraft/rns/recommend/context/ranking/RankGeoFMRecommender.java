@@ -104,10 +104,10 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
         DenseMatrix implicitUserDeltas = DenseMatrix.valueOf(implicitUserFactors.getRowSize(), implicitUserFactors.getColumnSize());
         DenseMatrix itemDeltas = DenseMatrix.valueOf(itemFactors.getRowSize(), itemFactors.getColumnSize());
 
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             calculateGeoInfluenceMatrix();
 
-            totalLoss = 0F;
+            totalError = 0F;
             explicitUserDeltas.iterateElement(MathCalculator.PARALLEL, (element) -> {
                 element.setValue(explicitUserFactors.getValue(element.getRow(), element.getColumn()));
             });
@@ -151,7 +151,7 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
                         int sampleIndex = itemSize / sampleCount;
 
                         float s = LogisticUtility.getValue(negativeScore + margin - positiveScore);
-                        totalLoss += E.getValue(sampleIndex) * s;
+                        totalError += E.getValue(sampleIndex) * s;
 
                         float uij = s * (1 - s);
                         float error = E.getValue(sampleIndex) * uij * learnRate;
@@ -218,11 +218,11 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
                 }
             }
 
-            if (isConverged(iterationStep) && isConverged) {
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
         }
     }
 

@@ -84,14 +84,14 @@ public abstract class NeuralNetworkRecommender extends ModelRecommender {
 		MultiLayerConfiguration configuration = getNetworkConfiguration();
 		network = new MultiLayerNetwork(configuration);
 		network.init();
-		for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-			totalLoss = 0F;
+		for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+			totalError = 0F;
 			network.fit(inputData, inputData);
-			totalLoss = (float) network.score();
-			if (isConverged(iterationStep) && isConverged) {
+			totalError = (float) network.score();
+			if (isConverged(epocheIndex) && isConverged) {
 				break;
 			}
-			currentLoss = totalLoss;
+			currentError = totalError;
 		}
 
 		outputData = network.output(inputData);

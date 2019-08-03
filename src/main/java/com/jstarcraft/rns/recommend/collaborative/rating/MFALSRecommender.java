@@ -31,7 +31,7 @@ public class MFALSRecommender extends MatrixFactorizationRecommender {
         DenseMatrix transposeMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
         DenseMatrix copyMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
         // TODO 可以考虑只获取有评分的用户?
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             // fix item matrix M, solve user matrix U
             for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 // number of items rated by user userIdx

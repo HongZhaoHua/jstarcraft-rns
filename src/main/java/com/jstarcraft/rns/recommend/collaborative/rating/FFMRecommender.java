@@ -61,8 +61,8 @@ public class FFMRecommender extends FactorizationMachineRecommender {
     @Override
     protected void doPractice() {
         DefaultScalar scalar = DefaultScalar.getInstance();
-        for (int iterationStep = 0; iterationStep < numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             int outerIndex = 0;
             int innerIndex = 0;
             float outerValue = 0F;
@@ -77,10 +77,10 @@ public class FFMRecommender extends FactorizationMachineRecommender {
                 float rate = sample.getQuantityMark();
                 float predict = predict(scalar, featureVector);
                 float error = predict - rate;
-                totalLoss += error * error;
+                totalError += error * error;
 
                 // global bias
-                totalLoss += biasRegularization * globalBias * globalBias;
+                totalError += biasRegularization * globalBias * globalBias;
 
                 // update w0
                 float hW0 = 1;
@@ -95,7 +95,7 @@ public class FFMRecommender extends FactorizationMachineRecommender {
                     newWeight = outerTerm.getValue();
                     newWeight = error * newWeight + weightRegularization * oldWeight;
                     weightVector.shiftValue(outerIndex, -learnRate * newWeight);
-                    totalLoss += weightRegularization * oldWeight * oldWeight;
+                    totalError += weightRegularization * oldWeight * oldWeight;
                     outerValue = outerTerm.getValue();
                     innerValue = 0F;
                     // 2-way interactions
@@ -111,16 +111,16 @@ public class FFMRecommender extends FactorizationMachineRecommender {
                         }
                         newFactor = error * newFactor + factorRegularization * oldFactor;
                         featureFactors.shiftValue(outerIndex, featureOrders[outerIndex] + factorIndex, -learnRate * newFactor);
-                        totalLoss += factorRegularization * oldFactor * oldFactor;
+                        totalError += factorRegularization * oldFactor * oldFactor;
                     }
                 }
             }
 
-            totalLoss *= 0.5;
-            if (isConverged(iterationStep) && isConverged) {
+            totalError *= 0.5;
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            currentLoss = totalLoss;
+            currentError = totalError;
         }
     }
 

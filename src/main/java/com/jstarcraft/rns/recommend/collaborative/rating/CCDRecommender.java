@@ -44,7 +44,7 @@ public class CCDRecommender extends MatrixFactorizationRecommender {
 
     @Override
     protected void doPractice() {
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector userVector = scoreMatrix.getRowVector(userIndex);
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
@@ -83,7 +83,7 @@ public class CCDRecommender extends MatrixFactorizationRecommender {
                     itemFactors.setValue(itemIndex, factorIndex, itemFactor);
                 }
             }
-            logger.info(StringUtility.format("{} runs at iter {}/{} {}", this.getClass().getSimpleName(), iterationStep, numberOfEpoches, new Date()));
+            logger.info(StringUtility.format("{} runs at iter {}/{} {}", this.getClass().getSimpleName(), epocheIndex, epocheSize, new Date()));
         }
     }
 

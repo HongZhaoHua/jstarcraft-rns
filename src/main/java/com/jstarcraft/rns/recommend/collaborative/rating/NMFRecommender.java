@@ -44,7 +44,7 @@ public class NMFRecommender extends MatrixFactorizationRecommender {
     @Override
     protected void doPractice() {
         DefaultScalar scalar = DefaultScalar.getInstance();
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; ++iterationStep) {
+        for (int epocheIndex = 0; epocheIndex < epocheSize; ++epocheIndex) {
             // update userFactors by fixing itemFactors
             for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector userVector = scoreMatrix.getRowVector(userIndex);
@@ -84,21 +84,21 @@ public class NMFRecommender extends MatrixFactorizationRecommender {
             }
 
             // compute errors
-            totalLoss = 0F;
+            totalError = 0F;
             for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();
                 float rate = term.getValue();
                 if (rate > 0) {
                     float error = predict(userIndex, itemIndex) - rate;
-                    totalLoss += error * error;
+                    totalError += error * error;
                 }
             }
-            totalLoss *= 0.5F;
-            if (isConverged(iterationStep) && isConverged) {
+            totalError *= 0.5F;
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            currentLoss = totalLoss;
+            currentError = totalError;
         }
     }
 

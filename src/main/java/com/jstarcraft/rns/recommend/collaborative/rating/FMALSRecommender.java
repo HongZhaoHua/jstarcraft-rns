@@ -89,8 +89,8 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
          * Rendle, Steffen, "Factorization Machines with libFM." ACM Transactions on
          * Intelligent Systems and Technology, 2012.
          */
-        for (int iterationStep = 0; iterationStep < numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             // global bias
             float numerator = 0F;
             float denominator = 0F;
@@ -108,12 +108,12 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
                 float oldError = errorVector.getValue(rateIndex);
                 float newError = oldError + (globalBias - bias);
                 errorVector.setValue(rateIndex, newError);
-                totalLoss += oldError * oldError;
+                totalError += oldError * oldError;
             }
 
             // update w0
             globalBias = bias;
-            totalLoss += biasRegularization * globalBias * globalBias;
+            totalError += biasRegularization * globalBias * globalBias;
 
             // 1-way interactions
             for (int featureIndex = 0; featureIndex < numberOfFeatures; featureIndex++) {
@@ -139,7 +139,7 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
                 }
                 // update W
                 weightVector.setValue(featureIndex, newWeight);
-                totalLoss += weightRegularization * oldWeight * oldWeight;
+                totalError += weightRegularization * oldWeight * oldWeight;
             }
 
             // 2-way interactions
@@ -174,14 +174,14 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
 
                     // update V
                     featureFactors.setValue(featureIndex, factorIndex, newValue);
-                    totalLoss += factorRegularization * oldValue * oldValue;
+                    totalError += factorRegularization * oldValue * oldValue;
                 }
             }
 
-            if (isConverged(iterationStep) && isConverged) {
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            currentLoss = totalLoss;
+            currentError = totalError;
         }
     }
 

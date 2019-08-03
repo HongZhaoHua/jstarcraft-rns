@@ -64,11 +64,11 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
                 loss += rik * (Math.log(pi_k) + sum_nl);
             }
         }
-        float deltaLoss = (float) (loss - currentLoss);
+        float deltaLoss = (float) (loss - currentError);
         if (iter > 1 && (deltaLoss > 0 || Float.isNaN(deltaLoss))) {
             return true;
         }
-        currentLoss = loss;
+        currentError = loss;
         return false;
     }
 
@@ -110,7 +110,7 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
         itemScoreVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(scoreMatrix.getColumnVector(scalar.getIndex()).getElementSize());
         });
-        currentLoss = Float.MIN_VALUE;
+        currentError = Float.MIN_VALUE;
 
         itemTopicProbabilities = DenseMatrix.valueOf(itemSize, numberOfFactors);
     }

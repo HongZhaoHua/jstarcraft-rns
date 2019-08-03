@@ -64,7 +64,7 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // TODO 此处可以重构
-        numberOfEpoches = configuration.getInteger("recommender.iterator.maximum", 10);
+        epocheSize = configuration.getInteger("recommender.iterator.maximum", 10);
         numberOfSamples = configuration.getInteger("recommender.sample.mumber", 100);
         numberOfScores = scoreIndexes.size() + 1;
         numberOfFactors = configuration.getInteger("recommender.factor.number", 500);
@@ -142,7 +142,7 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
         Collection<Integer> negativeImplicitStates = new ArrayList<>(numberOfFactors);
         DenseVector negativeExplicitProbabilities = DenseVector.valueOf(numberOfScores);
         int[] negativeExplicitScores = new int[itemSize];
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             reset();
             // 随机遍历顺序
             Integer[] userIndexes = new Integer[userSize];

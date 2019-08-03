@@ -27,7 +27,7 @@ import com.jstarcraft.rns.recommend.MatrixFactorizationRecommender;
  */
 public class LLORMARecommender extends MatrixFactorizationRecommender {
     private int numberOfGlobalFactors, numberOfLocalFactors;
-    private int numberOfGlobalIterations, numberOfLocalIterations;
+    private int globalEpocheSize, localEpocheSize;
     private int numberOfThreads;
     private float globalUserRegularization, globalItemRegularization, localUserRegularization, localItemRegularization;
     private float globalLearnRate, localLearnRate;
@@ -53,8 +53,8 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
         numberOfGlobalFactors = configuration.getInteger("recommender.global.factors.num", 20);
         numberOfLocalFactors = numberOfFactors;
 
-        numberOfGlobalIterations = configuration.getInteger("recommender.global.iteration.maximum", 100);
-        numberOfLocalIterations = numberOfEpoches;
+        globalEpocheSize = configuration.getInteger("recommender.global.iteration.maximum", 100);
+        localEpocheSize = epocheSize;
 
         globalUserRegularization = configuration.getFloat("recommender.global.user.regularization", 0.01F);
         globalItemRegularization = configuration.getFloat("recommender.global.item.regularization", 0.01F);
@@ -82,7 +82,7 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
 
     // global svd P Q
     private void practiceGlobalModel(DefaultScalar scalar) {
-        for (int iterationStep = 1; iterationStep <= numberOfGlobalIterations; iterationStep++) {
+        for (int epocheIndex = 0; epocheIndex < globalEpocheSize; epocheIndex++) {
             for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow(); // user
                 int itemIndex = term.getColumn(); // item
@@ -216,7 +216,7 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
                     element.setValue(distribution.sample().floatValue());
                 });
                 // Starting a new local model learning:
-                learners[nextRunningSlot] = new LLORMALearner(modelCount, numberOfLocalFactors, localLearnRate, localUserRegularization, localItemRegularization, numberOfLocalIterations, localUserFactors, localItemFactors, userWeights, itemWeights, scoreMatrix);
+                learners[nextRunningSlot] = new LLORMALearner(modelCount, numberOfLocalFactors, localLearnRate, localUserRegularization, localItemRegularization, localEpocheSize, localUserFactors, localItemFactors, userWeights, itemWeights, scoreMatrix);
                 learners[nextRunningSlot].start();
                 runningThreadList[runningThreadCount] = modelCount;
                 runningThreadCount++;

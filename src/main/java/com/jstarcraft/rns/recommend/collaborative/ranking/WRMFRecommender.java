@@ -90,7 +90,7 @@ public class WRMFRecommender extends MatrixFactorizationRecommender {
 		// To be consistent with the symbols in the paper
 		// Updating by using alternative least square (ALS)
 		// due to large amount of entries to be processed (SGD will be too slow)
-		for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
+		for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
 			// Step 1: update user factors;
 			// 按照用户切割任务实现并发计算.
 			DenseMatrix itemSymmetryMatrix = transposeMatrix;
@@ -194,7 +194,7 @@ public class WRMFRecommender extends MatrixFactorizationRecommender {
 			}
 
 			if (logger.isInfoEnabled()) {
-				logger.info(getClass() + " runs at iteration = " + iterationStep + " " + new Date());
+				logger.info(getClass() + " runs at iteration = " + epocheIndex + " " + new Date());
 			}
 		}
 	}

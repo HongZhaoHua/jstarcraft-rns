@@ -45,8 +45,8 @@ public class SocialMFRecommender extends SocialRecommender {
     @Override
     protected void doPractice() {
         DenseVector socialFactors = DenseVector.valueOf(numberOfFactors);
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
             DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, numberOfFactors);
 
@@ -57,14 +57,14 @@ public class SocialMFRecommender extends SocialRecommender {
                 float rate = term.getValue();
                 float predict = super.predict(userIndex, itemIndex);
                 float error = LogisticUtility.getValue(predict) - normalize(rate);
-                totalLoss += error * error;
+                totalError += error * error;
                 error = LogisticUtility.getGradient(predict) * error;
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                     float userFactor = userFactors.getValue(userIndex, factorIndex);
                     float itemFactor = itemFactors.getValue(itemIndex, factorIndex);
                     userDeltas.shiftValue(userIndex, factorIndex, error * itemFactor + userRegularization * userFactor);
                     itemDeltas.shiftValue(itemIndex, factorIndex, error * userFactor + itemRegularization * itemFactor);
-                    totalLoss += userRegularization * userFactor * userFactor + itemRegularization * itemFactor * itemFactor;
+                    totalError += userRegularization * userFactor * userFactor + itemRegularization * itemFactor * itemFactor;
                 }
             }
 
@@ -85,7 +85,7 @@ public class SocialMFRecommender extends SocialRecommender {
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                     float error = userFactors.getValue(userIndex, factorIndex) - socialFactors.getValue(factorIndex) / numTrusters;
                     userDeltas.shiftValue(userIndex, factorIndex, socialRegularization * error);
-                    totalLoss += socialRegularization * error * error;
+                    totalError += socialRegularization * error * error;
                 }
 
                 // those who trusted user u
@@ -124,12 +124,12 @@ public class SocialMFRecommender extends SocialRecommender {
                 scalar.setValue(value + itemDeltas.getValue(row, column) * -learnRate);
             });
 
-            totalLoss *= 0.5D;
-            if (isConverged(iterationStep) && isConverged) {
+            totalError *= 0.5D;
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
         }
     }
 

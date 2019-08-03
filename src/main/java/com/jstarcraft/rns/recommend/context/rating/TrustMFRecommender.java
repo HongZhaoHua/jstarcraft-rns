@@ -99,8 +99,8 @@ public class TrustMFRecommender extends SocialRecommender {
      * @throws RecommendException if error occurs
      */
     private void trainByTruster(DefaultScalar scalar) {
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             // gradients of trusterUserTrusterFactors,
             // trusterUserTrusteeFactors, trusterItemFactors
             DenseMatrix trusterGradients = DenseMatrix.valueOf(userSize, numberOfFactors);
@@ -114,14 +114,14 @@ public class TrustMFRecommender extends SocialRecommender {
                 float rate = term.getValue();
                 float predict = predict(userIndex, itemIndex);
                 float error = LogisticUtility.getValue(predict) - normalize(rate);
-                totalLoss += error * error;
+                totalError += error * error;
                 error = LogisticUtility.getGradient(predict) * error;
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                     float trusterUserFactor = trusterUserFactors.getValue(userIndex, factorIndex);
                     float trusterItemFactor = trusterItemFactors.getValue(itemIndex, factorIndex);
                     trusterGradients.shiftValue(userIndex, factorIndex, error * trusterItemFactor + userRegularization * trusterUserFactor);
                     itemGradients.shiftValue(itemIndex, factorIndex, error * trusterUserFactor + itemRegularization * trusterItemFactor);
-                    totalLoss += userRegularization * trusterUserFactor * trusterUserFactor + itemRegularization * trusterItemFactor * trusterItemFactor;
+                    totalError += userRegularization * trusterUserFactor * trusterUserFactor + itemRegularization * trusterItemFactor * trusterItemFactor;
                 }
             }
 
@@ -134,14 +134,14 @@ public class TrustMFRecommender extends SocialRecommender {
                 DenseVector trusterVector = trusterUserFactors.getRowVector(trusterIndex);
                 float predict = scalar.dotProduct(trusteeVector, trusterVector).getValue();
                 float error = LogisticUtility.getValue(predict) - rate;
-                totalLoss += socialRegularization * error * error;
+                totalError += socialRegularization * error * error;
                 error = LogisticUtility.getGradient(predict) * error;
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                     float trusterUserFactor = trusterUserFactors.getValue(trusterIndex, factorIndex);
                     float trusterUserDelta = trusteeUserDeltas.getValue(trusteeIndex, factorIndex);
                     trusterGradients.shiftValue(trusterIndex, factorIndex, socialRegularization * error * trusterUserDelta + userRegularization * trusterUserFactor);
                     trusteeGradients.shiftValue(trusteeIndex, factorIndex, socialRegularization * error * trusterUserFactor + userRegularization * trusterUserDelta);
-                    totalLoss += userRegularization * trusterUserFactor * trusterUserFactor + userRegularization * trusterUserDelta * trusterUserDelta;
+                    totalError += userRegularization * trusterUserFactor * trusterUserFactor + userRegularization * trusterUserDelta * trusterUserDelta;
                 }
             }
 
@@ -164,11 +164,11 @@ public class TrustMFRecommender extends SocialRecommender {
                 element.setValue(value + itemGradients.getValue(row, column) * -learnRate);
             });
 
-            totalLoss *= 0.5F;
-            if (isConverged(iterationStep) && isConverged) {
+            totalError *= 0.5F;
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
+            isLearned(epocheIndex);
         }
     }
 
@@ -178,8 +178,8 @@ public class TrustMFRecommender extends SocialRecommender {
      * @throws RecommendException if error occurs
      */
     private void trainByTrustee(DefaultScalar scalar) {
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             // gradients of trusteeUserTrusterFactors,
             // trusteeUserTrusteeFactors, trusteeItemFactors
             DenseMatrix trusterGradients = DenseMatrix.valueOf(userSize, numberOfFactors);
@@ -193,14 +193,14 @@ public class TrustMFRecommender extends SocialRecommender {
                 float rate = term.getValue();
                 float predict = predict(userIndex, itemIndex);
                 float error = LogisticUtility.getValue(predict) - normalize(rate);
-                totalLoss += error * error;
+                totalError += error * error;
                 error = LogisticUtility.getGradient(predict) * error;
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                     float trusteeUserFactor = trusteeUserFactors.getValue(userIndex, factorIndex);
                     float trusteeItemFactor = trusteeItemFactors.getValue(itemIndex, factorIndex);
                     trusteeGradients.shiftValue(userIndex, factorIndex, error * trusteeItemFactor + userRegularization * trusteeUserFactor);
                     itemGradients.shiftValue(itemIndex, factorIndex, error * trusteeUserFactor + itemRegularization * trusteeItemFactor);
-                    totalLoss += userRegularization * trusteeUserFactor * trusteeUserFactor + itemRegularization * trusteeItemFactor * trusteeItemFactor;
+                    totalError += userRegularization * trusteeUserFactor * trusteeUserFactor + itemRegularization * trusteeItemFactor * trusteeItemFactor;
                 }
             }
 
@@ -213,14 +213,14 @@ public class TrustMFRecommender extends SocialRecommender {
                 DenseVector trusteeVector = trusteeUserFactors.getRowVector(trusteeIndex);
                 float predict = scalar.dotProduct(trusterVector, trusteeVector).getValue();
                 float error = LogisticUtility.getValue(predict) - rate;
-                totalLoss += socialRegularization * error * error;
+                totalError += socialRegularization * error * error;
                 error = LogisticUtility.getGradient(predict) * error;
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                     float trusteeUserFactor = trusteeUserFactors.getValue(trusteeIndex, factorIndex);
                     float trusteeUserDelta = trusterUserDeltas.getValue(trusterIndex, factorIndex);
                     trusteeGradients.shiftValue(trusteeIndex, factorIndex, socialRegularization * error * trusteeUserDelta + userRegularization * trusteeUserFactor);
                     trusterGradients.shiftValue(trusterIndex, factorIndex, socialRegularization * error * trusteeUserFactor + userRegularization * trusteeUserDelta);
-                    totalLoss += userRegularization * trusteeUserFactor * trusteeUserFactor + userRegularization * trusteeUserDelta * trusteeUserDelta;
+                    totalError += userRegularization * trusteeUserFactor * trusteeUserFactor + userRegularization * trusteeUserDelta * trusteeUserDelta;
                 }
             }
 
@@ -243,13 +243,13 @@ public class TrustMFRecommender extends SocialRecommender {
                 element.setValue(value + itemGradients.getValue(row, column) * -learnRate);
             });
 
-            totalLoss *= 0.5D;
-            if (isConverged(iterationStep) && isConverged) {
+            totalError *= 0.5D;
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
+            currentError = totalError;
         }
     }
 
@@ -285,7 +285,7 @@ public class TrustMFRecommender extends SocialRecommender {
         } else if (iter == 100) {
             learnRate *= 0.5;
         }
-        currentLoss = totalLoss;
+        currentError = totalError;
     }
 
     @Override

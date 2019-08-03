@@ -139,7 +139,7 @@ public abstract class MatrixFactorizationRecommender extends ModelRecommender {
             return;
         }
         if (isLearned && iteration > 1) {
-            learnRate = Math.abs(currentLoss) > Math.abs(totalLoss) ? learnRate * 1.05F : learnRate * 0.5F;
+            learnRate = Math.abs(currentError) > Math.abs(totalError) ? learnRate * 1.05F : learnRate * 0.5F;
         } else if (learnDecay > 0 && learnDecay < 1) {
             learnRate *= learnDecay;
         }

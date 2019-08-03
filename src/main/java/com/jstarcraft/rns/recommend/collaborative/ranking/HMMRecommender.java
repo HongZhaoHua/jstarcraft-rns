@@ -655,11 +655,11 @@ public class HMMRecommender extends ProbabilisticGraphicalRecommender {
 
         // 是否收敛
         System.out.println(iterationStep + " " + likelihood);
-        float deltaLoss = likelihood - currentLoss;
+        float deltaLoss = likelihood - currentError;
         if (iterationStep > 1 && (deltaLoss < 0.1F)) {
             return true;
         }
-        currentLoss = likelihood;
+        currentError = likelihood;
         return false;
     }
 

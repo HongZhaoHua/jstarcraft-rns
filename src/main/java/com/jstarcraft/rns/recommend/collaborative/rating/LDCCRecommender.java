@@ -272,11 +272,11 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
             sum += perplexity(userIndex, itemIndex, rate);
         }
         float perplexity = (float) Math.exp(sum / numberOfActions);
-        float delta = perplexity - currentLoss;
+        float delta = perplexity - currentError;
         if (numberOfStatistics > 1 && delta > 0) {
             return true;
         }
-        currentLoss = perplexity;
+        currentError = perplexity;
         return false;
     }
 

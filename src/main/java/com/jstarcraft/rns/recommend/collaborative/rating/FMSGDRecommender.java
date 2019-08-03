@@ -36,8 +36,8 @@ public class FMSGDRecommender extends FactorizationMachineRecommender {
 	@Override
 	protected void doPractice() {
 		DefaultScalar scalar = DefaultScalar.getInstance();
-		for (int iterationStep = 0; iterationStep < numberOfEpoches; iterationStep++) {
-			totalLoss = 0F;
+		for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+			totalError = 0F;
 			for (DataInstance sample : marker) {
 				// TODO 因为每次的data都是1,可以考虑避免重复构建featureVector.
 				MathVector featureVector = getFeatureVector(sample);
@@ -45,10 +45,10 @@ public class FMSGDRecommender extends FactorizationMachineRecommender {
 				float predict = predict(scalar, featureVector);
 
 				float error = predict - rate;
-				totalLoss += error * error;
+				totalError += error * error;
 
 				// global bias
-				totalLoss += biasRegularization * globalBias * globalBias;
+				totalError += biasRegularization * globalBias * globalBias;
 
 				// TODO 因为此处相当与迭代trainTensor的featureVector,所以hW0才会是1D.
 				float hW0 = 1F;
@@ -64,7 +64,7 @@ public class FMSGDRecommender extends FactorizationMachineRecommender {
 					float featureWeight = outerTerm.getValue();
 					float newWeight = error * featureWeight + weightRegularization * oldWeight;
 					weightVector.shiftValue(outerIndex, -learnRate * newWeight);
-					totalLoss += weightRegularization * oldWeight * oldWeight;
+					totalError += weightRegularization * oldWeight * oldWeight;
 					// 2-way interactions
 					for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
 						float oldValue = featureFactors.getValue(outerIndex, factorIndex);
@@ -77,16 +77,16 @@ public class FMSGDRecommender extends FactorizationMachineRecommender {
 						}
 						newValue = error * newValue + factorRegularization * oldValue;
 						featureFactors.shiftValue(outerIndex, factorIndex, -learnRate * newValue);
-						totalLoss += factorRegularization * oldValue * oldValue;
+						totalError += factorRegularization * oldValue * oldValue;
 					}
 				}
 			}
 
-			totalLoss *= 0.5F;
-			if (isConverged(iterationStep) && isConverged) {
+			totalError *= 0.5F;
+			if (isConverged(epocheIndex) && isConverged) {
 				break;
 			}
-			currentLoss = totalLoss;
+			currentError = totalError;
 		}
 	}
 

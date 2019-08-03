@@ -59,8 +59,8 @@ public class GBPRRecommender extends MatrixFactorizationRecommender {
 
     @Override
     protected void doPractice() {
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             // TODO 考虑重构
             DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
             DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, numberOfFactors);
@@ -99,7 +99,7 @@ public class GBPRRecommender extends MatrixFactorizationRecommender {
                 float negativeRate = predict(userIndex, negativeItemIndex);
                 float error = positiveRate - negativeRate;
                 float value = (float) -Math.log(LogisticUtility.getValue(error));
-                totalLoss += value;
+                totalError += value;
                 value = LogisticUtility.getValue(-error);
 
                 // update bi, bj
@@ -137,11 +137,11 @@ public class GBPRRecommender extends MatrixFactorizationRecommender {
             userFactors.addMatrix(userDeltas, false);
             itemFactors.addMatrix(itemDeltas, false);
 
-            if (isConverged(iterationStep) && isConverged) {
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
         }
     }
 

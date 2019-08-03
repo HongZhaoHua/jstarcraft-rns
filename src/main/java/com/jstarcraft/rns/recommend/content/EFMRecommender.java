@@ -197,8 +197,8 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 	@Override
 	protected void doPractice() {
 		DefaultScalar scalar = DefaultScalar.getInstance();
-		for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-			totalLoss = 0F;
+		for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+			totalError = 0F;
 			for (int featureIndex = 0; featureIndex < numberOfFeatures; featureIndex++) {
 				if (userFeatures.getColumnScope(featureIndex) > 0 && itemFeatures.getColumnScope(featureIndex) > 0) {
 					SparseVector userVector = userFeatures.getColumnVector(featureIndex);
@@ -317,7 +317,7 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 				int itemIndex = term.getColumn();
 				double rating = term.getValue();
 				double predRating = scalar.dotProduct(userExplicitFactors.getRowVector(userIndex), itemExplicitFactors.getRowVector(itemIndex)).getValue() + scalar.dotProduct(userImplicitFactors.getRowVector(userIndex), itemImplicitFactors.getRowVector(itemIndex)).getValue();
-				totalLoss += (rating - predRating) * (rating - predRating);
+				totalError += (rating - predRating) * (rating - predRating);
 			}
 
 			for (MatrixScalar term : userFeatures) {
@@ -325,7 +325,7 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 				int featureIndex = term.getColumn();
 				double real = term.getValue();
 				double pred = predictUserFactor(scalar, userIndex, featureIndex);
-				totalLoss += (real - pred) * (real - pred);
+				totalError += (real - pred) * (real - pred);
 			}
 
 			for (MatrixScalar term : itemFeatures) {
@@ -333,14 +333,14 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 				int featureIndex = term.getColumn();
 				double real = term.getValue();
 				double pred = predictItemFactor(scalar, itemIndex, featureIndex);
-				totalLoss += (real - pred) * (real - pred);
+				totalError += (real - pred) * (real - pred);
 			}
 
-			totalLoss += explicitRegularization * (Math.pow(userExplicitFactors.getNorm(2), 2) + Math.pow(itemExplicitFactors.getNorm(2), 2));
-			totalLoss += implicitRegularization * (Math.pow(userImplicitFactors.getNorm(2), 2) + Math.pow(itemImplicitFactors.getNorm(2), 2));
-			totalLoss += featureRegularization * Math.pow(featureFactors.getNorm(2), 2);
+			totalError += explicitRegularization * (Math.pow(userExplicitFactors.getNorm(2), 2) + Math.pow(itemExplicitFactors.getNorm(2), 2));
+			totalError += implicitRegularization * (Math.pow(userImplicitFactors.getNorm(2), 2) + Math.pow(itemImplicitFactors.getNorm(2), 2));
+			totalError += featureRegularization * Math.pow(featureFactors.getNorm(2), 2);
 
-			logger.info("iter:" + iterationStep + ", loss:" + totalLoss);
+			logger.info("iter:" + epocheIndex + ", loss:" + totalError);
 		}
 	}
 

@@ -129,8 +129,8 @@ public class TrustSVDRecommender extends SocialRecommender {
     @Override
     protected void doPractice() {
         DefaultScalar scalar = DefaultScalar.getInstance();
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             // temp user Factors and trustee factors
             DenseMatrix trusterDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
             DenseMatrix trusteeDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
@@ -174,7 +174,7 @@ public class TrustSVDRecommender extends SocialRecommender {
                     predict += sum / Math.sqrt(socialVector.getElementSize());
                 }
                 float error = predict - rate;
-                totalLoss += error * error;
+                totalError += error * error;
 
                 float trusterDenominator = (float) Math.sqrt(rateVector.getElementSize());
                 float trusteeDenominator = (float) Math.sqrt(socialVector.getElementSize());
@@ -188,7 +188,7 @@ public class TrustSVDRecommender extends SocialRecommender {
                 userBiases.shiftValue(trusterIndex, -learnRate * sgd);
                 sgd = error + regBias * itemExplicitWeight * itemBias;
                 itemBiases.shiftValue(itemExplicitIndex, -learnRate * sgd);
-                totalLoss += regBias * trusterWeight * userBias * userBias + regBias * itemExplicitWeight * itemBias * itemBias;
+                totalError += regBias * trusterWeight * userBias * userBias + regBias * itemExplicitWeight * itemBias * itemBias;
 
                 float[] itemSums = new float[numberOfFactors];
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
@@ -219,7 +219,7 @@ public class TrustSVDRecommender extends SocialRecommender {
                     trusterDeltas.shiftValue(trusterIndex, factorIndex, userDelta);
                     // update itemExplicitFactors
                     itemExplicitFactors.shiftValue(itemExplicitIndex, factorIndex, -learnRate * itemDelta);
-                    totalLoss += userRegularization * trusterWeight * userFactor * userFactor + itemRegularization * itemExplicitWeight * itemFactor * itemFactor;
+                    totalError += userRegularization * trusterWeight * userFactor * userFactor + itemRegularization * itemExplicitWeight * itemFactor * itemFactor;
 
                     // update itemImplicitFactors
                     for (VectorScalar rateTerm : rateVector) {
@@ -228,7 +228,7 @@ public class TrustSVDRecommender extends SocialRecommender {
                         float itemImplicitWeight = itemWeights.getValue(itemImplicitIndex);
                         float itemImplicitDelta = error * itemFactor / trusterDenominator + itemRegularization * itemImplicitWeight * itemImplicitFactor;
                         itemImplicitFactors.shiftValue(itemImplicitIndex, factorIndex, -learnRate * itemImplicitDelta);
-                        totalLoss += itemRegularization * itemImplicitWeight * itemImplicitFactor * itemImplicitFactor;
+                        totalError += itemRegularization * itemImplicitWeight * itemImplicitFactor * itemImplicitFactor;
                     }
 
                     // update trusteeDeltas
@@ -238,7 +238,7 @@ public class TrustSVDRecommender extends SocialRecommender {
                         float trusteeWeight = trusteeWeights.getValue(trusteeIndex);
                         float trusteeDelta = error * itemFactor / trusteeDenominator + userRegularization * trusteeWeight * trusteeFactor;
                         trusteeDeltas.shiftValue(trusteeIndex, factorIndex, trusteeDelta);
-                        totalLoss += userRegularization * trusteeWeight * trusteeFactor * trusteeFactor;
+                        totalError += userRegularization * trusteeWeight * trusteeFactor * trusteeFactor;
                     }
                 }
             }
@@ -251,7 +251,7 @@ public class TrustSVDRecommender extends SocialRecommender {
                 DenseVector trusteeVector = trusteeFactors.getRowVector(trusteeIndex);
                 float predtict = scalar.dotProduct(trusterVector, trusteeVector).getValue();
                 float error = predtict - rate;
-                totalLoss += socialRegularization * error * error;
+                totalError += socialRegularization * error * error;
                 error = socialRegularization * error;
 
                 float trusterWeight = trusterWeights.getValue(trusterIndex);
@@ -261,7 +261,7 @@ public class TrustSVDRecommender extends SocialRecommender {
                     float trusteeFactor = trusteeFactors.getValue(trusteeIndex, factorIndex);
                     trusterDeltas.shiftValue(trusterIndex, factorIndex, error * trusteeFactor + socialRegularization * trusterWeight * trusterFactor);
                     trusteeDeltas.shiftValue(trusteeIndex, factorIndex, error * trusterFactor);
-                    totalLoss += socialRegularization * trusterWeight * trusterFactor * trusterFactor;
+                    totalError += socialRegularization * trusterWeight * trusterFactor * trusterFactor;
                 }
             }
 
@@ -278,12 +278,12 @@ public class TrustSVDRecommender extends SocialRecommender {
                 element.setValue(value + trusteeDeltas.getValue(row, column) * -learnRate);
             });
 
-            totalLoss *= 0.5F;
-            if (isConverged(iterationStep) && isConverged) {
+            totalError *= 0.5F;
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
         } // end of training
     }
 

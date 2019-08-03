@@ -193,8 +193,8 @@ public class DeepCrossRecommender extends ModelRecommender {
 
         graph = getComputationGraph(dimensionSizes);
 
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
 
             // TODO 应该调整为配置项.
             int batchSize = 2000;
@@ -260,7 +260,7 @@ public class DeepCrossRecommender extends ModelRecommender {
                 labelData.setValue(batchIndex, 0, 0);
                 batchIndex++;
             }
-            totalLoss = graph.practice(100, inputData, new DenseMatrix[] { labelData });
+            totalError = graph.practice(100, inputData, new DenseMatrix[] { labelData });
 
             DenseMatrix[] data = new DenseMatrix[inputData.length];
             DenseMatrix label = DenseMatrix.valueOf(10, 1);
@@ -274,10 +274,10 @@ public class DeepCrossRecommender extends ModelRecommender {
             graph.predict(data, new DenseMatrix[] { label });
             System.out.println(label);
 
-            if (isConverged(iterationStep) && isConverged) {
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            currentLoss = totalLoss;
+            currentError = totalError;
         }
 
         // inputData[dimensionSizes.length] = DenseMatrix.valueOf(numberOfUsers,

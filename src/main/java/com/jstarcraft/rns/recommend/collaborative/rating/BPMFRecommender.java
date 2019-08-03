@@ -225,8 +225,8 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
 
         gibbsIterations = configuration.getInteger("recommender.recommender.iterations.gibbs", 1);
 
-        userMatrixes = new DenseMatrix[numberOfEpoches - 1];
-        itemMatrixes = new DenseMatrix[numberOfEpoches - 1];
+        userMatrixes = new DenseMatrix[epocheSize - 1];
+        itemMatrixes = new DenseMatrix[epocheSize - 1];
 
         normalDistribution = new QuantityProbability(JDKRandomGenerator.class, numberOfFactors, NormalDistribution.class, 0D, 1D);
         userGammaDistributions = new QuantityProbability[numberOfFactors];
@@ -257,7 +257,7 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
         // TODO 此处考虑重构
         HyperParameter userParameter = new HyperParameter(cacheSize, userFactors);
         HyperParameter itemParameter = new HyperParameter(cacheSize, itemFactors);
-        for (int iterationStep = 0; iterationStep < numberOfEpoches; iterationStep++) {
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             userParameter.sampleParameter(userGammaDistributions, userFactors, userMean, userBeta, userWishart);
             itemParameter.sampleParameter(itemGammaDistributions, itemFactors, itemMean, itemBeta, itemWishart);
             for (int gibbsIteration = 0; gibbsIteration < gibbsIterations; gibbsIteration++) {
@@ -277,9 +277,9 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
                 }
             }
 
-            if (iterationStep > 0) {
-                userMatrixes[iterationStep - 1] = DenseMatrix.copyOf(userFactors);
-                itemMatrixes[iterationStep - 1] = DenseMatrix.copyOf(itemFactors);
+            if (epocheIndex > 0) {
+                userMatrixes[epocheIndex - 1] = DenseMatrix.copyOf(userFactors);
+                itemMatrixes[epocheIndex - 1] = DenseMatrix.copyOf(itemFactors);
             }
         }
     }
@@ -290,7 +290,7 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
         int itemIndex = instance.getQualityFeature(itemDimension);
         DefaultScalar scalar = DefaultScalar.getInstance();
         float value = 0F;
-        for (int iterationStep = 0; iterationStep < numberOfEpoches - 1; iterationStep++) {
+        for (int iterationStep = 0; iterationStep < epocheSize - 1; iterationStep++) {
             DenseVector userVector = userMatrixes[iterationStep].getRowVector(userIndex);
             DenseVector itemVector = itemMatrixes[iterationStep].getRowVector(itemIndex);
             value = (value * (iterationStep) + meanOfScore + scalar.dotProduct(userVector, itemVector).getValue()) / (iterationStep + 1);

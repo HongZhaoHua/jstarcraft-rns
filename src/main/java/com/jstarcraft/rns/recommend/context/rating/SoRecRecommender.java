@@ -70,8 +70,8 @@ public class SoRecRecommender extends SocialRecommender {
     @Override
     protected void doPractice() {
         DefaultScalar scalar = DefaultScalar.getInstance();
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
             DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, numberOfFactors);
             DenseMatrix socialDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
@@ -83,13 +83,13 @@ public class SoRecRecommender extends SocialRecommender {
                 float score = term.getValue();
                 float predict = super.predict(userIdx, itemIdx);
                 float error = LogisticUtility.getValue(predict) - (score - minimumOfScore) / (maximumOfScore - minimumOfScore);
-                totalLoss += error * error;
+                totalError += error * error;
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                     float userFactor = userFactors.getValue(userIdx, factorIndex);
                     float itemFactor = itemFactors.getValue(itemIdx, factorIndex);
                     userDeltas.shiftValue(userIdx, factorIndex, LogisticUtility.getGradient(predict) * error * itemFactor + userRegularization * userFactor);
                     itemDeltas.shiftValue(itemIdx, factorIndex, LogisticUtility.getGradient(predict) * error * userFactor + itemRegularization * itemFactor);
-                    totalLoss += userRegularization * userFactor * userFactor + itemRegularization * itemFactor * itemFactor;
+                    totalError += userRegularization * userFactor * userFactor + itemRegularization * itemFactor * itemFactor;
                 }
             }
 
@@ -108,7 +108,7 @@ public class SoRecRecommender extends SocialRecommender {
                 float userOutDegree = outDegrees.get(userIndex); // ~ d+(i)
                 float weight = (float) Math.sqrt(socialInDegree / (userOutDegree + socialInDegree));
                 float socialError = LogisticUtility.getValue(socialPredict) - weight * socialRate;
-                totalLoss += regRate * socialError * socialError;
+                totalError += regRate * socialError * socialError;
 
                 socialPredict = LogisticUtility.getGradient(socialPredict);
                 for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
@@ -116,7 +116,7 @@ public class SoRecRecommender extends SocialRecommender {
                     float socialFactor = socialFactors.getValue(socialIndex, factorIndex);
                     userDeltas.shiftValue(userIndex, factorIndex, regRate * socialPredict * socialError * socialFactor);
                     socialDeltas.shiftValue(socialIndex, factorIndex, regRate * socialPredict * socialError * userFactor + regSocial * socialFactor);
-                    totalLoss += regSocial * socialFactor * socialFactor;
+                    totalError += regSocial * socialFactor * socialFactor;
                 }
             }
 
@@ -139,12 +139,12 @@ public class SoRecRecommender extends SocialRecommender {
                 element.setValue(value + socialDeltas.getValue(row, column) * -learnRate);
             });
 
-            totalLoss *= 0.5F;
-            if (isConverged(iterationStep) && isConverged) {
+            totalError *= 0.5F;
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
         }
     }
 

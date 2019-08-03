@@ -47,8 +47,8 @@ public class RSTERecommender extends SocialRecommender {
     protected void doPractice() {
         DefaultScalar scalar = DefaultScalar.getInstance();
         DenseVector socialFactors = DenseVector.valueOf(numberOfFactors);
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
-            totalLoss = 0F;
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
+            totalError = 0F;
             DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
             DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, numberOfFactors);
 
@@ -77,7 +77,7 @@ public class RSTERecommender extends SocialRecommender {
                     }
                     predict = userSocialRatio * predict + (1F - userSocialRatio) * (socialWeight > 0F ? sum / socialWeight : 0F);
                     float error = LogisticUtility.getValue(predict) - score;
-                    totalLoss += error * error;
+                    totalError += error * error;
                     error = LogisticUtility.getGradient(predict) * error;
                     for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
                         float userFactor = userFactors.getValue(userIndex, factorIndex);
@@ -87,7 +87,7 @@ public class RSTERecommender extends SocialRecommender {
                         float itemDelta = error * (userSocialRatio * userFactor + (1 - userSocialRatio) * socialFactor) + itemRegularization * itemFactor;
                         userDeltas.shiftValue(userIndex, factorIndex, userDelta);
                         itemDeltas.shiftValue(itemIndex, factorIndex, itemDelta);
-                        totalLoss += userRegularization * userFactor * userFactor + itemRegularization * itemFactor * itemFactor;
+                        totalError += userRegularization * userFactor * userFactor + itemRegularization * itemFactor * itemFactor;
                     }
                 }
             }
@@ -137,12 +137,12 @@ public class RSTERecommender extends SocialRecommender {
                 element.setValue(value + itemDeltas.getValue(row, column) * -learnRate);
             });
 
-            totalLoss *= 0.5F;
-            if (isConverged(iterationStep) && isConverged) {
+            totalError *= 0.5F;
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            isLearned(iterationStep);
-            currentLoss = totalLoss;
+            isLearned(epocheIndex);
+            currentError = totalError;
         }
     }
 

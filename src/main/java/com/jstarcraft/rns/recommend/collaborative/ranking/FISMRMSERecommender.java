@@ -84,9 +84,9 @@ public class FISMRMSERecommender extends MatrixFactorizationRecommender {
         }
         int[] sampleIndexes = new int[sampleSize];
 
-        for (int iterationStep = 1; iterationStep <= numberOfEpoches; iterationStep++) {
+        for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             DenseVector userVector = DenseVector.valueOf(numberOfFactors);
-            totalLoss = 0F;
+            totalError = 0F;
             // new training data by sampling negative values
             // R是一个在trainMatrix基础上增加负样本的矩阵.
 
@@ -127,10 +127,10 @@ public class FISMRMSERecommender extends MatrixFactorizationRecommender {
                 float itemBias = itemBiases.getValue(itemIndex);
                 float predict = itemBias + scalar.dotProduct(itemFactors.getRowVector(itemIndex), userVector).getValue();
                 float error = rate - predict;
-                totalLoss += error * error;
+                totalError += error * error;
                 // update bi
                 itemBiases.shiftValue(itemIndex, learnRatio * (error - gamma * itemBias));
-                totalLoss += gamma * itemBias * itemBias;
+                totalError += gamma * itemBias * itemBias;
 
                 DenseVector factorVector = itemFactors.getRowVector(itemIndex);
                 factorVector.iterateElement(MathCalculator.SERIAL, (element) -> {
@@ -138,7 +138,7 @@ public class FISMRMSERecommender extends MatrixFactorizationRecommender {
                     float value = element.getValue();
                     element.setValue((userVector.getValue(index) * error - value * beta) * learnRatio + value);
                 });
-                totalLoss += beta * scalar.dotProduct(factorVector, factorVector).getValue();
+                totalError += beta * scalar.dotProduct(factorVector, factorVector).getValue();
 
                 for (VectorScalar term : rateVector) {
                     int compareIndex = term.getIndex();
@@ -150,7 +150,7 @@ public class FISMRMSERecommender extends MatrixFactorizationRecommender {
                             float value = element.getValue();
                             element.setValue((value * scale - value * beta) * learnRatio + value);
                         });
-                        totalLoss += beta * scalar.dotProduct(factorVector, factorVector).getValue();
+                        totalError += beta * scalar.dotProduct(factorVector, factorVector).getValue();
                     }
                 }
             }
@@ -161,11 +161,11 @@ public class FISMRMSERecommender extends MatrixFactorizationRecommender {
                 rateMatrix.setValue(rowIndex, columnIndex, Float.NaN);
             }
 
-            totalLoss *= 0.5F;
-            if (isConverged(iterationStep) && isConverged) {
+            totalError *= 0.5F;
+            if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
-            currentLoss = totalLoss;
+            currentError = totalError;
         }
 
     }
