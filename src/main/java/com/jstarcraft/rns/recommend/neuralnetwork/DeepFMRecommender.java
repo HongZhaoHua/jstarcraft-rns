@@ -86,8 +86,6 @@ public class DeepFMRecommender extends ModelRecommender {
      */
     protected Graph graph;
 
-    protected DataModule marker;
-
     protected int[] dimensionSizes;
 
     @Override
@@ -96,13 +94,12 @@ public class DeepFMRecommender extends ModelRecommender {
         learnRate = configuration.getFloat("recommender.iterator.learnrate");
         momentum = configuration.getFloat("recommender.iterator.momentum");
         weightRegularization = configuration.getFloat("recommender.weight.regularization");
-        this.marker = model;
 
         // TODO 此处需要重构,外部索引与内部索引的映射转换
-        dimensionSizes = new int[marker.getQualityOrder()];
-        for (int orderIndex = 0, orderSize = marker.getQualityOrder(); orderIndex < orderSize; orderIndex++) {
-            Entry<Integer, KeyValue<String, Boolean>> term = marker.getOuterKeyValue(orderIndex);
-            dimensionSizes[marker.getQualityInner(term.getValue().getKey())] = space.getQualityAttribute(term.getValue().getKey()).getSize();
+        dimensionSizes = new int[model.getQualityOrder()];
+        for (int orderIndex = 0, orderSize = model.getQualityOrder(); orderIndex < orderSize; orderIndex++) {
+            Entry<Integer, KeyValue<String, Boolean>> term = model.getOuterKeyValue(orderIndex);
+            dimensionSizes[model.getQualityInner(term.getValue().getKey())] = space.getQualityAttribute(term.getValue().getKey()).getSize();
         }
     }
 
@@ -187,7 +184,7 @@ public class DeepFMRecommender extends ModelRecommender {
 
     @Override
     protected void doPractice() {
-        DataInstance instance = marker.getInstance(0);
+        DataInstance instance;
 
         int[] positiveKeys = new int[dimensionSizes.length], negativeKeys = new int[dimensionSizes.length];
 
@@ -213,9 +210,10 @@ public class DeepFMRecommender extends ModelRecommender {
                     continue;
                 }
 
-                int from = dataPaginations[userIndex], to = dataPaginations[userIndex + 1];
+                DataModule module = models[userIndex];
+                instance = module.getInstance(0);
                 // 获取正样本
-                int positivePosition = dataPositions[RandomUtility.randomInteger(from, to)];
+                int positivePosition = RandomUtility.randomInteger(module.getSize());
                 instance.setCursor(positivePosition);
                 for (int index = 0; index < positiveKeys.length; index++) {
                     positiveKeys[index] = instance.getQualityFeature(index);
@@ -231,7 +229,7 @@ public class DeepFMRecommender extends ModelRecommender {
                     break;
                 }
                 // TODO 注意,此处为了故意制造负面特征.
-                int negativePosition = dataPositions[RandomUtility.randomInteger(from, to)];
+                int negativePosition = RandomUtility.randomInteger(module.getSize());
                 instance.setCursor(negativePosition);
                 for (int index = 0; index < negativeKeys.length; index++) {
                     negativeKeys[index] = instance.getQualityFeature(index);
@@ -281,17 +279,22 @@ public class DeepFMRecommender extends ModelRecommender {
             inputData[index] = DenseMatrix.valueOf(userSize, 1);
         }
 
-        for (int dimension = 0; dimension < dimensionSizes.length; dimension++) {
-            if (dimension != itemDimension) {
-                for (int userIndex = 0; userIndex < userSize; userIndex++) {
-                    int position = dataPositions[dataPaginations[userIndex + 1] - 1];
-                    instance.setCursor(position);
-                    int feature = instance.getQualityFeature(dimension);
-                    // inputData[dimension].putScalar(userIndex, 0,
-                    // keys[dimension]);
-                    inputData[dimensionSizes.length].setValue(userIndex, dimension, feature);
-                    inputData[dimension].setValue(userIndex, 0, feature);
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
+            DataModule model = models[userIndex];
+            if (model.getSize() > 0) {
+                instance = model.getInstance(model.getSize() - 1);
+                for (int dimension = 0; dimension < dimensionSizes.length; dimension++) {
+                    if (dimension != itemDimension) {
+                        int feature = instance.getQualityFeature(dimension);
+                        // inputData[dimension].putScalar(userIndex, 0,
+                        // keys[dimension]);
+                        inputData[dimensionSizes.length].setValue(userIndex, dimension, feature);
+                        inputData[dimension].setValue(userIndex, 0, feature);
+                    }
                 }
+            } else {
+                inputData[dimensionSizes.length].setValue(userIndex, userDimension, userIndex);
+                inputData[userDimension].setValue(userIndex, 0, userIndex);
             }
         }
 

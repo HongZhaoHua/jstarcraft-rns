@@ -44,7 +44,7 @@ public class LambdaFMWeightRecommender extends LambdaFMRecommender {
     }
 
     @Override
-    protected float getGradientValue(DataInstance instance, ArrayInstance positive, ArrayInstance negative, DefaultScalar scalar, int[] dataPaginations, int[] dataPositions) {
+    protected float getGradientValue(DataModule[] modules, ArrayInstance positive, ArrayInstance negative, DefaultScalar scalar) {
         int userIndex;
         float positiveScore;
         float negativeScore;
@@ -57,8 +57,9 @@ public class LambdaFMWeightRecommender extends LambdaFMRecommender {
 
             N = 0;
             Y = itemSize - scoreMatrix.getRowScope(userIndex);
-            int from = dataPaginations[userIndex], to = dataPaginations[userIndex + 1];
-            int positivePosition = dataPositions[RandomUtility.randomInteger(from, to)];
+            DataModule module = modules[userIndex];
+            DataInstance instance = module.getInstance(0);
+            int positivePosition = RandomUtility.randomInteger(module.getSize());
             instance.setCursor(positivePosition);
             positive.copyInstance(instance);
             positiveVector = getFeatureVector(positive);
@@ -74,7 +75,7 @@ public class LambdaFMWeightRecommender extends LambdaFMRecommender {
                     break;
                 }
                 // TODO 注意,此处为了故意制造负面特征.
-                int negativePosition = dataPositions[RandomUtility.randomInteger(from, to)];
+                int negativePosition = RandomUtility.randomInteger(module.getSize());
                 // TODO 注意,此处为了故意制造负面特征.
                 instance.setCursor(negativePosition);
                 negative.copyInstance(instance);

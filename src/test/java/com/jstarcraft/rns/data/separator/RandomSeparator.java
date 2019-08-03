@@ -4,8 +4,10 @@ import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.IntegerArray;
 import com.jstarcraft.ai.data.module.ReferenceModule;
+import com.jstarcraft.ai.data.processor.DataSplitter;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.data.processor.DataMatcher;
+import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
 
 /**
  * 随机处理器
@@ -21,28 +23,26 @@ public class RandomSeparator implements DataSeparator {
 
     private IntegerArray testReference;
 
-    public RandomSeparator(DataSpace space, DataModule model, String matchField, double random) {
+    public RandomSeparator(DataSpace space, DataModule model, String matchField, float random) {
         dataModel = model;
-        int size = model.getSize();
-        int[] paginations;
-        int[] positions = new int[size];
-        for (int index = 0; index < size; index++) {
-            positions[index] = index;
+        ReferenceModule[] modules;
+        if (matchField == null) {
+            modules = new ReferenceModule[] { new ReferenceModule(model) };
+        } else {
+            int matchDimension = model.getQualityInner(matchField);
+            DataSplitter splitter = new QualityFeatureDataSplitter(matchDimension);
+            int size = space.getQualityAttribute(matchField).getSize();
+            modules = splitter.split(model, size);
         }
-        int matchDimension = model.getQualityInner(matchField);
-        paginations = new int[space.getQualityAttribute(matchField).getSize() + 1];
-        DataMatcher matcher = DataMatcher.discreteOf(model, matchDimension);
-        matcher.match(paginations, positions);
-
         trainReference = new IntegerArray();
         testReference = new IntegerArray();
-        size = paginations.length - 1;
-        for (int index = 0; index < size; index++) {
-            for (int from = paginations[index], to = paginations[index + 1]; from < to; from++) {
-                if (RandomUtility.randomDouble(1D) < random) {
-                    trainReference.associateData(positions[from]);
+        for (ReferenceModule module : modules) {
+            IntegerArray reference =  module.getReference();
+            for (int cursor = 0, length = reference.getSize(); cursor < length; cursor++) {
+                if (RandomUtility.randomFloat(1F) < random) {
+                    trainReference.associateData(reference.getData(cursor));
                 } else {
-                    testReference.associateData(positions[from]);
+                    testReference.associateData(reference.getData(cursor));
                 }
             }
         }

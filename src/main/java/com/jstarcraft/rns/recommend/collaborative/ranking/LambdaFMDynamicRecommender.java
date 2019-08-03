@@ -61,7 +61,7 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
     }
 
     @Override
-    protected float getGradientValue(DataInstance instance, ArrayInstance positive, ArrayInstance negative, DefaultScalar scalar, int[] dataPaginations, int[] dataPositions) {
+    protected float getGradientValue(DataModule[] modules, ArrayInstance positive, ArrayInstance negative, DefaultScalar scalar) {
         int userIndex;
         while (true) {
             userIndex = RandomUtility.randomInteger(userSize);
@@ -70,8 +70,9 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
                 continue;
             }
 
-            int from = dataPaginations[userIndex], to = dataPaginations[userIndex + 1];
-            int positivePosition = dataPositions[RandomUtility.randomInteger(from, to)];
+            DataModule module = modules[userIndex];
+            DataInstance instance = module.getInstance(0);
+            int positivePosition = RandomUtility.randomInteger(module.getSize());
             instance.setCursor(positivePosition);
             positive.copyInstance(instance);
             // TODO negativeGroup.size()可能永远达不到numberOfNegatives,需要处理
@@ -85,7 +86,7 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
                     break;
                 }
                 // TODO 注意,此处为了故意制造负面特征.
-                int negativePosition = dataPositions[RandomUtility.randomInteger(from, to)];
+                int negativePosition = RandomUtility.randomInteger(module.getSize());
                 instance.setCursor(negativePosition);
                 negatives[orderIndex].copyInstance(instance);
                 negatives[orderIndex].setQualityFeature(itemDimension, negativeItemIndex);

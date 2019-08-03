@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.module.ArrayInstance;
+import com.jstarcraft.ai.data.module.ReferenceModule;
 import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
@@ -46,12 +47,9 @@ public class RatingTask extends AbstractTask<FloatList, FloatList> {
 
     @Override
     protected FloatList check(int userIndex) {
-        DataInstance instance = testMarker.getInstance(0);
-        int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
-        FloatList scoreList = new FloatArrayList(to - from);
-        for (int index = from, size = to; index < size; index++) {
-            int position = testPositions[index];
-            instance.setCursor(position);
+        ReferenceModule testModule = testModules[userIndex];
+        FloatList scoreList = new FloatArrayList(testModule.getSize());
+        for (DataInstance instance : testModule) {
             scoreList.add(instance.getQuantityMark());
         }
         return scoreList;
@@ -59,13 +57,10 @@ public class RatingTask extends AbstractTask<FloatList, FloatList> {
 
     @Override
     protected FloatList recommend(Recommender recommender, int userIndex) {
-        DataInstance instance = testMarker.getInstance(0);
-        int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
+        ReferenceModule testModule = testModules[userIndex];
         ArrayInstance copy = new ArrayInstance(testMarker.getQualityOrder(), testMarker.getQuantityOrder());
-        List<Integer2FloatKeyValue> rateList = new ArrayList<>(to - from);
-        for (int index = from, size = to; index < size; index++) {
-            int position = testPositions[index];
-            instance.setCursor(position);
+        List<Integer2FloatKeyValue> rateList = new ArrayList<>(testModule.getSize());
+        for (DataInstance instance : testModule) {
             copy.copyInstance(instance);
             recommender.predict(copy);
             rateList.add(new Integer2FloatKeyValue(copy.getQualityFeature(itemDimension), copy.getQuantityMark()));

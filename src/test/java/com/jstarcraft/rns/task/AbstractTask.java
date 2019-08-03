@@ -24,6 +24,8 @@ import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.converter.ArffConverter;
 import com.jstarcraft.ai.data.converter.CsvConverter;
 import com.jstarcraft.ai.data.converter.DataConverter;
+import com.jstarcraft.ai.data.module.ReferenceModule;
+import com.jstarcraft.ai.data.processor.DataSplitter;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.environment.EnvironmentFactory;
 import com.jstarcraft.ai.evaluate.Evaluator;
@@ -37,8 +39,7 @@ import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.configure.Configurator;
-import com.jstarcraft.rns.data.processor.DataMatcher;
-import com.jstarcraft.rns.data.processor.DataOrder;
+import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
 import com.jstarcraft.rns.data.separator.DataSeparator;
 import com.jstarcraft.rns.data.separator.GivenDataSeparator;
 import com.jstarcraft.rns.data.separator.GivenNumberSeparator;
@@ -68,12 +69,14 @@ public abstract class AbstractTask<L, R> {
 
     protected int userDimension, itemDimension, userSize, itemSize;
 
-    protected int[] trainPaginations, trainPositions, testPaginations, testPositions;
+//    protected int[] trainPaginations, trainPositions, testPaginations, testPositions;
+
+    protected ReferenceModule[] trainModules, testModules;
 
     protected DataModule dataMarker, trainMarker, testMarker;
 
     protected Recommender recommender;
-    
+
     protected AbstractTask(Recommender recommender, Configurator configuration) {
         this.configuration = configuration;
         Long seed = configuration.getLong("recommender.random.seed");
@@ -111,23 +114,26 @@ public abstract class AbstractTask<L, R> {
             int index = userIndex;
             executor.submit(() -> {
                 try {
-                    if (testPaginations[index + 1] - testPaginations[index] != 0) {
-                        // 校验集合
-                        L checkCollection = check(index);
-                        // 推荐列表
-                        R recommendList = recommend(recommender, index);
-                        // 测量列表
-                        for (Evaluator<L, R> evaluator : evaluators) {
-                            Integer2FloatKeyValue[] measures = values.get(evaluator.getClass());
-                            Integer2FloatKeyValue measure = evaluator.evaluate(checkCollection, recommendList);
-                            measures[index] = measure;
-                        }
+                    ReferenceModule module = testModules[index];
+                    if (module.getSize() == 0) {
+                        return;
                     }
-
+                    // 校验集合
+                    L checkCollection = check(index);
+                    // 推荐列表
+                    R recommendList = recommend(recommender, index);
+                    // 测量列表
+                    for (Evaluator<L, R> evaluator : evaluators) {
+                        Integer2FloatKeyValue[] measures = values.get(evaluator.getClass());
+                        Integer2FloatKeyValue measure = evaluator.evaluate(checkCollection, recommendList);
+                        measures[index] = measure;
+                    }
                 } catch (Exception exception) {
                     logger.error("任务异常", exception);
+                } finally {
+                    latch.countDown();
                 }
-                latch.countDown();
+
             });
         }
         try {
@@ -208,35 +214,35 @@ public abstract class AbstractTask<L, R> {
         // TODO 数据切割器部分
         SplitterConfigurer splitterConfigurer = JsonUtility.string2Object(configuration.getString("data.splitter"), SplitterConfigurer.class);
         DataModule model = space.getModule(splitterConfigurer.getName());
-        DataSeparator splitter;
+        DataSeparator separator;
         switch (splitterConfigurer.getType()) {
         case "kcv": {
             int size = configuration.getInteger("data.splitter.kcv.number", 1);
-            splitter = new KFoldCrossValidationSeparator(model, size);
+            separator = new KFoldCrossValidationSeparator(model, size);
             break;
         }
         case "loocv": {
-            splitter = new LeaveOneCrossValidationSeparator(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField());
+            separator = new LeaveOneCrossValidationSeparator(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField());
             break;
         }
         case "testset": {
             int threshold = configuration.getInteger("data.splitter.threshold");
-            splitter = new GivenDataSeparator(model, threshold);
+            separator = new GivenDataSeparator(model, threshold);
             break;
         }
         case "givenn": {
             int number = configuration.getInteger("data.splitter.given-number.number");
-            splitter = new GivenNumberSeparator(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField(), number);
+            separator = new GivenNumberSeparator(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField(), number);
             break;
         }
         case "random": {
-            double random = configuration.getDouble("data.splitter.random.value", 0.8D);
-            splitter = new RandomSeparator(space, model, splitterConfigurer.getMatchField(), random);
+            float random = configuration.getFloat("data.splitter.random.value", 0.8F);
+            separator = new RandomSeparator(space, model, splitterConfigurer.getMatchField(), random);
             break;
         }
         case "ratio": {
             double ratio = configuration.getDouble("data.splitter.ratio.value", 0.8D);
-            splitter = new RatioSeparator(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField(), ratio);
+            separator = new RatioSeparator(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField(), ratio);
             break;
         }
         default: {
@@ -254,9 +260,9 @@ public abstract class AbstractTask<L, R> {
         EnvironmentContext context = EnvironmentFactory.getContext();
         Future<?> task = context.doTask(() -> {
             try {
-                for (int index = 0; index < splitter.getSize(); index++) {
-                    trainMarker = splitter.getTrainReference(index);
-                    testMarker = splitter.getTestReference(index);
+                for (int index = 0; index < separator.getSize(); index++) {
+                    trainMarker = separator.getTrainReference(index);
+                    testMarker = separator.getTestReference(index);
                     dataMarker = model;
 
                     userDimension = model.getQualityInner(userField);
@@ -264,31 +270,10 @@ public abstract class AbstractTask<L, R> {
                     userSize = space.getQualityAttribute(userField).getSize();
                     itemSize = space.getQualityAttribute(itemField).getSize();
 
-                    trainPaginations = new int[userSize + 1];
-                    trainPositions = new int[trainMarker.getSize()];
-                    for (int position = 0, size = trainMarker.getSize(); position < size; position++) {
-                        trainPositions[position] = position;
-                    }
-                    DataMatcher trainMatcher = DataMatcher.discreteOf(trainMarker, userDimension);
-                    trainMatcher.match(trainPaginations, trainPositions);
+                    DataSplitter splitter = new QualityFeatureDataSplitter(userDimension);
+                    trainModules = splitter.split(trainMarker, userSize);
+                    testModules = splitter.split(testMarker, userSize);
 
-                    testPaginations = new int[userSize + 1];
-                    testPositions = new int[testMarker.getSize()];
-                    for (int position = 0, size = testMarker.getSize(); position < size; position++) {
-                        testPositions[position] = position;
-                    }
-                    DataMatcher testMatcher = DataMatcher.discreteOf(testMarker, userDimension);
-                    testMatcher.match(testPaginations, testPositions);
-
-                    int[] dataPaginations = new int[userSize + 1];
-                    int[] dataPositions = new int[dataMarker.getSize()];
-                    for (int position = 0; position < dataMarker.getSize(); position++) {
-                        dataPositions[position] = position;
-                    }
-                    DataMatcher dataMatcher = DataMatcher.discreteOf(dataMarker, userDimension);
-                    dataMatcher.match(dataPaginations, dataPositions);
-                    DataOrder dataSorter = DataOrder.featureOf(dataMarker);
-                    dataSorter.sort(dataPaginations, dataPositions);
                     HashMatrix dataTable = new HashMatrix(true, userSize, itemSize, new Int2FloatRBTreeMap());
                     for (DataInstance instance : dataMarker) {
                         int rowIndex = instance.getQualityFeature(userDimension);
@@ -312,7 +297,7 @@ public abstract class AbstractTask<L, R> {
         task.get();
 
         for (Entry<String, Float> term : measures.entrySet()) {
-            term.setValue(term.getValue() / splitter.getSize());
+            term.setValue(term.getValue() / separator.getSize());
             if (logger.isInfoEnabled()) {
                 logger.info(StringUtility.format("measure of {} is {}", term.getKey(), term.getValue()));
             }

@@ -387,10 +387,9 @@ public class HMMRecommender extends ProbabilisticGraphicalRecommender {
         Table<Integer, Integer, Float> table = HashBasedTable.create();
         Table<Integer, Integer, Float> data = HashBasedTable.create();
 
-        DataInstance instance = model.getInstance(0);
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
-            for (int from = dataPaginations[userIndex], to = dataPaginations[userIndex + 1]; from < to; from++) {
-                instance.setCursor(from);
+            DataModule module = models[userIndex];
+            for (DataInstance instance : module) {
                 int rowKey = (Integer) levels[instance.getQualityFeature(contextDimension)];
                 int columnKey = instance.getQualityFeature(itemDimension);
                 Float count = table.get(rowKey, columnKey);

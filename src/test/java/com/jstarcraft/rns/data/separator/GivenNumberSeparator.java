@@ -4,8 +4,14 @@ import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.IntegerArray;
 import com.jstarcraft.ai.data.module.ReferenceModule;
+import com.jstarcraft.ai.data.processor.DataSorter;
+import com.jstarcraft.ai.data.processor.DataSplitter;
 import com.jstarcraft.rns.data.processor.DataMatcher;
 import com.jstarcraft.rns.data.processor.DataOrder;
+import com.jstarcraft.rns.data.processor.QualityFeatureDataSorter;
+import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
+import com.jstarcraft.rns.data.processor.QuantityFeatureDataSorter;
+import com.jstarcraft.rns.data.processor.RandomDataSorter;
 
 /**
  * 指定数量处理器
@@ -24,43 +30,42 @@ public class GivenNumberSeparator implements DataSeparator {
 
     public GivenNumberSeparator(DataSpace space, DataModule model, String matchField, String sortField, int number) {
         dataModel = model;
-        int size = model.getSize();
-        int[] paginations;
-        int[] positions = new int[size];
-        for (int index = 0; index < size; index++) {
-            positions[index] = index;
-        }
+        ReferenceModule[] modules;
         if (matchField == null) {
-            paginations = new int[] { 0, size };
+            modules = new ReferenceModule[] { new ReferenceModule(model) };
         } else {
             int matchDimension = model.getQualityInner(matchField);
-            paginations = new int[space.getQualityAttribute(matchField).getSize() + 1];
-            DataMatcher matcher = DataMatcher.discreteOf(model, matchDimension);
-            matcher.match(paginations, positions);
+            DataSplitter splitter = new QualityFeatureDataSplitter(matchDimension);
+            int size = space.getQualityAttribute(matchField).getSize();
+            modules = splitter.split(model, size);
         }
+        DataSorter sorter;
         if (model.getQualityInner(sortField) >= 0) {
             int sortDimension = model.getQualityInner(sortField);
-            DataOrder sorter = DataOrder.discreteOf(model, sortDimension);
-            sorter.sort(paginations, positions);
+            sorter = new QualityFeatureDataSorter(sortDimension);
         } else if (model.getQuantityInner(sortField) >= 0) {
-            int sortDimension = model.getQuantityInner(sortField);
-            DataOrder sorter = DataOrder.continuousOf(model, sortDimension);
-            sorter.sort(paginations, positions);
+            int sortDimension = model.getQualityInner(sortField);
+            sorter = new QuantityFeatureDataSorter(sortDimension);
         } else {
-            DataOrder sorter = DataOrder.RANDOM_SORTER;
-            sorter.sort(paginations, positions);
+            sorter = new RandomDataSorter();
         }
-
+        for (int index = 0, size = modules.length; index < size; index++) {
+            IntegerArray oldReference = modules[index].getReference();
+            IntegerArray newReference = sorter.sort(modules[index]).getReference();
+            for (int cursor = 0, length = newReference.getSize(); cursor < length; cursor++) {
+                newReference.setData(cursor, oldReference.getData(newReference.getData(cursor)));
+            }
+            modules[index] = new ReferenceModule(newReference, model);
+        }
         trainReference = new IntegerArray();
         testReference = new IntegerArray();
-        size = paginations.length - 1;
-        for (int index = 0; index < size; index++) {
-            int count = 0;
-            for (int from = paginations[index], to = paginations[index + 1]; from < to; from++) {
-                if (count++ < number) {
-                    trainReference.associateData(positions[from]);
+        for (ReferenceModule module : modules) {
+            IntegerArray reference =  module.getReference();
+            for (int cursor = 0, length = reference.getSize(); cursor < length; cursor++) {
+                if (cursor < number) {
+                    trainReference.associateData(reference.getData(cursor));
                 } else {
-                    testReference.associateData(positions[from]);
+                    testReference.associateData(reference.getData(cursor));
                 }
             }
         }

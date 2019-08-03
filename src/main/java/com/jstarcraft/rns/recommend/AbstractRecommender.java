@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
+import com.jstarcraft.ai.data.processor.DataSorter;
+import com.jstarcraft.ai.data.processor.DataSplitter;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
@@ -13,8 +15,8 @@ import com.jstarcraft.core.resource.annotation.ResourceConfiguration;
 import com.jstarcraft.core.resource.annotation.ResourceId;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.configure.Configurator;
-import com.jstarcraft.rns.data.processor.DataMatcher;
-import com.jstarcraft.rns.data.processor.DataOrder;
+import com.jstarcraft.rns.data.processor.AllFeatureDataSorter;
+import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
 
@@ -51,8 +53,7 @@ public abstract class AbstractRecommender implements Recommender {
     /** 训练矩阵(TODO 准备改名为actionMatrix或者scoreMatrix) */
     protected SparseMatrix scoreMatrix;
 
-    protected int[] dataPaginations;
-    protected int[] dataPositions;
+    protected DataModule[] models;
 
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
@@ -64,19 +65,15 @@ public abstract class AbstractRecommender implements Recommender {
         userSize = space.getQualityAttribute(userField).getSize();
         itemSize = space.getQualityAttribute(itemField).getSize();
 
-        dataPaginations = new int[userSize + 1];
-        dataPositions = new int[model.getSize()];
-        for (int index = 0; index < model.getSize(); index++) {
-            dataPositions[index] = index;
+        DataSplitter splitter = new QualityFeatureDataSplitter(userDimension);
+        models = splitter.split(model, userSize);
+        DataSorter sorter = new AllFeatureDataSorter();
+        for (int index = 0; index < userSize; index++) {
+            models[index] = sorter.sort(models[index]);
         }
-        DataMatcher matcher = DataMatcher.discreteOf(model, userDimension);
-        matcher.match(dataPaginations, dataPositions);
-        DataOrder sorter = DataOrder.featureOf(model);
-        sorter.sort(dataPaginations, dataPositions);
+
         HashMatrix dataTable = new HashMatrix(true, userSize, itemSize, new Int2FloatRBTreeMap());
-        DataInstance instance = model.getInstance(0);
-        for (int position : dataPositions) {
-            instance.setCursor(position);
+        for (DataInstance instance : model) {
             int rowIndex = instance.getQualityFeature(userDimension);
             int columnIndex = instance.getQualityFeature(itemDimension);
             dataTable.setValue(rowIndex, columnIndex, instance.getQuantityMark());

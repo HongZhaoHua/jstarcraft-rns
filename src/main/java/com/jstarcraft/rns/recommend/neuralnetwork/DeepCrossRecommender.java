@@ -214,9 +214,10 @@ public class DeepCrossRecommender extends ModelRecommender {
                     continue;
                 }
 
-                int from = dataPaginations[userIndex], to = dataPaginations[userIndex + 1];
+                DataModule module = models[userIndex];
+                instance = module.getInstance(0);
                 // 获取正样本
-                int positivePosition = dataPositions[RandomUtility.randomInteger(from, to)];
+                int positivePosition = RandomUtility.randomInteger(module.getSize());
                 instance.setCursor(positivePosition);
                 for (int index = 0; index < positiveKeys.length; index++) {
                     positiveKeys[index] = instance.getQualityFeature(index);
@@ -232,7 +233,7 @@ public class DeepCrossRecommender extends ModelRecommender {
                     break;
                 }
                 // TODO 注意,此处为了故意制造负面特征.
-                int negativePosition = dataPositions[RandomUtility.randomInteger(from, to)];
+                int negativePosition = RandomUtility.randomInteger(module.getSize());
                 instance.setCursor(negativePosition);
                 for (int index = 0; index < negativeKeys.length; index++) {
                     negativeKeys[index] = instance.getQualityFeature(index);
@@ -285,17 +286,22 @@ public class DeepCrossRecommender extends ModelRecommender {
             inputData[index] = DenseMatrix.valueOf(userSize, 1);
         }
 
-        for (int dimension = 0; dimension < dimensionSizes.length; dimension++) {
-            if (dimension != itemDimension) {
-                for (int userIndex = 0; userIndex < userSize; userIndex++) {
-                    int position = dataPositions[dataPaginations[userIndex + 1] - 1];
-                    instance.setCursor(position);
-                    int feature = instance.getQualityFeature(dimension);
-                    // inputData[dimension].putScalar(userIndex, 0,
-                    // keys[dimension]);
-                    // inputData[dimensionSizes.length].setValue(userIndex, dimension, feature);
-                    inputData[dimension].setValue(userIndex, 0, feature);
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
+            DataModule model = models[userIndex];
+            if (model.getSize() > 0) {
+                instance = model.getInstance(model.getSize() - 1);
+                for (int dimension = 0; dimension < dimensionSizes.length; dimension++) {
+                    if (dimension != itemDimension) {
+                        int feature = instance.getQualityFeature(dimension);
+                        // inputData[dimension].putScalar(userIndex, 0,
+                        // keys[dimension]);
+                        inputData[dimensionSizes.length].setValue(userIndex, dimension, feature);
+                        inputData[dimension].setValue(userIndex, 0, feature);
+                    }
                 }
+            } else {
+                inputData[dimensionSizes.length].setValue(userIndex, userDimension, userIndex);
+                inputData[userDimension].setValue(userIndex, 0, userIndex);
             }
         }
 

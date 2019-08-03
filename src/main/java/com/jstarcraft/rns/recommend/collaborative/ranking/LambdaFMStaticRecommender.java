@@ -70,7 +70,7 @@ public class LambdaFMStaticRecommender extends LambdaFMRecommender {
     }
 
     @Override
-    protected float getGradientValue(DataInstance instance, ArrayInstance positive, ArrayInstance negative, DefaultScalar scalar, int[] dataPaginations, int[] dataPositions) {
+    protected float getGradientValue(DataModule[] modules, ArrayInstance positive, ArrayInstance negative, DefaultScalar scalar) {
         int userIndex;
         while (true) {
             userIndex = RandomUtility.randomInteger(userSize);
@@ -79,8 +79,9 @@ public class LambdaFMStaticRecommender extends LambdaFMRecommender {
                 continue;
             }
 
-            int from = dataPaginations[userIndex], to = dataPaginations[userIndex + 1];
-            int positivePosition = dataPositions[RandomUtility.randomInteger(from, to)];
+            DataModule module = modules[userIndex];
+            DataInstance instance = module.getInstance(0);
+            int positivePosition = RandomUtility.randomInteger(module.getSize());
             instance.setCursor(positivePosition);
             positive.copyInstance(instance);
 
@@ -102,7 +103,8 @@ public class LambdaFMStaticRecommender extends LambdaFMRecommender {
                 }
                 negativeItemIndex = SampleUtility.binarySearch(itemProbabilities, low, high, RandomUtility.randomFloat(itemProbabilities.getValue(high)));
             }
-            int negativePosition = dataPositions[RandomUtility.randomInteger(from, to)];
+            int negativePosition = RandomUtility.randomInteger(module.getSize());
+            ;
             instance.setCursor(negativePosition);
             negative.copyInstance(instance);
             negative.setQualityFeature(itemDimension, negativeItemIndex);

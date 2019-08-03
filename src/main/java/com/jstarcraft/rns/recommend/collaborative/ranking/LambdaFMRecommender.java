@@ -6,13 +6,14 @@ import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.module.ArrayInstance;
+import com.jstarcraft.ai.data.processor.DataSplitter;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.rns.configure.Configurator;
-import com.jstarcraft.rns.data.processor.DataMatcher;
+import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
 import com.jstarcraft.rns.recommend.FactorizationMachineRecommender;
 
 /**
@@ -63,23 +64,17 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
         factorRegularization = configuration.getFloat("recommender.fm.regF", 0.001F);
     }
 
-    protected abstract float getGradientValue(DataInstance instance, ArrayInstance positive, ArrayInstance negative, DefaultScalar scalar, int[] dataPaginations, int[] dataPositions);
+    protected abstract float getGradientValue(DataModule[] modules, ArrayInstance positive, ArrayInstance negative, DefaultScalar scalar);
 
     @Override
     protected void doPractice() {
-        DataInstance instance = marker.getInstance(0);
-        ArrayInstance positive = new ArrayInstance(instance.getQualityOrder(), instance.getQuantityOrder());
-        ArrayInstance negative = new ArrayInstance(instance.getQualityOrder(), instance.getQuantityOrder());
+        ArrayInstance positive = new ArrayInstance(marker.getQualityOrder(), marker.getQuantityOrder());
+        ArrayInstance negative = new ArrayInstance(marker.getQualityOrder(), marker.getQuantityOrder());
 
         DefaultScalar scalar = DefaultScalar.getInstance();
-        int[] dataPaginations = new int[userSize + 1];
-        int size = marker.getSize();
-        int[] dataPositions = new int[size];
-        for (int index = 0; index < size; index++) {
-            dataPositions[index] = index;
-        }
-        DataMatcher dataMatcher = DataMatcher.discreteOf(marker, userDimension);
-        dataMatcher.match(dataPaginations, dataPositions);
+        
+        DataSplitter splitter = new QualityFeatureDataSplitter(userDimension);
+        DataModule[] modules = splitter.split(marker, userSize);
 
         DenseVector positiveSum = DenseVector.valueOf(numberOfFactors);
         DenseVector negativeSum = DenseVector.valueOf(numberOfFactors);
@@ -89,7 +84,7 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
             totalLoss = 0F;
             for (int sampleIndex = 0, sampleTimes = userSize * 50; sampleIndex < sampleTimes; sampleIndex++) {
                 long current = System.currentTimeMillis();
-                float gradient = getGradientValue(instance, positive, negative, scalar, dataPaginations, dataPositions);
+                float gradient = getGradientValue(modules, positive, negative, scalar);
                 totalTime += (System.currentTimeMillis() - current);
 
                 sum(positiveVector, positiveSum);

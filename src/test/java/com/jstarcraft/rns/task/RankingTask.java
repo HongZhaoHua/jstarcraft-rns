@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.module.ArrayInstance;
+import com.jstarcraft.ai.data.module.ReferenceModule;
 import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.evaluate.ranking.AUCEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.MAPEvaluator;
@@ -60,12 +61,9 @@ public class RankingTask extends AbstractTask<IntSet, IntList> {
 
     @Override
     protected IntSet check(int userIndex) {
-        DataInstance instance = testMarker.getInstance(0);
+        ReferenceModule testModule = testModules[userIndex];
         IntSet itemSet = new IntOpenHashSet();
-        int from = testPaginations[userIndex], to = testPaginations[userIndex + 1];
-        for (int index = from, size = to; index < size; index++) {
-            int position = testPositions[index];
-            instance.setCursor(position);
+        for (DataInstance instance : testModule) {
             itemSet.add(instance.getQualityFeature(itemDimension));
         }
         return itemSet;
@@ -73,27 +71,15 @@ public class RankingTask extends AbstractTask<IntSet, IntList> {
 
     @Override
     protected IntList recommend(Recommender recommender, int userIndex) {
-        DataInstance instance = trainMarker.getInstance(0);
-        Set<Integer> itemSet = new HashSet<>();
-        int from = trainPaginations[userIndex], to = trainPaginations[userIndex + 1];
-        for (int index = from, size = to; index < size; index++) {
-            int position = trainPositions[index];
-            instance.setCursor(position);
+        ReferenceModule trainModule = trainModules[userIndex];
+        ReferenceModule testModule = testModules[userIndex];
+        IntSet itemSet = new IntOpenHashSet();
+        for (DataInstance instance : trainModule) {
             itemSet.add(instance.getQualityFeature(itemDimension));
         }
         // TODO 此处代码需要重构
         ArrayInstance copy = new ArrayInstance(trainMarker.getQualityOrder(), trainMarker.getQuantityOrder());
-        if (from < to) {
-            instance.setCursor(trainPositions[to - 1]);
-            copy.copyInstance(instance);
-        } else {
-            for (int index = 0; index < copy.getQualityOrder(); index++) {
-                copy.setQualityFeature(index, 0);
-            }
-            for (int index = 0; index < copy.getQuantityOrder(); index++) {
-                copy.setQuantityFeature(index, 0F);
-            }
-        }
+        copy.copyInstance(testModule.getInstance(0));
         copy.setQualityFeature(userDimension, userIndex);
 
         List<Integer2FloatKeyValue> rankList = new ArrayList<>(itemSize - itemSet.size());
