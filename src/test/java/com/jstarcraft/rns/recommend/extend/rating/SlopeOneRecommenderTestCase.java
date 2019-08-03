@@ -20,9 +20,9 @@ public class SlopeOneRecommenderTestCase {
 		Configurator configuration = Configurator.valueOf("recommend/extend/slopeone-test.properties");
 		RatingTask job = new RatingTask(SlopeOneRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
-		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.6418854F));
+		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.6418126F));
 		Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.98197186F));
-		Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.73150826F));
+		Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.7314029F));
 	}
 
 }

@@ -20,9 +20,9 @@ public class ItemAverageRecommenderTestCase {
         Configurator configuration = Configurator.valueOf("recommend/benchmark/itemaverage-test.properties");
         RatingTask job = new RatingTask(ItemAverageRecommender.class, configuration);
         Map<String, Float> measures = job.execute();
-        Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.7237908F));
+        Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.7238169F));
         Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9780282F));
-        Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.86158824F));
+        Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.86159194F));
     }
 
 }

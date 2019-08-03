@@ -295,12 +295,13 @@ public class DeepCrossRecommender extends ModelRecommender {
                         int feature = instance.getQualityFeature(dimension);
                         // inputData[dimension].putScalar(userIndex, 0,
                         // keys[dimension]);
-                        inputData[dimensionSizes.length].setValue(userIndex, dimension, feature);
+                        // inputData[dimensionSizes.length].setValue(userIndex, dimension, feature);
                         inputData[dimension].setValue(userIndex, 0, feature);
                     }
                 }
             } else {
-                inputData[dimensionSizes.length].setValue(userIndex, userDimension, userIndex);
+                // inputData[dimensionSizes.length].setValue(userIndex, userDimension,
+                // userIndex);
                 inputData[userDimension].setValue(userIndex, 0, userIndex);
             }
         }

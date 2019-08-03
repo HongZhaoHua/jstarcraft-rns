@@ -20,9 +20,9 @@ public class ASVDPlusPlusRecommenderTestCase {
 		Configurator configuration = Configurator.valueOf("recommend/collaborative/rating/asvdpp-test.properties");
 		RatingTask job = new RatingTask(ASVDPlusPlusRecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
-		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.7087578F));
+		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.70878226F));
 		Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.7722535F));
-		Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.83724F));
+		Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.8372423F));
 	}
 
 }

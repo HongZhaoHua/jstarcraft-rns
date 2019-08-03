@@ -22,9 +22,9 @@ public class UserClusterRecommenderTestCase {
         Configurator configuration = Configurator.valueOf("recommend/benchmark/usercluster-test.properties");
         RatingTask job = new RatingTask(UserClusterRecommender.class, configuration);
         Map<String, Float> measures = job.execute();
-        Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.7087581F));
+        Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.70878255F));
         Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.7722535F));
-        Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.83724004F));
+        Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.837242F));
     }
 
 }
