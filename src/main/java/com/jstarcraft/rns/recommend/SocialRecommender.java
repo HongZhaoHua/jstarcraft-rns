@@ -48,8 +48,8 @@ public abstract class SocialRecommender extends MatrixFactorizationRecommender {
         trusterField = configuration.getString("data.model.fields.truster");
         trusteeField = configuration.getString("data.model.fields.trustee");
         coefficientField = configuration.getString("data.model.fields.coefficient");
-        trusterDimension = 0;
-        trusteeDimension = 1;
+        trusterDimension = socialModel.getQualityInner(trusterField);
+        trusteeDimension = socialModel.getQualityInner(trusteeField);
         coefficientDimension = socialModel.getQuantityInner(coefficientField);
         HashMatrix matrix = new HashMatrix(true, userSize, userSize, new Int2FloatAVLTreeMap());
         for (DataInstance instance : socialModel) {
