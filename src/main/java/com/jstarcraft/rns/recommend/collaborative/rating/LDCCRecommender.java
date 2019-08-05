@@ -194,7 +194,7 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
     }
 
     @Override
-    protected void readoutParams() {
+    protected void readoutParameters() {
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
             for (int topicIndex = 0; topicIndex < numberOfUserTopics; topicIndex++) {
                 userTopicSums.shiftValue(userIndex, topicIndex, (userTopicTimes.getValue(userIndex, topicIndex) + userAlpha) / (userRateTimes.getValue(userIndex) + numberOfUserTopics * userAlpha));
@@ -221,7 +221,7 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
      * estimate the model parameters
      */
     @Override
-    protected void estimateParams() {
+    protected void estimateParameters() {
         float scale = 1F / numberOfStatistics;
         // TODO
         // 此处可以重构(整合userTopicProbabilities/userTopicSums和itemTopicProbabilities/itemTopicSums)
@@ -262,7 +262,7 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
     @Override
     protected boolean isConverged(int iter) {
         // Get the parameters
-        estimateParams();
+        estimateParameters();
         // Compute the perplexity
         float sum = 0F;
         for (MatrixScalar term : scoreMatrix) {

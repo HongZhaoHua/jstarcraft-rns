@@ -273,7 +273,7 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
         }
     }
 
-    protected void readoutParams() {
+    protected void readoutParameters() {
         float value = 0F;
         float sumAlpha = alpha.getSum(false);
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
@@ -295,7 +295,7 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
     }
 
     @Override
-    protected void estimateParams() {
+    protected void estimateParameters() {
         userTopicProbabilities = DenseMatrix.copyOf(userTopicSums);
         userTopicProbabilities.scaleValues(1F / numberOfStatistics);
         topicItemRateProbabilities = new float[numberOfFactors][itemSize][numberOfScores];
@@ -315,7 +315,7 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
             return false;
         }
         // get posterior probability distribution first
-        estimateParams();
+        estimateParameters();
         // compute current RMSE
         int count = 0;
         float sum = 0F;

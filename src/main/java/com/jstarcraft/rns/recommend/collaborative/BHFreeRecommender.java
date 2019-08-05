@@ -237,7 +237,7 @@ public abstract class BHFreeRecommender extends ProbabilisticGraphicalRecommende
     }
 
     @Override
-    protected void readoutParams() {
+    protected void readoutParameters() {
         for (int userTopic = 0; userTopic < numberOfUserTopics; userTopic++) {
             for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 user2TopicSums.shiftValue(userIndex, userTopic, (user2TopicNumbers.getValue(userIndex, userTopic) + initAlpha) / (userNumbers.getValue(userIndex) + numberOfUserTopics * initAlpha));
@@ -256,7 +256,7 @@ public abstract class BHFreeRecommender extends ProbabilisticGraphicalRecommende
     }
 
     @Override
-    protected void estimateParams() {
+    protected void estimateParameters() {
         float scale = 1F / numberOfStatistics;
         user2TopicProbabilities = DenseMatrix.copyOf(user2TopicSums);
         user2TopicProbabilities.scaleValues(scale);

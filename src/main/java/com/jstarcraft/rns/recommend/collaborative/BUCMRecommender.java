@@ -304,7 +304,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
     protected boolean isConverged(int iter) {
         float loss = 0F;
         // get params
-        estimateParams();
+        estimateParameters();
         // compute likelihood
         int sum = 0;
         for (MatrixScalar term : scoreMatrix) {
@@ -328,7 +328,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
         return false;
     }
 
-    protected void readoutParams() {
+    protected void readoutParameters() {
         float value;
         float sumAlpha = alpha.getSum(false);
         float sumBeta = beta.getSum(false);
@@ -352,7 +352,7 @@ public abstract class BUCMRecommender extends ProbabilisticGraphicalRecommender 
     }
 
     @Override
-    protected void estimateParams() {
+    protected void estimateParameters() {
         userTopicProbabilities = DenseMatrix.copyOf(userTopicSums);
         userTopicProbabilities.scaleValues(1F / numberOfStatistics);
         topicItemProbabilities = DenseMatrix.copyOf(topicItemSums);

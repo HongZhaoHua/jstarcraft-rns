@@ -305,7 +305,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
     }
 
     @Override
-    protected void readoutParams() {
+    protected void readoutParameters() {
         float value;
         float sumAlpha = alpha.getSum(false);
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
@@ -331,7 +331,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
     }
 
     @Override
-    protected void estimateParams() {
+    protected void estimateParameters() {
         userTopicProbabilities = DenseMatrix.copyOf(userTopicSums);
         userTopicProbabilities.scaleValues(1F / numberOfStatistics);
 

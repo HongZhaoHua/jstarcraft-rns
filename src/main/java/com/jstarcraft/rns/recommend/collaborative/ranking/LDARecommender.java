@@ -252,7 +252,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
      * Add to the statistics the values of theta and phi for the current state.
      */
     @Override
-    protected void readoutParams() {
+    protected void readoutParameters() {
         float sumAlpha = alpha.getSum(false);
         float sumBeta = beta.getSum(false);
         float value;
@@ -273,7 +273,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
     }
 
     @Override
-    protected void estimateParams() {
+    protected void estimateParameters() {
         float scale = 1F / numberOfStatistics;
         userTopicProbabilities = DenseMatrix.copyOf(userTopicSums);
         userTopicProbabilities.scaleValues(scale);

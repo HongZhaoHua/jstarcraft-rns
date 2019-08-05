@@ -91,13 +91,13 @@ public abstract class ProbabilisticGraphicalRecommender extends ModelRecommender
             }
             // get statistics after burn-in
             if ((epocheIndex > burnIn) && (epocheIndex % numberOfSamples == 0)) {
-                readoutParams();
+                readoutParameters();
                 if (logger.isInfoEnabled()) {
                     String message = StringUtility.format("readoutParams time is {}", System.currentTimeMillis() - now);
                     now = System.currentTimeMillis();
                     logger.info(message);
                 }
-                estimateParams();
+                estimateParameters();
                 if (logger.isInfoEnabled()) {
                     String message = StringUtility.format("estimateParams time is {}", System.currentTimeMillis() - now);
                     now = System.currentTimeMillis();
@@ -110,7 +110,7 @@ public abstract class ProbabilisticGraphicalRecommender extends ModelRecommender
             currentError = totalError;
         }
         // retrieve posterior probability distributions
-        estimateParams();
+        estimateParameters();
         if (logger.isInfoEnabled()) {
             String message = StringUtility.format("estimateParams time is {}", System.currentTimeMillis() - now);
             now = System.currentTimeMillis();
@@ -135,14 +135,14 @@ public abstract class ProbabilisticGraphicalRecommender extends ModelRecommender
     /**
      * read out parameters for each iteration
      */
-    protected void readoutParams() {
+    protected void readoutParameters() {
 
     }
 
     /**
      * estimate the model parameters
      */
-    protected void estimateParams() {
+    protected void estimateParameters() {
 
     }
 
