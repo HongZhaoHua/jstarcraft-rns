@@ -31,6 +31,17 @@ import com.jstarcraft.rns.recommend.exception.RecommendException;
 // TODO 论文中需要支持组合特征(比如:历史评价过的电影),现在的代码并没有实现.
 public abstract class FactorizationMachineRecommender extends ModelRecommender {
 
+    /** 是否自动调整学习率 */
+    protected boolean isLearned;
+
+    /** 衰减率 */
+    protected float learnDecay;
+
+    /**
+     * learn rate, maximum learning rate
+     */
+    protected float learnRatio, learnLimit;
+
     protected DataModule marker;
 
     /**
@@ -81,6 +92,11 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
+
+        isLearned = configuration.getBoolean("recommender.learnrate.bolddriver", false);
+        learnDecay = configuration.getFloat("recommender.learnrate.decay", 1.0f);
+        learnRatio = configuration.getFloat("recommender.iterator.learnrate", 0.01f);
+        learnLimit = configuration.getFloat("recommender.iterator.learnrate.maximum", 1000.0f);
 
         maximumScore = configuration.getFloat("recommender.recommender.maxrate", 12F);
         minimumScore = configuration.getFloat("recommender.recommender.minrate", 0F);

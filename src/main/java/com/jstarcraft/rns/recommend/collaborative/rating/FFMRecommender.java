@@ -24,10 +24,7 @@ import com.jstarcraft.rns.recommend.FactorizationMachineRecommender;
  *
  */
 public class FFMRecommender extends FactorizationMachineRecommender {
-    /**
-     * learning rate of stochastic gradient descent
-     */
-    private float learnRate;
+
     /**
      * record the <feature: filed>
      */
@@ -54,8 +51,6 @@ public class FFMRecommender extends FactorizationMachineRecommender {
             }
             count += size;
         }
-
-        learnRate = configuration.getFloat("recommender.iterator.learnRate");
     }
 
     @Override
@@ -85,7 +80,7 @@ public class FFMRecommender extends FactorizationMachineRecommender {
                 // update w0
                 float hW0 = 1;
                 float gradW0 = error * hW0 + biasRegularization * globalBias;
-                globalBias += -learnRate * gradW0;
+                globalBias += -learnRatio * gradW0;
 
                 // 1-way interactions
                 for (VectorScalar outerTerm : featureVector) {
@@ -94,7 +89,7 @@ public class FFMRecommender extends FactorizationMachineRecommender {
                     oldWeight = weightVector.getValue(outerIndex);
                     newWeight = outerTerm.getValue();
                     newWeight = error * newWeight + weightRegularization * oldWeight;
-                    weightVector.shiftValue(outerIndex, -learnRate * newWeight);
+                    weightVector.shiftValue(outerIndex, -learnRatio * newWeight);
                     totalError += weightRegularization * oldWeight * oldWeight;
                     outerValue = outerTerm.getValue();
                     innerValue = 0F;
@@ -110,7 +105,7 @@ public class FFMRecommender extends FactorizationMachineRecommender {
                             }
                         }
                         newFactor = error * newFactor + factorRegularization * oldFactor;
-                        featureFactors.shiftValue(outerIndex, featureOrders[outerIndex] + factorIndex, -learnRate * newFactor);
+                        featureFactors.shiftValue(outerIndex, featureOrders[outerIndex] + factorIndex, -learnRatio * newFactor);
                         totalError += factorRegularization * oldFactor * oldFactor;
                     }
                 }
