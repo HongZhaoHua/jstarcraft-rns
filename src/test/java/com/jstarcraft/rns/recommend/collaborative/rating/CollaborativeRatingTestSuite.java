@@ -6,51 +6,53 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-		// 推荐器测试集
-		// recommender.cf.rating
-		AspectModelRatingRecommenderTestCase.class,
+        // 推荐器测试集
+        // recommender.cf.rating
+        AspectModelRatingRecommenderTestCase.class,
 
-		ASVDPlusPlusRecommenderTestCase.class,
+        ASVDPlusPlusRecommenderTestCase.class,
 
-		BiasedMFRecommenderTestCase.class,
+        BiasedMFRecommenderTestCase.class,
 
-		BHFreeRatingRecommenderTestCase.class,
+        BHFreeRatingRecommenderTestCase.class,
 
-		BPMFRecommenderTestCase.class,
+        BPMFRecommenderTestCase.class,
 
-		BUCMRatingRecommenderTestCase.class,
+        BUCMRatingRecommenderTestCase.class,
 
-		FFMRecommenderTestCase.class,
+        CCDRecommenderTestCase.class,
 
-		FMALSRecommenderTestCase.class,
+        FFMRecommenderTestCase.class,
 
-		FMSGDRecommenderTestCase.class,
+        FMALSRecommenderTestCase.class,
 
-		GPLSARecommenderTestCase.class,
+        FMSGDRecommenderTestCase.class,
 
-		IRRGRecommenderTestCase.class,
+        GPLSARecommenderTestCase.class,
 
-		ItemKNNRatingRecommenderTestCase.class,
+        IRRGRecommenderTestCase.class,
 
-		LDCCRecommenderTestCase.class,
+        ItemKNNRatingRecommenderTestCase.class,
 
-		LLORMARecommenderTestCase.class,
+        LDCCRecommenderTestCase.class,
 
-		MFALSRecommenderTestCase.class,
+        LLORMARecommenderTestCase.class,
 
-		NMFRecommenderTestCase.class,
+        MFALSRecommenderTestCase.class,
 
-		PMFRecommenderTestCase.class,
+        NMFRecommenderTestCase.class,
 
-		RBMRecommenderTestCase.class,
+        PMFRecommenderTestCase.class,
 
-		RFRecRecommenderTestCase.class,
+        RBMRecommenderTestCase.class,
 
-		SVDPlusPlusRecommenderTestCase.class,
+        RFRecRecommenderTestCase.class,
 
-		URPRecommenderTestCase.class,
+        SVDPlusPlusRecommenderTestCase.class,
 
-		UserKNNRatingRecommenderTestCase.class, })
+        URPRecommenderTestCase.class,
+
+        UserKNNRatingRecommenderTestCase.class, })
 public class CollaborativeRatingTestSuite {
 
 }
