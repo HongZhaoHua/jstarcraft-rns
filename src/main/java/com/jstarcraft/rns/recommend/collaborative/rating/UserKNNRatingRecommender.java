@@ -27,7 +27,7 @@ public class UserKNNRatingRecommender extends UserKNNRecommender {
         SparseVector itemVector = itemVectors[itemIndex];
         int[] neighbors = userNeighbors[userIndex];
         if (itemVector.getElementSize() == 0 || neighbors == null) {
-            instance.setQuantityMark(meanOfScore);
+            instance.setQuantityMark(meanScore);
             return;
         }
 
@@ -60,11 +60,11 @@ public class UserKNNRatingRecommender extends UserKNNRecommender {
         }
 
         if (count == 0) {
-            instance.setQuantityMark(meanOfScore);
+            instance.setQuantityMark(meanScore);
             return;
         }
 
-        instance.setQuantityMark(absolute > 0 ? userMeans.getValue(userIndex) + sum / absolute : meanOfScore);
+        instance.setQuantityMark(absolute > 0 ? userMeans.getValue(userIndex) + sum / absolute : meanScore);
     }
 
 }

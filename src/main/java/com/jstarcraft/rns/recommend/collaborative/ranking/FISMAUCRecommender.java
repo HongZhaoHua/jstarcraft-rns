@@ -48,11 +48,11 @@ public class FISMAUCRecommender extends MatrixFactorizationRecommender {
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // 注意:FISM使用itemFactors来组成userFactors
-        userFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(itemSize, factorSize);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, factorSize);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -74,9 +74,9 @@ public class FISMAUCRecommender extends MatrixFactorizationRecommender {
     protected void doPractice() {
         DefaultScalar scalar = DefaultScalar.getInstance();
         // x <- 0
-        DenseVector userVector = DenseVector.valueOf(numberOfFactors);
+        DenseVector userVector = DenseVector.valueOf(factorSize);
         // t <- (n - 1)^(-alpha) Σ pj (j!=i)
-        DenseVector itemVector = DenseVector.valueOf(numberOfFactors);
+        DenseVector itemVector = DenseVector.valueOf(factorSize);
 
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             totalError = 0F;

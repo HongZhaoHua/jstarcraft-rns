@@ -95,8 +95,8 @@ public class RFRecRecommender extends MatrixFactorizationRecommender {
 
         // Calculate the frequencies.
         // Users,items
-        userScoreFrequencies = DenseMatrix.valueOf(userSize, numberOfActions);
-        itemScoreFrequencies = DenseMatrix.valueOf(itemSize, numberOfActions);
+        userScoreFrequencies = DenseMatrix.valueOf(userSize, actionSize);
+        itemScoreFrequencies = DenseMatrix.valueOf(itemSize, actionSize);
         for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow();
             int itemIndex = term.getColumn();
@@ -115,11 +115,11 @@ public class RFRecRecommender extends MatrixFactorizationRecommender {
                 float error = term.getValue() - predict(userIndex, itemIndex);
 
                 // Gradient-Step on user weights.
-                float userWeight = userWeights.getValue(userIndex) + learnRate * (error - userRegularization * userWeights.getValue(userIndex));
+                float userWeight = userWeights.getValue(userIndex) + learnRatio * (error - userRegularization * userWeights.getValue(userIndex));
                 userWeights.setValue(userIndex, userWeight);
 
                 // Gradient-Step on item weights.
-                float itemWeight = itemWeights.getValue(itemIndex) + learnRate * (error - itemRegularization * itemWeights.getValue(itemIndex));
+                float itemWeight = itemWeights.getValue(itemIndex) + learnRatio * (error - itemRegularization * itemWeights.getValue(itemIndex));
                 itemWeights.setValue(itemIndex, itemWeight);
             }
         }
@@ -138,7 +138,7 @@ public class RFRecRecommender extends MatrixFactorizationRecommender {
 
     @Override
     protected float predict(int userIndex, int itemIndex) {
-        float value = meanOfScore;
+        float value = meanScore;
         float userSum = userScoreFrequencies.getRowVector(userIndex).getSum(false);
         float itemSum = itemScoreFrequencies.getRowVector(itemIndex).getSum(false);
         float userMean = userMeans.getValue(userIndex);
@@ -174,7 +174,7 @@ public class RFRecRecommender extends MatrixFactorizationRecommender {
                 if (itemMean != 0F) {
                     return itemMean;
                 } else {
-                    return meanOfScore;
+                    return meanScore;
                 }
             }
             if (itemSum == 0F || itemMean == 0F) {
@@ -182,7 +182,7 @@ public class RFRecRecommender extends MatrixFactorizationRecommender {
                     return userMean;
                 } else {
                     // Some heuristic -> a bit above the average rating
-                    return meanOfScore;
+                    return meanScore;
                 }
             }
         }

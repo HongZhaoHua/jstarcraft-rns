@@ -64,17 +64,17 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
         balance = configuration.getFloat("recommender.regularization.balance", 0.2F);
         knn = configuration.getInteger("recommender.item.nearest.neighbour.number", 300);
 
-        geoInfluences = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        geoInfluences = DenseMatrix.valueOf(itemSize, factorSize);
 
-        explicitUserFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
+        explicitUserFactors = DenseMatrix.valueOf(userSize, factorSize);
         explicitUserFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        implicitUserFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
+        implicitUserFactors = DenseMatrix.valueOf(userSize, factorSize);
         implicitUserFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, factorSize);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -94,7 +94,7 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
             E.setValue(itemIndex, E.getValue(itemIndex - 1) + 1F / itemIndex);
         }
 
-        geoInfluences = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        geoInfluences = DenseMatrix.valueOf(itemSize, factorSize);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
                         totalError += E.getValue(sampleIndex) * s;
 
                         float uij = s * (1 - s);
-                        float error = E.getValue(sampleIndex) * uij * learnRate;
+                        float error = E.getValue(sampleIndex) * uij * learnRatio;
                         DenseVector positiveItemVector = itemFactors.getRowVector(positiveItemIndex);
                         DenseVector negativeItemVector = itemFactors.getRowVector(negativeItemIndex);
                         DenseVector explicitUserVector = explicitUserFactors.getRowVector(userIndex);
@@ -164,12 +164,12 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
                         DenseVector implicitUserVector = implicitUserFactors.getRowVector(userIndex);
 
                         // TODO 可以并发计算
-                        for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                        for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                             explicitUserVector.setValue(factorIndex, explicitUserVector.getValue(factorIndex) - (negativeItemVector.getValue(factorIndex) - positiveItemVector.getValue(factorIndex)) * error);
                             implicitUserVector.setValue(factorIndex, implicitUserVector.getValue(factorIndex) - (negativeGeoVector.getValue(factorIndex) - positiveGeoVector.getValue(factorIndex)) * error);
                         }
                         // TODO 可以并发计算
-                        for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                        for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                             float itemDelta = explicitUserVector.getValue(factorIndex) * error;
                             positiveItemVector.setValue(factorIndex, positiveItemVector.getValue(factorIndex) + itemDelta);
                             negativeItemVector.setValue(factorIndex, negativeItemVector.getValue(factorIndex) - itemDelta);
@@ -200,7 +200,7 @@ public class RankGeoFMRecommender extends MatrixFactorizationRecommender {
                             negativeItemDelta = 1F;
                         }
                         // TODO 可以并发计算
-                        for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                        for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                             if (explicitUserDelta != 1F) {
                                 explicitUserVector.setValue(factorIndex, explicitUserVector.getValue(factorIndex) * explicitUserDelta);
                             }

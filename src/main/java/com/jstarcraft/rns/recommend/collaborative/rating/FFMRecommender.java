@@ -39,13 +39,13 @@ public class FFMRecommender extends FactorizationMachineRecommender {
 
         // Matrix for p * (factor * filed)
         // TODO 此处应该还是稀疏
-        featureFactors = DenseMatrix.valueOf(numberOfFeatures, numberOfFactors * marker.getQualityOrder());
+        featureFactors = DenseMatrix.valueOf(featureSize, factorSize * marker.getQualityOrder());
         featureFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
 
         // init the map for feature of filed
-        featureOrders = new int[numberOfFeatures];
+        featureOrders = new int[featureSize];
         int count = 0;
         for (int orderIndex = 0, orderSize = dimensionSizes.length; orderIndex < orderSize; orderIndex++) {
             int size = dimensionSizes[orderIndex];
@@ -99,7 +99,7 @@ public class FFMRecommender extends FactorizationMachineRecommender {
                     outerValue = outerTerm.getValue();
                     innerValue = 0F;
                     // 2-way interactions
-                    for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                    for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                         oldFactor = featureFactors.getValue(outerIndex, featureOrders[outerIndex] + factorIndex);
                         newFactor = 0F;
                         for (VectorScalar innerTerm : featureVector) {
@@ -136,7 +136,7 @@ public class FFMRecommender extends FactorizationMachineRecommender {
         float outerValue = 0F;
         float innerValue = 0F;
         // 2-way interaction
-        for (int featureIndex = 0; featureIndex < numberOfFactors; featureIndex++) {
+        for (int featureIndex = 0; featureIndex < factorSize; featureIndex++) {
             for (VectorScalar outerVector : featureVector) {
                 outerIndex = outerVector.getIndex();
                 outerValue = outerVector.getValue();
@@ -150,11 +150,11 @@ public class FFMRecommender extends FactorizationMachineRecommender {
             }
         }
 
-        if (value > maximumOfScore) {
-            value = maximumOfScore;
+        if (value > maximumScore) {
+            value = maximumScore;
         }
-        if (value < minimumOfScore) {
-            value = minimumOfScore;
+        if (value < minimumScore) {
+            value = minimumScore;
         }
         return value;
     }

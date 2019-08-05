@@ -56,19 +56,19 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
         lamutaE = configuration.getFloat("recommender.rankvfcd.lamutaE", 50F);
         numberOfFeatures = 4096;
 
-        userFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(userSize, factorSize);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        explicitItemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        explicitItemFactors = DenseMatrix.valueOf(itemSize, factorSize);
         explicitItemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        implicitItemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        implicitItemFactors = DenseMatrix.valueOf(itemSize, factorSize);
         implicitItemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        featureFactors = DenseMatrix.valueOf(numberOfFeatures, numberOfFactors);
+        featureFactors = DenseMatrix.valueOf(numberOfFeatures, factorSize);
         featureFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -122,7 +122,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
             scalar.setValue((scalar.getValue() - minimum) / (maximum - minimum));
         });
 
-        factorMatrix = DenseMatrix.valueOf(numberOfFactors, itemSize);
+        factorMatrix = DenseMatrix.valueOf(factorSize, itemSize);
         featureVector = DenseVector.valueOf(numberOfFeatures);
         for (MatrixScalar term : featureMatrix) {
             int featureIndex = term.getRow();
@@ -144,9 +144,9 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
         float[] q_itemrelated = new float[itemSize];
         float[] q_relateditem = new float[itemSize];
 
-        DenseMatrix explicitItemDeltas = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
-        DenseMatrix implicitItemDeltas = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
-        DenseMatrix userDeltas = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
+        DenseMatrix explicitItemDeltas = DenseMatrix.valueOf(factorSize, factorSize);
+        DenseMatrix implicitItemDeltas = DenseMatrix.valueOf(factorSize, factorSize);
+        DenseMatrix userDeltas = DenseMatrix.valueOf(factorSize, factorSize);
 
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             // Update the Sq cache
@@ -159,10 +159,10 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
                     prediction_items[itemIndex] = scalar.dotProduct(userFactors.getRowVector(userIndex), explicitItemFactors.getRowVector(itemIndex)).getValue();
                     w_items[itemIndex] = 1F + alpha * term.getValue();
                 }
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float numerator = 0F, denominator = userRegularization + explicitItemDeltas.getValue(factorIndex, factorIndex);
                     // TODO 此处可以改为减法
-                    for (int k = 0; k < numberOfFactors; k++) {
+                    for (int k = 0; k < factorSize; k++) {
                         if (factorIndex != k) {
                             numerator -= userFactors.getValue(userIndex, k) * explicitItemDeltas.getValue(factorIndex, k);
                         }
@@ -205,11 +205,11 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
                     prediction_itemrelated[neighborIndex] = scalar.dotProduct(explicitItemFactors.getRowVector(itemIndex), implicitItemFactors.getRowVector(neighborIndex)).getValue();
                     q_itemrelated[neighborIndex] = 1F + alpha * term.getValue();
                 }
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float explicitNumerator = 0F, explicitDenominator = userDeltas.getValue(factorIndex, factorIndex) + itemRegularization;
                     float implicitNumerator = 0F, implicitDenominator = implicitItemDeltas.getValue(factorIndex, factorIndex);
                     // TODO 此处可以改为减法
-                    for (int k = 0; k < numberOfFactors; k++) {
+                    for (int k = 0; k < factorSize; k++) {
                         if (factorIndex != k) {
                             explicitNumerator -= explicitItemFactors.getValue(itemIndex, k) * userDeltas.getValue(k, factorIndex);
                             implicitNumerator -= explicitItemFactors.getValue(itemIndex, k) * implicitItemDeltas.getValue(k, factorIndex);
@@ -253,10 +253,10 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
                     prediction_relateditem[itemIndex] = scalar.dotProduct(explicitItemFactors.getRowVector(itemIndex), implicitItemFactors.getRowVector(neighborIndex)).getValue();
                     q_relateditem[itemIndex] = 1F + alpha * term.getValue();
                 }
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float numerator = 0F, denominator = explicitItemDeltas.getValue(factorIndex, factorIndex);
                     // TODO 此处可以改为减法
-                    for (int k = 0; k < numberOfFactors; k++) {
+                    for (int k = 0; k < factorSize; k++) {
                         if (factorIndex != k) {
                             numerator -= implicitItemFactors.getValue(neighborIndex, k) * explicitItemDeltas.getValue(factorIndex, k);
                         }
@@ -279,7 +279,7 @@ public class RankVFCDRecommender extends MatrixFactorizationRecommender {
                 }
             }
 
-            for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+            for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                 for (int featureIndex = 0; featureIndex < numberOfFeatures; featureIndex++) {
                     SparseVector featureVector = featureMatrix.getRowVector(featureIndex);
                     float numerator = 0F, denominator = featureFactors.getValue(featureIndex, factorIndex);

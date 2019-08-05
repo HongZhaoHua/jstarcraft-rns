@@ -127,10 +127,10 @@ public abstract class ItemKNNRecommender extends AbstractRecommender {
 
 	@Override
 	protected void doPractice() {
-		meanOfScore = scoreMatrix.getSum(false) / scoreMatrix.getElementSize();
+		meanScore = scoreMatrix.getSum(false) / scoreMatrix.getElementSize();
 		for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
 			SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
-			itemMeans.setValue(itemIndex, itemVector.getElementSize() > 0 ? itemVector.getSum(false) / itemVector.getElementSize() : meanOfScore);
+			itemMeans.setValue(itemIndex, itemVector.getElementSize() > 0 ? itemVector.getSum(false) / itemVector.getElementSize() : meanScore);
 		}
 	}
 

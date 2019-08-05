@@ -66,14 +66,14 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
 
         userAlpha = configuration.getFloat("recommender.pgm.user.alpha", 1F / numberOfUserTopics);
         itemAlpha = configuration.getFloat("recommender.pgm.item.alpha", 1F / numberOfItemTopics);
-        ratingBeta = configuration.getFloat("recommender.pgm.rating.beta", 1F / numberOfActions);
+        ratingBeta = configuration.getFloat("recommender.pgm.rating.beta", 1F / actionSize);
 
         userTopicTimes = DenseMatrix.valueOf(userSize, numberOfUserTopics);
         itemTopicTimes = DenseMatrix.valueOf(itemSize, numberOfItemTopics);
         userRateTimes = DenseVector.valueOf(userSize);
         itemRateTimes = DenseVector.valueOf(itemSize);
 
-        rateTopicTimes = new int[numberOfUserTopics][numberOfItemTopics][numberOfActions];
+        rateTopicTimes = new int[numberOfUserTopics][numberOfItemTopics][actionSize];
         topicTimes = DenseMatrix.valueOf(numberOfUserTopics, numberOfItemTopics);
         topicProbabilities = DenseMatrix.valueOf(numberOfUserTopics, numberOfItemTopics);
         userProbabilities = DenseVector.valueOf(numberOfUserTopics);
@@ -107,8 +107,8 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
         // parameters
         userTopicSums = DenseMatrix.valueOf(userSize, numberOfUserTopics);
         itemTopicSums = DenseMatrix.valueOf(itemSize, numberOfItemTopics);
-        rateTopicProbabilities = new float[numberOfUserTopics][numberOfItemTopics][numberOfActions];
-        rateTopicSums = new float[numberOfUserTopics][numberOfItemTopics][numberOfActions];
+        rateTopicProbabilities = new float[numberOfUserTopics][numberOfItemTopics][actionSize];
+        rateTopicSums = new float[numberOfUserTopics][numberOfItemTopics][actionSize];
     }
 
     @Override
@@ -148,7 +148,7 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
                 // Compute Pmn
                 float v1 = (userTopicTimes.getValue(userIndex, row) + userAlpha) / (userRateTimes.getValue(userIndex) + numberOfUserTopics * userAlpha);
                 float v2 = (userTopicTimes.getValue(topicIndex, column) + itemAlpha) / (itemRateTimes.getValue(itemIndex) + numberOfItemTopics * itemAlpha);
-                float v3 = (rateTopicTimes[row][column][rateIndex] + ratingBeta) / (topicTimes.getValue(row, column) + numberOfActions * ratingBeta);
+                float v3 = (rateTopicTimes[row][column][rateIndex] + ratingBeta) / (topicTimes.getValue(row, column) + actionSize * ratingBeta);
                 float value = v1 * v2 * v3;
                 scalar.setValue(value);
             });
@@ -209,8 +209,8 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
 
         for (int userTopic = 0; userTopic < numberOfUserTopics; userTopic++) {
             for (int itemTopic = 0; itemTopic < numberOfItemTopics; itemTopic++) {
-                for (int rateIndex = 0; rateIndex < numberOfActions; rateIndex++) {
-                    rateTopicSums[userTopic][itemTopic][rateIndex] += (rateTopicTimes[userTopic][itemTopic][rateIndex] + ratingBeta) / (topicTimes.getValue(userTopic, itemTopic) + numberOfActions * ratingBeta);
+                for (int rateIndex = 0; rateIndex < actionSize; rateIndex++) {
+                    rateTopicSums[userTopic][itemTopic][rateIndex] += (rateTopicTimes[userTopic][itemTopic][rateIndex] + ratingBeta) / (topicTimes.getValue(userTopic, itemTopic) + actionSize * ratingBeta);
                 }
             }
         }
@@ -233,7 +233,7 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
         // TODO 此处可以重构(整合rateTopicProbabilities/rateTopicSums)
         for (int userTopic = 0; userTopic < numberOfUserTopics; userTopic++) {
             for (int itemTopic = 0; itemTopic < numberOfItemTopics; itemTopic++) {
-                for (int rateIndex = 0; rateIndex < numberOfActions; rateIndex++) {
+                for (int rateIndex = 0; rateIndex < actionSize; rateIndex++) {
                     rateTopicProbabilities[userTopic][itemTopic][rateIndex] = rateTopicSums[userTopic][itemTopic][rateIndex] / numberOfStatistics;
                 }
             }
@@ -271,7 +271,7 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
             float rate = term.getValue();
             sum += perplexity(userIndex, itemIndex, rate);
         }
-        float perplexity = (float) Math.exp(sum / numberOfActions);
+        float perplexity = (float) Math.exp(sum / actionSize);
         float delta = perplexity - currentError;
         if (numberOfStatistics > 1 && delta > 0) {
             return true;
@@ -281,7 +281,7 @@ public class LDCCRecommender extends ProbabilisticGraphicalRecommender {
     }
 
     private double perplexity(int user, int item, double rate) {
-        int rateIndex = (int) (rate / minimumOfScore - 1);
+        int rateIndex = (int) (rate / minimumScore - 1);
         // Compute P(r | u, v)
         double probability = 0;
         for (int userTopic = 0; userTopic < numberOfUserTopics; userTopic++) {

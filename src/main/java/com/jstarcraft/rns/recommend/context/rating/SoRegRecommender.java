@@ -34,11 +34,11 @@ public class SoRegRecommender extends SocialRecommender {
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        userFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(userSize, factorSize);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, factorSize);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
@@ -66,8 +66,8 @@ public class SoRegRecommender extends SocialRecommender {
     protected void doPractice() {
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             totalError = 0F;
-            DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
-            DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, numberOfFactors);
+            DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, factorSize);
+            DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, factorSize);
 
             // ratings
             for (MatrixScalar term : scoreMatrix) {
@@ -75,7 +75,7 @@ public class SoRegRecommender extends SocialRecommender {
                 int itemIndex = term.getColumn();
                 float error = predict(userIndex, itemIndex) - term.getValue();
                 totalError += error * error;
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float userFactorValue = userFactors.getValue(userIndex, factorIndex);
                     float itemFactorValue = itemFactors.getValue(itemIndex, factorIndex);
                     userDeltas.shiftValue(userIndex, factorIndex, error * itemFactorValue + userRegularization * userFactorValue);
@@ -92,7 +92,7 @@ public class SoRegRecommender extends SocialRecommender {
                     int trusterIndex = term.getIndex();
                     float trusterSimilarity = socialCorrelations.getValue(userIndex, trusterIndex);
                     if (!Float.isNaN(trusterSimilarity)) {
-                        for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                        for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                             float userFactor = userFactors.getValue(userIndex, factorIndex) - userFactors.getValue(trusterIndex, factorIndex);
                             userDeltas.shiftValue(userIndex, factorIndex, socialRegularization * trusterSimilarity * userFactor);
                             totalError += socialRegularization * trusterSimilarity * userFactor * userFactor;
@@ -106,7 +106,7 @@ public class SoRegRecommender extends SocialRecommender {
                     int trusteeIndex = term.getIndex();
                     float trusteeSimilarity = socialCorrelations.getValue(userIndex, trusteeIndex);
                     if (!Float.isNaN(trusteeSimilarity)) {
-                        for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                        for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                             float userFactor = userFactors.getValue(userIndex, factorIndex) - userFactors.getValue(trusteeIndex, factorIndex);
                             userDeltas.shiftValue(userIndex, factorIndex, socialRegularization * trusteeSimilarity * userFactor);
                             totalError += socialRegularization * trusteeSimilarity * userFactor * userFactor;
@@ -120,13 +120,13 @@ public class SoRegRecommender extends SocialRecommender {
                 int row = scalar.getRow();
                 int column = scalar.getColumn();
                 float value = scalar.getValue();
-                scalar.setValue(value + userDeltas.getValue(row, column) * -learnRate);
+                scalar.setValue(value + userDeltas.getValue(row, column) * -learnRatio);
             });
             itemFactors.iterateElement(MathCalculator.PARALLEL, (scalar) -> {
                 int row = scalar.getRow();
                 int column = scalar.getColumn();
                 float value = scalar.getValue();
-                scalar.setValue(value + itemDeltas.getValue(row, column) * -learnRate);
+                scalar.setValue(value + itemDeltas.getValue(row, column) * -learnRatio);
             });
 
             totalError *= 0.5D;
@@ -142,10 +142,10 @@ public class SoRegRecommender extends SocialRecommender {
     protected float predict(int userIndex, int itemIndex) {
         float predictRating = super.predict(userIndex, itemIndex);
 
-        if (predictRating > maximumOfScore) {
-            predictRating = maximumOfScore;
-        } else if (predictRating < minimumOfScore) {
-            predictRating = minimumOfScore;
+        if (predictRating > maximumScore) {
+            predictRating = maximumScore;
+        } else if (predictRating < minimumScore) {
+            predictRating = minimumScore;
         }
 
         return predictRating;

@@ -35,7 +35,7 @@ public class UserAverageRecommender extends AbstractRecommender {
     protected void doPractice() {
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
             SparseVector userVector = scoreMatrix.getRowVector(userIndex);
-            userMeans[userIndex] = userVector.getElementSize() == 0 ? meanOfScore : userVector.getSum(false) / userVector.getElementSize();
+            userMeans[userIndex] = userVector.getElementSize() == 0 ? meanScore : userVector.getSum(false) / userVector.getElementSize();
         }
     }
 

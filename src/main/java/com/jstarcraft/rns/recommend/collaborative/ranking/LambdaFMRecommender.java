@@ -76,8 +76,8 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
         DataSplitter splitter = new QualityFeatureDataSplitter(userDimension);
         DataModule[] modules = splitter.split(marker, userSize);
 
-        DenseVector positiveSum = DenseVector.valueOf(numberOfFactors);
-        DenseVector negativeSum = DenseVector.valueOf(numberOfFactors);
+        DenseVector positiveSum = DenseVector.valueOf(factorSize);
+        DenseVector negativeSum = DenseVector.valueOf(factorSize);
 
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             long totalTime = 0;
@@ -101,7 +101,7 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
                         weightVector.shiftValue(leftIndex, learnRate * (gradient * 0F - weightRegularization * weightVector.getValue(leftIndex)));
                         totalError += weightRegularization * weightVector.getValue(leftIndex) * weightVector.getValue(leftIndex);
 
-                        for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                        for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                             float positiveFactor = positiveSum.getValue(factorIndex) * leftTerm.getValue() - featureFactors.getValue(leftIndex, factorIndex) * leftTerm.getValue() * leftTerm.getValue();
                             float negativeFactor = negativeSum.getValue(factorIndex) * rightTerm.getValue() - featureFactors.getValue(rightIndex, factorIndex) * rightTerm.getValue() * rightTerm.getValue();
 
@@ -114,7 +114,7 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
                         weightVector.shiftValue(rightIndex, learnRate * (gradient * -rightTerm.getValue() - weightRegularization * weightVector.getValue(rightIndex)));
                         totalError += weightRegularization * weightVector.getValue(rightIndex) * weightVector.getValue(rightIndex);
 
-                        for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                        for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                             float positiveFactor = positiveSum.getValue(factorIndex) * leftTerm.getValue() - featureFactors.getValue(leftIndex, factorIndex) * leftTerm.getValue() * leftTerm.getValue();
                             featureFactors.shiftValue(leftIndex, factorIndex, learnRate * (gradient * positiveFactor - factorRegularization * featureFactors.getValue(leftIndex, factorIndex)));
                             totalError += factorRegularization * featureFactors.getValue(leftIndex, factorIndex) * featureFactors.getValue(leftIndex, factorIndex);
@@ -154,7 +154,7 @@ public abstract class LambdaFMRecommender extends FactorizationMachineRecommende
 
     private void sum(MathVector vector, DenseVector sum) {
         // TODO 考虑调整为向量操作.
-        for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+        for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
             float value = 0F;
             for (VectorScalar term : vector) {
                 value += featureFactors.getValue(term.getIndex(), factorIndex) * term.getValue();

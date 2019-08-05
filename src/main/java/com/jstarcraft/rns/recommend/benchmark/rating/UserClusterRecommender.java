@@ -50,7 +50,7 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
         float loss = 0F;
 
         for (int u = 0; u < userSize; u++) {
-            for (int k = 0; k < numberOfFactors; k++) {
+            for (int k = 0; k < factorSize; k++) {
                 float ruk = userTopicProbabilities.getValue(u, k);
                 float pi_k = topicScoreVector.getValue(k);
 
@@ -79,17 +79,17 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        topicScoreMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfScores);
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        topicScoreMatrix = DenseMatrix.valueOf(factorSize, scoreSize);
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             DenseVector probabilityVector = topicScoreMatrix.getRowVector(topicIndex);
             probabilityVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
-                scalar.setValue(RandomUtility.randomInteger(numberOfScores) + 1);
+                scalar.setValue(RandomUtility.randomInteger(scoreSize) + 1);
             });
             probabilityVector.scaleValues(1F / probabilityVector.getSum(false));
         }
-        topicScoreVector = DenseVector.valueOf(numberOfFactors);
+        topicScoreVector = DenseVector.valueOf(factorSize);
         topicScoreVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
-            scalar.setValue(RandomUtility.randomInteger(numberOfFactors) + 1);
+            scalar.setValue(RandomUtility.randomInteger(factorSize) + 1);
         });
         topicScoreVector.scaleValues(1F / topicScoreVector.getSum(false));
         // TODO
@@ -100,7 +100,7 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
             scalar.setValue((float) Math.log(scalar.getValue()));
         });
 
-        userScoreMatrix = DenseMatrix.valueOf(userSize, numberOfScores);
+        userScoreMatrix = DenseMatrix.valueOf(userSize, scoreSize);
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
             SparseVector scoreVector = scoreMatrix.getRowVector(userIndex);
             for (VectorScalar term : scoreVector) {
@@ -115,7 +115,7 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
         });
         currentError = Float.MIN_VALUE;
 
-        userTopicProbabilities = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userTopicProbabilities = DenseMatrix.valueOf(userSize, factorSize);
     }
 
     @Override
@@ -145,7 +145,7 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
     protected void mStep() {
         topicScoreVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             int index = scalar.getIndex();
-            for (int scoreIndex = 0; scoreIndex < numberOfScores; scoreIndex++) {
+            for (int scoreIndex = 0; scoreIndex < scoreSize; scoreIndex++) {
                 float numerator = 0F, denorminator = 0F;
                 for (int userIndex = 0; userIndex < userSize; userIndex++) {
                     float probability = (float) FastMath.exp(userTopicProbabilities.getValue(userIndex, index));
@@ -170,7 +170,7 @@ public class UserClusterRecommender extends ProbabilisticGraphicalRecommender {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float value = 0F;
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             float topicProbability = userTopicProbabilities.getValue(userIndex, topicIndex);
             float topicValue = 0F;
             for (Entry<Float, Integer> entry : scoreIndexes.entrySet()) {

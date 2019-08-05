@@ -57,9 +57,9 @@ public class RankCDRecommender extends MatrixFactorizationRecommender {
         double[] itemConfidences = new double[itemSize];
 
         // Init Sq
-        DenseMatrix itemDeltas = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
+        DenseMatrix itemDeltas = DenseMatrix.valueOf(factorSize, factorSize);
         // Init Sp
-        DenseMatrix userDeltas = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
+        DenseMatrix userDeltas = DenseMatrix.valueOf(factorSize, factorSize);
 
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             itemDeltas.dotProduct(itemFactors, true, itemFactors, false, MathCalculator.SERIAL);
@@ -71,10 +71,10 @@ public class RankCDRecommender extends MatrixFactorizationRecommender {
                     itemScores[itemIndex] = predict(userIndex, itemIndex);
                     itemConfidences[itemIndex] = term.getValue();
                 }
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float numerator = 0F, denominator = userRegularization + itemDeltas.getValue(factorIndex, factorIndex);
                     // TODO 此处可以改为减法
-                    for (int k = 0; k < numberOfFactors; k++) {
+                    for (int k = 0; k < factorSize; k++) {
                         if (factorIndex != k) {
                             numerator -= userFactors.getValue(userIndex, k) * itemDeltas.getValue(factorIndex, k);
                         }
@@ -104,10 +104,10 @@ public class RankCDRecommender extends MatrixFactorizationRecommender {
                     userScores[userIndex] = predict(userIndex, itemIndex);
                     userConfidences[userIndex] = term.getValue();
                 }
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float numerator = 0F, denominator = itemRegularization + userDeltas.getValue(factorIndex, factorIndex);
                     // TODO 此处可以改为减法
-                    for (int k = 0; k < numberOfFactors; k++) {
+                    for (int k = 0; k < factorSize; k++) {
                         if (factorIndex != k) {
                             numerator -= itemFactors.getValue(itemIndex, k) * userDeltas.getValue(k, factorIndex);
                         }

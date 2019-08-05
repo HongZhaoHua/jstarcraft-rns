@@ -69,7 +69,7 @@ public abstract class SocialRecommender extends MatrixFactorizationRecommender {
      * @return
      */
     protected float denormalize(float value) {
-        return minimumOfScore + value * (maximumOfScore - minimumOfScore);
+        return minimumScore + value * (maximumScore - minimumScore);
     }
 
     /**
@@ -83,7 +83,7 @@ public abstract class SocialRecommender extends MatrixFactorizationRecommender {
      * @return
      */
     protected float normalize(float value) {
-        return (value - minimumOfScore) / (maximumOfScore - minimumOfScore);
+        return (value - minimumScore) / (maximumScore - minimumScore);
     }
 
 }

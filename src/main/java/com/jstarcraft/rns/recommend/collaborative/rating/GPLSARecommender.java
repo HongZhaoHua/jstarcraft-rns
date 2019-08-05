@@ -66,11 +66,11 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // Initialize users' conditional probabilities
-        userTopicProbabilities = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userTopicProbabilities = DenseMatrix.valueOf(userSize, factorSize);
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
             DenseVector probabilityVector = userTopicProbabilities.getRowVector(userIndex);
             probabilityVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
-                scalar.setValue(RandomUtility.randomInteger(numberOfFactors) + 1);
+                scalar.setValue(RandomUtility.randomInteger(factorSize) + 1);
             });
             probabilityVector.scaleValues(1F / probabilityVector.getSum(false));
         }
@@ -106,11 +106,11 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
             float rate = term.getValue();
             rate = (rate - userMus.getValue(userIndex)) / userSigmas.getValue(userIndex);
             term.setValue(rate);
-            probabilityTensor.setValue(userIndex, itemIndex, new float[numberOfFactors]);
+            probabilityTensor.setValue(userIndex, itemIndex, new float[factorSize]);
         }
 
-        itemMus = DenseMatrix.valueOf(itemSize, numberOfFactors);
-        itemSigmas = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        itemMus = DenseMatrix.valueOf(itemSize, factorSize);
+        itemSigmas = DenseMatrix.valueOf(itemSize, factorSize);
         for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
             int size = itemVector.getElementSize();
@@ -120,7 +120,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
             float mu = itemVector.getSum(false) / size;
             float sigma = itemVector.getVariance(mu);
             sigma = (float) Math.sqrt(sigma / size);
-            for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+            for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                 itemMus.setValue(itemIndex, topicIndex, mu + smallValue * RandomUtility.randomFloat(1F));
                 itemSigmas.setValue(itemIndex, topicIndex, sigma + smallValue * RandomUtility.randomFloat(1F));
             }
@@ -130,13 +130,13 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
     @Override
     protected void eStep() {
         // variational inference to compute Q
-        float[] numerators = new float[numberOfFactors];
+        float[] numerators = new float[factorSize];
         for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow();
             int itemIndex = term.getColumn();
             float rate = term.getValue();
             float denominator = 0F;
-            for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+            for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                 float pdf = GaussianUtility.probabilityDensity(rate, itemMus.getValue(itemIndex, topicIndex), itemSigmas.getValue(itemIndex, topicIndex));
                 float value = (float) Math.pow(userTopicProbabilities.getValue(userIndex, topicIndex) * pdf, beta); // Tempered
                 // EM
@@ -144,7 +144,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
                 denominator += value;
             }
             float[] probabilities = probabilityTensor.getValue(userIndex, itemIndex);
-            for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+            for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                 float probability = (denominator > 0 ? numerators[topicIndex] / denominator : 0);
                 probabilities[topicIndex] = probability;
             }
@@ -153,7 +153,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
 
     @Override
     protected void mStep() {
-        float[] numerators = new float[numberOfFactors];
+        float[] numerators = new float[factorSize];
         // theta_u,z
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
             SparseVector userVector = scoreMatrix.getRowVector(userIndex);
@@ -164,12 +164,12 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
             for (VectorScalar term : userVector) {
                 int itemIndex = term.getIndex();
                 float[] probabilities = probabilityTensor.getValue(userIndex, itemIndex);
-                for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+                for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                     numerators[topicIndex] = probabilities[topicIndex];
                     denominator += numerators[topicIndex];
                 }
             }
-            for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+            for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                 userTopicProbabilities.setValue(userIndex, topicIndex, numerators[topicIndex] / denominator);
             }
         }
@@ -185,7 +185,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
                 int userIndex = term.getIndex();
                 float rate = term.getValue();
                 float[] probabilities = probabilityTensor.getValue(userIndex, itemIndex);
-                for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+                for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                     float probability = probabilities[topicIndex];
                     numerator += rate * probability;
                     denominator += probability;
@@ -197,13 +197,13 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
                 int userIndex = term.getIndex();
                 float rate = term.getValue();
                 float[] probabilities = probabilityTensor.getValue(userIndex, itemIndex);
-                for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+                for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                     double probability = probabilities[topicIndex];
                     numerator += Math.pow(rate - mu, 2) * probability;
                 }
             }
             float sigma = (float) (denominator > 0F ? Math.sqrt(numerator / denominator) : 0F);
-            for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+            for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                 itemMus.setValue(itemIndex, topicIndex, mu);
                 itemSigmas.setValue(itemIndex, topicIndex, sigma);
             }
@@ -215,7 +215,7 @@ public class GPLSARecommender extends ProbabilisticGraphicalRecommender {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float sum = 0F;
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             sum += userTopicProbabilities.getValue(userIndex, topicIndex) * itemMus.getValue(itemIndex, topicIndex);
         }
         instance.setQuantityMark(userMus.getValue(userIndex) + userSigmas.getValue(userIndex) * sum);

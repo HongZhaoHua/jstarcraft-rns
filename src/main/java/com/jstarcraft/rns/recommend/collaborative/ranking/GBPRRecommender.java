@@ -62,8 +62,8 @@ public class GBPRRecommender extends MatrixFactorizationRecommender {
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             totalError = 0F;
             // TODO 考虑重构
-            DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
-            DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, numberOfFactors);
+            DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, factorSize);
+            DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, factorSize);
 
             for (int sampleIndex = 0, sampleTimes = userSize * 100; sampleIndex < sampleTimes; sampleIndex++) {
                 int userIndex, positiveItemIndex, negativeItemIndex;
@@ -104,34 +104,34 @@ public class GBPRRecommender extends MatrixFactorizationRecommender {
 
                 // update bi, bj
                 float positiveBias = itemBiases.getValue(positiveItemIndex);
-                itemBiases.shiftValue(positiveItemIndex, learnRate * (value - regBias * positiveBias));
+                itemBiases.shiftValue(positiveItemIndex, learnRatio * (value - regBias * positiveBias));
                 float negativeBias = itemBiases.getValue(negativeItemIndex);
-                itemBiases.shiftValue(negativeItemIndex, learnRate * (-value - regBias * negativeBias));
+                itemBiases.shiftValue(negativeItemIndex, learnRatio * (-value - regBias * negativeBias));
 
                 // update Pw
                 float averageWeight = 1F / memberSet.size();
-                float memberSums[] = new float[numberOfFactors];
+                float memberSums[] = new float[factorSize];
                 for (int memberIndex : memberSet) {
                     float delta = memberIndex == userIndex ? 1F : 0F;
-                    for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                    for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                         float memberFactor = userFactors.getValue(memberIndex, factorIndex);
                         float positiveFactor = itemFactors.getValue(positiveItemIndex, factorIndex);
                         float negativeFactor = itemFactors.getValue(negativeItemIndex, factorIndex);
                         float deltaGroup = rho * averageWeight * positiveFactor + (1 - rho) * delta * positiveFactor - delta * negativeFactor;
-                        userDeltas.shiftValue(memberIndex, factorIndex, learnRate * (value * deltaGroup - userRegularization * memberFactor));
+                        userDeltas.shiftValue(memberIndex, factorIndex, learnRatio * (value * deltaGroup - userRegularization * memberFactor));
                         memberSums[factorIndex] += memberFactor;
                     }
                 }
 
                 // update itemFactors
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float userFactor = userFactors.getValue(userIndex, factorIndex);
                     float positiveFactor = itemFactors.getValue(positiveItemIndex, factorIndex);
                     float negativeFactor = itemFactors.getValue(negativeItemIndex, factorIndex);
                     float positiveDelta = rho * averageWeight * memberSums[factorIndex] + (1 - rho) * userFactor;
-                    itemDeltas.shiftValue(positiveItemIndex, factorIndex, learnRate * (value * positiveDelta - itemRegularization * positiveFactor));
+                    itemDeltas.shiftValue(positiveItemIndex, factorIndex, learnRatio * (value * positiveDelta - itemRegularization * positiveFactor));
                     float negativeDelta = -userFactor;
-                    itemDeltas.shiftValue(negativeItemIndex, factorIndex, learnRate * (value * negativeDelta - itemRegularization * negativeFactor));
+                    itemDeltas.shiftValue(negativeItemIndex, factorIndex, learnRatio * (value * negativeDelta - itemRegularization * negativeFactor));
                 }
             }
             userFactors.addMatrix(userDeltas, false);

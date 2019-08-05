@@ -39,7 +39,7 @@ public abstract class NeuralNetworkRecommender extends ModelRecommender {
 	/**
 	 * the learning rate of the optimization algorithm
 	 */
-	protected float learnRate;
+	protected float learnRatio;
 
 	/**
 	 * the momentum of the optimization algorithm
@@ -74,7 +74,7 @@ public abstract class NeuralNetworkRecommender extends ModelRecommender {
 		hiddenDimension = configuration.getInteger("recommender.hidden.dimension");
 		hiddenActivation = configuration.getString("recommender.hidden.activation");
 		outputActivation = configuration.getString("recommender.output.activation");
-		learnRate = configuration.getFloat("recommender.iterator.learnrate");
+		learnRatio = configuration.getFloat("recommender.iterator.learnrate");
 		momentum = configuration.getFloat("recommender.iterator.momentum");
 		weightRegularization = configuration.getFloat("recommender.weight.regularization");
 	}

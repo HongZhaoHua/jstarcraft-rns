@@ -93,12 +93,12 @@ public class TrustSVDRecommender extends SocialRecommender {
 
         // initialize trusteeFactors and impitemExplicitFactors
         trusterFactors = userFactors;
-        trusteeFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
+        trusteeFactors = DenseMatrix.valueOf(userSize, factorSize);
         trusteeFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
         itemExplicitFactors = itemFactors;
-        itemImplicitFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        itemImplicitFactors = DenseMatrix.valueOf(itemSize, factorSize);
         itemImplicitFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -132,8 +132,8 @@ public class TrustSVDRecommender extends SocialRecommender {
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             totalError = 0F;
             // temp user Factors and trustee factors
-            DenseMatrix trusterDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
-            DenseMatrix trusteeDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
+            DenseMatrix trusterDeltas = DenseMatrix.valueOf(userSize, factorSize);
+            DenseMatrix trusteeDeltas = DenseMatrix.valueOf(userSize, factorSize);
 
             for (MatrixScalar term : scoreMatrix) {
                 int trusterIndex = term.getRow(); // user userIdx
@@ -147,7 +147,7 @@ public class TrustSVDRecommender extends SocialRecommender {
                 // TODO 考虑重构减少迭代
                 DenseVector trusterVector = trusterFactors.getRowVector(trusterIndex);
                 DenseVector itemExplicitVector = itemExplicitFactors.getRowVector(itemExplicitIndex);
-                float predict = meanOfScore + userBias + itemBias + scalar.dotProduct(trusterVector, itemExplicitVector).getValue();
+                float predict = meanScore + userBias + itemBias + scalar.dotProduct(trusterVector, itemExplicitVector).getValue();
 
                 // get the implicit influence predict rating using items rated
                 // by user userIdx
@@ -185,13 +185,13 @@ public class TrustSVDRecommender extends SocialRecommender {
                 // update factors
                 // stochastic gradient descent sgd
                 float sgd = error + regBias * trusterWeight * userBias;
-                userBiases.shiftValue(trusterIndex, -learnRate * sgd);
+                userBiases.shiftValue(trusterIndex, -learnRatio * sgd);
                 sgd = error + regBias * itemExplicitWeight * itemBias;
-                itemBiases.shiftValue(itemExplicitIndex, -learnRate * sgd);
+                itemBiases.shiftValue(itemExplicitIndex, -learnRatio * sgd);
                 totalError += regBias * trusterWeight * userBias * userBias + regBias * itemExplicitWeight * itemBias * itemBias;
 
-                float[] itemSums = new float[numberOfFactors];
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                float[] itemSums = new float[factorSize];
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float sum = 0F;
                     for (VectorScalar rateTerm : rateVector) {
                         int itemImplicitIndex = rateTerm.getIndex();
@@ -200,8 +200,8 @@ public class TrustSVDRecommender extends SocialRecommender {
                     itemSums[factorIndex] = trusterDenominator > 0F ? sum / trusterDenominator : sum;
                 }
 
-                float[] trusteesSums = new float[numberOfFactors];
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                float[] trusteesSums = new float[factorSize];
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float sum = 0F;
                     for (VectorScalar socialTerm : socialVector) {
                         int trusteeIndex = socialTerm.getIndex();
@@ -210,7 +210,7 @@ public class TrustSVDRecommender extends SocialRecommender {
                     trusteesSums[factorIndex] = trusteeDenominator > 0F ? sum / trusteeDenominator : sum;
                 }
 
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float userFactor = trusterFactors.getValue(trusterIndex, factorIndex);
                     float itemFactor = itemExplicitFactors.getValue(itemExplicitIndex, factorIndex);
                     float userDelta = error * itemFactor + userRegularization * trusterWeight * userFactor;
@@ -218,7 +218,7 @@ public class TrustSVDRecommender extends SocialRecommender {
                     // update trusterDeltas
                     trusterDeltas.shiftValue(trusterIndex, factorIndex, userDelta);
                     // update itemExplicitFactors
-                    itemExplicitFactors.shiftValue(itemExplicitIndex, factorIndex, -learnRate * itemDelta);
+                    itemExplicitFactors.shiftValue(itemExplicitIndex, factorIndex, -learnRatio * itemDelta);
                     totalError += userRegularization * trusterWeight * userFactor * userFactor + itemRegularization * itemExplicitWeight * itemFactor * itemFactor;
 
                     // update itemImplicitFactors
@@ -227,7 +227,7 @@ public class TrustSVDRecommender extends SocialRecommender {
                         float itemImplicitFactor = itemImplicitFactors.getValue(itemImplicitIndex, factorIndex);
                         float itemImplicitWeight = itemWeights.getValue(itemImplicitIndex);
                         float itemImplicitDelta = error * itemFactor / trusterDenominator + itemRegularization * itemImplicitWeight * itemImplicitFactor;
-                        itemImplicitFactors.shiftValue(itemImplicitIndex, factorIndex, -learnRate * itemImplicitDelta);
+                        itemImplicitFactors.shiftValue(itemImplicitIndex, factorIndex, -learnRatio * itemImplicitDelta);
                         totalError += itemRegularization * itemImplicitWeight * itemImplicitFactor * itemImplicitFactor;
                     }
 
@@ -256,7 +256,7 @@ public class TrustSVDRecommender extends SocialRecommender {
 
                 float trusterWeight = trusterWeights.getValue(trusterIndex);
                 // update trusterDeltas,trusteeDeltas
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float trusterFactor = trusterFactors.getValue(trusterIndex, factorIndex);
                     float trusteeFactor = trusteeFactors.getValue(trusteeIndex, factorIndex);
                     trusterDeltas.shiftValue(trusterIndex, factorIndex, error * trusteeFactor + socialRegularization * trusterWeight * trusterFactor);
@@ -269,13 +269,13 @@ public class TrustSVDRecommender extends SocialRecommender {
                 int row = element.getRow();
                 int column = element.getColumn();
                 float value = element.getValue();
-                element.setValue(value + trusterDeltas.getValue(row, column) * -learnRate);
+                element.setValue(value + trusterDeltas.getValue(row, column) * -learnRatio);
             });
             trusteeFactors.iterateElement(MathCalculator.PARALLEL, (element) -> {
                 int row = element.getRow();
                 int column = element.getColumn();
                 float value = element.getValue();
-                element.setValue(value + trusteeDeltas.getValue(row, column) * -learnRate);
+                element.setValue(value + trusteeDeltas.getValue(row, column) * -learnRatio);
             });
 
             totalError *= 0.5F;
@@ -302,7 +302,7 @@ public class TrustSVDRecommender extends SocialRecommender {
         DefaultScalar scalar = DefaultScalar.getInstance();
         DenseVector trusterVector = trusterFactors.getRowVector(userIndex);
         DenseVector itemExplicitVector = itemExplicitFactors.getRowVector(itemIndex);
-        float value = meanOfScore + userBiases.getValue(userIndex) + itemBiases.getValue(itemIndex) + scalar.dotProduct(trusterVector, itemExplicitVector).getValue();
+        float value = meanScore + userBiases.getValue(userIndex) + itemBiases.getValue(itemIndex) + scalar.dotProduct(trusterVector, itemExplicitVector).getValue();
 
         // the implicit influence of items rated by user in the past on the
         // ratings of unknown items in the future.

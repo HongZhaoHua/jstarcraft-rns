@@ -29,7 +29,7 @@ public class CLiMFRecommender extends MatrixFactorizationRecommender {
 	protected void doPractice() {
 		List<IntSet> userItemSet = getUserItemSet(scoreMatrix);
 
-		float[] factorValues = new float[numberOfFactors];
+		float[] factorValues = new float[factorSize];
 
 		for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
 			totalError = 0F;
@@ -59,7 +59,7 @@ public class CLiMFRecommender extends MatrixFactorizationRecommender {
 					scalar.setValue(gradient);
 				});
 
-				for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+				for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
 					float factorValue = -userRegularization * userFactors.getValue(userIndex, factorIndex);
 					int leftIndex = 0;
 					for (int itemIndex : itemSet) {
@@ -82,7 +82,7 @@ public class CLiMFRecommender extends MatrixFactorizationRecommender {
 				int leftIndex = 0;
 				for (int itemIndex : itemSet) {
 					float logisticValue = logisticVector.getValue(leftIndex);
-					for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+					for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
 						float userFactorValue = userFactors.getValue(userIndex, factorIndex);
 						float itemFactorValue = itemFactors.getValue(itemIndex, factorIndex);
 						float judgeValue = 1F;
@@ -95,13 +95,13 @@ public class CLiMFRecommender extends MatrixFactorizationRecommender {
 							}
 							rightIndex++;
 						}
-						itemFactors.shiftValue(itemIndex, factorIndex, learnRate * factorValue);
+						itemFactors.shiftValue(itemIndex, factorIndex, learnRatio * factorValue);
 					}
 					leftIndex++;
 				}
 
-				for (int factorIdx = 0; factorIdx < numberOfFactors; factorIdx++) {
-					userFactors.shiftValue(userIndex, factorIdx, learnRate * factorValues[factorIdx]);
+				for (int factorIdx = 0; factorIdx < factorSize; factorIdx++) {
+					userFactors.shiftValue(userIndex, factorIdx, learnRatio * factorValues[factorIdx]);
 				}
 
 				// TODO 获取预测值
@@ -120,7 +120,7 @@ public class CLiMFRecommender extends MatrixFactorizationRecommender {
 							totalError += (float) Math.log(1 - LogisticUtility.getValue(compareValue - predictValue));
 						}
 					}
-					for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+					for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
 						float userFactorValue = userFactors.getValue(userIndex, factorIndex);
 						float itemFactorValue = itemFactors.getValue(itemIndex, factorIndex);
 						totalError += -0.5 * (userRegularization * userFactorValue * userFactorValue + itemRegularization * itemFactorValue * itemFactorValue);

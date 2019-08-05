@@ -120,9 +120,9 @@ public abstract class BHFreeRecommender extends ProbabilisticGraphicalRecommende
         numberOfItemTopics = configuration.getInteger("recommender.bhfree.item.topic.number", 10);
         initAlpha = configuration.getFloat("recommender.bhfree.alpha", 1.0f / numberOfUserTopics);
         initBeta = configuration.getFloat("recommender.bhfree.beta", 1.0f / numberOfItemTopics);
-        initGamma = configuration.getFloat("recommender.bhfree.gamma", 1.0f / numberOfScores);
+        initGamma = configuration.getFloat("recommender.bhfree.gamma", 1.0f / scoreSize);
         initSigma = configuration.getFloat("recommender.sigma", 1.0f / itemSize);
-        numberOfScores = scoreIndexes.size();
+        scoreSize = scoreIndexes.size();
 
         // TODO 考虑重构(整合为UserTopic对象)
         user2TopicNumbers = DenseMatrix.valueOf(userSize, numberOfUserTopics);
@@ -131,7 +131,7 @@ public abstract class BHFreeRecommender extends ProbabilisticGraphicalRecommende
         userTopic2ItemTopicNumbers = DenseMatrix.valueOf(numberOfUserTopics, numberOfItemTopics);
         userTopicNumbers = DenseVector.valueOf(numberOfUserTopics);
 
-        userTopic2ItemTopicRateNumbers = new int[numberOfUserTopics][numberOfItemTopics][numberOfScores];
+        userTopic2ItemTopicRateNumbers = new int[numberOfUserTopics][numberOfItemTopics][scoreSize];
         userTopic2ItemTopicItemNumbers = new int[numberOfUserTopics][numberOfItemTopics][itemSize];
 
         topicMatrix = new SparseTable<>(true, userSize, itemSize, new Int2ObjectRBTreeMap<>());
@@ -162,8 +162,8 @@ public abstract class BHFreeRecommender extends ProbabilisticGraphicalRecommende
         // TODO 考虑重构为一个对象
         user2TopicSums = DenseMatrix.valueOf(userSize, numberOfUserTopics);
         userTopic2ItemTopicSums = DenseMatrix.valueOf(numberOfUserTopics, numberOfItemTopics);
-        userTopic2ItemTopicRateSums = new double[numberOfUserTopics][numberOfItemTopics][numberOfScores];
-        userTopic2ItemTopicRateProbabilities = new double[numberOfUserTopics][numberOfItemTopics][numberOfScores];
+        userTopic2ItemTopicRateSums = new double[numberOfUserTopics][numberOfItemTopics][scoreSize];
+        userTopic2ItemTopicRateProbabilities = new double[numberOfUserTopics][numberOfItemTopics][scoreSize];
         userTopic2ItemTopicItemSums = new double[numberOfUserTopics][numberOfItemTopics][itemSize];
         userTopic2ItemTopicItemProbabilities = new double[numberOfUserTopics][numberOfItemTopics][itemSize];
 
@@ -195,7 +195,7 @@ public abstract class BHFreeRecommender extends ProbabilisticGraphicalRecommende
             topicProbabilities.iterateElement(MathCalculator.SERIAL, (scalar) -> {
                 float value = (user2TopicNumbers.getValue(userIndex, userTopicIndex) + initAlpha) / (userNumbers.getValue(userIndex) + numberOfUserTopics * initAlpha);
                 value *= (userTopic2ItemTopicNumbers.getValue(userTopicIndex, itemTopicIndex) + initBeta) / (userTopicNumbers.getValue(userTopicIndex) + numberOfItemTopics * initBeta);
-                value *= (userTopic2ItemTopicRateNumbers[userTopicIndex][itemTopicIndex][rateIndex] + initGamma) / (userTopic2ItemTopicNumbers.getValue(userTopicIndex, itemTopicIndex) + numberOfScores * initGamma);
+                value *= (userTopic2ItemTopicRateNumbers[userTopicIndex][itemTopicIndex][rateIndex] + initGamma) / (userTopic2ItemTopicNumbers.getValue(userTopicIndex, itemTopicIndex) + scoreSize * initGamma);
                 value *= (userTopic2ItemTopicItemNumbers[userTopicIndex][itemTopicIndex][itemIndex] + initSigma) / (userTopic2ItemTopicNumbers.getValue(userTopicIndex, itemTopicIndex) + itemSize * initSigma);
                 scalar.setValue(value);
             });
@@ -244,8 +244,8 @@ public abstract class BHFreeRecommender extends ProbabilisticGraphicalRecommende
             }
             for (int itemTopic = 0; itemTopic < numberOfItemTopics; itemTopic++) {
                 userTopic2ItemTopicSums.shiftValue(userTopic, itemTopic, (userTopic2ItemTopicNumbers.getValue(userTopic, itemTopic) + initBeta) / (userTopicNumbers.getValue(userTopic) + numberOfItemTopics * initBeta));
-                for (int rateIndex = 0; rateIndex < numberOfScores; rateIndex++) {
-                    userTopic2ItemTopicRateSums[userTopic][itemTopic][rateIndex] += (userTopic2ItemTopicRateNumbers[userTopic][itemTopic][rateIndex] + initGamma) / (userTopic2ItemTopicNumbers.getValue(userTopic, itemTopic) + numberOfScores * initGamma);
+                for (int rateIndex = 0; rateIndex < scoreSize; rateIndex++) {
+                    userTopic2ItemTopicRateSums[userTopic][itemTopic][rateIndex] += (userTopic2ItemTopicRateNumbers[userTopic][itemTopic][rateIndex] + initGamma) / (userTopic2ItemTopicNumbers.getValue(userTopic, itemTopic) + scoreSize * initGamma);
                 }
                 for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                     userTopic2ItemTopicItemSums[userTopic][itemTopic][itemIndex] += (userTopic2ItemTopicItemNumbers[userTopic][itemTopic][itemIndex] + initSigma) / (userTopic2ItemTopicNumbers.getValue(userTopic, itemTopic) + itemSize * initSigma);
@@ -264,7 +264,7 @@ public abstract class BHFreeRecommender extends ProbabilisticGraphicalRecommende
         userTopic2ItemTopicProbabilities.scaleValues(scale);
         for (int userTopic = 0; userTopic < numberOfUserTopics; userTopic++) {
             for (int itemTopic = 0; itemTopic < numberOfItemTopics; itemTopic++) {
-                for (int rateIndex = 0; rateIndex < numberOfScores; rateIndex++) {
+                for (int rateIndex = 0; rateIndex < scoreSize; rateIndex++) {
                     userTopic2ItemTopicRateProbabilities[userTopic][itemTopic][rateIndex] = userTopic2ItemTopicRateSums[userTopic][itemTopic][rateIndex] * scale;
                 }
                 for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {

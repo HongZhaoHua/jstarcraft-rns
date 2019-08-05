@@ -42,7 +42,7 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         regImpItem = configuration.getFloat("recommender.impItem.regularization", 0.015F);
-        factorMatrix = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        factorMatrix = DenseMatrix.valueOf(itemSize, factorSize);
         factorMatrix.iterateElement(MathCalculator.SERIAL, (element) -> {
             element.setValue(distribution.sample().floatValue());
         });
@@ -50,7 +50,7 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
 
     @Override
     protected void doPractice() {
-        DenseVector factorVector = DenseVector.valueOf(numberOfFactors);
+        DenseVector factorVector = DenseVector.valueOf(factorSize);
         for (int epocheIndex = 10; epocheIndex < epocheSize; epocheIndex++) {
             totalError = 0F;
             for (int userIndex = 0; userIndex < userSize; userIndex++) {
@@ -73,23 +73,23 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
                     totalError += error * error;
                     // update user and item bias
                     float userBias = userBiases.getValue(userIndex);
-                    userBiases.shiftValue(userIndex, learnRate * (error - regBias * userBias));
+                    userBiases.shiftValue(userIndex, learnRatio * (error - regBias * userBias));
                     totalError += regBias * userBias * userBias;
                     float itemBias = itemBiases.getValue(itemIndex);
-                    itemBiases.shiftValue(itemIndex, learnRate * (error - regBias * itemBias));
+                    itemBiases.shiftValue(itemIndex, learnRatio * (error - regBias * itemBias));
                     totalError += regBias * itemBias * itemBias;
 
                     // update user and item factors
-                    for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                    for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                         float userFactor = userFactors.getValue(userIndex, factorIndex);
                         float itemFactor = itemFactors.getValue(itemIndex, factorIndex);
-                        userFactors.shiftValue(userIndex, factorIndex, learnRate * (error * itemFactor - userRegularization * userFactor));
-                        itemFactors.shiftValue(itemIndex, factorIndex, learnRate * (error * (userFactor + factorVector.getValue(factorIndex)) - itemRegularization * itemFactor));
+                        userFactors.shiftValue(userIndex, factorIndex, learnRatio * (error * itemFactor - userRegularization * userFactor));
+                        itemFactors.shiftValue(itemIndex, factorIndex, learnRatio * (error * (userFactor + factorVector.getValue(factorIndex)) - itemRegularization * itemFactor));
                         totalError += userRegularization * userFactor * userFactor + itemRegularization * itemFactor * itemFactor;
                         for (VectorScalar innerTerm : userVector) {
                             int index = innerTerm.getIndex();
                             float factor = factorMatrix.getValue(index, factorIndex);
-                            factorMatrix.shiftValue(index, factorIndex, learnRate * (error * itemFactor / scale - regImpItem * factor));
+                            factorMatrix.shiftValue(index, factorIndex, learnRatio * (error * itemFactor / scale - regImpItem * factor));
                             totalError += regImpItem * factor * factor;
                         }
                     }
@@ -106,9 +106,9 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
     }
 
     private float predict(int userIndex, int itemIndex, DenseVector factorVector) {
-        float value = userBiases.getValue(userIndex) + itemBiases.getValue(itemIndex) + meanOfScore;
+        float value = userBiases.getValue(userIndex) + itemBiases.getValue(itemIndex) + meanScore;
         // sum with user factors
-        for (int index = 0; index < numberOfFactors; index++) {
+        for (int index = 0; index < factorSize; index++) {
             value = value + (factorVector.getValue(index) + userFactors.getValue(userIndex, index)) * itemFactors.getValue(itemIndex, index);
         }
         return value;
@@ -120,7 +120,7 @@ public class SVDPlusPlusRecommender extends BiasedMFRecommender {
         int itemIndex = instance.getQualityFeature(itemDimension);
         SparseVector userVector = scoreMatrix.getRowVector(userIndex);
         // TODO 此处需要重构,取消DenseVector.
-        DenseVector factorVector = DenseVector.valueOf(numberOfFactors);
+        DenseVector factorVector = DenseVector.valueOf(factorSize);
         // sum of implicit feedback factors of userIdx with weight Math.sqrt(1.0
         // / userItemsList.get(userIdx).size())
         for (VectorScalar term : userVector) {

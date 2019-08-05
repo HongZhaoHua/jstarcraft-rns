@@ -150,26 +150,26 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
 
         // count variables
         // initialize count variables.
-        userTopicTimes = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userTopicTimes = DenseMatrix.valueOf(userSize, factorSize);
         userTokenNumbers = DenseVector.valueOf(userSize);
 
         // 注意:numItems + 1的最后一个元素代表没有任何记录的概率
-        topicItemBigramTimes = new int[numberOfFactors][itemSize + 1][itemSize];
-        topicItemProbabilities = DenseMatrix.valueOf(numberOfFactors, itemSize + 1);
+        topicItemBigramTimes = new int[factorSize][itemSize + 1][itemSize];
+        topicItemProbabilities = DenseMatrix.valueOf(factorSize, itemSize + 1);
 
         // Logs.debug("topicPreItemCurItemNum consumes {} bytes",
         // Strings.toString(Memory.bytes(topicPreItemCurItemNum)));
 
         // parameters
-        userTopicSums = DenseMatrix.valueOf(userSize, numberOfFactors);
-        topicItemBigramSums = new float[numberOfFactors][itemSize + 1][itemSize];
-        topicItemBigramProbabilities = new float[numberOfFactors][itemSize + 1][itemSize];
+        userTopicSums = DenseMatrix.valueOf(userSize, factorSize);
+        topicItemBigramSums = new float[factorSize][itemSize + 1][itemSize];
+        topicItemBigramProbabilities = new float[factorSize][itemSize + 1][itemSize];
 
         // hyper-parameters
-        alpha = DenseVector.valueOf(numberOfFactors);
+        alpha = DenseVector.valueOf(factorSize);
         alpha.setValues(initAlpha);
 
-        beta = DenseMatrix.valueOf(numberOfFactors, itemSize + 1);
+        beta = DenseMatrix.valueOf(factorSize, itemSize + 1);
         beta.setValues(initBeta);
 
         // initialization
@@ -181,7 +181,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
             for (int index = 0; index < items.size(); index++) {
                 int nextItemIndex = items.get(index);
                 // TODO 需要重构
-                int topicIndex = RandomUtility.randomInteger(numberOfFactors);
+                int topicIndex = RandomUtility.randomInteger(factorSize);
                 topicAssignments.put(userIndex * itemSize + nextItemIndex, topicIndex);
 
                 userTopicTimes.shiftValue(userIndex, topicIndex, 1F);
@@ -193,13 +193,13 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
             }
         }
 
-        randomProbabilities = DenseVector.valueOf(numberOfFactors);
+        randomProbabilities = DenseVector.valueOf(factorSize);
     }
 
     @Override
     protected void eStep() {
         float sumAlpha = alpha.getSum(false);
-        DenseVector topicVector = DenseVector.valueOf(numberOfFactors);
+        DenseVector topicVector = DenseVector.valueOf(factorSize);
         topicVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(beta.getRowVector(scalar.getIndex()).getSum(false));
         });
@@ -256,7 +256,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
                 denominator += GammaUtility.digamma(value + alphaSum) - alphaDigamma;
             }
         }
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             alphaValue = alpha.getValue(topicIndex);
             alphaDigamma = GammaUtility.digamma(alphaValue);
             float numerator = 0F;
@@ -272,7 +272,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
             }
         }
 
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             float betaSum = beta.getRowVector(topicIndex).getSum(false);
             float betaDigamma = GammaUtility.digamma(betaSum);
             float betaValue;
@@ -309,12 +309,12 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
         float value;
         float sumAlpha = alpha.getSum(false);
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
-            for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+            for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                 value = (userTopicTimes.getValue(userIndex, topicIndex) + alpha.getValue(topicIndex)) / (userTokenNumbers.getValue(userIndex) + sumAlpha);
                 userTopicSums.shiftValue(userIndex, topicIndex, value);
             }
         }
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             float betaTopicValue = beta.getRowVector(topicIndex).getSum(false);
             for (int previousItemIndex = 0; previousItemIndex < itemSize + 1; previousItemIndex++) {
                 for (int nextItemIndex = 0; nextItemIndex < itemSize; nextItemIndex++) {
@@ -335,7 +335,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
         userTopicProbabilities = DenseMatrix.copyOf(userTopicSums);
         userTopicProbabilities.scaleValues(1F / numberOfStatistics);
 
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             for (int previousItemIndex = 0; previousItemIndex < itemSize + 1; previousItemIndex++) {
                 for (int nextItemIndex = 0; nextItemIndex < itemSize; nextItemIndex++) {
                     topicItemBigramProbabilities[topicIndex][previousItemIndex][nextItemIndex] = topicItemBigramSums[topicIndex][previousItemIndex][nextItemIndex] / numberOfStatistics;
@@ -353,7 +353,7 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
         // rated
         // item
         float value = 0F;
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             value += userTopicProbabilities.getValue(userIndex, topicIndex) * topicItemBigramProbabilities[topicIndex][rateIndex][itemIndex];
         }
 

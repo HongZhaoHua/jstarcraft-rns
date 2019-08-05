@@ -141,18 +141,18 @@ public class WBPRRecommender extends MatrixFactorizationRecommender {
 
                 // update bias
                 float positiveBias = itemBiases.getValue(positiveItemIndex), negativeBias = itemBiases.getValue(negativeItemIndex);
-                itemBiases.shiftValue(positiveItemIndex, learnRate * (value - biasRegularization * positiveBias));
-                itemBiases.shiftValue(negativeItemIndex, learnRate * (-value - biasRegularization * negativeBias));
+                itemBiases.shiftValue(positiveItemIndex, learnRatio * (value - biasRegularization * positiveBias));
+                itemBiases.shiftValue(negativeItemIndex, learnRatio * (-value - biasRegularization * negativeBias));
                 totalError += biasRegularization * (positiveBias * positiveBias + negativeBias * negativeBias);
 
                 // update user/item vectors
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float userFactor = userFactors.getValue(userIndex, factorIndex);
                     float positiveItemFactor = itemFactors.getValue(positiveItemIndex, factorIndex);
                     float negativeItemFactor = itemFactors.getValue(negativeItemIndex, factorIndex);
-                    userFactors.shiftValue(userIndex, factorIndex, learnRate * (value * (positiveItemFactor - negativeItemFactor) - userRegularization * userFactor));
-                    itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRate * (value * userFactor - itemRegularization * positiveItemFactor));
-                    itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRate * (value * (-userFactor) - itemRegularization * negativeItemFactor));
+                    userFactors.shiftValue(userIndex, factorIndex, learnRatio * (value * (positiveItemFactor - negativeItemFactor) - userRegularization * userFactor));
+                    itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRatio * (value * userFactor - itemRegularization * positiveItemFactor));
+                    itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRatio * (value * (-userFactor) - itemRegularization * negativeItemFactor));
                     totalError += userRegularization * userFactor * userFactor + itemRegularization * positiveItemFactor * positiveItemFactor + itemRegularization * negativeItemFactor * negativeItemFactor;
                 }
             }

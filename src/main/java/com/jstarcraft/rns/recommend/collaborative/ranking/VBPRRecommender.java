@@ -80,12 +80,12 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
             scalar.setValue(distribution.sample().floatValue());
         });
 
-        userFeatures = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userFeatures = DenseMatrix.valueOf(userSize, factorSize);
         userFeatures.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
 
-        featureFactors = DenseMatrix.valueOf(numberOfFactors, numberOfFeatures);
+        featureFactors = DenseMatrix.valueOf(factorSize, numberOfFeatures);
         featureFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -116,7 +116,7 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
             float value = (cell.getValue() - minimumValue) / (maximumValue - minimumValue);
             featureTable.setValue(cell.getRow(), cell.getColumn(), value);
         }
-        factorMatrix = DenseMatrix.valueOf(numberOfFactors, itemSize);
+        factorMatrix = DenseMatrix.valueOf(factorSize, itemSize);
         factorMatrix.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -173,8 +173,8 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
                 totalError += (float) -Math.log(error);
                 // update bias
                 float positiveBias = itemBiases.getValue(positiveItemIndex), negativeBias = itemBiases.getValue(negativeItemIndex);
-                itemBiases.shiftValue(positiveItemIndex, learnRate * (error - biasRegularization * positiveBias));
-                itemBiases.shiftValue(negativeItemIndex, learnRate * (-error - biasRegularization * negativeBias));
+                itemBiases.shiftValue(positiveItemIndex, learnRatio * (error - biasRegularization * positiveBias));
+                itemBiases.shiftValue(negativeItemIndex, learnRatio * (-error - biasRegularization * negativeBias));
                 totalError += biasRegularization * positiveBias * positiveBias + biasRegularization * negativeBias * negativeBias;
                 for (VectorScalar term : positiveItemVector) {
                     featureValues[term.getIndex()] = term.getValue();
@@ -186,24 +186,24 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
                 // 按照因子切割任务实现并发计算.
                 // CountDownLatch factorLatch = new
                 // CountDownLatch(numberOfFactors);
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float userFactor = userFactors.getValue(userIndex, factorIndex);
                     float positiveItemFactor = itemFactors.getValue(positiveItemIndex, factorIndex);
                     float negativeItemFactor = itemFactors.getValue(negativeItemIndex, factorIndex);
-                    userFactors.shiftValue(userIndex, factorIndex, learnRate * (error * (positiveItemFactor - negativeItemFactor) - userRegularization * userFactor));
-                    itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRate * (error * (userFactor) - itemRegularization * positiveItemFactor));
-                    itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRate * (error * (-userFactor) - itemRegularization * negativeItemFactor));
+                    userFactors.shiftValue(userIndex, factorIndex, learnRatio * (error * (positiveItemFactor - negativeItemFactor) - userRegularization * userFactor));
+                    itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRatio * (error * (userFactor) - itemRegularization * positiveItemFactor));
+                    itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRatio * (error * (-userFactor) - itemRegularization * negativeItemFactor));
                     totalError += userRegularization * userFactor * userFactor + itemRegularization * positiveItemFactor * positiveItemFactor + itemRegularization * negativeItemFactor * negativeItemFactor;
 
                     float userFeature = userFeatures.getValue(userIndex, factorIndex);
                     DenseVector featureVector = featureFactors.getRowVector(factorIndex);
-                    userFeatures.shiftValue(userIndex, factorIndex, learnRate * (error * (scalar.dotProduct(featureVector, positiveItemVector).getValue() - scalar.dotProduct(featureVector, negativeItemVector).getValue()) - userRegularization * userFeature));
+                    userFeatures.shiftValue(userIndex, factorIndex, learnRatio * (error * (scalar.dotProduct(featureVector, positiveItemVector).getValue() - scalar.dotProduct(featureVector, negativeItemVector).getValue()) - userRegularization * userFeature));
                     totalError += userRegularization * userFeature * userFeature;
                     featureVector.iterateElement(MathCalculator.SERIAL, (element) -> {
                         int index = element.getIndex();
                         float value = element.getValue();
                         totalError += featureRegularization * value * value;
-                        value += learnRate * (error * userFeature * featureValues[index] - featureRegularization * value);
+                        value += learnRatio * (error * userFeature * featureValues[index] - featureRegularization * value);
                         element.setValue(value);
                     });
                 }
@@ -212,7 +212,7 @@ public class VBPRRecommender extends MatrixFactorizationRecommender {
                     int index = element.getIndex();
                     float value = element.getValue();
                     totalError += featureRegularization * value * value;
-                    value += learnRate * (featureValues[index] - featureRegularization * value);
+                    value += learnRatio * (featureValues[index] - featureRegularization * value);
                     element.setValue(value);
                 });
                 // try {

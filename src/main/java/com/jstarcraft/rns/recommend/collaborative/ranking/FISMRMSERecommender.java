@@ -48,11 +48,11 @@ public class FISMRMSERecommender extends MatrixFactorizationRecommender {
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // 注意:FISM使用itemFactors来组成userFactors
-        userFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(itemSize, factorSize);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, factorSize);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -85,7 +85,7 @@ public class FISMRMSERecommender extends MatrixFactorizationRecommender {
         int[] sampleIndexes = new int[sampleSize];
 
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
-            DenseVector userVector = DenseVector.valueOf(numberOfFactors);
+            DenseVector userVector = DenseVector.valueOf(factorSize);
             totalError = 0F;
             // new training data by sampling negative values
             // R是一个在trainMatrix基础上增加负样本的矩阵.

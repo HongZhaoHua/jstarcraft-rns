@@ -38,7 +38,7 @@ public abstract class MatrixFactorizationRecommender extends ModelRecommender {
     /**
      * learn rate, maximum learning rate
      */
-    protected float learnRate, learnLimit;
+    protected float learnRatio, learnLimit;
 
     /**
      * user latent factors
@@ -53,7 +53,7 @@ public abstract class MatrixFactorizationRecommender extends ModelRecommender {
     /**
      * the number of latent factors;
      */
-    protected int numberOfFactors;
+    protected int factorSize;
 
     /**
      * user regularization
@@ -84,11 +84,11 @@ public abstract class MatrixFactorizationRecommender extends ModelRecommender {
         userRegularization = configuration.getFloat("recommender.user.regularization", 0.01f);
         itemRegularization = configuration.getFloat("recommender.item.regularization", 0.01f);
 
-        numberOfFactors = configuration.getInteger("recommender.factor.number", 10);
+        factorSize = configuration.getInteger("recommender.factor.number", 10);
 
         isLearned = configuration.getBoolean("recommender.learnrate.bolddriver", false);
         learnDecay = configuration.getFloat("recommender.learnrate.decay", 1.0f);
-        learnRate = configuration.getFloat("recommender.iterator.learnrate", 0.01f);
+        learnRatio = configuration.getFloat("recommender.iterator.learnrate", 0.01f);
         learnLimit = configuration.getFloat("recommender.iterator.learnrate.maximum", 1000.0f);
 
         // TODO 此处需要重构
@@ -96,11 +96,11 @@ public abstract class MatrixFactorizationRecommender extends ModelRecommender {
         initStd = configuration.getFloat("recommender.init.std", 0.1F);
 
         distribution = new QuantityProbability(JDKRandomGenerator.class, 0, NormalDistribution.class, initMean, initStd);
-        userFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(userSize, factorSize);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, factorSize);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -135,17 +135,17 @@ public abstract class MatrixFactorizationRecommender extends ModelRecommender {
      * @param iteration the current iteration
      */
     protected void isLearned(int iteration) {
-        if (learnRate < 0F) {
+        if (learnRatio < 0F) {
             return;
         }
         if (isLearned && iteration > 1) {
-            learnRate = Math.abs(currentError) > Math.abs(totalError) ? learnRate * 1.05F : learnRate * 0.5F;
+            learnRatio = Math.abs(currentError) > Math.abs(totalError) ? learnRatio * 1.05F : learnRatio * 0.5F;
         } else if (learnDecay > 0 && learnDecay < 1) {
-            learnRate *= learnDecay;
+            learnRatio *= learnDecay;
         }
         // limit to max-learn-rate after update
-        if (learnLimit > 0 && learnRate > learnLimit) {
-            learnRate = learnLimit;
+        if (learnLimit > 0 && learnRatio > learnLimit) {
+            learnRatio = learnLimit;
         }
     }
 

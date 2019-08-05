@@ -127,10 +127,10 @@ public abstract class UserKNNRecommender extends AbstractRecommender {
 
 	@Override
 	protected void doPractice() {
-		meanOfScore = scoreMatrix.getSum(false) / scoreMatrix.getElementSize();
+		meanScore = scoreMatrix.getSum(false) / scoreMatrix.getElementSize();
 		for (int userIndex = 0; userIndex < userSize; userIndex++) {
 			SparseVector userVector = scoreMatrix.getRowVector(userIndex);
-			userMeans.setValue(userIndex, userVector.getElementSize() > 0 ? userVector.getSum(false) / userVector.getElementSize() : meanOfScore);
+			userMeans.setValue(userIndex, userVector.getElementSize() > 0 ? userVector.getSum(false) / userVector.getElementSize() : meanScore);
 		}
 	}
 

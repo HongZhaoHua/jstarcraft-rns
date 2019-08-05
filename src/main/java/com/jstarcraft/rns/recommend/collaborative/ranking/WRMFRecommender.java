@@ -69,9 +69,9 @@ public class WRMFRecommender extends MatrixFactorizationRecommender {
 	@Override
 	protected void constructEnvironment() {
 		// 缓存特征计算,避免消耗内存
-		factorMatrixStorage.set(DenseMatrix.valueOf(numberOfFactors, numberOfFactors));
-		copyMatrixStorage.set(DenseMatrix.valueOf(numberOfFactors, numberOfFactors));
-		inverseMatrixStorage.set(DenseMatrix.valueOf(numberOfFactors, numberOfFactors));
+		factorMatrixStorage.set(DenseMatrix.valueOf(factorSize, factorSize));
+		copyMatrixStorage.set(DenseMatrix.valueOf(factorSize, factorSize));
+		inverseMatrixStorage.set(DenseMatrix.valueOf(factorSize, factorSize));
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class WRMFRecommender extends MatrixFactorizationRecommender {
 	protected void doPractice() {
 		EnvironmentContext context = EnvironmentContext.getContext();
 		// 缓存特征计算,避免消耗内存
-		DenseMatrix transposeMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
+		DenseMatrix transposeMatrix = DenseMatrix.valueOf(factorSize, factorSize);
 
 		// To be consistent with the symbols in the paper
 		// Updating by using alternative least square (ALS)
@@ -121,13 +121,13 @@ public class WRMFRecommender extends MatrixFactorizationRecommender {
 					// the
 					// same.
 					// Yt * (Cu - itemIdx) * Pu + Yt * Pu
-					DenseVector userFactorVector = DenseVector.valueOf(numberOfFactors);
+					DenseVector userFactorVector = DenseVector.valueOf(factorSize);
 					SparseVector preferenceVector = preferenceMatrix.getRowVector(userIndex);
 					for (int position = 0, size = preferenceVector.getElementSize(); position < size; position++) {
 						int itemIndex = preferenceVector.getIndex(position);
 						float confindence = confindenceVector.getValue(position);
 						float preference = preferenceVector.getValue(position);
-						for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+						for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
 							userFactorVector.shiftValue(factorIndex, preference * (itemFactors.getValue(itemIndex, factorIndex) * confindence + itemFactors.getValue(itemIndex, factorIndex)));
 						}
 					}
@@ -172,13 +172,13 @@ public class WRMFRecommender extends MatrixFactorizationRecommender {
 					// the
 					// same.
 					// Xt * (Ci - itemIdx) * Pu + Xt * Pu
-					DenseVector itemFactorVector = DenseVector.valueOf(numberOfFactors);
+					DenseVector itemFactorVector = DenseVector.valueOf(factorSize);
 					SparseVector preferenceVector = preferenceMatrix.getColumnVector(itemIndex);
 					for (int position = 0, size = preferenceVector.getElementSize(); position < size; position++) {
 						int userIndex = preferenceVector.getIndex(position);
 						float confindence = confindenceVector.getValue(position);
 						float preference = preferenceVector.getValue(position);
-						for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+						for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
 							itemFactorVector.shiftValue(factorIndex, preference * (userFactors.getValue(userIndex, factorIndex) * confindence + userFactors.getValue(userIndex, factorIndex)));
 						}
 					}

@@ -27,7 +27,7 @@ public class ConstantGuessRecommender extends AbstractRecommender {
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // 默认使用最高最低分的平均值
-        constant = (minimumOfScore + maximumOfScore) / 2F;
+        constant = (minimumScore + maximumScore) / 2F;
         // TODO 支持配置分数
         constant = configuration.getFloat("recommend.constant-guess.score", constant);
     }

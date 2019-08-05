@@ -32,17 +32,17 @@ public abstract class ProbabilisticGraphicalRecommender extends ModelRecommender
     /**
      * number of topics
      */
-    protected int numberOfFactors;
+    protected int factorSize;
 
     /** 分数索引 (TODO 考虑取消或迁移.本质为连续特征离散化) */
     protected Float2IntLinkedOpenHashMap scoreIndexes;
 
-    protected int numberOfScores;
+    protected int scoreSize;
 
     /**
      * sample lag (if -1 only one sample taken)
      */
-    protected int numberOfSamples;
+    protected int sampleSize;
 
     /**
      * setup init member method
@@ -52,9 +52,9 @@ public abstract class ProbabilisticGraphicalRecommender extends ModelRecommender
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        numberOfFactors = configuration.getInteger("recommender.topic.number", 10);
+        factorSize = configuration.getInteger("recommender.topic.number", 10);
         burnIn = configuration.getInteger("recommender.pgm.burnin", 100);
-        numberOfSamples = configuration.getInteger("recommender.pgm.samplelag", 100);
+        sampleSize = configuration.getInteger("recommender.pgm.samplelag", 100);
 
         // TODO 此处会与scoreIndexes一起重构,本质为连续特征离散化.
         FloatSet scores = new FloatRBTreeSet();
@@ -67,7 +67,7 @@ public abstract class ProbabilisticGraphicalRecommender extends ModelRecommender
         for (float score : scores) {
             scoreIndexes.put(score, index++);
         }
-        numberOfScores = scoreIndexes.size();
+        scoreSize = scoreIndexes.size();
     }
 
     @Override
@@ -90,7 +90,7 @@ public abstract class ProbabilisticGraphicalRecommender extends ModelRecommender
                 logger.info(message);
             }
             // get statistics after burn-in
-            if ((epocheIndex > burnIn) && (epocheIndex % numberOfSamples == 0)) {
+            if ((epocheIndex > burnIn) && (epocheIndex % sampleSize == 0)) {
                 readoutParameters();
                 if (logger.isInfoEnabled()) {
                     String message = StringUtility.format("readoutParams time is {}", System.currentTimeMillis() - now);

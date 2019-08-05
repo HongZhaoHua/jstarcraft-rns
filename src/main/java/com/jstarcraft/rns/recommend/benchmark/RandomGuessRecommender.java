@@ -28,7 +28,7 @@ public class RandomGuessRecommender extends AbstractRecommender {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         RandomUtility.setSeed(userIndex * itemSize + itemIndex);
-        instance.setQuantityMark(RandomUtility.randomFloat(minimumOfScore, maximumOfScore));
+        instance.setQuantityMark(RandomUtility.randomFloat(minimumScore, maximumScore));
     }
 
 }

@@ -28,7 +28,7 @@ public class BUCMRatingRecommender extends BUCMRecommender {
         for (Entry<Float, Integer> term : scoreIndexes.entrySet()) {
             float rate = term.getKey();
             float probability = 0F;
-            for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+            for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                 probability += userTopicProbabilities.getValue(userIndex, topicIndex) * topicItemProbabilities.getValue(topicIndex, itemIndex) * topicItemRateProbabilities[topicIndex][itemIndex][term.getValue()];
             }
             value += probability * rate;

@@ -74,7 +74,7 @@ public class EALSRecommender extends MatrixFactorizationRecommender {
         if (type == 0 || type == 2) {
             float sumPopularity = 0F;
             for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
-                float alphaPopularity = (float) Math.pow(scoreMatrix.getColumnScope(itemIndex) * 1.0 / numberOfActions, ratio);
+                float alphaPopularity = (float) Math.pow(scoreMatrix.getColumnScope(itemIndex) * 1.0 / actionSize, ratio);
                 confidences[itemIndex] = overallWeight * alphaPopularity;
                 sumPopularity += alphaPopularity;
             }
@@ -122,13 +122,13 @@ public class EALSRecommender extends MatrixFactorizationRecommender {
     @Override
     protected void doPractice() {
         EnvironmentContext context = EnvironmentContext.getContext();
-        DenseMatrix itemDeltas = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
-        DenseMatrix userDeltas = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
+        DenseMatrix itemDeltas = DenseMatrix.valueOf(factorSize, factorSize);
+        DenseMatrix userDeltas = DenseMatrix.valueOf(factorSize, factorSize);
 
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             // Update the Sq cache
-            for (int leftFactorIndex = 0; leftFactorIndex < numberOfFactors; leftFactorIndex++) {
-                for (int rightFactorIndex = leftFactorIndex; rightFactorIndex < numberOfFactors; rightFactorIndex++) {
+            for (int leftFactorIndex = 0; leftFactorIndex < factorSize; leftFactorIndex++) {
+                for (int rightFactorIndex = leftFactorIndex; rightFactorIndex < factorSize; rightFactorIndex++) {
                     float value = 0F;
                     for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                         value += confidences[itemIndex] * itemFactors.getValue(itemIndex, leftFactorIndex) * itemFactors.getValue(itemIndex, rightFactorIndex);
@@ -154,9 +154,9 @@ public class EALSRecommender extends MatrixFactorizationRecommender {
                         itemScores[itemIndex] = scalar.dotProduct(itemVector, factorVector).getValue();
                         itemWeights[itemIndex] = term.getValue();
                     }
-                    for (int leftFactorIndex = 0; leftFactorIndex < numberOfFactors; leftFactorIndex++) {
+                    for (int leftFactorIndex = 0; leftFactorIndex < factorSize; leftFactorIndex++) {
                         float numerator = 0, denominator = userRegularization + itemDeltas.getValue(leftFactorIndex, leftFactorIndex);
-                        for (int rightFactorIndex = 0; rightFactorIndex < numberOfFactors; rightFactorIndex++) {
+                        for (int rightFactorIndex = 0; rightFactorIndex < factorSize; rightFactorIndex++) {
                             if (leftFactorIndex != rightFactorIndex) {
                                 numerator -= userFactors.getValue(userIndex, rightFactorIndex) * itemDeltas.getValue(leftFactorIndex, rightFactorIndex);
                             }
@@ -202,9 +202,9 @@ public class EALSRecommender extends MatrixFactorizationRecommender {
                         userScores[userIndex] = scalar.dotProduct(userVector, factorVector).getValue();
                         userWeights[userIndex] = term.getValue();
                     }
-                    for (int leftFactorIndex = 0; leftFactorIndex < numberOfFactors; leftFactorIndex++) {
+                    for (int leftFactorIndex = 0; leftFactorIndex < factorSize; leftFactorIndex++) {
                         float numerator = 0, denominator = confidences[itemIndex] * userDeltas.getValue(leftFactorIndex, leftFactorIndex) + itemRegularization;
-                        for (int rightFactorIndex = 0; rightFactorIndex < numberOfFactors; rightFactorIndex++) {
+                        for (int rightFactorIndex = 0; rightFactorIndex < factorSize; rightFactorIndex++) {
                             if (leftFactorIndex != rightFactorIndex) {
                                 numerator -= itemFactors.getValue(itemIndex, rightFactorIndex) * userDeltas.getValue(rightFactorIndex, leftFactorIndex);
                             }

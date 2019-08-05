@@ -717,7 +717,7 @@ public class HMMRecommender extends ProbabilisticGraphicalRecommender {
             scalar.setValue((float) (0.5F / (Math.log(beta.getValue(index)) - psiNumerator.getValue(index) / averageDenominator.getValue(index))));
         });
 
-        for (int sampleIndex = 0; sampleIndex < numberOfSamples; sampleIndex++) {
+        for (int sampleIndex = 0; sampleIndex < sampleSize; sampleIndex++) {
             modelNumerator.setValues(0F);
             modelDenominator.setValues(0F);
             {

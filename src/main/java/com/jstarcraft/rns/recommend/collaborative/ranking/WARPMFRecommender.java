@@ -89,14 +89,14 @@ public class WARPMFRecommender extends MatrixFactorizationRecommender {
 
                 totalError += -Math.log(LogisticUtility.getValue(error));
 
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float userFactor = userFactors.getValue(userIndex, factorIndex);
                     float positiveFactor = itemFactors.getValue(positiveItemIndex, factorIndex);
                     float negativeFactor = itemFactors.getValue(negativeItemIndex, factorIndex);
 
-                    userFactors.shiftValue(userIndex, factorIndex, learnRate * (gradient * (positiveFactor - negativeFactor) - userRegularization * userFactor));
-                    itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRate * (gradient * userFactor - itemRegularization * positiveFactor));
-                    itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRate * (gradient * (-userFactor) - itemRegularization * negativeFactor));
+                    userFactors.shiftValue(userIndex, factorIndex, learnRatio * (gradient * (positiveFactor - negativeFactor) - userRegularization * userFactor));
+                    itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRatio * (gradient * userFactor - itemRegularization * positiveFactor));
+                    itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRatio * (gradient * (-userFactor) - itemRegularization * negativeFactor));
                     totalError += userRegularization * userFactor * userFactor + itemRegularization * positiveFactor * positiveFactor + itemRegularization * negativeFactor * negativeFactor;
                 }
             }

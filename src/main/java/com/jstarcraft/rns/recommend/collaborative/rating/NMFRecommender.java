@@ -31,11 +31,11 @@ public class NMFRecommender extends MatrixFactorizationRecommender {
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        userFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(userSize, factorSize);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(0.01F));
         });
-        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, factorSize);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(0.01F));
         });
@@ -56,7 +56,7 @@ public class NMFRecommender extends MatrixFactorizationRecommender {
                 predictVector.iterateElement(MathCalculator.SERIAL, (element) -> {
                     element.setValue(predict(user, element.getIndex()));
                 });
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     DenseVector factorVector = itemFactors.getColumnVector(factorIndex);
                     float rate = scalar.dotProduct(factorVector, userVector).getValue();
                     float predict = scalar.dotProduct(factorVector, predictVector).getValue() + MathUtility.EPSILON;
@@ -75,7 +75,7 @@ public class NMFRecommender extends MatrixFactorizationRecommender {
                 predictVector.iterateElement(MathCalculator.SERIAL, (element) -> {
                     element.setValue(predict(element.getIndex(), item));
                 });
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     DenseVector factorVector = userFactors.getColumnVector(factorIndex);
                     float rate = scalar.dotProduct(factorVector, itemVector).getValue();
                     float predict = scalar.dotProduct(factorVector, predictVector).getValue() + MathUtility.EPSILON;

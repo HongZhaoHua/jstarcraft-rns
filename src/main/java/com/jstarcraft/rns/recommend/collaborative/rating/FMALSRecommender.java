@@ -40,10 +40,10 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
         super.prepare(configuration, model, space);
         // init Q
         // TODO 此处为rateFactors
-        actionFactors = DenseMatrix.valueOf(numberOfActions, numberOfFactors);
+        actionFactors = DenseMatrix.valueOf(actionSize, factorSize);
 
         // construct training appender matrix
-        HashMatrix table = new HashMatrix(true, numberOfActions, numberOfFeatures, new Int2FloatRBTreeMap());
+        HashMatrix table = new HashMatrix(true, actionSize, featureSize, new Int2FloatRBTreeMap());
         int index = 0;
         int order = marker.getQualityOrder();
         for (DataInstance sample : model) {
@@ -55,14 +55,14 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
             index++;
         }
         // TODO 考虑重构(.此处似乎就是FactorizationMachineRecommender.getFeatureVector);
-        featureMatrix = SparseMatrix.valueOf(numberOfActions, numberOfFeatures, table);
+        featureMatrix = SparseMatrix.valueOf(actionSize, featureSize, table);
     }
 
     @Override
     protected void doPractice() {
         DefaultScalar scalar = DefaultScalar.getInstance();
         // precomputing Q and errors, for efficiency
-        DenseVector errorVector = DenseVector.valueOf(numberOfActions);
+        DenseVector errorVector = DenseVector.valueOf(actionSize);
         int index = 0;
         for (DataInstance sample : marker) {
             // TODO 因为每次的data都是1,可以考虑避免重复构建featureVector.
@@ -73,7 +73,7 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
             float error = rate - predict;
             errorVector.setValue(index, error);
 
-            for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+            for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                 float sum = 0F;
                 for (VectorScalar vectorTerm : featureVector) {
                     sum += featureFactors.getValue(vectorTerm.getIndex(), factorIndex) * vectorTerm.getValue();
@@ -95,7 +95,7 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
             float numerator = 0F;
             float denominator = 0F;
 
-            for (int rateIndex = 0; rateIndex < numberOfActions; rateIndex++) {
+            for (int rateIndex = 0; rateIndex < actionSize; rateIndex++) {
                 // TODO 因为此处相当与迭代trainTensor的featureVector,所以h_theta才会是1D.
                 float h_theta = 1F;
                 numerator += globalBias * h_theta * h_theta + h_theta * errorVector.getValue(rateIndex);
@@ -104,7 +104,7 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
             denominator += biasRegularization;
             float bias = numerator / denominator;
             // update errors
-            for (int rateIndex = 0; rateIndex < numberOfActions; rateIndex++) {
+            for (int rateIndex = 0; rateIndex < actionSize; rateIndex++) {
                 float oldError = errorVector.getValue(rateIndex);
                 float newError = oldError + (globalBias - bias);
                 errorVector.setValue(rateIndex, newError);
@@ -116,7 +116,7 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
             totalError += biasRegularization * globalBias * globalBias;
 
             // 1-way interactions
-            for (int featureIndex = 0; featureIndex < numberOfFeatures; featureIndex++) {
+            for (int featureIndex = 0; featureIndex < featureSize; featureIndex++) {
                 float oldWeight = weightVector.getValue(featureIndex);
                 numerator = 0F;
                 denominator = 0F;
@@ -143,8 +143,8 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
             }
 
             // 2-way interactions
-            for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
-                for (int featureIndex = 0; featureIndex < numberOfFeatures; featureIndex++) {
+            for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
+                for (int featureIndex = 0; featureIndex < featureSize; featureIndex++) {
                     float oldValue = featureFactors.getValue(featureIndex, factorIndex);
                     numerator = 0F;
                     denominator = 0F;
@@ -189,11 +189,11 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
     protected float predict(DefaultScalar scalar, MathVector featureVector) {
         float value = super.predict(scalar, featureVector);
 
-        if (value > maximumOfScore) {
-            value = maximumOfScore;
+        if (value > maximumScore) {
+            value = maximumScore;
         }
-        if (value < minimumOfScore) {
-            value = minimumOfScore;
+        if (value < minimumScore) {
+            value = minimumScore;
         }
         return value;
     }

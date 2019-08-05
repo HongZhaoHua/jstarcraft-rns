@@ -25,11 +25,11 @@ public class BUCMRankingRecommender extends BUCMRecommender {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float value = 0F;
-        for (int topicIndex = 0; topicIndex < numberOfFactors; ++topicIndex) {
+        for (int topicIndex = 0; topicIndex < factorSize; ++topicIndex) {
             float sum = 0F;
             for (Entry<Float, Integer> term : scoreIndexes.entrySet()) {
                 double rate = term.getKey();
-                if (rate > meanOfScore) {
+                if (rate > meanScore) {
                     sum += topicItemRateProbabilities[topicIndex][itemIndex][term.getValue()];
                 }
             }

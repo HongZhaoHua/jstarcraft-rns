@@ -71,18 +71,18 @@ public class BiasedMFRecommender extends MatrixFactorizationRecommender {
 
                 // update user and item bias
                 float userBias = userBiases.getValue(userIndex);
-                userBiases.shiftValue(userIndex, learnRate * (error - regBias * userBias));
+                userBiases.shiftValue(userIndex, learnRatio * (error - regBias * userBias));
                 totalError += regBias * userBias * userBias;
                 float itemBias = itemBiases.getValue(itemIndex);
-                itemBiases.shiftValue(itemIndex, learnRate * (error - regBias * itemBias));
+                itemBiases.shiftValue(itemIndex, learnRatio * (error - regBias * itemBias));
                 totalError += regBias * itemBias * itemBias;
 
                 // update user and item factors
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float userFactor = userFactors.getValue(userIndex, factorIndex);
                     float itemFactor = itemFactors.getValue(itemIndex, factorIndex);
-                    userFactors.shiftValue(userIndex, factorIndex, learnRate * (error * itemFactor - userRegularization * userFactor));
-                    itemFactors.shiftValue(itemIndex, factorIndex, learnRate * (error * userFactor - itemRegularization * itemFactor));
+                    userFactors.shiftValue(userIndex, factorIndex, learnRatio * (error * itemFactor - userRegularization * userFactor));
+                    itemFactors.shiftValue(itemIndex, factorIndex, learnRatio * (error * userFactor - itemRegularization * itemFactor));
                     totalError += userRegularization * userFactor * userFactor + itemRegularization * itemFactor * itemFactor;
                 }
             }
@@ -102,7 +102,7 @@ public class BiasedMFRecommender extends MatrixFactorizationRecommender {
         DenseVector userVector = userFactors.getRowVector(userIndex);
         DenseVector itemVector = itemFactors.getRowVector(itemIndex);
         float value = scalar.dotProduct(userVector, itemVector).getValue();
-        value += meanOfScore + userBiases.getValue(userIndex) + itemBiases.getValue(itemIndex);
+        value += meanScore + userBiases.getValue(userIndex) + itemBiases.getValue(itemIndex);
         return value;
     }
 

@@ -73,16 +73,16 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
     @Override
     protected void doPractice() {
         // 缓存特征计算,避免消耗内存
-        DenseMatrix matrixCache = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
-        DenseMatrix copyCache = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
-        DenseVector vectorCache = DenseVector.valueOf(numberOfFactors);
-        DenseMatrix inverseCache = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
+        DenseMatrix matrixCache = DenseMatrix.valueOf(factorSize, factorSize);
+        DenseMatrix copyCache = DenseMatrix.valueOf(factorSize, factorSize);
+        DenseVector vectorCache = DenseVector.valueOf(factorSize);
+        DenseMatrix inverseCache = DenseMatrix.valueOf(factorSize, factorSize);
 
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             // P step: update user vectors
             // 特征权重矩阵和特征权重向量
-            DenseMatrix factorWeightMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
-            DenseVector factorWeightVector = DenseVector.valueOf(numberOfFactors);
+            DenseMatrix factorWeightMatrix = DenseMatrix.valueOf(factorSize, factorSize);
+            DenseVector factorWeightVector = DenseVector.valueOf(factorSize);
             for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 float weight = weightVector.getValue(itemIndex);
                 DenseVector itemVector = itemFactors.getRowVector(itemIndex);
@@ -100,7 +100,7 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
             }
 
             // 用户特征矩阵,用户权重向量,用户评分向量,用户次数向量.
-            DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
+            DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, factorSize);
             DenseVector userWeights = DenseVector.valueOf(userSize);
             DenseVector userScores = DenseVector.valueOf(userSize);
             DenseVector userTimes = DenseVector.valueOf(userSize);
@@ -110,10 +110,10 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
                 SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 
                 // TODO 此处考虑重构,尽量减少数组构建
-                DenseMatrix factorValues = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
-                DenseMatrix copyValues = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
-                DenseVector rateValues = DenseVector.valueOf(numberOfFactors);
-                DenseVector weightValues = DenseVector.valueOf(numberOfFactors);
+                DenseMatrix factorValues = DenseMatrix.valueOf(factorSize, factorSize);
+                DenseMatrix copyValues = DenseMatrix.valueOf(factorSize, factorSize);
+                DenseVector rateValues = DenseVector.valueOf(factorSize);
+                DenseVector weightValues = DenseVector.valueOf(factorSize);
                 float weightSum = 0F, rateSum = 0F, timeSum = userVector.getElementSize();
                 for (VectorScalar term : userVector) {
                     int itemIndex = term.getIndex();
@@ -129,7 +129,7 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
                     // ratings of unrated items will be 0
                     float weight = weightVector.getValue(itemIndex) * rate;
                     float value;
-                    for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                    for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                         value = itemVector.getValue(factorIndex);
                         userDeltas.shiftValue(userIndex, factorIndex, value);
                         rateValues.shiftValue(factorIndex, value * rate);
@@ -161,10 +161,10 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
             }
 
             // Q step: update item vectors
-            DenseMatrix itemFactorMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
-            DenseMatrix itemTimeMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
-            DenseVector itemFactorVector = DenseVector.valueOf(numberOfFactors);
-            DenseVector factorValues = DenseVector.valueOf(numberOfFactors);
+            DenseMatrix itemFactorMatrix = DenseMatrix.valueOf(factorSize, factorSize);
+            DenseMatrix itemTimeMatrix = DenseMatrix.valueOf(factorSize, factorSize);
+            DenseVector itemFactorVector = DenseVector.valueOf(factorSize);
+            DenseVector factorValues = DenseVector.valueOf(factorSize);
             for (int userIndex : userList) {
                 DenseVector userVector = userFactors.getRowVector(userIndex);
                 matrixCache.dotProduct(userVector, userVector, MathCalculator.SERIAL);
@@ -190,9 +190,9 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
                 SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
 
                 // TODO 此处考虑重构,尽量减少数组构建
-                DenseVector rateValues = DenseVector.valueOf(numberOfFactors);
-                DenseVector weightValues = DenseVector.valueOf(numberOfFactors);
-                DenseVector timeValues = DenseVector.valueOf(numberOfFactors);
+                DenseVector rateValues = DenseVector.valueOf(factorSize);
+                DenseVector weightValues = DenseVector.valueOf(factorSize);
+                DenseVector timeValues = DenseVector.valueOf(factorSize);
                 for (VectorScalar term : itemVector) {
                     int userIndex = term.getIndex();
                     float rate = term.getValue();
@@ -200,7 +200,7 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
                     float time = rate * userTimes.getValue(userIndex);
                     float value;
                     DenseVector userVector = userFactors.getRowVector(userIndex);
-                    for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                    for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                         value = userVector.getValue(factorIndex);
                         rateValues.shiftValue(factorIndex, value * rate);
                         weightValues.shiftValue(factorIndex, value * weight);

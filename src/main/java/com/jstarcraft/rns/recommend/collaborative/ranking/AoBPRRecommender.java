@@ -53,8 +53,8 @@ public class AoBPRRecommender extends MatrixFactorizationRecommender {
         // lamda_Item=500;
         loopNumber = (int) (itemSize * Math.log(itemSize));
 
-        factorVariances = new float[numberOfFactors];
-        factorRanks = new int[numberOfFactors][itemSize];
+        factorVariances = new float[factorSize];
+        factorRanks = new int[factorSize][itemSize];
     }
 
     @Override
@@ -74,7 +74,7 @@ public class AoBPRRecommender extends MatrixFactorizationRecommender {
         List<IntSet> userItemSet = getUserItemSet(scoreMatrix);
 
         // TODO 此处需要重构
-        List<Integer> userIndexes = new ArrayList<>(numberOfActions), itemIndexes = new ArrayList<>(numberOfActions);
+        List<Integer> userIndexes = new ArrayList<>(actionSize), itemIndexes = new ArrayList<>(actionSize);
         for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow();
             int itemIndex = term.getColumn();
@@ -83,7 +83,7 @@ public class AoBPRRecommender extends MatrixFactorizationRecommender {
         }
 
         // randoms get a f by p(f|c)
-        DenseVector factorProbabilities = DenseVector.valueOf(numberOfFactors);
+        DenseVector factorProbabilities = DenseVector.valueOf(factorSize);
 
         int sampleCount = 0;
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
@@ -99,7 +99,7 @@ public class AoBPRRecommender extends MatrixFactorizationRecommender {
                 // randomly draw (u, i, j)
                 int userIndex, positiveItemIndex, negativeItemIndex;
                 while (true) {
-                    int random = RandomUtility.randomInteger(numberOfActions);
+                    int random = RandomUtility.randomInteger(actionSize);
                     userIndex = userIndexes.get(random);
                     IntSet itemSet = userItemSet.get(userIndex);
                     if (itemSet.size() == 0 || itemSet.size() == itemSize) {
@@ -137,13 +137,13 @@ public class AoBPRRecommender extends MatrixFactorizationRecommender {
                 totalError += value;
                 value = LogisticUtility.getValue(-error);
 
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float userFactor = userFactors.getValue(userIndex, factorIndex);
                     float positiveFactor = itemFactors.getValue(positiveItemIndex, factorIndex);
                     float negativeFactor = itemFactors.getValue(negativeItemIndex, factorIndex);
-                    userFactors.shiftValue(userIndex, factorIndex, learnRate * (value * (positiveFactor - negativeFactor) - userRegularization * userFactor));
-                    itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRate * (value * userFactor - itemRegularization * positiveFactor));
-                    itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRate * (value * (-userFactor) - itemRegularization * negativeFactor));
+                    userFactors.shiftValue(userIndex, factorIndex, learnRatio * (value * (positiveFactor - negativeFactor) - userRegularization * userFactor));
+                    itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRatio * (value * userFactor - itemRegularization * positiveFactor));
+                    itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRatio * (value * (-userFactor) - itemRegularization * negativeFactor));
                     totalError += userRegularization * userFactor * userFactor + itemRegularization * positiveFactor * positiveFactor + itemRegularization * negativeFactor * negativeFactor;
                 }
             }
@@ -159,7 +159,7 @@ public class AoBPRRecommender extends MatrixFactorizationRecommender {
     // TODO 考虑重构
     private void updateSortListByFactor(List<KeyValue<Integer, Float>> sortList) {
         // echo for each factors
-        for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+        for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
             float sum = 0F;
             DenseVector factorVector = itemFactors.getColumnVector(factorIndex);
             for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {

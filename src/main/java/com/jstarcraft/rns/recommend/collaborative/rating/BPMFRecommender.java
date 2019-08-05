@@ -72,34 +72,34 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
         private DenseMatrix covariance, cholesky, inverse, transpose, gaussian, gamma, wishart, copy;
 
         HyperParameter(int cache, DenseMatrix factors) {
-            if (cache < numberOfFactors) {
-                cache = numberOfFactors;
+            if (cache < factorSize) {
+                cache = factorSize;
             }
             thisVectorCache = new float[cache];
-            thisMatrixCache = new float[cache * numberOfFactors];
+            thisMatrixCache = new float[cache * factorSize];
             thatVectorCache = new float[cache];
-            thatMatrixCache = new float[cache * numberOfFactors];
+            thatMatrixCache = new float[cache * factorSize];
 
-            factorMeans = DenseVector.valueOf(numberOfFactors);
+            factorMeans = DenseVector.valueOf(factorSize);
             float scale = factors.getRowSize();
-            for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+            for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                 factorMeans.setValue(factorIndex, factors.getColumnVector(factorIndex).getSum(false) / scale);
             }
             outerMeans = DenseVector.valueOf(factors.getRowSize());
             innerMeans = DenseVector.valueOf(factors.getRowSize());
-            covariance = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
+            covariance = DenseMatrix.valueOf(factorSize, factorSize);
 
-            cholesky = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
+            cholesky = DenseMatrix.valueOf(factorSize, factorSize);
 
-            inverse = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
-            transpose = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
+            inverse = DenseMatrix.valueOf(factorSize, factorSize);
+            transpose = DenseMatrix.valueOf(factorSize, factorSize);
 
-            randoms = DenseVector.valueOf(numberOfFactors);
-            gaussian = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
-            gamma = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
-            wishart = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
+            randoms = DenseVector.valueOf(factorSize);
+            gaussian = DenseMatrix.valueOf(factorSize, factorSize);
+            gamma = DenseMatrix.valueOf(factorSize, factorSize);
+            wishart = DenseMatrix.valueOf(factorSize, factorSize);
 
-            copy = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
+            copy = DenseMatrix.valueOf(factorSize, factorSize);
 
             factorVariances = MatrixUtility.inverse(MatrixUtility.covariance(factors, outerMeans, innerMeans, covariance), copy, inverse);
         }
@@ -119,7 +119,7 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
             int rowSize = factors.getRowSize();
             int columnSize = factors.getColumnSize();
             // 重复利用内存.
-            DenseVector meanCache = DenseVector.valueOf(numberOfFactors, thisVectorCache);
+            DenseVector meanCache = DenseVector.valueOf(factorSize, thisVectorCache);
             float scale = factors.getRowSize();
             meanCache.iterateElement(MathCalculator.SERIAL, (scalar) -> {
                 int index = scalar.getIndex();
@@ -171,11 +171,11 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
         private void updateParameter(DenseMatrix factorMatrix, SparseVector scoreVector, DenseVector factorVector) throws RecommendException {
             int size = scoreVector.getElementSize();
             // 重复利用内存.
-            DenseMatrix factorCache = DenseMatrix.valueOf(size, numberOfFactors, thisMatrixCache);
+            DenseMatrix factorCache = DenseMatrix.valueOf(size, factorSize, thisMatrixCache);
             MathVector meanCache = DenseVector.valueOf(size, thisVectorCache);
             int index = 0;
             for (VectorScalar term : scoreVector) {
-                meanCache.setValue(index, term.getValue() - meanOfScore);
+                meanCache.setValue(index, term.getValue() - meanScore);
                 MathVector vector = factorMatrix.getRowVector(term.getIndex());
                 factorCache.getRowVector(index).iterateElement(MathCalculator.SERIAL, (scalar) -> {
                     scalar.setValue(vector.getValue(scalar.getIndex()));
@@ -228,12 +228,12 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
         userMatrixes = new DenseMatrix[epocheSize - 1];
         itemMatrixes = new DenseMatrix[epocheSize - 1];
 
-        normalDistribution = new QuantityProbability(JDKRandomGenerator.class, numberOfFactors, NormalDistribution.class, 0D, 1D);
-        userGammaDistributions = new QuantityProbability[numberOfFactors];
-        itemGammaDistributions = new QuantityProbability[numberOfFactors];
-        for (int index = 0; index < numberOfFactors; index++) {
-            userGammaDistributions[index] = new QuantityProbability(JDKRandomGenerator.class, index, GammaDistribution.class, (userSize + numberOfFactors - (index + 1D)) / 2D, 2D);
-            itemGammaDistributions[index] = new QuantityProbability(JDKRandomGenerator.class, index, GammaDistribution.class, (itemSize + numberOfFactors - (index + 1D)) / 2D, 2D);
+        normalDistribution = new QuantityProbability(JDKRandomGenerator.class, factorSize, NormalDistribution.class, 0D, 1D);
+        userGammaDistributions = new QuantityProbability[factorSize];
+        itemGammaDistributions = new QuantityProbability[factorSize];
+        for (int index = 0; index < factorSize; index++) {
+            userGammaDistributions[index] = new QuantityProbability(JDKRandomGenerator.class, index, GammaDistribution.class, (userSize + factorSize - (index + 1D)) / 2D, 2D);
+            itemGammaDistributions[index] = new QuantityProbability(JDKRandomGenerator.class, index, GammaDistribution.class, (itemSize + factorSize - (index + 1D)) / 2D, 2D);
         }
     }
 
@@ -293,7 +293,7 @@ public class BPMFRecommender extends MatrixFactorizationRecommender {
         for (int iterationStep = 0; iterationStep < epocheSize - 1; iterationStep++) {
             DenseVector userVector = userMatrixes[iterationStep].getRowVector(userIndex);
             DenseVector itemVector = itemMatrixes[iterationStep].getRowVector(itemIndex);
-            value = (value * (iterationStep) + meanOfScore + scalar.dotProduct(userVector, itemVector).getValue()) / (iterationStep + 1);
+            value = (value * (iterationStep) + meanScore + scalar.dotProduct(userVector, itemVector).getValue()) / (iterationStep + 1);
         }
         instance.setQuantityMark(value);
     }

@@ -67,9 +67,9 @@ public abstract class EFMRecommender extends MatrixFactorizationRecommender {
 		MemoryQualityAttribute attribute = (MemoryQualityAttribute) space.getQualityAttribute(commentField);
 		Object[] wordValues = attribute.getDatas();
 
-		scoreScale = maximumOfScore - minimumOfScore;
+		scoreScale = maximumScore - minimumScore;
 		numberOfExplicitFeatures = configuration.getInteger("recommender.factor.explicit", 5);
-		numberOfImplicitFeatures = numberOfFactors - numberOfExplicitFeatures;
+		numberOfImplicitFeatures = factorSize - numberOfExplicitFeatures;
 		attentionRegularization = configuration.getFloat("recommender.regularization.lambdax", 0.001F);
 		qualityRegularization = configuration.getFloat("recommender.regularization.lambday", 0.001F);
 		explicitRegularization = configuration.getFloat("recommender.regularization.lambdau", 0.001F);

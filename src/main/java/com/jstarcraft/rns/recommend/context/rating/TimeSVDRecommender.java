@@ -150,11 +150,11 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
         itemSectionBiases.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        itemImplicitFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        itemImplicitFactors = DenseMatrix.valueOf(itemSize, factorSize);
         itemImplicitFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        userImplicitFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userImplicitFactors = DenseMatrix.valueOf(userSize, factorSize);
         userImplicitFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
@@ -168,11 +168,11 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
         userDayScales.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        userExplicitFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userExplicitFactors = DenseMatrix.valueOf(userSize, factorSize);
         userExplicitFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        itemExplicitFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        itemExplicitFactors = DenseMatrix.valueOf(itemSize, factorSize);
         itemExplicitFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
@@ -236,7 +236,7 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
                     // alpha_u
                     float userWeight = userBiasWeights.getValue(userIndex);
                     // mu bi(t)
-                    float predict = meanOfScore + (itemBias + itemSectionBias) * (userScale + dayScale);
+                    float predict = meanScore + (itemBias + itemSectionBias) * (userScale + dayScale);
                     // bu(t)
                     predict += userBias + userWeight * deviation + userDayBias;
                     // qi * yj
@@ -252,13 +252,13 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
                     // qi * pu(t)
                     float[] dayFactors = userDayFactors.get(userIndex, days);
                     if (dayFactors == null) {
-                        dayFactors = new float[numberOfFactors];
-                        for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                        dayFactors = new float[factorSize];
+                        for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                             dayFactors[factorIndex] = RandomUtility.randomFloat(1F);
                         }
                         userDayFactors.put(userIndex, days, dayFactors);
                     }
-                    for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                    for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                         float qik = itemExplicitFactors.getValue(itemExplicitIndex, factorIndex);
                         float puk = userExplicitFactors.getValue(userIndex, factorIndex) + userImplicitFactors.getValue(userIndex, factorIndex) * deviation + dayFactors[factorIndex];
                         predict += puk * qik;
@@ -269,41 +269,41 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
 
                     // update bi
                     float sgd = error * (userScale + dayScale) + regBias * itemBias;
-                    itemBiases.shiftValue(itemExplicitIndex, -learnRate * sgd);
+                    itemBiases.shiftValue(itemExplicitIndex, -learnRatio * sgd);
                     totalError += regBias * itemBias * itemBias;
 
                     // update bi,bin(t)
                     sgd = error * (userScale + dayScale) + regBias * itemSectionBias;
-                    itemSectionBiases.shiftValue(itemExplicitIndex, section, -learnRate * sgd);
+                    itemSectionBiases.shiftValue(itemExplicitIndex, section, -learnRatio * sgd);
                     totalError += regBias * itemSectionBias * itemSectionBias;
 
                     // update cu
                     sgd = error * (itemBias + itemSectionBias) + regBias * userScale;
-                    userScales.shiftValue(userIndex, -learnRate * sgd);
+                    userScales.shiftValue(userIndex, -learnRatio * sgd);
                     totalError += regBias * userScale * userScale;
 
                     // update cut
                     sgd = error * (itemBias + itemSectionBias) + regBias * dayScale;
-                    userDayScales.shiftValue(userIndex, days, -learnRate * sgd);
+                    userDayScales.shiftValue(userIndex, days, -learnRatio * sgd);
                     totalError += regBias * dayScale * dayScale;
 
                     // update bu
                     sgd = error + regBias * userBias;
-                    userBiases.shiftValue(userIndex, -learnRate * sgd);
+                    userBiases.shiftValue(userIndex, -learnRatio * sgd);
                     totalError += regBias * userBias * userBias;
 
                     // update au
                     sgd = error * deviation + regBias * userWeight;
-                    userBiasWeights.shiftValue(userIndex, -learnRate * sgd);
+                    userBiasWeights.shiftValue(userIndex, -learnRatio * sgd);
                     totalError += regBias * userWeight * userWeight;
 
                     // update but
                     sgd = error + regBias * userDayBias;
-                    float delta = userDayBias - learnRate * sgd;
+                    float delta = userDayBias - learnRatio * sgd;
                     userDayBiases.put(userIndex, days, delta);
                     totalError += regBias * userDayBias * userDayBias;
 
-                    for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                    for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                         float userExplicitFactor = userExplicitFactors.getValue(userIndex, factorIndex);
                         float itemExplicitFactor = itemExplicitFactors.getValue(itemExplicitIndex, factorIndex);
                         float userImplicitFactor = userImplicitFactors.getValue(userIndex, factorIndex);
@@ -313,7 +313,7 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
                         sum = 0F;
                         // update userExplicitFactor
                         sgd = error * itemExplicitFactor + userRegularization * userExplicitFactor;
-                        userExplicitFactors.shiftValue(userIndex, factorIndex, -learnRate * sgd);
+                        userExplicitFactors.shiftValue(userIndex, factorIndex, -learnRatio * sgd);
                         totalError += userRegularization * userExplicitFactor * userExplicitFactor;
 
                         // update itemExplicitFactors
@@ -322,12 +322,12 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
                             sum += itemImplicitFactors.getValue(itemImplicitIndex, factorIndex);
                         }
                         sgd = error * (userExplicitFactor + userImplicitFactor * deviation + delta + itemWeight * sum) + itemRegularization * itemExplicitFactor;
-                        itemExplicitFactors.shiftValue(itemExplicitIndex, factorIndex, -learnRate * sgd);
+                        itemExplicitFactors.shiftValue(itemExplicitIndex, factorIndex, -learnRatio * sgd);
                         totalError += itemRegularization * itemExplicitFactor * itemExplicitFactor;
 
                         // update userImplicitFactors
                         sgd = error * itemExplicitFactor * deviation + userRegularization * userImplicitFactor;
-                        userImplicitFactors.shiftValue(userIndex, factorIndex, -learnRate * sgd);
+                        userImplicitFactors.shiftValue(userIndex, factorIndex, -learnRatio * sgd);
                         totalError += userRegularization * userImplicitFactor * userImplicitFactor;
 
                         // update itemImplicitFactors
@@ -336,14 +336,14 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
                             int itemImplicitIndex = rateTerm.getIndex();
                             float itemImplicitFactor = itemImplicitFactors.getValue(itemImplicitIndex, factorIndex);
                             sgd = error * itemWeight * itemExplicitFactor + itemRegularization * itemImplicitFactor;
-                            itemImplicitFactors.shiftValue(itemImplicitIndex, factorIndex, -learnRate * sgd);
+                            itemImplicitFactors.shiftValue(itemImplicitIndex, factorIndex, -learnRatio * sgd);
                             totalError += itemRegularization * itemImplicitFactor * itemImplicitFactor;
                         }
 
                         // update pkt
                         sgd = error * itemExplicitFactor + userRegularization * delta;
                         totalError += userRegularization * delta * delta;
-                        delta = delta - learnRate * sgd;
+                        delta = delta - learnRatio * sgd;
                         dayFactors[factorIndex] = delta;
                     }
 
@@ -377,7 +377,7 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
         int days = days(instant, minTimestamp);
         int section = section(days);
         float deviation = deviation(userIndex, days);
-        float value = meanOfScore;
+        float value = meanScore;
 
         // bi(t): eq. (12)
         value += (itemBiases.getValue(itemIndex) + itemSectionBiases.getValue(itemIndex, section)) * (userScales.getValue(userIndex) + userDayScales.getValue(userIndex, days));
@@ -398,17 +398,17 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
 
         // qi * pu(t)
         float[] dayFactors = userDayFactors.get(userIndex, days);
-        for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+        for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
             float itemExplicitFactor = itemExplicitFactors.getValue(itemIndex, factorIndex);
             // eq. (13)
             float userExplicitFactor = userExplicitFactors.getValue(userIndex, factorIndex) + userImplicitFactors.getValue(userIndex, factorIndex) * deviation;
             userExplicitFactor += (dayFactors == null ? 0F : dayFactors[factorIndex]);
             value += userExplicitFactor * itemExplicitFactor;
         }
-        if (value > maximumOfScore) {
-            value = maximumOfScore;
-        } else if (value < minimumOfScore) {
-            value = minimumOfScore;
+        if (value > maximumScore) {
+            value = maximumScore;
+        } else if (value < minimumScore) {
+            value = minimumScore;
         }
         instance.setQuantityMark(value);
     }

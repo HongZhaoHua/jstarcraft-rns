@@ -43,7 +43,7 @@ public class RankSGDRecommender extends MatrixFactorizationRecommender {
             int index = scalar.getIndex();
             float userSize = scoreMatrix.getColumnScope(index);
             // sample items based on popularity
-            float value = (userSize + 0F) / numberOfActions;
+            float value = (userSize + 0F) / actionSize;
             sum.shiftValue(value);
             scalar.setValue(sum.getValue());
         });
@@ -75,8 +75,8 @@ public class RankSGDRecommender extends MatrixFactorizationRecommender {
                 totalError += error * error;
 
                 // update vectors
-                float value = learnRate * error;
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                float value = learnRatio * error;
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float userFactor = userFactors.getValue(userIndex, factorIndex);
                     float positiveItemFactor = itemFactors.getValue(positiveItemIndex, factorIndex);
                     float negativeItemFactor = itemFactors.getValue(negativeItemIndex, factorIndex);

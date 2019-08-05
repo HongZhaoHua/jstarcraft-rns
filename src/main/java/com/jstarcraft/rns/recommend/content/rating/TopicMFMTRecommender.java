@@ -78,7 +78,7 @@ public class TopicMFMTRecommender extends MatrixFactorizationRecommender {
         lambdaV = configuration.getFloat("recommender.regularization.lambdaV", 0.001F);
         lambdaB = configuration.getFloat("recommender.regularization.lambdaB", 0.001F);
         numberOfTopics = configuration.getInteger("recommender.topic.number", 10);
-        learnRate = configuration.getFloat("recommender.iterator.learnrate", 0.01F);
+        learnRatio = configuration.getFloat("recommender.iterator.learnrate", 0.01F);
         epocheSize = configuration.getInteger("recommender.iterator.maximum", 10);
 
         numberOfDocuments = scoreMatrix.getElementSize();
@@ -172,11 +172,11 @@ public class TopicMFMTRecommender extends MatrixFactorizationRecommender {
 
                 // update user item biases
                 float userBiasValue = userBiases.getValue(userIndex);
-                userBiases.shiftValue(userIndex, learnRate * (error - lambdaB * userBiasValue));
+                userBiases.shiftValue(userIndex, learnRatio * (error - lambdaB * userBiasValue));
                 totalError += lambdaB * userBiasValue * userBiasValue;
 
                 float itemBiasValue = itemBiases.getValue(itemIndex);
-                itemBiases.shiftValue(itemIndex, learnRate * (error - lambdaB * itemBiasValue));
+                itemBiases.shiftValue(itemIndex, learnRatio * (error - lambdaB * itemBiasValue));
                 totalError += lambdaB * itemBiasValue * itemBiasValue;
 
                 // update user item factors
@@ -184,8 +184,8 @@ public class TopicMFMTRecommender extends MatrixFactorizationRecommender {
                     float userFactorValue = userFactors.getValue(userIndex, factorIndex);
                     float itemFactorValue = itemFactors.getValue(itemIndex, factorIndex);
 
-                    userFactors.shiftValue(userIndex, factorIndex, learnRate * (error * itemFactorValue - lambdaU * userFactorValue));
-                    itemFactors.shiftValue(itemIndex, factorIndex, learnRate * (error * userFactorValue - lambdaV * itemFactorValue));
+                    userFactors.shiftValue(userIndex, factorIndex, learnRatio * (error * itemFactorValue - lambdaU * userFactorValue));
+                    itemFactors.shiftValue(itemIndex, factorIndex, learnRatio * (error * userFactorValue - lambdaV * itemFactorValue));
                     totalError += lambdaU * userFactorValue * userFactorValue + lambdaV * itemFactorValue * itemFactorValue;
 
                     SparseVector documentVector = W.getRowVector(documentIndex);
@@ -204,10 +204,10 @@ public class TopicMFMTRecommender extends MatrixFactorizationRecommender {
                                 derivative += w_error * wordFactors.getValue(topicIndex, wordIndex) * documentFactors.getValue(documentIndex, topicIndex) * (-documentFactors.getValue(documentIndex, factorIndex));
                             }
                             // update K1 K2
-                            K += learnRate * lambda * w_error * wordFactors.getValue(topicIndex, wordIndex) * documentFactors.getValue(documentIndex, topicIndex) * (1 - documentFactors.getValue(documentIndex, topicIndex)) * Math.abs(userFactors.getValue(userIndex, topicIndex));
+                            K += learnRatio * lambda * w_error * wordFactors.getValue(topicIndex, wordIndex) * documentFactors.getValue(documentIndex, topicIndex) * (1 - documentFactors.getValue(documentIndex, topicIndex)) * Math.abs(userFactors.getValue(userIndex, topicIndex));
                         }
-                        userFactors.shiftValue(userIndex, factorIndex, learnRate * K * derivative * itemFactors.getValue(itemIndex, factorIndex));
-                        itemFactors.shiftValue(itemIndex, factorIndex, learnRate * K * derivative * userFactors.getValue(userIndex, factorIndex));
+                        userFactors.shiftValue(userIndex, factorIndex, learnRatio * K * derivative * itemFactors.getValue(itemIndex, factorIndex));
+                        itemFactors.shiftValue(itemIndex, factorIndex, learnRatio * K * derivative * userFactors.getValue(userIndex, factorIndex));
                     }
                 }
             }
@@ -242,7 +242,7 @@ public class TopicMFMTRecommender extends MatrixFactorizationRecommender {
     @Override
     protected float predict(int userIndex, int itemIndex) {
         DefaultScalar scalar = DefaultScalar.getInstance();
-        float value = meanOfScore + userBiases.getValue(userIndex) + itemBiases.getValue(itemIndex);
+        float value = meanScore + userBiases.getValue(userIndex) + itemBiases.getValue(itemIndex);
         value += scalar.dotProduct(userFactors.getRowVector(userIndex), itemFactors.getRowVector(itemIndex)).getValue();
         return value;
     }

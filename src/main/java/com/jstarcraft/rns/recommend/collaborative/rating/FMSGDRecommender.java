@@ -66,7 +66,7 @@ public class FMSGDRecommender extends FactorizationMachineRecommender {
 					weightVector.shiftValue(outerIndex, -learnRate * newWeight);
 					totalError += weightRegularization * oldWeight * oldWeight;
 					// 2-way interactions
-					for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+					for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
 						float oldValue = featureFactors.getValue(outerIndex, factorIndex);
 						float newValue = 0F;
 						for (VectorScalar innerTerm : featureVector) {
@@ -94,11 +94,11 @@ public class FMSGDRecommender extends FactorizationMachineRecommender {
 	protected float predict(DefaultScalar scalar, MathVector featureVector) {
 		float value = super.predict(scalar, featureVector);
 
-		if (value > maximumOfScore) {
-			value = maximumOfScore;
+		if (value > maximumScore) {
+			value = maximumScore;
 		}
-		if (value < minimumOfScore) {
-			value = minimumOfScore;
+		if (value < minimumScore) {
+			value = minimumScore;
 		}
 		return value;
 	}

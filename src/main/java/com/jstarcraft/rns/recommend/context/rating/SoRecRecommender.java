@@ -40,15 +40,15 @@ public class SoRecRecommender extends SocialRecommender {
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        userFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(userSize, factorSize);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, factorSize);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        socialFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
+        socialFactors = DenseMatrix.valueOf(userSize, factorSize);
         socialFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
@@ -72,9 +72,9 @@ public class SoRecRecommender extends SocialRecommender {
         DefaultScalar scalar = DefaultScalar.getInstance();
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             totalError = 0F;
-            DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
-            DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, numberOfFactors);
-            DenseMatrix socialDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
+            DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, factorSize);
+            DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, factorSize);
+            DenseMatrix socialDeltas = DenseMatrix.valueOf(userSize, factorSize);
 
             // ratings
             for (MatrixScalar term : scoreMatrix) {
@@ -82,9 +82,9 @@ public class SoRecRecommender extends SocialRecommender {
                 int itemIdx = term.getColumn();
                 float score = term.getValue();
                 float predict = super.predict(userIdx, itemIdx);
-                float error = LogisticUtility.getValue(predict) - (score - minimumOfScore) / (maximumOfScore - minimumOfScore);
+                float error = LogisticUtility.getValue(predict) - (score - minimumScore) / (maximumScore - minimumScore);
                 totalError += error * error;
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float userFactor = userFactors.getValue(userIdx, factorIndex);
                     float itemFactor = itemFactors.getValue(itemIdx, factorIndex);
                     userDeltas.shiftValue(userIdx, factorIndex, LogisticUtility.getGradient(predict) * error * itemFactor + userRegularization * userFactor);
@@ -111,7 +111,7 @@ public class SoRecRecommender extends SocialRecommender {
                 totalError += regRate * socialError * socialError;
 
                 socialPredict = LogisticUtility.getGradient(socialPredict);
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float userFactor = userFactors.getValue(userIndex, factorIndex);
                     float socialFactor = socialFactors.getValue(socialIndex, factorIndex);
                     userDeltas.shiftValue(userIndex, factorIndex, regRate * socialPredict * socialError * socialFactor);
@@ -124,19 +124,19 @@ public class SoRecRecommender extends SocialRecommender {
                 int row = element.getRow();
                 int column = element.getColumn();
                 float value = element.getValue();
-                element.setValue(value + userDeltas.getValue(row, column) * -learnRate);
+                element.setValue(value + userDeltas.getValue(row, column) * -learnRatio);
             });
             itemFactors.iterateElement(MathCalculator.PARALLEL, (element) -> {
                 int row = element.getRow();
                 int column = element.getColumn();
                 float value = element.getValue();
-                element.setValue(value + itemDeltas.getValue(row, column) * -learnRate);
+                element.setValue(value + itemDeltas.getValue(row, column) * -learnRatio);
             });
             socialFactors.iterateElement(MathCalculator.PARALLEL, (element) -> {
                 int row = element.getRow();
                 int column = element.getColumn();
                 float value = element.getValue();
-                element.setValue(value + socialDeltas.getValue(row, column) * -learnRate);
+                element.setValue(value + socialDeltas.getValue(row, column) * -learnRatio);
             });
 
             totalError *= 0.5F;

@@ -48,16 +48,16 @@ public class AspectModelRankingRecommender extends ProbabilisticGraphicalRecomme
 
         // Initialize topic distribution
         // TODO 考虑重构
-        topicProbabilities = DenseVector.valueOf(numberOfFactors);
-        topicSums = DenseVector.valueOf(numberOfFactors);
+        topicProbabilities = DenseVector.valueOf(factorSize);
+        topicSums = DenseVector.valueOf(factorSize);
         topicProbabilities.iterateElement(MathCalculator.SERIAL, (scalar) -> {
-            scalar.setValue(RandomUtility.randomInteger(numberOfFactors) + 1);
+            scalar.setValue(RandomUtility.randomInteger(factorSize) + 1);
         });
         topicProbabilities.scaleValues(1F / topicProbabilities.getSum(false));
 
-        userProbabilities = DenseMatrix.valueOf(numberOfFactors, userSize);
-        userSums = DenseMatrix.valueOf(numberOfFactors, userSize);
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        userProbabilities = DenseMatrix.valueOf(factorSize, userSize);
+        userSums = DenseMatrix.valueOf(factorSize, userSize);
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             DenseVector probabilityVector = userProbabilities.getRowVector(topicIndex);
             probabilityVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
                 float value = scalar.getValue();
@@ -66,9 +66,9 @@ public class AspectModelRankingRecommender extends ProbabilisticGraphicalRecomme
             probabilityVector.scaleValues(1F / probabilityVector.getSum(false));
         }
 
-        itemProbabilities = DenseMatrix.valueOf(numberOfFactors, itemSize);
-        itemSums = DenseMatrix.valueOf(numberOfFactors, itemSize);
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        itemProbabilities = DenseMatrix.valueOf(factorSize, itemSize);
+        itemSums = DenseMatrix.valueOf(factorSize, itemSize);
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             DenseVector probabilityVector = itemProbabilities.getRowVector(topicIndex);
             probabilityVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
                 scalar.setValue(RandomUtility.randomInteger(itemSize) + 1);
@@ -76,7 +76,7 @@ public class AspectModelRankingRecommender extends ProbabilisticGraphicalRecomme
             probabilityVector.scaleValues(1F / probabilityVector.getSum(false));
         }
 
-        probabilities = DenseVector.valueOf(numberOfFactors);
+        probabilities = DenseVector.valueOf(factorSize);
     }
 
     /*
@@ -96,7 +96,7 @@ public class AspectModelRankingRecommender extends ProbabilisticGraphicalRecomme
                 scalar.setValue(value);
             });
             probabilities.scaleValues(1F / probabilities.getSum(false));
-            for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+            for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                 float value = probabilities.getValue(topicIndex) * term.getValue();
                 topicSums.shiftValue(topicIndex, value);
                 userSums.shiftValue(topicIndex, userIndex, value);
@@ -108,7 +108,7 @@ public class AspectModelRankingRecommender extends ProbabilisticGraphicalRecomme
     @Override
     protected void mStep() {
         float scale = 1F / topicSums.getSum(false);
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             topicProbabilities.setValue(topicIndex, topicSums.getValue(topicIndex) * scale);
             float userSum = userProbabilities.getColumnVector(topicIndex).getSum(false);
             for (int userIndex = 0; userIndex < userSize; userIndex++) {
@@ -126,7 +126,7 @@ public class AspectModelRankingRecommender extends ProbabilisticGraphicalRecomme
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float value = 0F;
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             value += userProbabilities.getValue(topicIndex, userIndex) * itemProbabilities.getValue(topicIndex, itemIndex) * topicProbabilities.getValue(topicIndex);
         }
         instance.setQuantityMark(value);

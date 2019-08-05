@@ -63,7 +63,7 @@ public class EFMRankingRecommender extends EFMRecommender {
             int featureIndex = orderIndexes[index];
             value += predictUserFactor(scalar, userIndex, featureIndex) * predictItemFactor(scalar, itemIndex, featureIndex);
         }
-        value = threshold * (value / (featureLimit * maximumOfScore));
+        value = threshold * (value / (featureLimit * maximumScore));
         value = value + (1F - threshold) * predict(userIndex, itemIndex);
         instance.setQuantityMark(value);
     }

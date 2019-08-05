@@ -41,11 +41,11 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
      * appender vector size: number of users + number of items + number of
      * contextual conditions
      */
-    protected int numberOfFeatures;
+    protected int featureSize;
     /**
      * number of factors
      */
-    protected int numberOfFactors;
+    protected int factorSize;
 
     /**
      * weight vector
@@ -82,10 +82,10 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
-        maximumOfScore = configuration.getFloat("recommender.recommender.maxrate", 12F);
-        minimumOfScore = configuration.getFloat("recommender.recommender.minrate", 0F);
+        maximumScore = configuration.getFloat("recommender.recommender.maxrate", 12F);
+        minimumScore = configuration.getFloat("recommender.recommender.minrate", 0F);
 
-        numberOfFactors = configuration.getInteger("recommender.factor.number");
+        factorSize = configuration.getInteger("recommender.factor.number");
 
         // init all weight with zero
         globalBias = 0;
@@ -104,17 +104,17 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
         dimensionSizes = new int[marker.getQualityOrder()];
 
         // TODO 考虑重构,在AbstractRecommender初始化
-        numberOfActions = marker.getSize();
+        actionSize = marker.getSize();
         // initialize the parameters of FM
         // TODO 此处需要重构,外部索引与内部索引的映射转换
         for (int orderIndex = 0, orderSize = marker.getQualityOrder(); orderIndex < orderSize; orderIndex++) {
             Entry<Integer, KeyValue<String, Boolean>> term = marker.getOuterKeyValue(orderIndex);
             dimensionSizes[marker.getQualityInner(term.getValue().getKey())] = space.getQualityAttribute(term.getValue().getKey()).getSize();
-            numberOfFeatures += dimensionSizes[marker.getQualityInner(term.getValue().getKey())];
+            featureSize += dimensionSizes[marker.getQualityInner(term.getValue().getKey())];
         }
-        weightVector = DenseVector.valueOf(numberOfFeatures);
+        weightVector = DenseVector.valueOf(featureSize);
         distribution = new QuantityProbability(JDKRandomGenerator.class, 0, NormalDistribution.class, initMean, initStd);
-        featureFactors = DenseMatrix.valueOf(numberOfFeatures, numberOfFactors);
+        featureFactors = DenseMatrix.valueOf(featureSize, factorSize);
         featureFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -139,7 +139,7 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
             keys[orderIndex] += cursor + instance.getQualityFeature(orderIndex);
             cursor += dimensionSizes[orderIndex];
         }
-        ArrayVector vector = new ArrayVector(numberOfFeatures, keys);
+        ArrayVector vector = new ArrayVector(featureSize, keys);
         vector.setValues(1F);
         return vector;
     }
@@ -162,7 +162,7 @@ public abstract class FactorizationMachineRecommender extends ModelRecommender {
         value += scalar.dotProduct(weightVector, featureVector).getValue();
 
         // 2-way interaction
-        for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+        for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
             float scoreSum = 0F;
             float predictSum = 0F;
             for (VectorScalar vectorTerm : featureVector) {

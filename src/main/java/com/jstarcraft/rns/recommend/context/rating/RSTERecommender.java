@@ -32,11 +32,11 @@ public class RSTERecommender extends SocialRecommender {
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        userFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(userSize, factorSize);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
-        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, factorSize);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
@@ -46,11 +46,11 @@ public class RSTERecommender extends SocialRecommender {
     @Override
     protected void doPractice() {
         DefaultScalar scalar = DefaultScalar.getInstance();
-        DenseVector socialFactors = DenseVector.valueOf(numberOfFactors);
+        DenseVector socialFactors = DenseVector.valueOf(factorSize);
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             totalError = 0F;
-            DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, numberOfFactors);
-            DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, numberOfFactors);
+            DenseMatrix userDeltas = DenseMatrix.valueOf(userSize, factorSize);
+            DenseMatrix itemDeltas = DenseMatrix.valueOf(itemSize, factorSize);
 
             // ratings
             for (int userIndex = 0; userIndex < userSize; userIndex++) {
@@ -58,7 +58,7 @@ public class RSTERecommender extends SocialRecommender {
                 float socialWeight = 0F;
                 socialFactors.setValues(0F);
                 for (VectorScalar socialTerm : socialVector) {
-                    for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                    for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                         socialFactors.setValue(factorIndex, socialFactors.getValue(factorIndex) + socialTerm.getValue() * userFactors.getValue(socialTerm.getIndex(), factorIndex));
                     }
                     socialWeight += socialTerm.getValue();
@@ -67,7 +67,7 @@ public class RSTERecommender extends SocialRecommender {
                 for (VectorScalar rateTerm : scoreMatrix.getRowVector(userIndex)) {
                     int itemIndex = rateTerm.getIndex();
                     float score = rateTerm.getValue();
-                    score = (score - minimumOfScore) / (maximumOfScore - minimumOfScore);
+                    score = (score - minimumScore) / (maximumScore - minimumScore);
                     // compute directly to speed up calculation
                     DenseVector itemVector = itemFactors.getRowVector(itemIndex);
                     float predict = scalar.dotProduct(userVector, itemVector).getValue();
@@ -79,7 +79,7 @@ public class RSTERecommender extends SocialRecommender {
                     float error = LogisticUtility.getValue(predict) - score;
                     totalError += error * error;
                     error = LogisticUtility.getGradient(predict) * error;
-                    for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                    for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                         float userFactor = userFactors.getValue(userIndex, factorIndex);
                         float itemFactor = itemFactors.getValue(itemIndex, factorIndex);
                         float userDelta = userSocialRatio * error * itemFactor + userRegularization * userFactor;
@@ -106,7 +106,7 @@ public class RSTERecommender extends SocialRecommender {
                     for (VectorScalar rateTerm : scoreMatrix.getRowVector(trusteeIndex)) {
                         int itemIndex = rateTerm.getIndex();
                         float score = rateTerm.getValue();
-                        score = (score - minimumOfScore) / (maximumOfScore - minimumOfScore);
+                        score = (score - minimumScore) / (maximumScore - minimumScore);
                         // compute prediction for user-item (p, j)
                         DenseVector itemVector = itemFactors.getRowVector(itemIndex);
                         float predict = scalar.dotProduct(userVector, itemVector).getValue();
@@ -118,7 +118,7 @@ public class RSTERecommender extends SocialRecommender {
                         // double pred = predict(p, j, false);
                         float error = LogisticUtility.getValue(predict) - score;
                         error = LogisticUtility.getGradient(predict) * error * term.getValue();
-                        for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                        for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                             userDeltas.shiftValue(trusterIndex, factorIndex, (1 - userSocialRatio) * error * itemFactors.getValue(itemIndex, factorIndex));
                         }
                     }
@@ -128,13 +128,13 @@ public class RSTERecommender extends SocialRecommender {
                 int row = element.getRow();
                 int column = element.getColumn();
                 float value = element.getValue();
-                element.setValue(value + userDeltas.getValue(row, column) * -learnRate);
+                element.setValue(value + userDeltas.getValue(row, column) * -learnRatio);
             });
             itemFactors.iterateElement(MathCalculator.PARALLEL, (element) -> {
                 int row = element.getRow();
                 int column = element.getColumn();
                 float value = element.getValue();
-                element.setValue(value + itemDeltas.getValue(row, column) * -learnRate);
+                element.setValue(value + itemDeltas.getValue(row, column) * -learnRatio);
             });
 
             totalError *= 0.5F;

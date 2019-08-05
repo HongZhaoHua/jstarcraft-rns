@@ -26,10 +26,10 @@ public class MFALSRecommender extends MatrixFactorizationRecommender {
 
     @Override
     protected void doPractice() {
-        DenseVector scoreVector = DenseVector.valueOf(numberOfFactors);
-        DenseMatrix inverseMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
-        DenseMatrix transposeMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
-        DenseMatrix copyMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfFactors);
+        DenseVector scoreVector = DenseVector.valueOf(factorSize);
+        DenseMatrix inverseMatrix = DenseMatrix.valueOf(factorSize, factorSize);
+        DenseMatrix transposeMatrix = DenseMatrix.valueOf(factorSize, factorSize);
+        DenseMatrix copyMatrix = DenseMatrix.valueOf(factorSize, factorSize);
         // TODO 可以考虑只获取有评分的用户?
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             // fix item matrix M, solve user matrix U
@@ -41,7 +41,7 @@ public class MFALSRecommender extends MatrixFactorizationRecommender {
                     continue;
                 }
                 // TODO 此处应该避免valueOf
-                DenseMatrix rateMatrix = DenseMatrix.valueOf(size, numberOfFactors);
+                DenseMatrix rateMatrix = DenseMatrix.valueOf(size, factorSize);
                 DenseVector rateVector = DenseVector.valueOf(size);
                 int index = 0;
                 for (VectorScalar term : userVector) {
@@ -57,7 +57,7 @@ public class MFALSRecommender extends MatrixFactorizationRecommender {
                 // step 3: the updated user matrix wrt user j
                 DenseMatrix matrix = transposeMatrix;
                 matrix.dotProduct(rateMatrix, true, rateMatrix, false, MathCalculator.SERIAL);
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     matrix.shiftValue(factorIndex, factorIndex, userRegularization * size);
                 }
                 scoreVector.dotProduct(rateMatrix, true, rateVector, MathCalculator.SERIAL);
@@ -76,7 +76,7 @@ public class MFALSRecommender extends MatrixFactorizationRecommender {
                 }
 
                 // TODO 此处应该避免valueOf
-                DenseMatrix rateMatrix = DenseMatrix.valueOf(size, numberOfFactors);
+                DenseMatrix rateMatrix = DenseMatrix.valueOf(size, factorSize);
                 DenseVector rateVector = DenseVector.valueOf(size);
                 int index = 0;
                 for (VectorScalar term : itemVector) {
@@ -92,7 +92,7 @@ public class MFALSRecommender extends MatrixFactorizationRecommender {
                 // step 3: the updated item matrix wrt item j
                 DenseMatrix matrix = transposeMatrix;
                 matrix.dotProduct(rateMatrix, true, rateMatrix, false, MathCalculator.SERIAL);
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     matrix.shiftValue(factorIndex, factorIndex, itemRegularization * size);
                 }
                 scoreVector.dotProduct(rateMatrix, true, rateVector, MathCalculator.SERIAL);
@@ -106,10 +106,10 @@ public class MFALSRecommender extends MatrixFactorizationRecommender {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float value = super.predict(userIndex, itemIndex);
-        if (value > maximumOfScore) {
-            value = maximumOfScore;
-        } else if (value < minimumOfScore) {
-            value = minimumOfScore;
+        if (value > maximumScore) {
+            value = maximumScore;
+        } else if (value < minimumScore) {
+            value = minimumScore;
         }
         instance.setQuantityMark(value);
     }

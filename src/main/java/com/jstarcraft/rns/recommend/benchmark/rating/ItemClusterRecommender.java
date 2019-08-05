@@ -49,12 +49,12 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
         // TODO 需要重构
         float loss = 0F;
         for (int i = 0; i < itemSize; i++) {
-            for (int k = 0; k < numberOfFactors; k++) {
+            for (int k = 0; k < factorSize; k++) {
                 float rik = itemTopicProbabilities.getValue(i, k);
                 float pi_k = topicScoreVector.getValue(k);
 
                 float sum_nl = 0F;
-                for (int scoreIndex = 0; scoreIndex < numberOfScores; scoreIndex++) {
+                for (int scoreIndex = 0; scoreIndex < scoreSize; scoreIndex++) {
                     float nir = itemScoreMatrix.getValue(i, scoreIndex);
                     float pkr = topicScoreMatrix.getValue(k, scoreIndex);
 
@@ -75,18 +75,18 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        topicScoreMatrix = DenseMatrix.valueOf(numberOfFactors, numberOfScores);
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        topicScoreMatrix = DenseMatrix.valueOf(factorSize, scoreSize);
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             DenseVector probabilityVector = topicScoreMatrix.getRowVector(topicIndex);
             probabilityVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
                 float value = scalar.getValue();
-                scalar.setValue(RandomUtility.randomInteger(numberOfScores) + 1);
+                scalar.setValue(RandomUtility.randomInteger(scoreSize) + 1);
             });
             probabilityVector.scaleValues(1F / probabilityVector.getSum(false));
         }
-        topicScoreVector = DenseVector.valueOf(numberOfFactors);
+        topicScoreVector = DenseVector.valueOf(factorSize);
         topicScoreVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
-            scalar.setValue(RandomUtility.randomInteger(numberOfFactors) + 1);
+            scalar.setValue(RandomUtility.randomInteger(factorSize) + 1);
         });
         topicScoreVector.scaleValues(1F / topicScoreVector.getSum(false));
         // TODO
@@ -97,7 +97,7 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
             scalar.setValue((float) Math.log(scalar.getValue()));
         });
 
-        itemScoreMatrix = DenseMatrix.valueOf(itemSize, numberOfScores);
+        itemScoreMatrix = DenseMatrix.valueOf(itemSize, scoreSize);
         for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             SparseVector scoreVector = scoreMatrix.getColumnVector(itemIndex);
             for (VectorScalar term : scoreVector) {
@@ -112,7 +112,7 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
         });
         currentError = Float.MIN_VALUE;
 
-        itemTopicProbabilities = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        itemTopicProbabilities = DenseMatrix.valueOf(itemSize, factorSize);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
     protected void mStep() {
         topicScoreVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             int index = scalar.getIndex();
-            for (int scoreIndex = 0; scoreIndex < numberOfScores; scoreIndex++) {
+            for (int scoreIndex = 0; scoreIndex < scoreSize; scoreIndex++) {
                 float numerator = 0F, denorminator = 0F;
                 for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                     float probability = (float) FastMath.exp(itemTopicProbabilities.getValue(itemIndex, index));
@@ -167,7 +167,7 @@ public class ItemClusterRecommender extends ProbabilisticGraphicalRecommender {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float value = 0F;
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             float topicProbability = itemTopicProbabilities.getValue(itemIndex, topicIndex); // probability
             float topicValue = 0F;
             for (Entry<Float, Integer> entry : scoreIndexes.entrySet()) {

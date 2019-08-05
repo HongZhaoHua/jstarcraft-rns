@@ -32,11 +32,11 @@ public class CCDRecommender extends MatrixFactorizationRecommender {
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        userFactors = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userFactors = DenseMatrix.valueOf(userSize, factorSize);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        itemFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        itemFactors = DenseMatrix.valueOf(itemSize, factorSize);
         itemFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -47,7 +47,7 @@ public class CCDRecommender extends MatrixFactorizationRecommender {
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 SparseVector userVector = scoreMatrix.getRowVector(userIndex);
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float userFactor = 0F;
                     float numerator = 0F;
                     float denominator = 0F;
@@ -66,7 +66,7 @@ public class CCDRecommender extends MatrixFactorizationRecommender {
             }
             for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float itemFactor = 0F;
                     float numerator = 0F;
                     float denominator = 0F;
@@ -94,11 +94,11 @@ public class CCDRecommender extends MatrixFactorizationRecommender {
         DefaultScalar scalar = DefaultScalar.getInstance();
         float score = scalar.dotProduct(userFactors.getRowVector(userIndex), itemFactors.getRowVector(itemIndex)).getValue();
         if (score == 0F) {
-            score = meanOfScore;
-        } else if (score > maximumOfScore) {
-            score = maximumOfScore;
-        } else if (score < minimumOfScore) {
-            score = minimumOfScore;
+            score = meanScore;
+        } else if (score > maximumScore) {
+            score = maximumScore;
+        } else if (score < minimumScore) {
+            score = minimumScore;
         }
         instance.setQuantityMark(score);
     }

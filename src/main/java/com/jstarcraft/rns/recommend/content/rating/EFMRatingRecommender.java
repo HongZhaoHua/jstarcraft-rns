@@ -22,12 +22,12 @@ public class EFMRatingRecommender extends EFMRecommender {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         float value = predict(userIndex, itemIndex);
-        if (value < minimumOfScore) {
-            instance.setQuantityMark(minimumOfScore);
+        if (value < minimumScore) {
+            instance.setQuantityMark(minimumScore);
             return;
         }
-        if (value > maximumOfScore) {
-            instance.setQuantityMark(maximumOfScore);
+        if (value > maximumScore) {
+            instance.setQuantityMark(maximumScore);
             return;
         }
         instance.setQuantityMark(value);

@@ -88,15 +88,15 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
             term.setValue(1F);
         }
 
-        userTopicSums = DenseMatrix.valueOf(userSize, numberOfFactors);
-        topicItemSums = DenseMatrix.valueOf(numberOfFactors, itemSize);
+        userTopicSums = DenseMatrix.valueOf(userSize, factorSize);
+        topicItemSums = DenseMatrix.valueOf(factorSize, itemSize);
 
         // initialize count variables.
-        userTopicNumbers = DenseMatrix.valueOf(userSize, numberOfFactors);
+        userTopicNumbers = DenseMatrix.valueOf(userSize, factorSize);
         userTokenNumbers = DenseVector.valueOf(userSize);
 
-        topicItemNumbers = DenseMatrix.valueOf(numberOfFactors, itemSize);
-        topicTokenNumbers = DenseVector.valueOf(numberOfFactors);
+        topicItemNumbers = DenseMatrix.valueOf(factorSize, itemSize);
+        topicTokenNumbers = DenseVector.valueOf(factorSize);
 
         // default value:
         // homas L Griffiths and Mark Steyvers. Finding scientific topics.
@@ -105,12 +105,12 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
         /**
          * Dirichlet hyper-parameters of user-topic distribution: typical value is 50/K
          */
-        float initAlpha = configuration.getFloat("recommender.user.dirichlet.prior", 50F / numberOfFactors);
+        float initAlpha = configuration.getFloat("recommender.user.dirichlet.prior", 50F / factorSize);
         /**
          * Dirichlet hyper-parameters of topic-item distribution, typical value is 0.01
          */
         float initBeta = configuration.getFloat("recommender.topic.dirichlet.prior", 0.01F);
-        alpha = DenseVector.valueOf(numberOfFactors);
+        alpha = DenseVector.valueOf(factorSize);
         alpha.setValues(initAlpha);
 
         beta = DenseVector.valueOf(itemSize);
@@ -124,7 +124,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
             int itemIndex = term.getColumn();
             int times = (int) (term.getValue());
             for (int time = 0; time < times; time++) {
-                int topicIndex = RandomUtility.randomInteger(numberOfFactors); // 0
+                int topicIndex = RandomUtility.randomInteger(factorSize); // 0
                                                                                // ~
                 // k-1
 
@@ -141,7 +141,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
             }
         }
 
-        sampleProbabilities = DenseVector.valueOf(numberOfFactors);
+        sampleProbabilities = DenseVector.valueOf(factorSize);
     }
 
     @Override
@@ -206,7 +206,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
                 denominator += GammaUtility.digamma(value + alphaSum) - alphaDigamma;
             }
         }
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             alphaValue = alpha.getValue(topicIndex);
             alphaDigamma = GammaUtility.digamma(alphaValue);
             float numerator = 0F;
@@ -226,7 +226,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
         float betaDigamma = GammaUtility.digamma(betaSum);
         float betaValue;
         denominator = 0F;
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             value = topicTokenNumbers.getValue(topicIndex);
             if (value != 0F) {
                 denominator += GammaUtility.digamma(value + betaSum) - betaDigamma;
@@ -236,7 +236,7 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
             betaValue = beta.getValue(itemIndex);
             betaDigamma = GammaUtility.digamma(betaValue);
             float numerator = 0F;
-            for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+            for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                 value = topicItemNumbers.getValue(topicIndex, itemIndex);
                 if (value != 0F) {
                     numerator += GammaUtility.digamma(value + betaValue) - betaDigamma;
@@ -257,13 +257,13 @@ public class LDARecommender extends ProbabilisticGraphicalRecommender {
         float sumBeta = beta.getSum(false);
         float value;
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
-            for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+            for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                 value = (userTopicNumbers.getValue(userIndex, topicIndex) + alpha.getValue(topicIndex)) / (userTokenNumbers.getValue(userIndex) + sumAlpha);
                 userTopicSums.shiftValue(userIndex, topicIndex, value);
             }
         }
 
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 value = (topicItemNumbers.getValue(topicIndex, itemIndex) + beta.getValue(itemIndex)) / (topicTokenNumbers.getValue(topicIndex) + sumBeta);
                 topicItemSums.shiftValue(topicIndex, itemIndex, value);

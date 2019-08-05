@@ -31,11 +31,11 @@ public class ASVDPlusPlusRecommender extends BiasedMFRecommender {
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        positiveFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        positiveFactors = DenseMatrix.valueOf(itemSize, factorSize);
         positiveFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
-        negativeFactors = DenseMatrix.valueOf(itemSize, numberOfFactors);
+        negativeFactors = DenseMatrix.valueOf(itemSize, factorSize);
         negativeFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {
             scalar.setValue(distribution.sample().floatValue());
         });
@@ -56,40 +56,40 @@ public class ASVDPlusPlusRecommender extends BiasedMFRecommender {
 
                 // update factors
                 float userBiasValue = userBiases.getValue(userIndex);
-                userBiases.shiftValue(userIndex, learnRate * (error - regBias * userBiasValue));
+                userBiases.shiftValue(userIndex, learnRatio * (error - regBias * userBiasValue));
                 float itemBiasValue = itemBiases.getValue(itemIndex);
-                itemBiases.shiftValue(itemIndex, learnRate * (error - regBias * itemBiasValue));
+                itemBiases.shiftValue(itemIndex, learnRatio * (error - regBias * itemBiasValue));
 
                 float squareRoot = (float) Math.sqrt(userVector.getElementSize());
-                float[] positiveSums = new float[numberOfFactors];
-                float[] negativeSums = new float[numberOfFactors];
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                float[] positiveSums = new float[factorSize];
+                float[] negativeSums = new float[factorSize];
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float positiveSum = 0F;
                     float negativeSum = 0F;
                     for (VectorScalar term : userVector) {
                         int ItemIdx = term.getIndex();
                         positiveSum += positiveFactors.getValue(ItemIdx, factorIndex);
-                        negativeSum += negativeFactors.getValue(ItemIdx, factorIndex) * (rate - meanOfScore - userBiases.getValue(userIndex) - itemBiases.getValue(ItemIdx));
+                        negativeSum += negativeFactors.getValue(ItemIdx, factorIndex) * (rate - meanScore - userBiases.getValue(userIndex) - itemBiases.getValue(ItemIdx));
                     }
                     positiveSums[factorIndex] = squareRoot > 0 ? positiveSum / squareRoot : positiveSum;
                     negativeSums[factorIndex] = squareRoot > 0 ? negativeSum / squareRoot : negativeSum;
                 }
 
-                for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+                for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float userFactor = userFactors.getValue(userIndex, factorIndex);
                     float itemFactor = itemFactors.getValue(itemIndex, factorIndex);
                     float userValue = error * itemFactor - userRegularization * userFactor;
                     float itemValue = error * (userFactor + positiveSums[factorIndex] + negativeSums[factorIndex]) - itemRegularization * itemFactor;
-                    userFactors.shiftValue(userIndex, factorIndex, learnRate * userValue);
-                    itemFactors.shiftValue(itemIndex, factorIndex, learnRate * itemValue);
+                    userFactors.shiftValue(userIndex, factorIndex, learnRatio * userValue);
+                    itemFactors.shiftValue(itemIndex, factorIndex, learnRatio * itemValue);
                     for (VectorScalar term : userVector) {
                         int index = term.getIndex();
                         float positiveFactor = positiveFactors.getValue(index, factorIndex);
                         float negativeFactor = negativeFactors.getValue(index, factorIndex);
                         float positiveDelta = error * itemFactor / squareRoot - userRegularization * positiveFactor;
-                        float negativeDelta = error * itemFactor * (rate - meanOfScore - userBiases.getValue(userIndex) - itemBiases.getValue(index)) / squareRoot - userRegularization * negativeFactor;
-                        positiveFactors.shiftValue(index, factorIndex, learnRate * positiveDelta);
-                        negativeFactors.shiftValue(index, factorIndex, learnRate * negativeDelta);
+                        float negativeDelta = error * itemFactor * (rate - meanScore - userBiases.getValue(userIndex) - itemBiases.getValue(index)) / squareRoot - userRegularization * negativeFactor;
+                        positiveFactors.shiftValue(index, factorIndex, learnRatio * positiveDelta);
+                        negativeFactors.shiftValue(index, factorIndex, learnRatio * negativeDelta);
                     }
                 }
             }
@@ -101,7 +101,7 @@ public class ASVDPlusPlusRecommender extends BiasedMFRecommender {
         DefaultScalar scalar = DefaultScalar.getInstance();
         DenseVector userVector = userFactors.getRowVector(userIndex);
         DenseVector itemVector = itemFactors.getRowVector(itemIndex);
-        float value = meanOfScore + userBiases.getValue(userIndex) + itemBiases.getValue(itemIndex) + scalar.dotProduct(userVector, itemVector).getValue();
+        float value = meanScore + userBiases.getValue(userIndex) + itemBiases.getValue(itemIndex) + scalar.dotProduct(userVector, itemVector).getValue();
         SparseVector rateVector = scoreMatrix.getRowVector(userIndex);
         float squareRoot = (float) Math.sqrt(rateVector.getElementSize());
         for (VectorScalar term : rateVector) {
@@ -109,11 +109,11 @@ public class ASVDPlusPlusRecommender extends BiasedMFRecommender {
             DenseVector positiveVector = positiveFactors.getRowVector(itemIndex);
             DenseVector negativeVector = negativeFactors.getRowVector(itemIndex);
             value += scalar.dotProduct(positiveVector, itemVector).getValue() / squareRoot;
-            float scale = term.getValue() - meanOfScore - userBiases.getValue(userIndex) - itemBiases.getValue(itemIndex);
+            float scale = term.getValue() - meanScore - userBiases.getValue(userIndex) - itemBiases.getValue(itemIndex);
             value += scalar.dotProduct(negativeVector, itemVector).getValue() * scale / squareRoot;
         }
         if (Double.isNaN(value)) {
-            value = meanOfScore;
+            value = meanScore;
         }
         return value;
     }

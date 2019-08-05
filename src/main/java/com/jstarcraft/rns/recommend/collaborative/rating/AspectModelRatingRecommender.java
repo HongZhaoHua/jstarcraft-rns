@@ -60,17 +60,17 @@ public class AspectModelRatingRecommender extends ProbabilisticGraphicalRecommen
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // Initialize topic distribution
-        topicProbabilities = DenseVector.valueOf(numberOfFactors);
+        topicProbabilities = DenseVector.valueOf(factorSize);
         topicProbabilities.iterateElement(MathCalculator.SERIAL, (scalar) -> {
-            scalar.setValue(RandomUtility.randomInteger(numberOfFactors) + 1);
+            scalar.setValue(RandomUtility.randomInteger(factorSize) + 1);
         });
         topicProbabilities.scaleValues(1F / topicProbabilities.getSum(false));
-        topicSums = DenseVector.valueOf(numberOfFactors);
+        topicSums = DenseVector.valueOf(factorSize);
 
         // intialize conditional distribution P(u|z)
-        userProbabilities = DenseMatrix.valueOf(numberOfFactors, userSize);
-        userSums = DenseMatrix.valueOf(numberOfFactors, userSize);
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        userProbabilities = DenseMatrix.valueOf(factorSize, userSize);
+        userSums = DenseMatrix.valueOf(factorSize, userSize);
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             DenseVector probabilityVector = userProbabilities.getRowVector(topicIndex);
             probabilityVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
                 scalar.setValue(RandomUtility.randomInteger(userSize) + 1);
@@ -79,9 +79,9 @@ public class AspectModelRatingRecommender extends ProbabilisticGraphicalRecommen
         }
 
         // initialize conditional distribution P(i|z)
-        itemProbabilities = DenseMatrix.valueOf(numberOfFactors, itemSize);
-        itemSums = DenseMatrix.valueOf(numberOfFactors, itemSize);
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        itemProbabilities = DenseMatrix.valueOf(factorSize, itemSize);
+        itemSums = DenseMatrix.valueOf(factorSize, itemSize);
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             DenseVector probabilityVector = itemProbabilities.getRowVector(topicIndex);
             probabilityVector.iterateElement(MathCalculator.SERIAL, (scalar) -> {
                 scalar.setValue(RandomUtility.randomInteger(itemSize) + 1);
@@ -90,14 +90,14 @@ public class AspectModelRatingRecommender extends ProbabilisticGraphicalRecommen
         }
 
         // initialize Q
-        probabilityTensor = new float[numberOfActions][numberOfFactors];
+        probabilityTensor = new float[actionSize][factorSize];
 
         float globalMean = scoreMatrix.getSum(false) / scoreMatrix.getElementSize();
-        meanProbabilities = DenseVector.valueOf(numberOfFactors);
-        varianceProbabilities = DenseVector.valueOf(numberOfFactors);
-        meanSums = DenseVector.valueOf(numberOfFactors);
-        varianceSums = DenseVector.valueOf(numberOfFactors);
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        meanProbabilities = DenseVector.valueOf(factorSize);
+        varianceProbabilities = DenseVector.valueOf(factorSize);
+        meanSums = DenseVector.valueOf(factorSize);
+        varianceSums = DenseVector.valueOf(factorSize);
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             meanProbabilities.setValue(topicIndex, globalMean);
             varianceProbabilities.setValue(topicIndex, 2);
         }
@@ -117,18 +117,18 @@ public class AspectModelRatingRecommender extends ProbabilisticGraphicalRecommen
             int itemIndex = term.getColumn();
             float denominator = 0F;
             float[] numerator = probabilityTensor[actionIndex++];
-            for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+            for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                 float value = topicProbabilities.getValue(topicIndex) * userProbabilities.getValue(topicIndex, userIndex) * itemProbabilities.getValue(topicIndex, itemIndex) * GaussianUtility.probabilityDensity(term.getValue(), meanProbabilities.getValue(topicIndex), varianceProbabilities.getValue(topicIndex));
                 numerator[topicIndex] = value;
                 denominator += value;
             }
-            for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+            for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                 float probability = denominator > 0 ? numerator[topicIndex] / denominator : 0F;
                 numerator[topicIndex] = probability;
             }
 
             float score = term.getValue();
-            for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+            for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                 float probability = numerator[topicIndex];
                 topicSums.shiftValue(topicIndex, probability);
                 userSums.shiftValue(topicIndex, userIndex, probability);
@@ -137,7 +137,7 @@ public class AspectModelRatingRecommender extends ProbabilisticGraphicalRecommen
             }
         }
 
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             float mean = meanSums.getValue(topicIndex) / topicSums.getValue(topicIndex);
             meanProbabilities.setValue(topicIndex, mean);
         }
@@ -145,7 +145,7 @@ public class AspectModelRatingRecommender extends ProbabilisticGraphicalRecommen
         actionIndex = 0;
         for (MatrixScalar term : scoreMatrix) {
             float[] probabilities = probabilityTensor[actionIndex++];
-            for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+            for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                 float mean = meanProbabilities.getValue(topicIndex);
                 float error = term.getValue() - mean;
                 float probability = probabilities[topicIndex];
@@ -156,9 +156,9 @@ public class AspectModelRatingRecommender extends ProbabilisticGraphicalRecommen
 
     @Override
     protected void mStep() {
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             varianceProbabilities.setValue(topicIndex, varianceSums.getValue(topicIndex) / topicSums.getValue(topicIndex));
-            topicProbabilities.setValue(topicIndex, topicSums.getValue(topicIndex) / numberOfActions);
+            topicProbabilities.setValue(topicIndex, topicSums.getValue(topicIndex) / actionSize);
             for (int userIndex = 0; userIndex < userSize; userIndex++) {
                 userProbabilities.setValue(topicIndex, userIndex, userSums.getValue(topicIndex, userIndex) / topicSums.getValue(topicIndex));
             }
@@ -174,14 +174,14 @@ public class AspectModelRatingRecommender extends ProbabilisticGraphicalRecommen
         int itemIndex = instance.getQualityFeature(itemDimension);
         float value = 0F;
         float denominator = 0F;
-        for (int topicIndex = 0; topicIndex < numberOfFactors; topicIndex++) {
+        for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             float weight = topicProbabilities.getValue(topicIndex) * userProbabilities.getValue(topicIndex, userIndex) * itemProbabilities.getValue(topicIndex, itemIndex);
             denominator += weight;
             value += weight * meanProbabilities.getValue(topicIndex);
         }
         value = value / denominator;
         if (Float.isNaN(value)) {
-            value = meanOfScore;
+            value = meanScore;
         }
         instance.setQuantityMark(value);
     }

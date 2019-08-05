@@ -127,8 +127,8 @@ public class PRankDRecommender extends RankSGDRecommender {
 					totalError += error * error;
 
 					// update vectors
-					float learnFactor = learnRate * error;
-					for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+					float learnFactor = learnRatio * error;
+					for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
 						float userFactor = userFactors.getValue(userIndex, factorIndex);
 						float positiveItemFactor = itemFactors.getValue(positiveItemIndex, factorIndex);
 						float negativeItemFactor = itemFactors.getValue(negativeItemIndex, factorIndex);

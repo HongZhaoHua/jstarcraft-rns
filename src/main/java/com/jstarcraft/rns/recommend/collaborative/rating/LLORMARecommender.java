@@ -51,7 +51,7 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         numberOfGlobalFactors = configuration.getInteger("recommender.global.factors.num", 20);
-        numberOfLocalFactors = numberOfFactors;
+        numberOfLocalFactors = factorSize;
 
         globalEpocheSize = configuration.getInteger("recommender.global.iteration.maximum", 100);
         localEpocheSize = epocheSize;
@@ -262,11 +262,11 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
         }
         float score = valueSum / weightSum;
         if (Float.isNaN(score) || score == 0F) {
-            score = meanOfScore;
-        } else if (score < minimumOfScore) {
-            score = minimumOfScore;
-        } else if (score > maximumOfScore) {
-            score = maximumOfScore;
+            score = meanScore;
+        } else if (score < minimumScore) {
+            score = minimumScore;
+        } else if (score > maximumScore) {
+            score = maximumScore;
         }
         instance.setQuantityMark(score);
     }

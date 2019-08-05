@@ -45,10 +45,10 @@ public abstract class AbstractRecommender implements Recommender {
     protected int userSize, itemSize;
 
     /** 最低分数, 最高分数, 平均分数 */
-    protected float minimumOfScore, maximumOfScore, meanOfScore;
+    protected float minimumScore, maximumScore, meanScore;
 
     /** 行为数量(TODO 此字段可能迁移到其它类.为避免重复行为,一般使用matrix或者tensor的元素数量) */
-    protected int numberOfActions;
+    protected int actionSize;
 
     /** 训练矩阵(TODO 准备改名为actionMatrix或者scoreMatrix) */
     protected SparseMatrix scoreMatrix;
@@ -79,12 +79,12 @@ public abstract class AbstractRecommender implements Recommender {
             dataTable.setValue(rowIndex, columnIndex, instance.getQuantityMark());
         }
         scoreMatrix = SparseMatrix.valueOf(userSize, itemSize, dataTable);
-        numberOfActions = scoreMatrix.getElementSize();
+        actionSize = scoreMatrix.getElementSize();
         KeyValue<Float, Float> attribute = scoreMatrix.getBoundary(false);
-        minimumOfScore = attribute.getKey();
-        maximumOfScore = attribute.getValue();
-        meanOfScore = scoreMatrix.getSum(false);
-        meanOfScore /= numberOfActions;
+        minimumScore = attribute.getKey();
+        maximumScore = attribute.getValue();
+        meanScore = scoreMatrix.getSum(false);
+        meanScore /= actionSize;
     }
 
     protected abstract void doPractice();

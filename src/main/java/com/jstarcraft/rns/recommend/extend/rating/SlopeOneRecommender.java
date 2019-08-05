@@ -97,7 +97,7 @@ public class SlopeOneRecommender extends AbstractRecommender {
                 sum += cardinary;
             }
         }
-        instance.setQuantityMark(sum > 0F ? value / sum : meanOfScore);
+        instance.setQuantityMark(sum > 0F ? value / sum : meanScore);
     }
 
 }

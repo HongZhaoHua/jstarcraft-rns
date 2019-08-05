@@ -57,13 +57,13 @@ public class ListwiseMFRecommender extends MatrixFactorizationRecommender {
                     float error = (float) (Math.exp(score) / userExponentials.getValue(userIndex) - Math.log(Math.exp(predict) / exponential)) * LogisticUtility.getGradient(predict);
                     totalError -= error;
                     // update factors
-                    for (int factorIdx = 0; factorIdx < numberOfFactors; factorIdx++) {
+                    for (int factorIdx = 0; factorIdx < factorSize; factorIdx++) {
                         float userFactor = userFactors.getValue(userIndex, factorIdx);
                         float itemFactor = itemFactors.getValue(itemIndex, factorIdx);
                         float userDelta = error * itemFactor - userRegularization * userFactor;
                         float itemDelta = error * userFactor - itemRegularization * itemFactor;
-                        userFactors.shiftValue(userIndex, factorIdx, learnRate * userDelta);
-                        itemFactors.shiftValue(itemIndex, factorIdx, learnRate * itemDelta);
+                        userFactors.shiftValue(userIndex, factorIdx, learnRatio * userDelta);
+                        itemFactors.shiftValue(itemIndex, factorIdx, learnRatio * itemDelta);
                         totalError += 0.5D * userRegularization * userFactor * userFactor + 0.5D * itemRegularization * itemFactor * itemFactor;
                     }
                 }

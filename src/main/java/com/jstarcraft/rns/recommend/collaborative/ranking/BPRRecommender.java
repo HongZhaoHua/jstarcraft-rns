@@ -53,13 +53,13 @@ public class BPRRecommender extends MatrixFactorizationRecommender {
 				totalError += value;
 				value = LogisticUtility.getValue(-error);
 
-				for (int factorIndex = 0; factorIndex < numberOfFactors; factorIndex++) {
+				for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
 					float userFactor = userFactors.getValue(userIndex, factorIndex);
 					float positiveFactor = itemFactors.getValue(positiveItemIndex, factorIndex);
 					float negativeFactor = itemFactors.getValue(negativeItemIndex, factorIndex);
-					userFactors.shiftValue(userIndex, factorIndex, learnRate * (value * (positiveFactor - negativeFactor) - userRegularization * userFactor));
-					itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRate * (value * userFactor - itemRegularization * positiveFactor));
-					itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRate * (value * (-userFactor) - itemRegularization * negativeFactor));
+					userFactors.shiftValue(userIndex, factorIndex, learnRatio * (value * (positiveFactor - negativeFactor) - userRegularization * userFactor));
+					itemFactors.shiftValue(positiveItemIndex, factorIndex, learnRatio * (value * userFactor - itemRegularization * positiveFactor));
+					itemFactors.shiftValue(negativeItemIndex, factorIndex, learnRatio * (value * (-userFactor) - itemRegularization * negativeFactor));
 					totalError += userRegularization * userFactor * userFactor + itemRegularization * positiveFactor * positiveFactor + itemRegularization * negativeFactor * negativeFactor;
 				}
 			}
