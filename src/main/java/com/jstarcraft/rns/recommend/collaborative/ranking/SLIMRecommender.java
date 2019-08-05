@@ -168,7 +168,7 @@ public class SLIMRecommender extends ModelRecommender {
      */
     @Override
     protected void doPractice() {
-        float[] rates = new float[userSize];
+        float[] scores = new float[userSize];
         // number of iteration cycles
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
             totalError = 0F;
@@ -180,7 +180,7 @@ public class SLIMRecommender extends ModelRecommender {
                 }
                 ArrayVector itemVector = itemVectors[itemIndex];
                 for (VectorScalar term : itemVector) {
-                    rates[term.getIndex()] = term.getValue();
+                    scores[term.getIndex()] = term.getValue();
                 }
                 // for each nearest neighbor nearestNeighborItemIdx, update
                 // coefficienMatrix by the coordinate
@@ -191,11 +191,11 @@ public class SLIMRecommender extends ModelRecommender {
                     int count = itemVector.getElementSize();
                     for (VectorScalar term : itemVector) {
                         int userIndex = term.getIndex();
-                        float neighborRate = term.getValue();
-                        float userRate = rates[userIndex];
-                        float error = userRate - predict(userIndex, itemIndex, neighborIndexes, neighborIndex);
-                        valueSum += neighborRate * error;
-                        rateSum += neighborRate * neighborRate;
+                        float neighborScore = term.getValue();
+                        float userScore = scores[userIndex];
+                        float error = userScore - predict(userIndex, itemIndex, neighborIndexes, neighborIndex);
+                        valueSum += neighborScore * error;
+                        rateSum += neighborScore * neighborScore;
                         errorSum += error * error;
                     }
                     valueSum /= count;
@@ -219,7 +219,7 @@ public class SLIMRecommender extends ModelRecommender {
                 }
                 itemVector = itemVectors[itemIndex];
                 for (VectorScalar term : itemVector) {
-                    rates[term.getIndex()] = 0F;
+                    scores[term.getIndex()] = 0F;
                 }
             }
 

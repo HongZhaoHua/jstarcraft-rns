@@ -69,9 +69,9 @@ public class FFMRecommender extends FactorizationMachineRecommender {
             for (DataInstance sample : marker) {
                 // TODO 因为每次的data都是1,可以考虑避免重复构建featureVector.
                 MathVector featureVector = getFeatureVector(sample);
-                float rate = sample.getQuantityMark();
+                float score = sample.getQuantityMark();
                 float predict = predict(scalar, featureVector);
-                float error = predict - rate;
+                float error = predict - score;
                 totalError += error * error;
 
                 // global bias

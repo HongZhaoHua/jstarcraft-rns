@@ -349,12 +349,12 @@ public class ItemBigramRecommender extends ProbabilisticGraphicalRecommender {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         List<Integer> items = userItemMap.get(userIndex);
-        int rateIndex = items == null ? itemSize : items.get(items.size() - 1); // last
+        int scoreIndex = items == null ? itemSize : items.get(items.size() - 1); // last
         // rated
         // item
         float value = 0F;
         for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
-            value += userTopicProbabilities.getValue(userIndex, topicIndex) * topicItemBigramProbabilities[topicIndex][rateIndex][itemIndex];
+            value += userTopicProbabilities.getValue(userIndex, topicIndex) * topicItemBigramProbabilities[topicIndex][scoreIndex][itemIndex];
         }
 
         instance.setQuantityMark(value);

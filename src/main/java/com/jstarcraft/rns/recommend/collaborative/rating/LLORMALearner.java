@@ -146,10 +146,10 @@ public class LLORMALearner extends Thread {
 			for (MatrixScalar term : trainMatrix) {
 				int userIndex = term.getRow(); // user
 				int itemIndex = term.getColumn(); // item
-				float rate = term.getValue();
+				float score = term.getValue();
 
 				float predict = predict(userIndex, itemIndex);
-				float error = rate - predict;
+				float error = score - predict;
 				float weight = userWeights.getValue(userIndex) * itemWeights.getValue(itemIndex);
 
 				// update factors

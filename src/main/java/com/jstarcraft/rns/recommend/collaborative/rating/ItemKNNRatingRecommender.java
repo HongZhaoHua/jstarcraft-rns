@@ -41,8 +41,8 @@ public class ItemKNNRatingRecommender extends ItemKNNRecommender {
             if (term.getIndex() == neighbors[rightIndex]) {
                 count++;
                 double similarity = similarityMatrix.getValue(itemIndex, neighbors[rightIndex]);
-                double rate = term.getValue();
-                sum += similarity * (rate - itemMeans.getValue(neighbors[rightIndex]));
+                double score = term.getValue();
+                sum += similarity * (score - itemMeans.getValue(neighbors[rightIndex]));
                 absolute += Math.abs(similarity);
                 if (iterator.hasNext()) {
                     term = iterator.next();

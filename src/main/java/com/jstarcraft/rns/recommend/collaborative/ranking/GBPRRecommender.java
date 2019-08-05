@@ -87,7 +87,7 @@ public class GBPRRecommender extends MatrixFactorizationRecommender {
                         memberSet.add(positiveItemVector.getIndex(RandomUtility.randomInteger(positiveItemVector.getElementSize())));
                     }
                 }
-                float positiveRate = predict(userIndex, positiveItemIndex, memberSet);
+                float positiveScore = predict(userIndex, positiveItemIndex, memberSet);
                 negativeItemIndex = RandomUtility.randomInteger(itemSize - userVector.getElementSize());
                 for (VectorScalar term : userVector) {
                     if (negativeItemIndex >= term.getIndex()) {
@@ -96,8 +96,8 @@ public class GBPRRecommender extends MatrixFactorizationRecommender {
                         break;
                     }
                 }
-                float negativeRate = predict(userIndex, negativeItemIndex);
-                float error = positiveRate - negativeRate;
+                float negativeScore = predict(userIndex, negativeItemIndex);
+                float error = positiveScore - negativeScore;
                 float value = (float) -Math.log(LogisticUtility.getValue(error));
                 totalError += value;
                 value = LogisticUtility.getValue(-error);
@@ -155,8 +155,8 @@ public class GBPRRecommender extends MatrixFactorizationRecommender {
             userVector = userFactors.getRowVector(memberIndex);
             sum += scalar.dotProduct(userVector, itemVector).getValue();
         }
-        float groupRate = sum / memberIndexes.size() + itemBiases.getValue(itemIndex);
-        return rho * groupRate + (1 - rho) * value;
+        float groupScore = sum / memberIndexes.size() + itemBiases.getValue(itemIndex);
+        return rho * groupScore + (1 - rho) * value;
     }
 
     @Override

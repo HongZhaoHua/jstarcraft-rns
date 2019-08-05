@@ -117,7 +117,7 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
                 float weightSum = 0F, rateSum = 0F, timeSum = userVector.getElementSize();
                 for (VectorScalar term : userVector) {
                     int itemIndex = term.getIndex();
-                    float rate = term.getValue();
+                    float score = term.getValue();
                     // double cui = 1;
                     DenseVector itemVector = itemFactors.getRowVector(itemIndex);
                     factorValues.iterateElement(MathCalculator.PARALLEL, (scalar) -> {
@@ -127,16 +127,16 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
                         scalar.setValue(value + itemVector.getValue(row) * itemVector.getValue(column));
                     });
                     // ratings of unrated items will be 0
-                    float weight = weightVector.getValue(itemIndex) * rate;
+                    float weight = weightVector.getValue(itemIndex) * score;
                     float value;
                     for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                         value = itemVector.getValue(factorIndex);
                         userDeltas.shiftValue(userIndex, factorIndex, value);
-                        rateValues.shiftValue(factorIndex, value * rate);
+                        rateValues.shiftValue(factorIndex, value * score);
                         weightValues.shiftValue(factorIndex, value * weight);
                     }
 
-                    rateSum += rate;
+                    rateSum += score;
                     weightSum += weight;
                 }
 
@@ -195,14 +195,14 @@ public class RankALSRecommender extends MatrixFactorizationRecommender {
                 DenseVector timeValues = DenseVector.valueOf(factorSize);
                 for (VectorScalar term : itemVector) {
                     int userIndex = term.getIndex();
-                    float rate = term.getValue();
+                    float score = term.getValue();
                     float weight = userWeights.getValue(userIndex);
-                    float time = rate * userTimes.getValue(userIndex);
+                    float time = score * userTimes.getValue(userIndex);
                     float value;
                     DenseVector userVector = userFactors.getRowVector(userIndex);
                     for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                         value = userVector.getValue(factorIndex);
-                        rateValues.shiftValue(factorIndex, value * rate);
+                        rateValues.shiftValue(factorIndex, value * score);
                         weightValues.shiftValue(factorIndex, value * weight);
                         timeValues.shiftValue(factorIndex, value * time);
                     }

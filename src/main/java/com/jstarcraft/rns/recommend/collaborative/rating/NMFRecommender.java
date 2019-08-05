@@ -58,9 +58,9 @@ public class NMFRecommender extends MatrixFactorizationRecommender {
                 });
                 for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     DenseVector factorVector = itemFactors.getColumnVector(factorIndex);
-                    float rate = scalar.dotProduct(factorVector, userVector).getValue();
+                    float score = scalar.dotProduct(factorVector, userVector).getValue();
                     float predict = scalar.dotProduct(factorVector, predictVector).getValue() + MathUtility.EPSILON;
-                    userFactors.setValue(userIndex, factorIndex, userFactors.getValue(userIndex, factorIndex) * (rate / predict));
+                    userFactors.setValue(userIndex, factorIndex, userFactors.getValue(userIndex, factorIndex) * (score / predict));
                 }
             }
 
@@ -77,9 +77,9 @@ public class NMFRecommender extends MatrixFactorizationRecommender {
                 });
                 for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     DenseVector factorVector = userFactors.getColumnVector(factorIndex);
-                    float rate = scalar.dotProduct(factorVector, itemVector).getValue();
+                    float score = scalar.dotProduct(factorVector, itemVector).getValue();
                     float predict = scalar.dotProduct(factorVector, predictVector).getValue() + MathUtility.EPSILON;
-                    itemFactors.setValue(itemIndex, factorIndex, itemFactors.getValue(itemIndex, factorIndex) * (rate / predict));
+                    itemFactors.setValue(itemIndex, factorIndex, itemFactors.getValue(itemIndex, factorIndex) * (score / predict));
                 }
             }
 
@@ -88,9 +88,9 @@ public class NMFRecommender extends MatrixFactorizationRecommender {
             for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();
-                float rate = term.getValue();
-                if (rate > 0) {
-                    float error = predict(userIndex, itemIndex) - rate;
+                float score = term.getValue();
+                if (score > 0) {
+                    float error = predict(userIndex, itemIndex) - score;
                     totalError += error * error;
                 }
             }

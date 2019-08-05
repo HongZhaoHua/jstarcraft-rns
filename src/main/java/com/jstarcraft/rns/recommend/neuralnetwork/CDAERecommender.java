@@ -69,7 +69,7 @@ public class CDAERecommender extends ModelRecommender {
     /**
      * the learning rate of the optimization algorithm
      */
-    protected float learnRate;
+    protected float learnRatio;
 
     /**
      * the momentum of the optimization algorithm
@@ -111,7 +111,7 @@ public class CDAERecommender extends ModelRecommender {
         hiddenDimension = configuration.getInteger("recommender.hidden.dimension");
         hiddenActivation = configuration.getString("recommender.hidden.activation");
         outputActivation = configuration.getString("recommender.output.activation");
-        learnRate = configuration.getFloat("recommender.iterator.learnrate");
+        learnRatio = configuration.getFloat("recommender.iterator.learnrate");
         momentum = configuration.getFloat("recommender.iterator.momentum");
         weightRegularization = configuration.getFloat("recommender.weight.regularization");
         binarie = configuration.getFloat("recommender.binarize.threshold");
@@ -143,8 +143,8 @@ public class CDAERecommender extends ModelRecommender {
         Layer cdaeLayer = new CDAELayer(userSize, itemSize, hiddenDimension, factory, configurators, new SigmoidActivationFunction());
         Layer outputLayer = new WeightLayer(hiddenDimension, itemSize, factory, configurators, new IdentityActivationFunction());
 
-        configurator.connect(new LayerVertex("cdae", factory, cdaeLayer, new NesterovLearner(new ConstantSchedule(momentum), new ConstantSchedule(learnRate)), new IgnoreNormalizer()));
-        configurator.connect(new LayerVertex("output", factory, outputLayer, new NesterovLearner(new ConstantSchedule(momentum), new ConstantSchedule(learnRate)), new IgnoreNormalizer()), "cdae");
+        configurator.connect(new LayerVertex("cdae", factory, cdaeLayer, new NesterovLearner(new ConstantSchedule(momentum), new ConstantSchedule(learnRatio)), new IgnoreNormalizer()));
+        configurator.connect(new LayerVertex("output", factory, outputLayer, new NesterovLearner(new ConstantSchedule(momentum), new ConstantSchedule(learnRatio)), new IgnoreNormalizer()), "cdae");
 
         Graph graph = new Graph(configurator, new StochasticGradientOptimizer(), new MSELossFunction());
         return graph;

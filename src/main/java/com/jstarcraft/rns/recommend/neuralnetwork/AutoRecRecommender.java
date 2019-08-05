@@ -74,7 +74,7 @@ public class AutoRecRecommender extends ModelRecommender {
     /**
      * the learning rate of the optimization algorithm
      */
-    protected float learnRate;
+    protected float learnRatio;
 
     /**
      * the momentum of the optimization algorithm
@@ -114,7 +114,7 @@ public class AutoRecRecommender extends ModelRecommender {
         hiddenDimension = configuration.getInteger("recommender.hidden.dimension");
         hiddenActivation = configuration.getString("recommender.hidden.activation");
         outputActivation = configuration.getString("recommender.output.activation");
-        learnRate = configuration.getFloat("recommender.iterator.learnrate");
+        learnRatio = configuration.getFloat("recommender.iterator.learnrate");
         momentum = configuration.getFloat("recommender.iterator.momentum");
         weightRegularization = configuration.getFloat("recommender.weight.regularization");
 
@@ -142,8 +142,8 @@ public class AutoRecRecommender extends ModelRecommender {
         Layer cdaeLayer = new WeightLayer(inputDimension, hiddenDimension, factory, configurators, new SigmoidActivationFunction());
         Layer outputLayer = new WeightLayer(hiddenDimension, inputDimension, factory, configurators, new IdentityActivationFunction());
 
-        configurator.connect(new LayerVertex("input", factory, cdaeLayer, new NesterovLearner(new ConstantSchedule(learnRate), new ConstantSchedule(momentum)), new IgnoreNormalizer()));
-        configurator.connect(new LayerVertex("output", factory, outputLayer, new NesterovLearner(new ConstantSchedule(learnRate), new ConstantSchedule(momentum)), new IgnoreNormalizer()), "input");
+        configurator.connect(new LayerVertex("input", factory, cdaeLayer, new NesterovLearner(new ConstantSchedule(learnRatio), new ConstantSchedule(momentum)), new IgnoreNormalizer()));
+        configurator.connect(new LayerVertex("output", factory, outputLayer, new NesterovLearner(new ConstantSchedule(learnRatio), new ConstantSchedule(momentum)), new IgnoreNormalizer()), "input");
 
         Graph graph = new Graph(configurator, new StochasticGradientOptimizer(), new AutoRecLossFunction(maskData));
         return graph;

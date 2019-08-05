@@ -52,11 +52,11 @@ public class SlopeOneRecommender extends AbstractRecommender {
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
             SparseVector itemVector = scoreMatrix.getRowVector(userIndex);
             for (VectorScalar leftTerm : itemVector) {
-                float leftRate = leftTerm.getValue();
+                float leftScore = leftTerm.getValue();
                 for (VectorScalar rightTerm : itemVector) {
                     if (leftTerm.getIndex() != rightTerm.getIndex()) {
-                        float rightRate = rightTerm.getValue();
-                        deviationMatrix.shiftValue(leftTerm.getIndex(), rightTerm.getIndex(), leftRate - rightRate);
+                        float rightScore = rightTerm.getValue();
+                        deviationMatrix.shiftValue(leftTerm.getIndex(), rightTerm.getIndex(), leftScore - rightScore);
                         cardinalMatrix.shiftValue(leftTerm.getIndex(), rightTerm.getIndex(), 1);
                     }
                 }

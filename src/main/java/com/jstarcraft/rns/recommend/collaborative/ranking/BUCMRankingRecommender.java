@@ -28,9 +28,9 @@ public class BUCMRankingRecommender extends BUCMRecommender {
         for (int topicIndex = 0; topicIndex < factorSize; ++topicIndex) {
             float sum = 0F;
             for (Entry<Float, Integer> term : scoreIndexes.entrySet()) {
-                double rate = term.getKey();
-                if (rate > meanScore) {
-                    sum += topicItemRateProbabilities[topicIndex][itemIndex][term.getValue()];
+                double score = term.getKey();
+                if (score > meanScore) {
+                    sum += topicItemScoreProbabilities[topicIndex][itemIndex][term.getValue()];
                 }
             }
             value += userTopicProbabilities.getValue(userIndex, topicIndex) * topicItemProbabilities.getValue(topicIndex, itemIndex) * sum;

@@ -111,9 +111,9 @@ public class TrustMFRecommender extends SocialRecommender {
             for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();
-                float rate = term.getValue();
+                float score = term.getValue();
                 float predict = predict(userIndex, itemIndex);
-                float error = LogisticUtility.getValue(predict) - normalize(rate);
+                float error = LogisticUtility.getValue(predict) - normalize(score);
                 totalError += error * error;
                 error = LogisticUtility.getGradient(predict) * error;
                 for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
@@ -129,11 +129,11 @@ public class TrustMFRecommender extends SocialRecommender {
             for (MatrixScalar term : socialMatrix) {
                 int trusterIndex = term.getRow();
                 int trusteeIndex = term.getColumn();
-                float rate = term.getValue();
+                float score = term.getValue();
                 DenseVector trusteeVector = trusteeUserDeltas.getRowVector(trusteeIndex);
                 DenseVector trusterVector = trusterUserFactors.getRowVector(trusterIndex);
                 float predict = scalar.dotProduct(trusteeVector, trusterVector).getValue();
-                float error = LogisticUtility.getValue(predict) - rate;
+                float error = LogisticUtility.getValue(predict) - score;
                 totalError += socialRegularization * error * error;
                 error = LogisticUtility.getGradient(predict) * error;
                 for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
@@ -190,9 +190,9 @@ public class TrustMFRecommender extends SocialRecommender {
             for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();
-                float rate = term.getValue();
+                float score = term.getValue();
                 float predict = predict(userIndex, itemIndex);
-                float error = LogisticUtility.getValue(predict) - normalize(rate);
+                float error = LogisticUtility.getValue(predict) - normalize(score);
                 totalError += error * error;
                 error = LogisticUtility.getGradient(predict) * error;
                 for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
@@ -208,11 +208,11 @@ public class TrustMFRecommender extends SocialRecommender {
             for (MatrixScalar term : socialMatrix) {
                 int trusterIndex = term.getRow();
                 int trusteeIndex = term.getColumn();
-                float rate = term.getValue();
+                float score = term.getValue();
                 DenseVector trusterVector = trusterUserDeltas.getRowVector(trusterIndex);
                 DenseVector trusteeVector = trusteeUserFactors.getRowVector(trusteeIndex);
                 float predict = scalar.dotProduct(trusterVector, trusteeVector).getValue();
-                float error = LogisticUtility.getValue(predict) - rate;
+                float error = LogisticUtility.getValue(predict) - score;
                 totalError += socialRegularization * error * error;
                 error = LogisticUtility.getGradient(predict) * error;
                 for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {

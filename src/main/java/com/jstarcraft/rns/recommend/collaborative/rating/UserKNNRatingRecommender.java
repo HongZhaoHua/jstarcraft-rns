@@ -41,8 +41,8 @@ public class UserKNNRatingRecommender extends UserKNNRecommender {
             if (term.getIndex() == neighbors[rightIndex]) {
                 count++;
                 double similarity = similarityMatrix.getValue(userIndex, neighbors[rightIndex]);
-                double rate = term.getValue();
-                sum += similarity * (rate - userMeans.getValue(neighbors[rightIndex]));
+                double score = term.getValue();
+                sum += similarity * (score - userMeans.getValue(neighbors[rightIndex]));
                 absolute += Math.abs(similarity);
                 if (iterator.hasNext()) {
                     term = iterator.next();

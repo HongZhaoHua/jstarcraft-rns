@@ -302,10 +302,10 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
                 for (MatrixScalar term : scoreMatrix) {
                     int userIndex = term.getRow(); // user
                     int itemIndex = term.getColumn(); // item
-                    float rate = term.getValue();
+                    float score = term.getValue();
 
                     float predict = predict(userIndex, itemIndex);
-                    float error = rate - predict;
+                    float error = score - predict;
                     totalError += error * error;
 
                     // update factors

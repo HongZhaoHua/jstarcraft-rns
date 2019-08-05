@@ -54,7 +54,7 @@ public class DeepFMRecommender extends ModelRecommender {
     /**
      * the learning rate of the optimization algorithm
      */
-    protected float learnRate;
+    protected float learnRatio;
 
     /**
      * the momentum of the optimization algorithm
@@ -91,7 +91,7 @@ public class DeepFMRecommender extends ModelRecommender {
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
-        learnRate = configuration.getFloat("recommender.iterator.learnrate");
+        learnRatio = configuration.getFloat("recommender.iterator.learnrate");
         momentum = configuration.getFloat("recommender.iterator.momentum");
         weightRegularization = configuration.getFloat("recommender.weight.regularization");
 
@@ -104,7 +104,7 @@ public class DeepFMRecommender extends ModelRecommender {
     }
 
     protected Graph getComputationGraph(int[] dimensionSizes) {
-        Schedule schedule = new ConstantSchedule(learnRate);
+        Schedule schedule = new ConstantSchedule(learnRatio);
         GraphConfigurator configurator = new GraphConfigurator();
         Map<String, ParameterConfigurator> configurators = new HashMap<>();
         Nd4j.getRandom().setSeed(6L);

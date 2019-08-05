@@ -49,9 +49,9 @@ public class ASVDPlusPlusRecommender extends BiasedMFRecommender {
             for (MatrixScalar matrixTerm : scoreMatrix) {
                 int userIndex = matrixTerm.getRow();
                 int itemIndex = matrixTerm.getColumn();
-                float rate = matrixTerm.getValue();
+                float score = matrixTerm.getValue();
                 float predict = predict(userIndex, itemIndex);
-                float error = rate - predict;
+                float error = score - predict;
                 SparseVector userVector = scoreMatrix.getRowVector(userIndex);
 
                 // update factors
@@ -69,7 +69,7 @@ public class ASVDPlusPlusRecommender extends BiasedMFRecommender {
                     for (VectorScalar term : userVector) {
                         int ItemIdx = term.getIndex();
                         positiveSum += positiveFactors.getValue(ItemIdx, factorIndex);
-                        negativeSum += negativeFactors.getValue(ItemIdx, factorIndex) * (rate - meanScore - userBiases.getValue(userIndex) - itemBiases.getValue(ItemIdx));
+                        negativeSum += negativeFactors.getValue(ItemIdx, factorIndex) * (score - meanScore - userBiases.getValue(userIndex) - itemBiases.getValue(ItemIdx));
                     }
                     positiveSums[factorIndex] = squareRoot > 0 ? positiveSum / squareRoot : positiveSum;
                     negativeSums[factorIndex] = squareRoot > 0 ? negativeSum / squareRoot : negativeSum;
@@ -87,7 +87,7 @@ public class ASVDPlusPlusRecommender extends BiasedMFRecommender {
                         float positiveFactor = positiveFactors.getValue(index, factorIndex);
                         float negativeFactor = negativeFactors.getValue(index, factorIndex);
                         float positiveDelta = error * itemFactor / squareRoot - userRegularization * positiveFactor;
-                        float negativeDelta = error * itemFactor * (rate - meanScore - userBiases.getValue(userIndex) - itemBiases.getValue(index)) / squareRoot - userRegularization * negativeFactor;
+                        float negativeDelta = error * itemFactor * (score - meanScore - userBiases.getValue(userIndex) - itemBiases.getValue(index)) / squareRoot - userRegularization * negativeFactor;
                         positiveFactors.shiftValue(index, factorIndex, learnRatio * positiveDelta);
                         negativeFactors.shiftValue(index, factorIndex, learnRatio * negativeDelta);
                     }

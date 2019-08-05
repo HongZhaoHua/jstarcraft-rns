@@ -59,7 +59,7 @@ public class RankSGDRecommender extends MatrixFactorizationRecommender {
                 int userIndex = term.getRow();
                 IntSet itemSet = userItemSet.get(userIndex);
                 int positiveItemIndex = term.getColumn();
-                float positiveRate = term.getValue();
+                float positiveScore = term.getValue();
                 int negativeItemIndex = -1;
 
                 do {
@@ -69,9 +69,9 @@ public class RankSGDRecommender extends MatrixFactorizationRecommender {
                     // ensure that it is unrated by user u
                 } while (itemSet.contains(negativeItemIndex));
 
-                float negativeRate = 0F;
+                float negativeScore = 0F;
                 // compute predictions
-                float error = (predict(userIndex, positiveItemIndex) - predict(userIndex, negativeItemIndex)) - (positiveRate - negativeRate);
+                float error = (predict(userIndex, positiveItemIndex) - predict(userIndex, negativeItemIndex)) - (positiveScore - negativeScore);
                 totalError += error * error;
 
                 // update vectors

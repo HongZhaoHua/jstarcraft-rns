@@ -62,11 +62,11 @@ public class BiasedMFRecommender extends MatrixFactorizationRecommender {
             for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow(); // user userIdx
                 int itemIndex = term.getColumn(); // item itemIdx
-                float rate = term.getValue(); // real rating on item
+                float score = term.getValue(); // real rating on item
                                               // itemIdx rated by user
                                               // userIdx
                 float predict = predict(userIndex, itemIndex);
-                float error = rate - predict;
+                float error = score - predict;
                 totalError += error * error;
 
                 // update user and item bias

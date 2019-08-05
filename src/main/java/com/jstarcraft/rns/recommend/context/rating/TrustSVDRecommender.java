@@ -139,7 +139,7 @@ public class TrustSVDRecommender extends SocialRecommender {
                 int trusterIndex = term.getRow(); // user userIdx
                 int itemExplicitIndex = term.getColumn(); // item itemIdx
                 // real rating on item itemIdx rated by user userIdx
-                float rate = term.getValue();
+                float score = term.getValue();
                 // To speed up, directly access the prediction instead of
                 // invoking "predictRating = predict(userIdx,itemIdx)"
                 float userBias = userBiases.getValue(trusterIndex);
@@ -173,7 +173,7 @@ public class TrustSVDRecommender extends SocialRecommender {
                     }
                     predict += sum / Math.sqrt(socialVector.getElementSize());
                 }
-                float error = predict - rate;
+                float error = predict - score;
                 totalError += error * error;
 
                 float trusterDenominator = (float) Math.sqrt(rateVector.getElementSize());
@@ -246,11 +246,11 @@ public class TrustSVDRecommender extends SocialRecommender {
             for (MatrixScalar socialTerm : socialMatrix) {
                 int trusterIndex = socialTerm.getRow();
                 int trusteeIndex = socialTerm.getColumn();
-                float rate = socialTerm.getValue();
+                float score = socialTerm.getValue();
                 DenseVector trusterVector = trusterFactors.getRowVector(trusterIndex);
                 DenseVector trusteeVector = trusteeFactors.getRowVector(trusteeIndex);
                 float predtict = scalar.dotProduct(trusterVector, trusteeVector).getValue();
-                float error = predtict - rate;
+                float error = predtict - score;
                 totalError += socialRegularization * error * error;
                 error = socialRegularization * error;
 

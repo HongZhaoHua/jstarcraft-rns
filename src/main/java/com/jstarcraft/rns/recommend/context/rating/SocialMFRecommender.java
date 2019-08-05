@@ -54,9 +54,9 @@ public class SocialMFRecommender extends SocialRecommender {
             for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();
-                float rate = term.getValue();
+                float score = term.getValue();
                 float predict = super.predict(userIndex, itemIndex);
-                float error = LogisticUtility.getValue(predict) - normalize(rate);
+                float error = LogisticUtility.getValue(predict) - normalize(score);
                 totalError += error * error;
                 error = LogisticUtility.getGradient(predict) * error;
                 for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {

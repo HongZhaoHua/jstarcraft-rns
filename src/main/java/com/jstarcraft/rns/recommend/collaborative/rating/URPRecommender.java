@@ -82,12 +82,12 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
     /**
      * cumulative statistics of probabilities of (t, i, r)
      */
-    private float[][][] topicItemRateSums; // PkirSum;
+    private float[][][] topicItemScoreSums; // PkirSum;
 
     /**
      * posterior probabilities of parameters phi_{k, i, r}
      */
-    private float[][][] topicItemRateProbabilities; // Pkir;
+    private float[][][] topicItemScoreProbabilities; // Pkir;
 
     private DenseVector randomProbabilities;
 
@@ -121,7 +121,7 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
 
         // cumulative parameters
         userTopicSums = DenseMatrix.valueOf(userSize, factorSize);
-        topicItemRateSums = new float[factorSize][itemSize][scoreSize];
+        topicItemScoreSums = new float[factorSize][itemSize][scoreSize];
 
         // initialize count variables
         userTopicTimes = DenseMatrix.valueOf(userSize, factorSize);
@@ -143,8 +143,8 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
         for (MatrixScalar term : learnMatrix) {
             int userIndex = term.getRow();
             int itemIndex = term.getColumn();
-            float rate = term.getValue();
-            int rateIndex = scoreIndexes.get(rate); // rating level 0 ~
+            float score = term.getValue();
+            int scoreIndex = scoreIndexes.get(score); // rating level 0 ~
                                                     // numLevels
             int topicIndex = RandomUtility.randomInteger(factorSize); // 0
                                                                            // ~
@@ -158,7 +158,7 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
             userTopicNumbers.shiftValue(userIndex, 1);
 
             // number of pairs (t, i, r)
-            topicItemTimes[topicIndex][itemIndex][rateIndex]++;
+            topicItemTimes[topicIndex][itemIndex][scoreIndex]++;
             // total number of words assigned to topic t
             topicItemNumbers.shiftValue(topicIndex, itemIndex, 1);
         }
@@ -175,14 +175,14 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
         for (MatrixScalar term : learnMatrix) {
             int userIndex = term.getRow();
             int itemIndex = term.getColumn();
-            float rate = term.getValue();
-            int rateIndex = scoreIndexes.get(rate); // rating level 0 ~
+            float score = term.getValue();
+            int scoreIndex = scoreIndexes.get(score); // rating level 0 ~
                                                     // numLevels
             int assignmentIndex = topicAssignments.get(userIndex * itemSize + itemIndex);
 
             userTopicTimes.shiftValue(userIndex, assignmentIndex, -1);
             userTopicNumbers.shiftValue(userIndex, -1);
-            topicItemTimes[assignmentIndex][itemIndex][rateIndex]--;
+            topicItemTimes[assignmentIndex][itemIndex][scoreIndex]--;
             topicItemNumbers.shiftValue(assignmentIndex, itemIndex, -1);
 
             // 计算概率
@@ -190,7 +190,7 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
             sum.setValue(0F);
             randomProbabilities.iterateElement(MathCalculator.SERIAL, (scalar) -> {
                 int index = scalar.getIndex();
-                float value = (userTopicTimes.getValue(userIndex, index) + alpha.getValue(index)) / (userTopicNumbers.getValue(userIndex) + sumAlpha) * (topicItemTimes[index][itemIndex][rateIndex] + beta.getValue(rateIndex)) / (topicItemNumbers.getValue(index, itemIndex) + sumBeta);
+                float value = (userTopicTimes.getValue(userIndex, index) + alpha.getValue(index)) / (userTopicNumbers.getValue(userIndex) + sumAlpha) * (topicItemTimes[index][itemIndex][scoreIndex] + beta.getValue(scoreIndex)) / (topicItemNumbers.getValue(index, itemIndex) + sumBeta);
                 sum.shiftValue(value);
                 scalar.setValue(sum.getValue());
             });
@@ -202,7 +202,7 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
             // add newly estimated z_i to count variables
             userTopicTimes.shiftValue(userIndex, assignmentIndex, 1);
             userTopicNumbers.shiftValue(userIndex, 1);
-            topicItemTimes[assignmentIndex][itemIndex][rateIndex]++;
+            topicItemTimes[assignmentIndex][itemIndex][scoreIndex]++;
             topicItemNumbers.shiftValue(assignmentIndex, itemIndex, 1);
         }
 
@@ -255,20 +255,20 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
                 }
             }
         }
-        for (int rateIndex = 0; rateIndex < scoreSize; rateIndex++) {
-            betaValue = beta.getValue(rateIndex);
+        for (int scoreIndex = 0; scoreIndex < scoreSize; scoreIndex++) {
+            betaValue = beta.getValue(scoreIndex);
             betaDigamma = GammaUtility.digamma(betaValue);
             float numerator = 0F;
             for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
                 for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
-                    value = topicItemTimes[topicIndex][itemIndex][rateIndex];
+                    value = topicItemTimes[topicIndex][itemIndex][scoreIndex];
                     if (value != 0F) {
                         numerator += GammaUtility.digamma(value + betaValue) - betaDigamma;
                     }
                 }
             }
             if (numerator != 0F) {
-                beta.setValue(rateIndex, betaValue * (numerator / denominator));
+                beta.setValue(scoreIndex, betaValue * (numerator / denominator));
             }
         }
     }
@@ -285,9 +285,9 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
         float sumBeta = beta.getSum(false);
         for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
-                for (int rateIndex = 0; rateIndex < scoreSize; rateIndex++) {
-                    value = (topicItemTimes[topicIndex][itemIndex][rateIndex] + beta.getValue(rateIndex)) / (topicItemNumbers.getValue(topicIndex, itemIndex) + sumBeta);
-                    topicItemRateSums[topicIndex][itemIndex][rateIndex] += value;
+                for (int scoreIndex = 0; scoreIndex < scoreSize; scoreIndex++) {
+                    value = (topicItemTimes[topicIndex][itemIndex][scoreIndex] + beta.getValue(scoreIndex)) / (topicItemNumbers.getValue(topicIndex, itemIndex) + sumBeta);
+                    topicItemScoreSums[topicIndex][itemIndex][scoreIndex] += value;
                 }
             }
         }
@@ -298,11 +298,11 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
     protected void estimateParameters() {
         userTopicProbabilities = DenseMatrix.copyOf(userTopicSums);
         userTopicProbabilities.scaleValues(1F / numberOfStatistics);
-        topicItemRateProbabilities = new float[factorSize][itemSize][scoreSize];
+        topicItemScoreProbabilities = new float[factorSize][itemSize][scoreSize];
         for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
             for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
-                for (int rateIndex = 0; rateIndex < scoreSize; rateIndex++) {
-                    topicItemRateProbabilities[topicIndex][itemIndex][rateIndex] = topicItemRateSums[topicIndex][itemIndex][rateIndex] / numberOfStatistics;
+                for (int scoreIndex = 0; scoreIndex < scoreSize; scoreIndex++) {
+                    topicItemScoreProbabilities[topicIndex][itemIndex][scoreIndex] = topicItemScoreSums[topicIndex][itemIndex][scoreIndex] / numberOfStatistics;
                 }
             }
         }
@@ -323,12 +323,12 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
         for (MatrixScalar term : checkMatrix) {
             int userIndex = term.getRow();
             int itemIndex = term.getColumn();
-            float rate = term.getValue();
+            float score = term.getValue();
             float predict = predict(userIndex, itemIndex);
             if (Double.isNaN(predict)) {
                 continue;
             }
-            float error = rate - predict;
+            float error = score - predict;
             sum += error * error;
             count++;
         }
@@ -344,12 +344,12 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
     private float predict(int userIndex, int itemIndex) {
         float value = 0F;
         for (Entry<Float, Integer> term : scoreIndexes.entrySet()) {
-            float rate = term.getKey();
+            float score = term.getKey();
             float probability = 0F;
             for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
-                probability += userTopicProbabilities.getValue(userIndex, topicIndex) * topicItemRateProbabilities[topicIndex][itemIndex][term.getValue()];
+                probability += userTopicProbabilities.getValue(userIndex, topicIndex) * topicItemScoreProbabilities[topicIndex][itemIndex][term.getValue()];
             }
-            value += probability * rate;
+            value += probability * score;
         }
         if (value > maximumScore) {
             value = maximumScore;

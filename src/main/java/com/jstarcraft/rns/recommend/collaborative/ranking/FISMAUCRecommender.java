@@ -152,14 +152,14 @@ public class FISMAUCRecommender extends MatrixFactorizationRecommender {
                     // for all j in Z
                     for (int negativeIndex : negativeIndexes) {
                         // update pui puj rui ruj
-                        float positiveRate = positiveTerm.getValue();
-                        float negativeRate = 0F;
+                        float positiveScore = positiveTerm.getValue();
+                        float negativeScore = 0F;
                         float positiveBias = itemBiases.getValue(positiveIndex);
                         float negativeBias = itemBiases.getValue(negativeIndex);
                         float positiveFactor = positiveBias + scalar.dotProduct(itemFactors.getRowVector(positiveIndex), itemVector).getValue();
                         float negativeFactor = negativeBias + scalar.dotProduct(itemFactors.getRowVector(negativeIndex), itemVector).getValue();
 
-                        float error = (positiveRate - negativeRate) - (positiveFactor - negativeFactor);
+                        float error = (positiveScore - negativeScore) - (positiveFactor - negativeFactor);
                         totalError += error * error;
 
                         // update bi bj

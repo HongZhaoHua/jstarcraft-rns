@@ -46,9 +46,9 @@ public class BPRRecommender extends MatrixFactorizationRecommender {
 				}
 
 				// update parameters
-				float positiveRate = predict(userIndex, positiveItemIndex);
-				float negativeRate = predict(userIndex, negativeItemIndex);
-				float error = positiveRate - negativeRate;
+				float positiveScore = predict(userIndex, positiveItemIndex);
+				float negativeScore = predict(userIndex, negativeItemIndex);
+				float error = positiveScore - negativeScore;
 				float value = (float) -Math.log(LogisticUtility.getValue(error));
 				totalError += value;
 				value = LogisticUtility.getValue(-error);

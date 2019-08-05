@@ -67,10 +67,10 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
         for (DataInstance sample : marker) {
             // TODO 因为每次的data都是1,可以考虑避免重复构建featureVector.
             MathVector featureVector = getFeatureVector(sample);
-            float rate = sample.getQuantityMark();
+            float score = sample.getQuantityMark();
             float predict = predict(scalar, featureVector);
 
-            float error = rate - predict;
+            float error = score - predict;
             errorVector.setValue(index, error);
 
             for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
@@ -95,19 +95,19 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
             float numerator = 0F;
             float denominator = 0F;
 
-            for (int rateIndex = 0; rateIndex < actionSize; rateIndex++) {
+            for (int scoreIndex = 0; scoreIndex < actionSize; scoreIndex++) {
                 // TODO 因为此处相当与迭代trainTensor的featureVector,所以h_theta才会是1D.
                 float h_theta = 1F;
-                numerator += globalBias * h_theta * h_theta + h_theta * errorVector.getValue(rateIndex);
+                numerator += globalBias * h_theta * h_theta + h_theta * errorVector.getValue(scoreIndex);
                 denominator += h_theta;
             }
             denominator += biasRegularization;
             float bias = numerator / denominator;
             // update errors
-            for (int rateIndex = 0; rateIndex < actionSize; rateIndex++) {
-                float oldError = errorVector.getValue(rateIndex);
+            for (int scoreIndex = 0; scoreIndex < actionSize; scoreIndex++) {
+                float oldError = errorVector.getValue(scoreIndex);
                 float newError = oldError + (globalBias - bias);
-                errorVector.setValue(rateIndex, newError);
+                errorVector.setValue(scoreIndex, newError);
                 totalError += oldError * oldError;
             }
 
@@ -123,19 +123,19 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
                 // TODO 考虑重构
                 SparseVector featureVector = featureMatrix.getColumnVector(featureIndex);
                 for (VectorScalar vectorTerm : featureVector) {
-                    int rateIndex = vectorTerm.getIndex();
+                    int scoreIndex = vectorTerm.getIndex();
                     float h_theta = vectorTerm.getValue();
-                    numerator += oldWeight * h_theta * h_theta + h_theta * errorVector.getValue(rateIndex);
+                    numerator += oldWeight * h_theta * h_theta + h_theta * errorVector.getValue(scoreIndex);
                     denominator += h_theta * h_theta;
                 }
                 denominator += weightRegularization;
                 float newWeight = numerator / denominator;
                 // update errors
                 for (VectorScalar vectorTerm : featureVector) {
-                    int rateIndex = vectorTerm.getIndex();
-                    float oldError = errorVector.getValue(rateIndex);
+                    int scoreIndex = vectorTerm.getIndex();
+                    float oldError = errorVector.getValue(scoreIndex);
                     float newError = oldError + (oldWeight - newWeight) * vectorTerm.getValue();
-                    errorVector.setValue(rateIndex, newError);
+                    errorVector.setValue(scoreIndex, newError);
                 }
                 // update W
                 weightVector.setValue(featureIndex, newWeight);
@@ -150,26 +150,26 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
                     denominator = 0F;
                     SparseVector featureVector = featureMatrix.getColumnVector(featureIndex);
                     for (VectorScalar vectorTerm : featureVector) {
-                        int rateIndex = vectorTerm.getIndex();
+                        int scoreIndex = vectorTerm.getIndex();
                         float x_val = vectorTerm.getValue();
-                        float h_theta = x_val * (actionFactors.getValue(rateIndex, factorIndex) - oldValue * x_val);
-                        numerator += oldValue * h_theta * h_theta + h_theta * errorVector.getValue(rateIndex);
+                        float h_theta = x_val * (actionFactors.getValue(scoreIndex, factorIndex) - oldValue * x_val);
+                        numerator += oldValue * h_theta * h_theta + h_theta * errorVector.getValue(scoreIndex);
                         denominator += h_theta * h_theta;
                     }
                     denominator += factorRegularization;
                     float newValue = numerator / denominator;
                     // update errors and Q
                     for (VectorScalar vectorTerm : featureVector) {
-                        int rateIndex = vectorTerm.getIndex();
+                        int scoreIndex = vectorTerm.getIndex();
                         float x_val = vectorTerm.getValue();
-                        float oldRate = actionFactors.getValue(rateIndex, factorIndex);
-                        float newRate = oldRate + (newValue - oldValue) * x_val;
-                        float h_theta_old = x_val * (oldRate - oldValue * x_val);
-                        float h_theta_new = x_val * (newRate - newValue * x_val);
-                        float oldError = errorVector.getValue(rateIndex);
+                        float oldScore = actionFactors.getValue(scoreIndex, factorIndex);
+                        float newScore = oldScore + (newValue - oldValue) * x_val;
+                        float h_theta_old = x_val * (oldScore - oldValue * x_val);
+                        float h_theta_new = x_val * (newScore - newValue * x_val);
+                        float oldError = errorVector.getValue(scoreIndex);
                         float newError = oldError + oldValue * h_theta_old - newValue * h_theta_new;
-                        errorVector.setValue(rateIndex, newError);
-                        actionFactors.setValue(rateIndex, factorIndex, newRate);
+                        errorVector.setValue(scoreIndex, newError);
+                        actionFactors.setValue(scoreIndex, factorIndex, newScore);
                     }
 
                     // update V

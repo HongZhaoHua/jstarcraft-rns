@@ -129,11 +129,11 @@ public class RFRecRecommender extends MatrixFactorizationRecommender {
      * Returns 1 if the rating is similar to the rounded average value
      *
      * @param mean the average
-     * @param rate the rating
+     * @param score the rating
      * @return 1 when the values are equal
      */
-    private int isMean(double mean, int rate) {
-        return Math.round(mean) == rate ? 1 : 0;
+    private int isMean(double mean, int score) {
+        return Math.round(mean) == score ? 1 : 0;
     }
 
     @Override

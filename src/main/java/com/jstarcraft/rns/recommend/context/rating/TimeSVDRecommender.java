@@ -214,7 +214,7 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
                 }
                 for (VectorScalar term : rateVector) {
                     int itemExplicitIndex = term.getIndex();
-                    float rate = term.getValue();
+                    float score = term.getValue();
                     // TODO 此处可以重构.
                     int instant = instantTabel.get(userIndex, itemExplicitIndex);
                     // day t
@@ -264,7 +264,7 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
                         predict += puk * qik;
                     }
 
-                    float error = predict - rate;
+                    float error = predict - score;
                     totalError += error * error;
 
                     // update bi

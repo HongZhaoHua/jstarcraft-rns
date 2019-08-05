@@ -157,10 +157,10 @@ public class RSTERecommender extends SocialRecommender {
         float sum = 0F, socialWeight = 0F;
         SparseVector socialVector = socialMatrix.getRowVector(userIndex);
         for (VectorScalar soicalTerm : socialVector) {
-            float rate = soicalTerm.getValue();
+            float score = soicalTerm.getValue();
             DenseVector soicalFactor = userFactors.getRowVector(soicalTerm.getIndex());
-            sum += rate * scalar.dotProduct(soicalFactor, itemVector).getValue();
-            socialWeight += rate;
+            sum += score * scalar.dotProduct(soicalFactor, itemVector).getValue();
+            socialWeight += score;
         }
         predict = userSocialRatio * predict + (1 - userSocialRatio) * (socialWeight > 0 ? sum / socialWeight : 0);
         instance.setQuantityMark(denormalize(LogisticUtility.getValue(predict)));

@@ -108,7 +108,7 @@ public class SBPRRecommender extends SocialRecommender {
 
                 // positive item index
                 positiveItemIndex = userVector.getIndex(RandomUtility.randomInteger(userVector.getElementSize()));
-                float positiveRate = predict(userIndex, positiveItemIndex);
+                float positiveScore = predict(userIndex, positiveItemIndex);
 
                 // social Items List
                 // TODO 应该修改为IntSet合适点.
@@ -117,12 +117,12 @@ public class SBPRRecommender extends SocialRecommender {
                 do {
                     negativeItemIndex = RandomUtility.randomInteger(itemSize);
                 } while (itemSet.contains(negativeItemIndex) || socialList.contains(negativeItemIndex));
-                float negativeRate = predict(userIndex, negativeItemIndex);
+                float negativeScore = predict(userIndex, negativeItemIndex);
 
                 if (socialList.size() > 0) {
                     // if having social neighbors
                     int itemIndex = socialList.get(RandomUtility.randomInteger(socialList.size()));
-                    float socialRate = predict(userIndex, itemIndex);
+                    float socialScore = predict(userIndex, itemIndex);
                     SparseVector socialVector = socialMatrix.getRowVector(userIndex);
                     float socialWeight = 0F;
                     for (VectorScalar term : socialVector) {
@@ -132,8 +132,8 @@ public class SBPRRecommender extends SocialRecommender {
                             socialWeight += 1;
                         }
                     }
-                    float positiveError = (positiveRate - socialRate) / (1 + socialWeight);
-                    float negativeError = socialRate - negativeRate;
+                    float positiveError = (positiveScore - socialScore) / (1 + socialWeight);
+                    float negativeError = socialScore - negativeScore;
                     float positiveGradient = LogisticUtility.getValue(-positiveError), negativeGradient = LogisticUtility.getValue(-negativeError);
                     float error = (float) (-Math.log(1 - positiveGradient) - Math.log(1 - negativeGradient));
                     totalError += error;
@@ -165,7 +165,7 @@ public class SBPRRecommender extends SocialRecommender {
                     }
                 } else {
                     // if no social neighbors, the same as BPR
-                    float error = positiveRate - negativeRate;
+                    float error = positiveScore - negativeScore;
                     totalError += error;
                     float gradient = LogisticUtility.getValue(-error);
 

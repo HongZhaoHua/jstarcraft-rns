@@ -25,14 +25,14 @@ public class BHFreeRankingRecommender extends BHFreeRecommender {
         int itemIndex = instance.getQualityFeature(itemDimension);
         float value = 0F;
         for (Entry<Float, Integer> entry : scoreIndexes.entrySet()) {
-            float rate = entry.getKey();
+            float score = entry.getKey();
             float probability = 0F;
-            for (int userTopic = 0; userTopic < numberOfUserTopics; userTopic++) {
-                for (int itemTopic = 0; itemTopic < numberOfItemTopics; itemTopic++) {
-                    probability += user2TopicProbabilities.getValue(userIndex, userTopic) * userTopic2ItemTopicProbabilities.getValue(userTopic, itemTopic) * userTopic2ItemTopicItemSums[userTopic][itemTopic][itemIndex] * userTopic2ItemTopicRateProbabilities[userTopic][itemTopic][entry.getValue()];
+            for (int userTopic = 0; userTopic < userTopicSize; userTopic++) {
+                for (int itemTopic = 0; itemTopic < itemTopicSize; itemTopic++) {
+                    probability += user2TopicProbabilities.getValue(userIndex, userTopic) * userTopic2ItemTopicProbabilities.getValue(userTopic, itemTopic) * userTopic2ItemTopicItemSums[userTopic][itemTopic][itemIndex] * userTopic2ItemTopicScoreProbabilities[userTopic][itemTopic][entry.getValue()];
                 }
             }
-            value += rate * probability;
+            value += score * probability;
         }
         instance.setQuantityMark(value);
     }

@@ -32,9 +32,13 @@ public class LambdaFMDynamicRecommender extends LambdaFMRecommender {
 
     // Dynamic
     private float dynamicRho;
+
     private int numberOfOrders;
+
     private DenseVector orderProbabilities;
+
     private ArrayInstance[] negatives;
+
     private Integer[] orderIndexes;
 
     @Override

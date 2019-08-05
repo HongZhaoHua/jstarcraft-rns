@@ -52,7 +52,7 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
     /**
      * entry[u]: number of tokens rated by user u.
      */
-    private DenseVector userRateTimes;
+    private DenseVector userScoreTimes;
 
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
@@ -89,12 +89,12 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
 
         // initialize Q
         probabilityTensor = new SparseTable<>(true, userSize, itemSize, new Int2ObjectRBTreeMap<>());
-        userRateTimes = DenseVector.valueOf(userSize);
+        userScoreTimes = DenseVector.valueOf(userSize);
         for (MatrixScalar term : scoreMatrix) {
             int userIndex = term.getRow();
             int itemIndex = term.getColumn();
             probabilityTensor.setValue(userIndex, itemIndex, DenseVector.valueOf(factorSize));
-            userRateTimes.shiftValue(userIndex, term.getValue());
+            userScoreTimes.shiftValue(userIndex, term.getValue());
         }
     }
 
@@ -132,7 +132,7 @@ public class PLSARecommender extends ProbabilisticGraphicalRecommender {
         }
 
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
-            float denominator = userRateTimes.getValue(userIndex);
+            float denominator = userScoreTimes.getValue(userIndex);
             for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
                 float value = denominator > 0F ? userTopicSums.getValue(userIndex, topicIndex) / denominator : 0F;
                 userTopicProbabilities.setValue(userIndex, topicIndex, value);

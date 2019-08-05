@@ -31,7 +31,9 @@ import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
  */
 // 注意:FISM使用itemFactors来组成userFactors
 public class FISMRMSERecommender extends MatrixFactorizationRecommender {
+
     private int numNeighbors;
+
     private float rho, alpha, beta, gamma;
 
     /**
@@ -109,7 +111,7 @@ public class FISMRMSERecommender extends MatrixFactorizationRecommender {
             for (MatrixScalar cell : rateMatrix) {
                 int userIndex = cell.getRow();
                 int itemIndex = cell.getColumn();
-                float rate = cell.getValue();
+                float score = cell.getValue();
                 SparseVector rateVector = scoreMatrix.getRowVector(userIndex);
                 int size = rateVector.getElementSize() - 1;
                 if (size == 0 || size == -1) {
@@ -126,7 +128,7 @@ public class FISMRMSERecommender extends MatrixFactorizationRecommender {
                 // simply using "predict(u,j)"
                 float itemBias = itemBiases.getValue(itemIndex);
                 float predict = itemBias + scalar.dotProduct(itemFactors.getRowVector(itemIndex), userVector).getValue();
-                float error = rate - predict;
+                float error = score - predict;
                 totalError += error * error;
                 // update bi
                 itemBiases.shiftValue(itemIndex, learnRatio * (error - gamma * itemBias));

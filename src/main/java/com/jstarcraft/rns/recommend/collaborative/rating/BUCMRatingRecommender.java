@@ -26,12 +26,12 @@ public class BUCMRatingRecommender extends BUCMRecommender {
         int itemIndex = instance.getQualityFeature(itemDimension);
         float value = 0F, probabilities = 0F;
         for (Entry<Float, Integer> term : scoreIndexes.entrySet()) {
-            float rate = term.getKey();
+            float score = term.getKey();
             float probability = 0F;
             for (int topicIndex = 0; topicIndex < factorSize; topicIndex++) {
-                probability += userTopicProbabilities.getValue(userIndex, topicIndex) * topicItemProbabilities.getValue(topicIndex, itemIndex) * topicItemRateProbabilities[topicIndex][itemIndex][term.getValue()];
+                probability += userTopicProbabilities.getValue(userIndex, topicIndex) * topicItemProbabilities.getValue(topicIndex, itemIndex) * topicItemScoreProbabilities[topicIndex][itemIndex][term.getValue()];
             }
-            value += probability * rate;
+            value += probability * score;
             probabilities += probability;
         }
         instance.setQuantityMark(value / probabilities);

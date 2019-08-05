@@ -84,7 +84,7 @@ public class PersonalityDiagnosisRecommender extends AbstractRecommender {
         for (VectorScalar term : itemVector) {
             // other users who rated item j
             userIndex = term.getIndex();
-            float rate = term.getValue();
+            float score = term.getValue();
             float probability = 1F;
             SparseVector leftUserVector = scoreMatrix.getRowVector(userIndex);
             int leftIndex = 0, rightIndex = 0, leftSize = leftUserVector.getElementSize(), rightSize = rightUserVector.getElementSize();
@@ -119,7 +119,7 @@ public class PersonalityDiagnosisRecommender extends AbstractRecommender {
                 }
             }
             for (int scoreIndex = 0; scoreIndex < scoreSize; scoreIndex++) {
-                probabilities[scoreIndex] += gaussian(scores.getFloat(scoreIndex), rate, sigma) * probability;
+                probabilities[scoreIndex] += gaussian(scores.getFloat(scoreIndex), score, sigma) * probability;
             }
         }
         for (int scoreIndex = 0; scoreIndex < scoreSize; scoreIndex++) {
@@ -127,10 +127,10 @@ public class PersonalityDiagnosisRecommender extends AbstractRecommender {
         }
         int valueIndex = 0;
         float probability = Float.MIN_VALUE;
-        for (int rateIndex = 0; rateIndex < probabilities.length; rateIndex++) {
-            if (probabilities[rateIndex] > probability) {
-                probability = probabilities[rateIndex];
-                valueIndex = rateIndex;
+        for (int scoreIndex = 0; scoreIndex < probabilities.length; scoreIndex++) {
+            if (probabilities[scoreIndex] > probability) {
+                probability = probabilities[scoreIndex];
+                valueIndex = scoreIndex;
             }
         }
         instance.setQuantityMark(scores.get(valueIndex));

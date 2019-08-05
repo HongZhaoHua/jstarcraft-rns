@@ -33,7 +33,7 @@ public class SoRecRecommender extends SocialRecommender {
      */
     private DenseMatrix socialFactors;
 
-    private float regRate, regSocial;
+    private float regScore, regSocial;
 
     private List<Integer> inDegrees, outDegrees;
 
@@ -53,7 +53,7 @@ public class SoRecRecommender extends SocialRecommender {
             scalar.setValue(RandomUtility.randomFloat(1F));
         });
 
-        regRate = configuration.getFloat("recommender.rate.social.regularization", 0.01F);
+        regScore = configuration.getFloat("recommender.rate.social.regularization", 0.01F);
         regSocial = configuration.getFloat("recommender.user.social.regularization", 0.01F);
 
         inDegrees = new ArrayList<>(userSize);
@@ -98,24 +98,24 @@ public class SoRecRecommender extends SocialRecommender {
             for (MatrixScalar term : socialMatrix) {
                 int userIndex = term.getRow();
                 int socialIndex = term.getColumn();
-                float socialRate = term.getValue();
+                float socialScore = term.getValue();
                 // tuv ~ cik in the original paper
-                if (socialRate == 0F) {
+                if (socialScore == 0F) {
                     continue;
                 }
                 float socialPredict = scalar.dotProduct(userFactors.getRowVector(userIndex), socialFactors.getRowVector(socialIndex)).getValue();
                 float socialInDegree = inDegrees.get(socialIndex); // ~ d-(k)
                 float userOutDegree = outDegrees.get(userIndex); // ~ d+(i)
                 float weight = (float) Math.sqrt(socialInDegree / (userOutDegree + socialInDegree));
-                float socialError = LogisticUtility.getValue(socialPredict) - weight * socialRate;
-                totalError += regRate * socialError * socialError;
+                float socialError = LogisticUtility.getValue(socialPredict) - weight * socialScore;
+                totalError += regScore * socialError * socialError;
 
                 socialPredict = LogisticUtility.getGradient(socialPredict);
                 for (int factorIndex = 0; factorIndex < factorSize; factorIndex++) {
                     float userFactor = userFactors.getValue(userIndex, factorIndex);
                     float socialFactor = socialFactors.getValue(socialIndex, factorIndex);
-                    userDeltas.shiftValue(userIndex, factorIndex, regRate * socialPredict * socialError * socialFactor);
-                    socialDeltas.shiftValue(socialIndex, factorIndex, regRate * socialPredict * socialError * userFactor + regSocial * socialFactor);
+                    userDeltas.shiftValue(userIndex, factorIndex, regScore * socialPredict * socialError * socialFactor);
+                    socialDeltas.shiftValue(socialIndex, factorIndex, regScore * socialPredict * socialError * userFactor + regSocial * socialFactor);
                     totalError += regSocial * socialFactor * socialFactor;
                 }
             }

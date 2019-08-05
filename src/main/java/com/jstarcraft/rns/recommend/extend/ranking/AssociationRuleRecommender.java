@@ -109,8 +109,8 @@ public class AssociationRuleRecommender extends AbstractRecommender {
         for (VectorScalar term : scoreMatrix.getRowVector(userIndex)) {
             int associationIndex = term.getIndex();
             float association = associationMatrix.getValue(associationIndex, itemIndex);
-            double rate = term.getValue();
-            value += rate * association;
+            double score = term.getValue();
+            value += score * association;
         }
         instance.setQuantityMark(value);
     }

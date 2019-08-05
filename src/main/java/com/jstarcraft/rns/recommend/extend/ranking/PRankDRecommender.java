@@ -110,7 +110,7 @@ public class PRankDRecommender extends RankSGDRecommender {
 				for (VectorScalar term : userVector) {
 					// each rated item i
 					int positiveItemIndex = term.getIndex();
-					float positiveRate = term.getValue();
+					float positiveScore = term.getValue();
 					int negativeItemIndex = -1;
 					do {
 						// draw an item j with probability proportional to
@@ -118,12 +118,12 @@ public class PRankDRecommender extends RankSGDRecommender {
 						negativeItemIndex = SampleUtility.binarySearch(itemProbabilities, 0, itemProbabilities.getElementSize() - 1, RandomUtility.randomFloat(itemProbabilities.getValue(itemProbabilities.getElementSize() - 1)));
 						// ensure that it is unrated by user u
 					} while (itemSet.contains(negativeItemIndex));
-					float negativeRate = 0f;
+					float negativeScore = 0F;
 					// compute predictions
 					float positivePredict = predict(userIndex, positiveItemIndex), negativePredict = predict(userIndex, negativeItemIndex);
 					float distance = (float) Math.sqrt(1 - Math.tanh(itemCorrelations.getValue(positiveItemIndex, negativeItemIndex) * similarityFilter));
 					float itemWeight = itemWeights.getValue(negativeItemIndex);
-					float error = itemWeight * (positivePredict - negativePredict - distance * (positiveRate - negativeRate));
+					float error = itemWeight * (positivePredict - negativePredict - distance * (positiveScore - negativeScore));
 					totalError += error * error;
 
 					// update vectors

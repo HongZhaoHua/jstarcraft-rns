@@ -30,7 +30,7 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
     private int globalEpocheSize, localEpocheSize;
     private int numberOfThreads;
     private float globalUserRegularization, globalItemRegularization, localUserRegularization, localItemRegularization;
-    private float globalLearnRate, localLearnRate;
+    private float globalLearnRatio, localLearnRatio;
 
     private int numberOfModels;
     private DenseMatrix globalUserFactors, globalItemFactors;
@@ -61,8 +61,8 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
         localUserRegularization = userRegularization;
         localItemRegularization = itemRegularization;
 
-        globalLearnRate = configuration.getFloat("recommender.global.iteration.learnrate", 0.01F);
-        localLearnRate = configuration.getFloat("recommender.iteration.learnrate", 0.01F);
+        globalLearnRatio = configuration.getFloat("recommender.global.iteration.learnrate", 0.01F);
+        localLearnRatio = configuration.getFloat("recommender.iteration.learnrate", 0.01F);
 
         numberOfThreads = configuration.getInteger("recommender.thread.count", 4);
         numberOfModels = configuration.getInteger("recommender.model.num", 50);
@@ -86,20 +86,20 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
             for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow(); // user
                 int itemIndex = term.getColumn(); // item
-                float rate = term.getValue();
+                float score = term.getValue();
 
                 // TODO 考虑重构,减少userVector与itemVector的重复构建
                 DenseVector userVector = globalUserFactors.getRowVector(userIndex);
                 DenseVector itemVector = globalItemFactors.getRowVector(itemIndex);
                 float predict = scalar.dotProduct(userVector, itemVector).getValue();
-                float error = rate - predict;
+                float error = score - predict;
 
                 // update factors
                 for (int factorIndex = 0; factorIndex < numberOfGlobalFactors; factorIndex++) {
                     float userFactor = globalUserFactors.getValue(userIndex, factorIndex);
                     float itemFactor = globalItemFactors.getValue(itemIndex, factorIndex);
-                    globalUserFactors.shiftValue(userIndex, factorIndex, globalLearnRate * (error * itemFactor - globalUserRegularization * userFactor));
-                    globalItemFactors.shiftValue(itemIndex, factorIndex, globalLearnRate * (error * userFactor - globalItemRegularization * itemFactor));
+                    globalUserFactors.shiftValue(userIndex, factorIndex, globalLearnRatio * (error * itemFactor - globalUserRegularization * userFactor));
+                    globalItemFactors.shiftValue(itemIndex, factorIndex, globalLearnRatio * (error * userFactor - globalItemRegularization * itemFactor));
                 }
             }
         }
@@ -216,7 +216,7 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
                     element.setValue(distribution.sample().floatValue());
                 });
                 // Starting a new local model learning:
-                learners[nextRunningSlot] = new LLORMALearner(modelCount, numberOfLocalFactors, localLearnRate, localUserRegularization, localItemRegularization, localEpocheSize, localUserFactors, localItemFactors, userWeights, itemWeights, scoreMatrix);
+                learners[nextRunningSlot] = new LLORMALearner(modelCount, numberOfLocalFactors, localLearnRatio, localUserRegularization, localItemRegularization, localEpocheSize, localUserFactors, localItemFactors, userWeights, itemWeights, scoreMatrix);
                 learners[nextRunningSlot].start();
                 runningThreadList[runningThreadCount] = modelCount;
                 runningThreadCount++;
