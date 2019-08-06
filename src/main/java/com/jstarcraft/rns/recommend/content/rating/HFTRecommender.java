@@ -310,12 +310,12 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
 
                     // update factors
                     float userBias = userBiases.getValue(userIndex);
-                    float sgd = error - biasRegularization * userBias;
-                    userBiases.shiftValue(userIndex, learnRatio * sgd);
+                    float userSgd = error - biasRegularization * userBias;
+                    userBiases.shiftValue(userIndex, learnRatio * userSgd);
                     // loss += regB * bu * bu;
                     float itemBias = itemBiases.getValue(itemIndex);
-                    sgd = error - biasRegularization * itemBias;
-                    itemBiases.shiftValue(itemIndex, learnRatio * sgd);
+                    float itemSgd = error - biasRegularization * itemBias;
+                    itemBiases.shiftValue(itemIndex, learnRatio * itemSgd);
                     // loss += regB * bj * bj;
 
                     // TODO 此处应该重构
@@ -377,13 +377,6 @@ public class HFTRecommender extends MatrixFactorizationRecommender {
             value = minimumScore;
         }
         return value;
-    }
-
-    @Override
-    public void predict(DataInstance instance) {
-        int userIndex = instance.getQualityFeature(userDimension);
-        int itemIndex = instance.getQualityFeature(itemDimension);
-        instance.setQuantityMark(predict(userIndex, itemIndex));
     }
 
 }

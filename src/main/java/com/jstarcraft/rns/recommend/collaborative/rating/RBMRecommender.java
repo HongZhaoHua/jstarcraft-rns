@@ -391,11 +391,6 @@ public class RBMRecommender extends ProbabilisticGraphicalRecommender {
             predict = mean;
             break;
         }
-        if (predict > maximumScore) {
-            predict = maximumScore;
-        } else if (predict < minimumScore) {
-            predict = minimumScore;
-        }
         instance.setQuantityMark(predict);
     }
 

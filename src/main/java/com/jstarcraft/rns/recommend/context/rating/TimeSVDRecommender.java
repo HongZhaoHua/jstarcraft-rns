@@ -405,11 +405,6 @@ public class TimeSVDRecommender extends BiasedMFRecommender {
             userExplicitFactor += (dayFactors == null ? 0F : dayFactors[factorIndex]);
             value += userExplicitFactor * itemExplicitFactor;
         }
-        if (value > maximumScore) {
-            value = maximumScore;
-        } else if (value < minimumScore) {
-            value = minimumScore;
-        }
         instance.setQuantityMark(value);
     }
 

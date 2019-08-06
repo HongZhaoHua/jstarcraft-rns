@@ -95,10 +95,6 @@ public class CCDRecommender extends MatrixFactorizationRecommender {
         float score = scalar.dotProduct(userFactors.getRowVector(userIndex), itemFactors.getRowVector(itemIndex)).getValue();
         if (score == 0F) {
             score = meanScore;
-        } else if (score > maximumScore) {
-            score = maximumScore;
-        } else if (score < minimumScore) {
-            score = minimumScore;
         }
         instance.setQuantityMark(score);
     }

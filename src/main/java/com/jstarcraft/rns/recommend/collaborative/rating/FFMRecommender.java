@@ -144,13 +144,6 @@ public class FFMRecommender extends FactorizationMachineRecommender {
                 }
             }
         }
-
-        if (value > maximumScore) {
-            value = maximumScore;
-        }
-        if (value < minimumScore) {
-            value = minimumScore;
-        }
         return value;
     }
 

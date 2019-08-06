@@ -101,17 +101,4 @@ public class MFALSRecommender extends MatrixFactorizationRecommender {
         }
     }
 
-    @Override
-    public void predict(DataInstance instance) {
-        int userIndex = instance.getQualityFeature(userDimension);
-        int itemIndex = instance.getQualityFeature(itemDimension);
-        float value = super.predict(userIndex, itemIndex);
-        if (value > maximumScore) {
-            value = maximumScore;
-        } else if (value < minimumScore) {
-            value = minimumScore;
-        }
-        instance.setQuantityMark(value);
-    }
-
 }

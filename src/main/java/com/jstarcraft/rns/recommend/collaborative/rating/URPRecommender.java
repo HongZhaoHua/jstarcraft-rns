@@ -145,9 +145,9 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
             int itemIndex = term.getColumn();
             float score = term.getValue();
             int scoreIndex = scoreIndexes.get(score); // rating level 0 ~
-                                                    // numLevels
+                                                      // numLevels
             int topicIndex = RandomUtility.randomInteger(factorSize); // 0
-                                                                           // ~
+                                                                      // ~
             // k-1
 
             // Assign a topic t to pair (u, i)
@@ -177,7 +177,7 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
             int itemIndex = term.getColumn();
             float score = term.getValue();
             int scoreIndex = scoreIndexes.get(score); // rating level 0 ~
-                                                    // numLevels
+                                                      // numLevels
             int assignmentIndex = topicAssignments.get(userIndex * itemSize + itemIndex);
 
             userTopicTimes.shiftValue(userIndex, assignmentIndex, -1);
@@ -350,11 +350,6 @@ public class URPRecommender extends ProbabilisticGraphicalRecommender {
                 probability += userTopicProbabilities.getValue(userIndex, topicIndex) * topicItemScoreProbabilities[topicIndex][itemIndex][term.getValue()];
             }
             value += probability * score;
-        }
-        if (value > maximumScore) {
-            value = maximumScore;
-        } else if (value < minimumScore) {
-            value = minimumScore;
         }
         return value;
     }

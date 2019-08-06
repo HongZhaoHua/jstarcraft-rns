@@ -19,9 +19,9 @@ public class UserKNNRatingRecommenderTestCase {
         Configurator configuration = Configurator.valueOf("recommend/collaborative/userknnrating-test.properties");
         RatingTask job = new RatingTask(UserKNNRatingRecommender.class, configuration);
         Map<String, Float> measures = job.execute();
-        Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.6377799F));
-        Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9619718F));
-        Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.69715446F));
+        Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.63307434F));
+        Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.94774646F));
+        Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.69000137F));
     }
 
 }

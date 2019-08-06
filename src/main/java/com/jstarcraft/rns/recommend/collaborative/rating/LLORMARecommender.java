@@ -263,10 +263,6 @@ public class LLORMARecommender extends MatrixFactorizationRecommender {
         float score = valueSum / weightSum;
         if (Float.isNaN(score) || score == 0F) {
             score = meanScore;
-        } else if (score < minimumScore) {
-            score = minimumScore;
-        } else if (score > maximumScore) {
-            score = maximumScore;
         }
         instance.setQuantityMark(score);
     }

@@ -39,9 +39,11 @@ public class RatingTask extends AbstractTask<FloatList, FloatList> {
     @Override
     protected Collection<Evaluator> getEvaluators(SparseMatrix featureMatrix) {
         Collection<Evaluator> evaluators = new LinkedList<>();
-        evaluators.add(new MAEEvaluator());
-        evaluators.add(new MPEEvaluator(0.01F));
-        evaluators.add(new MSEEvaluator());
+        float minimum = configuration.getFloat("recommender.recommender.rating.minimum", 0.5F);
+        float maximum = configuration.getFloat("recommender.recommender.rating.maximum", 4F);
+        evaluators.add(new MAEEvaluator(minimum, maximum));
+        evaluators.add(new MPEEvaluator(minimum, maximum, 0.01F));
+        evaluators.add(new MSEEvaluator(minimum, maximum));
         return evaluators;
     }
 

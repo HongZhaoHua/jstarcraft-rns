@@ -129,7 +129,7 @@ public class SoRegRecommender extends SocialRecommender {
                 scalar.setValue(value + itemDeltas.getValue(row, column) * -learnRatio);
             });
 
-            totalError *= 0.5D;
+            totalError *= 0.5F;
             if (isConverged(epocheIndex) && isConverged) {
                 break;
             }
@@ -137,25 +137,16 @@ public class SoRegRecommender extends SocialRecommender {
             currentError = totalError;
         }
     }
-
+    
     @Override
     protected float predict(int userIndex, int itemIndex) {
-        float predictRating = super.predict(userIndex, itemIndex);
-
-        if (predictRating > maximumScore) {
-            predictRating = maximumScore;
-        } else if (predictRating < minimumScore) {
-            predictRating = minimumScore;
+        float score = super.predict(userIndex, itemIndex);
+        if (score > maximumScore) {
+            score = maximumScore;
+        } else if (score < minimumScore) {
+            score = minimumScore;
         }
-
-        return predictRating;
-    }
-
-    @Override
-    public void predict(DataInstance instance) {
-        int userIndex = instance.getQualityFeature(userDimension);
-        int itemIndex = instance.getQualityFeature(itemDimension);
-        instance.setQuantityMark(predict(userIndex, itemIndex));
+        return score;
     }
 
 }

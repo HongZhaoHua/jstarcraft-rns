@@ -185,17 +185,4 @@ public class FMALSRecommender extends FactorizationMachineRecommender {
         }
     }
 
-    @Override
-    protected float predict(DefaultScalar scalar, MathVector featureVector) {
-        float value = super.predict(scalar, featureVector);
-
-        if (value > maximumScore) {
-            value = maximumScore;
-        }
-        if (value < minimumScore) {
-            value = minimumScore;
-        }
-        return value;
-    }
-
 }
