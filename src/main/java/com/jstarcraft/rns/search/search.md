@@ -148,15 +148,15 @@ Mock object  = codec.decode(document);
 JStarCraft RNS Search默认具有如下命名规则:
 1. 名称支持多层嵌套,各层之间使用**`·`**分隔;
 2. 存在4种形式的名称
-    * **`name`**,可以用于任意类型属性;
-    * **`name[index]`**,可以用于数组/集合/映射类型;
-    * **`name[index_key]`**可以用于映射类型;
-    * **`name[index_value]`**可以用于映射类型;
+    * `name`,可以用于任意类型属性;
+    * `name[index]`,可以用于数组/集合/映射类型;
+    * `name[index_key]`可以用于映射类型;
+    * `name[index_value]`可以用于映射类型;
 
 ###### 索引命名规则
 
 ```java
-Query query = IntPoint.newRangeQuery("coordinate", new float[] {-90F, -180}, new float[] {90F, 180});
+Query query = IntPoint.newRangeQuery("coordinate", new float[] {-90F, -180F}, new float[] {90F, 180F});
 ```
 
 ###### 排序命名规则

@@ -58,6 +58,7 @@ public class MockComplexObject {
     @SearchStore
     private MockEnumeration race;
 
+    @SearchIndex
     @SearchStore
     private MockSimpleObject object;
 
@@ -179,7 +180,7 @@ public class MockComplexObject {
         instance.lastName = lastName;
         instance.names = new String[] { firstName, lastName };
         instance.money = money;
-        instance.currencies = new int[] { money };
+        instance.currencies = new int[] { money, money };
         instance.instant = instant;
         instance.race = race;
         instance.list = new LinkedList<>();

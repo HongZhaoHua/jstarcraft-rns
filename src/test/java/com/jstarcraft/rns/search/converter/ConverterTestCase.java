@@ -45,6 +45,17 @@ public class ConverterTestCase {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader);
         {
             TopDocs search = indexSearcher.search(IntPoint.newRangeQuery("id", -1, 1), 1000);
+            Assert.assertEquals(3L, search.totalHits.value);
+            int index = 0;
+            for (ScoreDoc scoreDoc : search.scoreDocs) {
+                Document document = indexReader.document(scoreDoc.doc);
+                Assert.assertEquals(objects[index++], codec.decode(document));
+            }
+        }
+
+        {
+            TopDocs search = indexSearcher.search(IntPoint.newRangeQuery("currencies", new int[] { -1, -1 }, new int[] { 1, 1 }), 1000);
+            Assert.assertEquals(3L, search.totalHits.value);
             int index = 0;
             for (ScoreDoc scoreDoc : search.scoreDocs) {
                 Document document = indexReader.document(scoreDoc.doc);
@@ -54,6 +65,7 @@ public class ConverterTestCase {
 
         {
             TopDocs search = indexSearcher.search(new TermQuery(new Term("names", "jstarcraft")), 1000);
+            Assert.assertEquals(3L, search.totalHits.value);
             int index = 0;
             for (ScoreDoc scoreDoc : search.scoreDocs) {
                 Document document = indexReader.document(scoreDoc.doc);
@@ -61,32 +73,38 @@ public class ConverterTestCase {
             }
 
             search = indexSearcher.search(new TermQuery(new Term("names", "protoss")), 1000);
+            Assert.assertEquals(1L, search.totalHits.value);
             for (ScoreDoc scoreDoc : search.scoreDocs) {
                 Document document = indexReader.document(scoreDoc.doc);
                 Assert.assertEquals(protoss, codec.decode(document));
             }
             search = indexSearcher.search(new TermQuery(new Term("names", "terran")), 1000);
+            Assert.assertEquals(1L, search.totalHits.value);
             for (ScoreDoc scoreDoc : search.scoreDocs) {
                 Document document = indexReader.document(scoreDoc.doc);
                 Assert.assertEquals(terran, codec.decode(document));
             }
             search = indexSearcher.search(new TermQuery(new Term("names", "zerg")), 1000);
+            Assert.assertEquals(1L, search.totalHits.value);
             for (ScoreDoc scoreDoc : search.scoreDocs) {
                 Document document = indexReader.document(scoreDoc.doc);
                 Assert.assertEquals(zerg, codec.decode(document));
             }
 
             search = indexSearcher.search(new TermQuery(new Term("object.name", "protoss")), 1000);
+            Assert.assertEquals(1L, search.totalHits.value);
             for (ScoreDoc scoreDoc : search.scoreDocs) {
                 Document document = indexReader.document(scoreDoc.doc);
                 Assert.assertEquals(protoss, codec.decode(document));
             }
             search = indexSearcher.search(new TermQuery(new Term("object.name", "terran")), 1000);
+            Assert.assertEquals(1L, search.totalHits.value);
             for (ScoreDoc scoreDoc : search.scoreDocs) {
                 Document document = indexReader.document(scoreDoc.doc);
                 Assert.assertEquals(terran, codec.decode(document));
             }
             search = indexSearcher.search(new TermQuery(new Term("object.name", "zerg")), 1000);
+            Assert.assertEquals(1L, search.totalHits.value);
             for (ScoreDoc scoreDoc : search.scoreDocs) {
                 Document document = indexReader.document(scoreDoc.doc);
                 Assert.assertEquals(zerg, codec.decode(document));
