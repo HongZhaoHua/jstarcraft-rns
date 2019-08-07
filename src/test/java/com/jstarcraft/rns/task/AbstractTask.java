@@ -241,7 +241,7 @@ public abstract class AbstractTask<L, R> {
             break;
         }
         case "ratio": {
-            double ratio = configuration.getDouble("data.splitter.ratio.value", 0.8D);
+            float ratio = configuration.getFloat("data.splitter.ratio.value", 0.8F);
             separator = new RatioSeparator(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField(), ratio);
             break;
         }
