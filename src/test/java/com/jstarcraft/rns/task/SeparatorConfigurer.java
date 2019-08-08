@@ -1,6 +1,6 @@
 package com.jstarcraft.rns.task;
 
-public class SplitterConfigurer {
+public class SeparatorConfigurer {
 
     private String name;
 

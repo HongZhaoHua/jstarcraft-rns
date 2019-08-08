@@ -69,8 +69,6 @@ public abstract class AbstractTask<L, R> {
 
     protected int userDimension, itemDimension, userSize, itemSize;
 
-//    protected int[] trainPaginations, trainPositions, testPaginations, testPositions;
-
     protected ReferenceModule[] trainModules, testModules;
 
     protected DataModule dataMarker, trainMarker, testMarker;
@@ -145,14 +143,6 @@ public abstract class AbstractTask<L, R> {
         Map<Class<? extends Evaluator>, Integer2FloatKeyValue> measures = new HashMap<>();
         for (Entry<Class<? extends Evaluator>, Integer2FloatKeyValue[]> term : values.entrySet()) {
             Integer2FloatKeyValue measure = new Integer2FloatKeyValue(0, 0F);
-            // if (term.getKey() == RecallEvaluator.class) {
-            // for (KeyValue<Integer, Double> element : term.getValue()) {
-            // if (element == null) {
-            // continue;
-            // }
-            // System.out.println(element.getKey() + " " + element.getValue());
-            // }
-            // }
             for (Integer2FloatKeyValue element : term.getValue()) {
                 if (element == null) {
                     continue;
@@ -197,7 +187,7 @@ public abstract class AbstractTask<L, R> {
                 break;
             }
             case "csv": {
-                convertor = ReflectionUtility.getInstance(CsvConverter.class, configuration.getCharacter("data.splitter.delimiter", ' '), space.getQualityAttributes(), space.getQuantityAttributes());
+                convertor = ReflectionUtility.getInstance(CsvConverter.class, configuration.getCharacter("data.separator.delimiter", ' '), space.getQualityAttributes(), space.getQuantityAttributes());
                 break;
             }
             default: {
@@ -212,37 +202,37 @@ public abstract class AbstractTask<L, R> {
         }
 
         // TODO 数据切割器部分
-        SplitterConfigurer splitterConfigurer = JsonUtility.string2Object(configuration.getString("data.splitter"), SplitterConfigurer.class);
-        DataModule model = space.getModule(splitterConfigurer.getName());
+        SeparatorConfigurer separatorConfigurer = JsonUtility.string2Object(configuration.getString("data.separator"), SeparatorConfigurer.class);
+        DataModule model = space.getModule(separatorConfigurer.getName());
         DataSeparator separator;
-        switch (splitterConfigurer.getType()) {
+        switch (separatorConfigurer.getType()) {
         case "kcv": {
-            int size = configuration.getInteger("data.splitter.kcv.number", 1);
+            int size = configuration.getInteger("data.separator.kcv.number", 1);
             separator = new KFoldCrossValidationSeparator(model, size);
             break;
         }
         case "loocv": {
-            separator = new LeaveOneCrossValidationSeparator(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField());
+            separator = new LeaveOneCrossValidationSeparator(space, model, separatorConfigurer.getMatchField(), separatorConfigurer.getSortField());
             break;
         }
         case "testset": {
-            int threshold = configuration.getInteger("data.splitter.threshold");
+            int threshold = configuration.getInteger("data.separator.threshold");
             separator = new GivenDataSeparator(model, threshold);
             break;
         }
         case "givenn": {
-            int number = configuration.getInteger("data.splitter.given-number.number");
-            separator = new GivenNumberSeparator(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField(), number);
+            int number = configuration.getInteger("data.separator.given-number.number");
+            separator = new GivenNumberSeparator(space, model, separatorConfigurer.getMatchField(), separatorConfigurer.getSortField(), number);
             break;
         }
         case "random": {
-            float random = configuration.getFloat("data.splitter.random.value", 0.8F);
-            separator = new RandomSeparator(space, model, splitterConfigurer.getMatchField(), random);
+            float random = configuration.getFloat("data.separator.random.value", 0.8F);
+            separator = new RandomSeparator(space, model, separatorConfigurer.getMatchField(), random);
             break;
         }
         case "ratio": {
-            float ratio = configuration.getFloat("data.splitter.ratio.value", 0.8F);
-            separator = new RatioSeparator(space, model, splitterConfigurer.getMatchField(), splitterConfigurer.getSortField(), ratio);
+            float ratio = configuration.getFloat("data.separator.ratio.value", 0.8F);
+            separator = new RatioSeparator(space, model, separatorConfigurer.getMatchField(), separatorConfigurer.getSortField(), ratio);
             break;
         }
         default: {
