@@ -9,8 +9,8 @@ import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.table.SparseTable;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.ProbabilisticGraphicalRecommender;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;

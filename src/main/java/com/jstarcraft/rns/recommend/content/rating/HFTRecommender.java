@@ -5,8 +5,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
@@ -19,8 +17,8 @@ import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.model.neuralnetwork.activation.ActivationFunction;
 import com.jstarcraft.ai.model.neuralnetwork.activation.SoftMaxActivationFunction;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.MatrixFactorizationRecommender;
 import com.jstarcraft.rns.utility.SampleUtility;
 

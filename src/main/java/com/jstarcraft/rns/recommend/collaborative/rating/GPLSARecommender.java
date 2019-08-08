@@ -11,9 +11,9 @@ import com.jstarcraft.ai.math.structure.table.SparseTable;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.Float2FloatKeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.ProbabilisticGraphicalRecommender;
 import com.jstarcraft.rns.utility.GaussianUtility;
 

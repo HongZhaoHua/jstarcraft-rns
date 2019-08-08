@@ -13,8 +13,8 @@ import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.core.resource.annotation.ResourceConfiguration;
 import com.jstarcraft.core.resource.annotation.ResourceId;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.KeyValue;
-import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.data.processor.AllFeatureDataSorter;
 import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
 

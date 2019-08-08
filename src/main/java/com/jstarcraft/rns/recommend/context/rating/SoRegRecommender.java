@@ -1,6 +1,5 @@
 package com.jstarcraft.rns.recommend.context.rating;
 
-import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.algorithm.similarity.Similarity;
@@ -11,8 +10,8 @@ import com.jstarcraft.ai.math.structure.matrix.SymmetryMatrix;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.SocialRecommender;
 
 /**

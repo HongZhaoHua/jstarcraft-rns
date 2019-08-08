@@ -3,7 +3,6 @@ package com.jstarcraft.rns.recommend.collaborative.rating;
 import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
-import org.apache.commons.math3.random.RandomGenerator;
 
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
@@ -16,7 +15,7 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.rns.configure.Configurator;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.recommend.MatrixFactorizationRecommender;
 import com.jstarcraft.rns.recommend.exception.RecommendException;
 import com.jstarcraft.rns.utility.MatrixUtility;

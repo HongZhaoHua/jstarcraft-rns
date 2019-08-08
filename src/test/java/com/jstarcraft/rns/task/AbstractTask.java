@@ -34,11 +34,11 @@ import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.core.common.conversion.json.JsonUtility;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.common.reflection.TypeUtility;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.Integer2FloatKeyValue;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
 import com.jstarcraft.rns.data.separator.DataSeparator;
 import com.jstarcraft.rns.data.separator.GivenDataSeparator;
@@ -63,7 +63,7 @@ public abstract class AbstractTask<L, R> {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    protected Configurator configuration;
+    protected Configurator configurator;
 
     protected String userField, itemField, scoreField;
 
@@ -75,18 +75,18 @@ public abstract class AbstractTask<L, R> {
 
     protected Recommender recommender;
 
-    protected AbstractTask(Recommender recommender, Configurator configuration) {
-        this.configuration = configuration;
-        Long seed = configuration.getLong("recommender.random.seed");
+    protected AbstractTask(Recommender recommender, Configurator configurator) {
+        this.configurator = configurator;
+        Long seed = configurator.getLong("recommender.random.seed");
         if (seed != null) {
             RandomUtility.setSeed(seed);
         }
         this.recommender = recommender;
     }
 
-    protected AbstractTask(Class<? extends Recommender> clazz, Configurator configuration) {
-        this.configuration = configuration;
-        Long seed = configuration.getLong("recommender.random.seed");
+    protected AbstractTask(Class<? extends Recommender> clazz, Configurator configurator) {
+        this.configurator = configurator;
+        Long seed = configurator.getLong("recommender.random.seed");
         if (seed != null) {
             RandomUtility.setSeed(seed);
         }
@@ -156,30 +156,30 @@ public abstract class AbstractTask<L, R> {
     }
 
     public Map<String, Float> execute() throws Exception {
-        userField = configuration.getString("data.model.fields.user", "user");
-        itemField = configuration.getString("data.model.fields.item", "item");
-        scoreField = configuration.getString("data.model.fields.score", "score");
+        userField = configurator.getString("data.model.fields.user", "user");
+        itemField = configurator.getString("data.model.fields.item", "item");
+        scoreField = configurator.getString("data.model.fields.score", "score");
 
         // TODO 数据属性部分
         // 离散属性
         Type dicreteConfiguration = TypeUtility.parameterize(HashMap.class, String.class, Class.class);
-        Map<String, Class<?>> dicreteDifinitions = JsonUtility.string2Object(configuration.getString("data.attributes.dicrete"), dicreteConfiguration);
+        Map<String, Class<?>> dicreteDifinitions = JsonUtility.string2Object(configurator.getString("data.attributes.dicrete"), dicreteConfiguration);
         // 连续属性
         Type continuousConfiguration = TypeUtility.parameterize(HashMap.class, String.class, Class.class);
-        Map<String, Class<?>> continuousDifinitions = JsonUtility.string2Object(configuration.getString("data.attributes.continuous"), continuousConfiguration);
+        Map<String, Class<?>> continuousDifinitions = JsonUtility.string2Object(configurator.getString("data.attributes.continuous"), continuousConfiguration);
 
         // 数据空间部分
         DataSpace space = new DataSpace(dicreteDifinitions, continuousDifinitions);
 
         // TODO 数据模型部分
-        ModuleConfigurer[] moduleConfigurers = JsonUtility.string2Object(configuration.getString("data.modules"), ModuleConfigurer[].class);
+        ModuleConfigurer[] moduleConfigurers = JsonUtility.string2Object(configurator.getString("data.modules"), ModuleConfigurer[].class);
         for (ModuleConfigurer moduleConfigurer : moduleConfigurers) {
             space.makeDenseModule(moduleConfigurer.getName(), moduleConfigurer.getConfiguration(), 1000000000);
         }
 
         // TODO 数据转换器部分
         Type convertorConfiguration = TypeUtility.parameterize(LinkedHashMap.class, String.class, TypeUtility.parameterize(KeyValue.class, String.class, HashMap.class));
-        ConverterConfigurer[] converterConfigurers = JsonUtility.string2Object(configuration.getString("data.converters"), ConverterConfigurer[].class);
+        ConverterConfigurer[] converterConfigurers = JsonUtility.string2Object(configurator.getString("data.converters"), ConverterConfigurer[].class);
         for (ConverterConfigurer converterConfigurer : converterConfigurers) {
             String name = converterConfigurer.getName();
             String type = converterConfigurer.getType();
@@ -191,7 +191,7 @@ public abstract class AbstractTask<L, R> {
                 break;
             }
             case "csv": {
-                convertor = ReflectionUtility.getInstance(CsvConverter.class, configuration.getCharacter("data.separator.delimiter", ' '), space.getQualityAttributes(), space.getQuantityAttributes());
+                convertor = ReflectionUtility.getInstance(CsvConverter.class, configurator.getCharacter("data.separator.delimiter", ' '), space.getQualityAttributes(), space.getQuantityAttributes());
                 break;
             }
             default: {
@@ -206,7 +206,7 @@ public abstract class AbstractTask<L, R> {
         }
 
         // TODO 数据切割器部分
-        SeparatorConfigurer separatorConfigurer = JsonUtility.string2Object(configuration.getString("data.separator"), SeparatorConfigurer.class);
+        SeparatorConfigurer separatorConfigurer = JsonUtility.string2Object(configurator.getString("data.separator"), SeparatorConfigurer.class);
         DataModule model = space.getModule(separatorConfigurer.getName());
         int scoreDimension = model.getQuantityInner(scoreField);
         for (DataInstance instance : model) {
@@ -216,7 +216,7 @@ public abstract class AbstractTask<L, R> {
         DataSeparator separator;
         switch (separatorConfigurer.getType()) {
         case "kcv": {
-            int size = configuration.getInteger("data.separator.kcv.number", 1);
+            int size = configurator.getInteger("data.separator.kcv.number", 1);
             separator = new KFoldCrossValidationSeparator(model, size);
             break;
         }
@@ -225,22 +225,22 @@ public abstract class AbstractTask<L, R> {
             break;
         }
         case "testset": {
-            int threshold = configuration.getInteger("data.separator.threshold");
+            int threshold = configurator.getInteger("data.separator.threshold");
             separator = new GivenDataSeparator(model, threshold);
             break;
         }
         case "givenn": {
-            int number = configuration.getInteger("data.separator.given-number.number");
+            int number = configurator.getInteger("data.separator.given-number.number");
             separator = new GivenNumberSeparator(space, model, separatorConfigurer.getMatchField(), separatorConfigurer.getSortField(), number);
             break;
         }
         case "random": {
-            float random = configuration.getFloat("data.separator.random.value", 0.8F);
+            float random = configurator.getFloat("data.separator.random.value", 0.8F);
             separator = new RandomSeparator(space, model, separatorConfigurer.getMatchField(), random);
             break;
         }
         case "ratio": {
-            float ratio = configuration.getFloat("data.separator.ratio.value", 0.8F);
+            float ratio = configurator.getFloat("data.separator.ratio.value", 0.8F);
             separator = new RatioSeparator(space, model, separatorConfigurer.getMatchField(), separatorConfigurer.getSortField(), ratio);
             break;
         }
@@ -250,7 +250,7 @@ public abstract class AbstractTask<L, R> {
         }
 
         // 评估部分
-        Double binarize = configuration.getDouble("data.convert.binarize.threshold");
+        Double binarize = configurator.getDouble("data.convert.binarize.threshold");
         Map<String, Float> measures = new TreeMap<>();
 
         EnvironmentContext context = EnvironmentFactory.getContext();
@@ -279,7 +279,7 @@ public abstract class AbstractTask<L, R> {
                     }
                     SparseMatrix featureMatrix = SparseMatrix.valueOf(userSize, itemSize, dataTable);
 
-                    recommender.prepare(configuration, trainMarker, space);
+                    recommender.prepare(configurator, trainMarker, space);
                     recommender.practice();
                     for (Entry<Class<? extends Evaluator>, Integer2FloatKeyValue> measure : evaluate(getEvaluators(featureMatrix), recommender).entrySet()) {
                         Float value = measure.getValue().getValue() / measure.getValue().getKey();

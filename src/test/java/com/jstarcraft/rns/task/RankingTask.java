@@ -3,10 +3,8 @@ package com.jstarcraft.rns.task;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.module.ArrayInstance;
@@ -20,8 +18,8 @@ import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.Integer2FloatKeyValue;
-import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.Recommender;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -48,7 +46,7 @@ public class RankingTask extends AbstractTask<IntSet, IntList> {
     @Override
     protected Collection<Evaluator> getEvaluators(SparseMatrix featureMatrix) {
         Collection<Evaluator> evaluators = new LinkedList<>();
-        int size = configuration.getInteger("recommender.recommender.ranking.topn", 10);
+        int size = configurator.getInteger("recommender.recommender.ranking.topn", 10);
         evaluators.add(new AUCEvaluator(size));
         evaluators.add(new MAPEvaluator(size));
         evaluators.add(new MRREvaluator(size));

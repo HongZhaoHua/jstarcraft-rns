@@ -2,8 +2,6 @@ package com.jstarcraft.rns.recommend.collaborative.rating;
 
 import java.util.Map.Entry;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
@@ -14,8 +12,8 @@ import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.ProbabilisticGraphicalRecommender;
 import com.jstarcraft.rns.utility.GammaUtility;
 import com.jstarcraft.rns.utility.SampleUtility;

@@ -3,15 +3,7 @@ package com.jstarcraft.rns.recommend.neuralnetwork;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.deeplearning4j.nn.api.OptimizationAlgorithm;
-import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
-import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
-import org.deeplearning4j.nn.conf.layers.DenseLayer;
-import org.deeplearning4j.nn.conf.layers.OutputLayer;
-import org.deeplearning4j.nn.weights.WeightInit;
-import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.factory.Nd4j;
-import org.nd4j.linalg.learning.config.Nesterovs;
 
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
@@ -34,7 +26,7 @@ import com.jstarcraft.ai.model.neuralnetwork.optimization.StochasticGradientOpti
 import com.jstarcraft.ai.model.neuralnetwork.parameter.XavierUniformParameterFactory;
 import com.jstarcraft.ai.model.neuralnetwork.schedule.ConstantSchedule;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.LayerVertex;
-import com.jstarcraft.rns.configure.Configurator;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.recommend.ModelRecommender;
 
 /**

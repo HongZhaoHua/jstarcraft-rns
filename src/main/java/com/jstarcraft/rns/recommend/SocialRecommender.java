@@ -5,7 +5,7 @@ import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
-import com.jstarcraft.rns.configure.Configurator;
+import com.jstarcraft.core.utility.Configurator;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatAVLTreeMap;
 

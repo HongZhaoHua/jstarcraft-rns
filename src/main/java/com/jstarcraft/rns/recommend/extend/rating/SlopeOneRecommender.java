@@ -7,7 +7,7 @@ import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.rns.configure.Configurator;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.recommend.AbstractRecommender;
 import com.jstarcraft.rns.recommend.exception.RecommendException;
 

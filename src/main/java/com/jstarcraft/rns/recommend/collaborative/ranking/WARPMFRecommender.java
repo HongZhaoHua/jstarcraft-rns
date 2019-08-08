@@ -3,8 +3,8 @@ package com.jstarcraft.rns.recommend.collaborative.ranking;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.MatrixFactorizationRecommender;
 import com.jstarcraft.rns.utility.LogisticUtility;
 

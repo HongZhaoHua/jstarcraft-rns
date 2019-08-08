@@ -1,6 +1,7 @@
 package com.jstarcraft.rns.recommend.benchmark.rating;
 
 import java.util.Map;
+import java.util.Properties;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -9,17 +10,17 @@ import org.junit.Test;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
-import com.jstarcraft.ai.modem.ModemCodec;
-import com.jstarcraft.rns.configure.Configurator;
-import com.jstarcraft.rns.recommend.Recommender;
-import com.jstarcraft.rns.recommend.benchmark.rating.UserClusterRecommender;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.task.RatingTask;
 
 public class UserClusterRecommenderTestCase {
 
     @Test
     public void testRecommender() throws Exception {
-        Configurator configuration = Configurator.valueOf("recommend/benchmark/usercluster-test.properties");
+        Properties keyValues = new Properties();
+        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/recommend/benchmark/usercluster-test.properties"));
+        Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(UserClusterRecommender.class, configuration);
         Map<String, Float> measures = job.execute();
         Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.70878255F));

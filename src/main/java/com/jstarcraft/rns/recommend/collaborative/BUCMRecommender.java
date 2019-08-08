@@ -1,6 +1,5 @@
 package com.jstarcraft.rns.recommend.collaborative;
 
-import com.google.common.collect.HashBasedTable;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.DefaultScalar;
@@ -8,8 +7,8 @@ import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
-import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.ProbabilisticGraphicalRecommender;
 import com.jstarcraft.rns.utility.GammaUtility;
 import com.jstarcraft.rns.utility.SampleUtility;

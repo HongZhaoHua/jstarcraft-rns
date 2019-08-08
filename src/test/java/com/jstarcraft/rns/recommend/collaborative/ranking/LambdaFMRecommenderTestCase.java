@@ -1,6 +1,7 @@
 package com.jstarcraft.rns.recommend.collaborative.ranking;
 
 import java.util.Map;
+import java.util.Properties;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -13,17 +14,17 @@ import com.jstarcraft.ai.evaluate.ranking.NDCGEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
-import com.jstarcraft.rns.configure.Configurator;
-import com.jstarcraft.rns.recommend.collaborative.ranking.LambdaFMDynamicRecommender;
-import com.jstarcraft.rns.recommend.collaborative.ranking.LambdaFMStaticRecommender;
-import com.jstarcraft.rns.recommend.collaborative.ranking.LambdaFMWeightRecommender;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.task.RankingTask;
 
 public class LambdaFMRecommenderTestCase {
 
     @Test
     public void testRecommenderByDynamic() throws Exception {
-        Configurator configuration = Configurator.valueOf("recommend/collaborative/ranking/lambdafmd-test.properties");
+        Properties keyValues = new Properties();
+        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/ranking/lambdafmd-test.properties"));
+        Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(LambdaFMDynamicRecommender.class, configuration);
         Map<String, Float> measures = job.execute();
         Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.8738025F));
@@ -37,7 +38,10 @@ public class LambdaFMRecommenderTestCase {
 
     @Test
     public void testRecommenderByStatic() throws Exception {
-        Configurator configuration = Configurator.valueOf("recommend/collaborative/ranking/lambdafms-test.properties");
+        Properties keyValues = new Properties();
+        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/ranking/lambdafms-test.properties"));
+        Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(LambdaFMStaticRecommender.class, configuration);
         Map<String, Float> measures = job.execute();
         Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.87063825F));
@@ -51,7 +55,10 @@ public class LambdaFMRecommenderTestCase {
 
     @Test
     public void testRecommenderByWeight() throws Exception {
-        Configurator configuration = Configurator.valueOf("recommend/collaborative/ranking/lambdafmw-test.properties");
+        Properties keyValues = new Properties();
+        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/ranking/lambdafmw-test.properties"));
+        Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(LambdaFMWeightRecommender.class, configuration);
         Map<String, Float> measures = job.execute();
         Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.87338704F));

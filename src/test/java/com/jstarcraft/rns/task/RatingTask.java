@@ -13,8 +13,8 @@ import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.Integer2FloatKeyValue;
-import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.Recommender;
 
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
@@ -39,8 +39,8 @@ public class RatingTask extends AbstractTask<FloatList, FloatList> {
     @Override
     protected Collection<Evaluator> getEvaluators(SparseMatrix featureMatrix) {
         Collection<Evaluator> evaluators = new LinkedList<>();
-        float minimum = configuration.getFloat("recommender.recommender.rating.minimum", 0.5F);
-        float maximum = configuration.getFloat("recommender.recommender.rating.maximum", 4F);
+        float minimum = configurator.getFloat("recommender.recommender.rating.minimum", 0.5F);
+        float maximum = configurator.getFloat("recommender.recommender.rating.maximum", 4F);
         evaluators.add(new MAEEvaluator(minimum, maximum));
         evaluators.add(new MPEEvaluator(minimum, maximum, 0.01F));
         evaluators.add(new MSEEvaluator(minimum, maximum));

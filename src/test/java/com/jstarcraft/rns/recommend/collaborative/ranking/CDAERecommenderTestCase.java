@@ -1,6 +1,7 @@
 package com.jstarcraft.rns.recommend.collaborative.ranking;
 
 import java.util.Map;
+import java.util.Properties;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -13,7 +14,7 @@ import com.jstarcraft.ai.evaluate.ranking.NDCGEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
-import com.jstarcraft.rns.configure.Configurator;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.recommend.neuralnetwork.CDAERecommender;
 import com.jstarcraft.rns.task.RankingTask;
 
@@ -21,7 +22,10 @@ public class CDAERecommenderTestCase {
 
 	@Test
 	public void testRecommender() throws Exception {
-		Configurator configuration = Configurator.valueOf("recommend/collaborative/ranking/cdae-test.properties");
+	    Properties keyValues = new Properties();
+        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/ranking/cdae-test.properties"));
+        Configurator configuration = new Configurator(keyValues);
 		RankingTask job = new RankingTask(CDAERecommender.class, configuration);
 		Map<String, Float> measures = job.execute();
 		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.93623614F));

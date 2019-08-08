@@ -1,6 +1,7 @@
 package com.jstarcraft.rns.recommend.benchmark.ranking;
 
 import java.util.Map;
+import java.util.Properties;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -13,17 +14,17 @@ import com.jstarcraft.ai.evaluate.ranking.NDCGEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
-import com.jstarcraft.ai.modem.ModemCodec;
-import com.jstarcraft.rns.configure.Configurator;
-import com.jstarcraft.rns.recommend.Recommender;
-import com.jstarcraft.rns.recommend.benchmark.ranking.MostPopularRecommender;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.task.RankingTask;
 
 public class MostPopularRecommenderTestCase {
 
     @Test
     public void testRecommender() throws Exception {
-        Configurator configuration = Configurator.valueOf("recommend/benchmark/mostpopular-test.properties");
+        Properties keyValues = new Properties();
+        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/recommend/benchmark/mostpopular-test.properties"));
+        Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(MostPopularRecommender.class, configuration);
         Map<String, Float> measures = job.execute();
         Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9350321F));

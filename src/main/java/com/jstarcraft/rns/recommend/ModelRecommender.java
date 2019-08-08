@@ -3,8 +3,8 @@ package com.jstarcraft.rns.recommend;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.MathUtility;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.rns.configure.Configurator;
 import com.jstarcraft.rns.recommend.exception.RecommendException;
 import com.jstarcraft.rns.utility.LogisticUtility;
 
