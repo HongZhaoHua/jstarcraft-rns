@@ -201,7 +201,7 @@ public abstract class AbstractTask<L, R> {
             File file = new File(path);
             DataModule module = space.getModule(name);
             try (InputStream stream = new FileInputStream(file)) {
-                convertor.convert(module, stream, null, null, null);
+                convertor.convert(module, stream);
             }
         }
 
