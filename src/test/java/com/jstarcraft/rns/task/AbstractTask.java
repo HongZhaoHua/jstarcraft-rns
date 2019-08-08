@@ -65,7 +65,7 @@ public abstract class AbstractTask<L, R> {
 
     protected Configurator configuration;
 
-    protected String userField, itemField;
+    protected String userField, itemField, scoreField;
 
     protected int userDimension, itemDimension, userSize, itemSize;
 
@@ -156,6 +156,10 @@ public abstract class AbstractTask<L, R> {
     }
 
     public Map<String, Float> execute() throws Exception {
+        userField = configuration.getString("data.model.fields.user", "user");
+        itemField = configuration.getString("data.model.fields.item", "item");
+        scoreField = configuration.getString("data.model.fields.score", "score");
+
         // TODO 数据属性部分
         // 离散属性
         Type dicreteConfiguration = TypeUtility.parameterize(HashMap.class, String.class, Class.class);
@@ -197,13 +201,18 @@ public abstract class AbstractTask<L, R> {
             File file = new File(path);
             DataModule module = space.getModule(name);
             try (InputStream stream = new FileInputStream(file)) {
-                convertor.convert(module, stream, converterConfigurer.getQualityMarkOrder(), converterConfigurer.getQuantityMarkOrder(), converterConfigurer.getWeightOrder());
+                convertor.convert(module, stream, null, null, null);
             }
         }
 
         // TODO 数据切割器部分
         SeparatorConfigurer separatorConfigurer = JsonUtility.string2Object(configuration.getString("data.separator"), SeparatorConfigurer.class);
         DataModule model = space.getModule(separatorConfigurer.getName());
+        int scoreDimension = model.getQuantityInner(scoreField);
+        for (DataInstance instance : model) {
+            // 将特征设置为标记
+            instance.setQuantityMark(instance.getQuantityFeature(scoreDimension));
+        }
         DataSeparator separator;
         switch (separatorConfigurer.getType()) {
         case "kcv": {
@@ -241,9 +250,6 @@ public abstract class AbstractTask<L, R> {
         }
 
         // 评估部分
-        userField = configuration.getString("data.model.fields.user", "user");
-        itemField = configuration.getString("data.model.fields.item", "item");
-
         Double binarize = configuration.getDouble("data.convert.binarize.threshold");
         Map<String, Float> measures = new TreeMap<>();
 
