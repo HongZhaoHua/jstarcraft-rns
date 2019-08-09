@@ -34,6 +34,17 @@ public class PythonTestCase {
 
     private static final ClassLoader loader = PythonTestCase.class.getClassLoader();
 
+    private static final String script;
+
+    static {
+        try {
+            File file = new File(PythonTestCase.class.getResource("Recommend.py").toURI());
+            script = FileUtils.readFileToString(file, StringUtility.CHARSET);
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
     @BeforeClass
     public static void setProperty() {
         System.setProperty("python.console.encoding", StringUtility.CHARSET.name());
@@ -41,15 +52,10 @@ public class PythonTestCase {
 
     @Test
     public void testRanking() throws Exception {
-        File file = new File(this.getClass().getResource("Recommend.py").toURI());
-        String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
         ScriptContext context = new ScriptContext();
-        context.useClasses(Configurator.class, RankingTask.class, RatingTask.class, RandomGuessRecommender.class);
+        context.useClasses(Properties.class, Configurator.class, RankingTask.class, RatingTask.class, RandomGuessRecommender.class);
         ScriptScope scope = new ScriptScope();
-        Properties keyValues = new Properties();
-        keyValues.load(loader.getResourceAsStream("data.properties"));
-        keyValues.load(loader.getResourceAsStream("recommend/benchmark/randomguess-test.properties"));
-        scope.createAttribute("keyValues", new Properties[] { keyValues });
+        scope.createAttribute("loader", loader);
         scope.createAttribute("type", "ranking");
         ScriptExpression expression = new PythonExpression(context, scope, script);
 
@@ -65,15 +71,10 @@ public class PythonTestCase {
 
     @Test
     public void testRating() throws Exception {
-        File file = new File(this.getClass().getResource("Recommend.py").toURI());
-        String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
         ScriptContext context = new ScriptContext();
-        context.useClasses(Configurator.class, RankingTask.class, RatingTask.class, RandomGuessRecommender.class);
+        context.useClasses(Properties.class, Configurator.class, RankingTask.class, RatingTask.class, RandomGuessRecommender.class);
         ScriptScope scope = new ScriptScope();
-        Properties keyValues = new Properties();
-        keyValues.load(loader.getResourceAsStream("data.properties"));
-        keyValues.load(loader.getResourceAsStream("recommend/benchmark/randomguess-test.properties"));
-        scope.createAttribute("keyValues", new Properties[] { keyValues });
+        scope.createAttribute("loader", loader);
         scope.createAttribute("type", "rating");
         ScriptExpression expression = new PythonExpression(context, scope, script);
 
