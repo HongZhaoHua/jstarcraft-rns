@@ -1,6 +1,7 @@
 package com.jstarcraft.rns.script;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.Map;
 import java.util.Properties;
 
@@ -28,6 +29,8 @@ import com.jstarcraft.core.utility.StringUtility;
 
 public class PythonTestCase {
 
+    private static final ClassLoader loader = PythonTestCase.class.getClassLoader();
+
     @BeforeClass
     public static void setProperty() {
         System.setProperty("python.console.encoding", StringUtility.CHARSET.name());
@@ -35,15 +38,13 @@ public class PythonTestCase {
 
     @Test
     public void testRanking() throws Exception {
-        Properties keyValues = new Properties();
-        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/benchmark/randomguess-test.properties"));
-
         File file = new File(this.getClass().getResource("Recommend.py").toURI());
         String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
         ScriptContext context = new ScriptContext();
-
         ScriptScope scope = new ScriptScope();
+        Properties keyValues = new Properties();
+        keyValues.load(loader.getResourceAsStream("data.properties"));
+        keyValues.load(loader.getResourceAsStream("recommend/benchmark/randomguess-test.properties"));
         scope.createAttribute("keyValues", new Properties[] { keyValues });
         scope.createAttribute("type", "ranking");
         ScriptExpression expression = new PythonExpression(context, scope, script);
@@ -57,18 +58,16 @@ public class PythonTestCase {
         Assert.assertThat(measures.get(PrecisionEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.005825241F));
         Assert.assertThat(measures.get(RecallEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.011579763F));
     }
-    
+
     @Test
     public void testRating() throws Exception {
-        Properties keyValues = new Properties();
-        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/benchmark/randomguess-test.properties"));
-
         File file = new File(this.getClass().getResource("Recommend.py").toURI());
         String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
         ScriptContext context = new ScriptContext();
-
         ScriptScope scope = new ScriptScope();
+        Properties keyValues = new Properties();
+        keyValues.load(loader.getResourceAsStream("data.properties"));
+        keyValues.load(loader.getResourceAsStream("recommend/benchmark/randomguess-test.properties"));
         scope.createAttribute("keyValues", new Properties[] { keyValues });
         scope.createAttribute("type", "rating");
         ScriptExpression expression = new PythonExpression(context, scope, script);
