@@ -1,7 +1,6 @@
 package com.jstarcraft.rns.script;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.Map;
 import java.util.Properties;
 
@@ -25,7 +24,11 @@ import com.jstarcraft.core.script.PythonExpression;
 import com.jstarcraft.core.script.ScriptContext;
 import com.jstarcraft.core.script.ScriptExpression;
 import com.jstarcraft.core.script.ScriptScope;
+import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.StringUtility;
+import com.jstarcraft.rns.recommend.benchmark.RandomGuessRecommender;
+import com.jstarcraft.rns.task.RankingTask;
+import com.jstarcraft.rns.task.RatingTask;
 
 public class PythonTestCase {
 
@@ -41,6 +44,7 @@ public class PythonTestCase {
         File file = new File(this.getClass().getResource("Recommend.py").toURI());
         String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
         ScriptContext context = new ScriptContext();
+        context.useClasses(Configurator.class, RankingTask.class, RatingTask.class, RandomGuessRecommender.class);
         ScriptScope scope = new ScriptScope();
         Properties keyValues = new Properties();
         keyValues.load(loader.getResourceAsStream("data.properties"));
@@ -64,6 +68,7 @@ public class PythonTestCase {
         File file = new File(this.getClass().getResource("Recommend.py").toURI());
         String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
         ScriptContext context = new ScriptContext();
+        context.useClasses(Configurator.class, RankingTask.class, RatingTask.class, RandomGuessRecommender.class);
         ScriptScope scope = new ScriptScope();
         Properties keyValues = new Properties();
         keyValues.load(loader.getResourceAsStream("data.properties"));
