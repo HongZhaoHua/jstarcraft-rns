@@ -1,7 +1,7 @@
 # 构建配置器
-keyValues = Properties();
-keyValues.load(loader.getResourceAsStream("data.properties"));
-keyValues.load(loader.getResourceAsStream("recommend/benchmark/randomguess-test.properties"));
+keyValues = Properties()
+keyValues.load(loader.getResourceAsStream("data.properties"))
+keyValues.load(loader.getResourceAsStream("recommend/benchmark/randomguess-test.properties"))
 configurator = Configurator([keyValues])
 
 # 构建推荐器
