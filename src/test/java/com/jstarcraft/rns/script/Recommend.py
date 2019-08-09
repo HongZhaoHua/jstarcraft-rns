@@ -1,12 +1,17 @@
+# 构建配置器
 keyValues = Properties();
 keyValues.load(loader.getResourceAsStream("data.properties"));
 keyValues.load(loader.getResourceAsStream("recommend/benchmark/randomguess-test.properties"));
-configuration = Configurator([keyValues])
+configurator = Configurator([keyValues])
+
+# 构建推荐器
+recommender = RandomGuessRecommender()
+
+# 根据参数构建排序任务/评分任务
 if (type == "ranking"):
-    recommender = RandomGuessRecommender()
     job = RankingTask(recommender, configuration)
-    _data = job.execute()
 if (type == "rating"):
-    recommender = RandomGuessRecommender()
     job = RatingTask(recommender, configuration)
-    _data = job.execute()
+
+# 获取评估指标
+_data = job.execute()
