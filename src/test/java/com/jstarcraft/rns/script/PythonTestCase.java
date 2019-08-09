@@ -1,4 +1,4 @@
-package com.jstarcraft.rns;
+package com.jstarcraft.rns.script;
 
 import java.io.File;
 import java.util.Map;
