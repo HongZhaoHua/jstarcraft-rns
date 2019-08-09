@@ -31,11 +31,17 @@ JStarCraft RNS
 * [4.模型保存与装载](https://github.com/HongZhaoHua/jstarcraft-ai)
 * [5.丰富的推荐算法](https://github.com/HongZhaoHua/jstarcraft-rns/wiki/%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95)
 * 6.丰富的搜索算法
-* [7.丰富的评估指标](#评估指标)
+* 7.丰富的脚本支持
+    * Groovy
+    * JS
+    * Lua
+    * MVEL
+    * Python
+* [8.丰富的评估指标](#评估指标)
     * [排序指标](#排序指标)
     * [评分指标](#评分指标)
-* 8.独立的环境配置与算法配置
-* 9.完整的单元测试
+* 9.独立的环境配置与算法配置
+* 10.完整的单元测试
 
 *****
 
