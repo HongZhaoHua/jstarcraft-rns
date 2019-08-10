@@ -17,8 +17,8 @@
 * [使用](#使用)
     * [设置依赖](#设置依赖)
     * [构建配置器](#构建配置器)
-    * [训练与评估推荐器](#训练与评估推荐器)
-    * [获取推荐器](#获取推荐器)
+    * [训练与评估模型](#训练与评估模型)
+    * [获取模型](#获取模型)
 * [架构](#架构)
 * [概念](#概念)
 * [示例](#示例)
@@ -125,29 +125,29 @@ keyValues.load(this.getClass().getResourceAsStream("/recommend/benchmark/randomg
 Configurator configurator = new Configurator(keyValues);
 ```
 
-#### 训练与评估推荐器
+#### 训练与评估模型
 
 ###### 构建排序任务
 
 ```java
-RankingTask job = new RankingTask(RandomGuessRecommender.class, configuration);
-// 训练与评估
-job.execute();
+RankingTask task = new RankingTask(RandomGuessRecommender.class, configuration);
+// 训练与评估排序模型
+task.execute();
 ```
 
 ###### 构建评分任务
 
 ```java
-RatingTask job = new RatingTask(RandomGuessRecommender.class, configuration);
-// 训练与测试推荐器
-job.execute();
+RatingTask task = new RatingTask(RandomGuessRecommender.class, configuration);
+// 训练与评估评分模型
+task.execute();
 ```
 
-#### 获取推荐器
+#### 获取模型
 
 ```java
 // 获取排序推荐器
-Recommender recommender = job.getRecommender();
+Recommender recommender = task.getRecommender();
 ```
 
 ****
