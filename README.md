@@ -1,11 +1,38 @@
-JStarCraft RNS
-==========
+# JStarCraft RNS
 
-[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+****
 
 希望路过的同学,顺手给JStarCraft框架点个Star,算是对作者的一种鼓励吧!
 
-*****
+****
+
+## 目录
+
+* [介绍](#介绍)
+* [特性](#特性)
+* [安装](#安装)
+    * [安装JStarCraft Core框架](#安装JStarCraft-Core框架)
+    * [安装JStarCraft AI框架](#安装JStarCraft-AI框架)
+    * [安装JStarCraft RNS引擎](#安装JStarCraft-RNS引擎)
+* [使用](#使用)
+    * [设置依赖](#设置依赖)
+    * [构建配置器](#构建配置器)
+    * [训练与评估推荐器](#训练与评估推荐器)
+    * [获取推荐器](#获取推荐器)
+* [架构](#架构)
+* [概念](#概念)
+* [示例](#示例)
+* [对比](#对比)
+* [版本](#版本)
+* [参考](#参考)
+    * [数据集](#数据集)
+* [协议](#协议)
+* [作者](#作者)
+* [致谢](#致谢)
+
+****
+
+## 介绍
 
 **JStarCraft RNS是一个面向信息检索领域的轻量级引擎.遵循Apache 2.0协议.**
 
@@ -15,15 +42,9 @@ JStarCraft RNS
 
 提供满足工业级别场景要求的搜索引擎设计与实现.
 
-在此特别感谢[LibRec团队](https://github.com/guoguibing/librec),也特别感谢**推荐系统QQ群**(274750470)提供的支持与帮助.
+****
 
-|作者|洪钊桦|
-|---|---
-|E-mail|110399057@qq.com, jstarcraft@gmail.com
-
-*****
-
-## JStarCraft RNS特性
+## 特性
 
 * 1.跨平台
 * [2.串行与并行计算](https://github.com/HongZhaoHua/jstarcraft-ai)
@@ -40,35 +61,46 @@ JStarCraft RNS
 * [8.丰富的评估指标](#评估指标)
     * [排序指标](#排序指标)
     * [评分指标](#评分指标)
-* 9.独立的环境配置与算法配置
-* 10.完整的单元测试
 
-*****
+****
 
-## JStarCraft RNS教程
+## 安装
 
-* 1.使用准备
-    * [克隆项目](#克隆项目)
-    * [配置依赖](#配置依赖)
-* 2.配置推荐器
-    * [设置配置](#设置配置)
-    * [排序推荐器](#排序推荐器)
-    * [评分推荐器](#评分推荐器)
-* 3.编码解码推荐器
-    * [设置调制解调器](#设置调制解调器)
-    * [编码推荐器](#编码推荐器)
-    * [解码推荐器](#解码推荐器)
+JStarCraft RNS要求使用者具备以下环境:
+* JDK 8或者以上
+* Maven 3
 
-#### 克隆项目
+#### 安装JStarCraft-Core框架
 
-使用Git克隆以下三个项目:
-1. [JStarCraft Core](https://github.com/HongZhaoHua/jstarcraft-core)
-2. [JStarCraft AI](https://github.com/HongZhaoHua/jstarcraft-ai)
-3. [JStarCraft RNS](https://github.com/HongZhaoHua/jstarcraft-rns)
+```shell
+git clone https://github.com/HongZhaoHua/jstarcraft-core.git
 
-#### 配置依赖
+mvn install -Dmaven.test.skip=true
+```
 
-*Maven依赖*
+#### 安装JStarCraft-AI框架
+
+```shell
+git clone https://github.com/HongZhaoHua/jstarcraft-ai.git
+
+mvn install -Dmaven.test.skip=true
+```
+
+####  安装JStarCraft-RNS引擎
+
+```shell
+git clone https://github.com/HongZhaoHua/jstarcraft-rns.git
+
+mvn install -Dmaven.test.skip=true
+```
+
+****
+
+## 使用
+
+#### 设置依赖
+
+###### 设置Maven依赖
 
 ```maven
 <dependency>
@@ -78,83 +110,71 @@ JStarCraft RNS
 </dependency>
 ```
 
-*Gradle依赖*
+###### 设置Gradle依赖
 
 ```gradle
 compile group: 'com.jstarcraft', name: 'rns', version: '1.0'
 ```
 
-#### 设置配置
+#### 构建配置器
 
 ```java
-String path = "recommendation/benchmark/randomguess-test.properties";
-Configuration configuration = Configuration.valueOf(path);
+Properties keyValues = new Properties();
+keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+keyValues.load(this.getClass().getResourceAsStream("/recommend/benchmark/randomguess-test.properties"));
+Configurator configurator = new Configurator(keyValues);
 ```
 
-#### 排序推荐器
+#### 训练与评估推荐器
+
+###### 构建排序任务
 
 ```java
 RankingTask job = new RankingTask(RandomGuessRecommender.class, configuration);
-// 训练与测试推荐器
+// 训练与评估
 job.execute();
-Recommender recommender = job.getRecommender();
 ```
 
-#### 评分推荐器
+###### 构建评分任务
 
 ```java
 RatingTask job = new RatingTask(RandomGuessRecommender.class, configuration);
 // 训练与测试推荐器
 job.execute();
+```
+
+#### 获取推荐器
+
+```java
+// 获取排序推荐器
 Recommender recommender = job.getRecommender();
 ```
 
-#### 设置调制解调器
+****
 
-```java
-ModemCodec codec = ModemCodec.JSON;
-```
+## 架构
 
-#### 编码推荐器
+****
 
-```java
-// 将推荐器编码为字节数组
-byte[] data = codec.encodeModel(recommender);
-```
+## 概念
 
-#### 解码推荐器
+****
 
-```java
-// 将字节数组解码为推荐器
-Recommender recommender = (Recommender) codec.decodeModel(data);
-```
+## 示例
 
-*****
+****
 
-## 上下文:社交,时间,位置与情感
+## 对比
 
-*****
+****
 
-## 评估指标
+## 版本
 
-#### 排序指标
-- AUC
-- Diversity
-- MAP
-- MRR
-- NDCG
-- Novelty
-- Precision
-- Recall
+****
 
-#### 评分指标
-- MAE
-- MPE
-- MSE/RMSE
+## 参考
 
-*****
-
-## 数据集
+#### 数据集
 
 * [Amazon Product Dataset](http://jmcauley.ucsd.edu/data/amazon/)
 * [Bibsonomy Dataset](https://www.kde.cs.uni-kassel.de/wp-content/uploads/bibsonomy/)
@@ -173,4 +193,27 @@ Recommender recommender = (Recommender) codec.decodeModel(data);
 * [Yelp Dataset](https://www.yelp.com/dataset)
 * [Yongfeng Zhang Dataset](http://yongfeng.me/dataset/)
 
-*****
+****
+
+## 协议
+
+[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+
+****
+
+## 作者
+
+|作者|洪钊桦|
+|---|---
+|E-mail|110399057@qq.com, jstarcraft@gmail.com
+
+****
+
+## 致谢
+
+特别感谢[LibRec团队](https://github.com/guoguibing/librec)与**推荐系统QQ群**(274750470)在推荐方面提供的支持与帮助.
+
+特别感谢[陆徐刚](https://github.com/luxugang/Lucene-7.5.0)在搜索方面提供的支持与帮助.
+
+****
+
