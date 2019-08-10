@@ -4,23 +4,23 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.jstarcraft.rns.model.content.ranking.TFIDFRecommenderTestCase;
-import com.jstarcraft.rns.model.content.rating.HFTRecommenderTestCase;
-import com.jstarcraft.rns.model.content.rating.TopicMFATRecommenderTestCase;
-import com.jstarcraft.rns.model.content.rating.TopicMFMTRecommenderTestCase;
+import com.jstarcraft.rns.model.content.ranking.TFIDFModelTestCase;
+import com.jstarcraft.rns.model.content.rating.HFTModelTestCase;
+import com.jstarcraft.rns.model.content.rating.TopicMFATModelTestCase;
+import com.jstarcraft.rns.model.content.rating.TopicMFMTModelTestCase;
 
 @RunWith(Suite.class)
 @SuiteClasses({
 		// 推荐器测试集
-		EFMRecommenderTestCase.class,
+		EFMModelTestCase.class,
 
-		HFTRecommenderTestCase.class,
+		HFTModelTestCase.class,
 
-		TFIDFRecommenderTestCase.class,
+		TFIDFModelTestCase.class,
 
-		TopicMFATRecommenderTestCase.class,
+		TopicMFATModelTestCase.class,
 
-		TopicMFMTRecommenderTestCase.class })
+		TopicMFMTModelTestCase.class })
 public class ContentTestSuite {
 
 }

@@ -4,7 +4,7 @@ package com.jstarcraft.rns.model.collaborative.rating;
  * 核平滑器
  * 
  * <pre>
- * {@link LLORMARecommender}
+ * {@link LLORMAModel}
  * </pre>
  * 
  * @author Birdy

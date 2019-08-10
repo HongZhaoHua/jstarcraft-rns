@@ -8,51 +8,51 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
         // 推荐器测试集
         // recommender.cf.rating
-        AspectModelRatingRecommenderTestCase.class,
+        AspectModelRatingModelTestCase.class,
 
-        ASVDPlusPlusRecommenderTestCase.class,
+        ASVDPlusPlusModelTestCase.class,
 
-        BiasedMFRecommenderTestCase.class,
+        BiasedMFModelTestCase.class,
 
-        BHFreeRatingRecommenderTestCase.class,
+        BHFreeRatingModelTestCase.class,
 
-        BPMFRecommenderTestCase.class,
+        BPMFModelTestCase.class,
 
-        BUCMRatingRecommenderTestCase.class,
+        BUCMRatingModelTestCase.class,
 
-        CCDRecommenderTestCase.class,
+        CCDModelTestCase.class,
 
-        FFMRecommenderTestCase.class,
+        FFMModelTestCase.class,
 
-        FMALSRecommenderTestCase.class,
+        FMALSModelTestCase.class,
 
-        FMSGDRecommenderTestCase.class,
+        FMSGDModelTestCase.class,
 
-        GPLSARecommenderTestCase.class,
+        GPLSAModelTestCase.class,
 
-        IRRGRecommenderTestCase.class,
+        IRRGModelTestCase.class,
 
-        ItemKNNRatingRecommenderTestCase.class,
+        ItemKNNRatingModelTestCase.class,
 
-        LDCCRecommenderTestCase.class,
+        LDCCModelTestCase.class,
 
-        LLORMARecommenderTestCase.class,
+        LLORMAModelTestCase.class,
 
-        MFALSRecommenderTestCase.class,
+        MFALSModelTestCase.class,
 
-        NMFRecommenderTestCase.class,
+        NMFModelTestCase.class,
 
-        PMFRecommenderTestCase.class,
+        PMFModelTestCase.class,
 
-        RBMRecommenderTestCase.class,
+        RBMModelTestCase.class,
 
-        RFRecRecommenderTestCase.class,
+        RFRecModelTestCase.class,
 
-        SVDPlusPlusRecommenderTestCase.class,
+        SVDPlusPlusModelTestCase.class,
 
-        URPRecommenderTestCase.class,
+        URPModelTestCase.class,
 
-        UserKNNRatingRecommenderTestCase.class, })
+        UserKNNRatingModelTestCase.class, })
 public class CollaborativeRatingTestSuite {
 
 }

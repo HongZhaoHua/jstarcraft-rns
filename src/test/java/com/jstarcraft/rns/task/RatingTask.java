@@ -15,7 +15,7 @@ import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.Integer2FloatKeyValue;
-import com.jstarcraft.rns.model.Recommender;
+import com.jstarcraft.rns.model.Model;
 
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatList;
@@ -28,11 +28,11 @@ import it.unimi.dsi.fastutil.floats.FloatList;
  */
 public class RatingTask extends AbstractTask<FloatList, FloatList> {
 
-    public RatingTask(Recommender recommender, Configurator configuration) {
+    public RatingTask(Model recommender, Configurator configuration) {
         super(recommender, configuration);
     }
 
-    public RatingTask(Class<? extends Recommender> clazz, Configurator configuration) {
+    public RatingTask(Class<? extends Model> clazz, Configurator configuration) {
         super(clazz, configuration);
     }
 
@@ -58,7 +58,7 @@ public class RatingTask extends AbstractTask<FloatList, FloatList> {
     }
 
     @Override
-    protected FloatList recommend(Recommender recommender, int userIndex) {
+    protected FloatList recommend(Model recommender, int userIndex) {
         ReferenceModule testModule = testModules[userIndex];
         ArrayInstance copy = new ArrayInstance(testMarker.getQualityOrder(), testMarker.getQuantityOrder());
         List<Integer2FloatKeyValue> rateList = new ArrayList<>(testModule.getSize());

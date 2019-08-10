@@ -26,7 +26,7 @@ import com.jstarcraft.core.script.ScriptExpression;
 import com.jstarcraft.core.script.ScriptScope;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.rns.model.benchmark.RandomGuessRecommender;
+import com.jstarcraft.rns.model.benchmark.RandomGuessModel;
 import com.jstarcraft.rns.task.RankingTask;
 import com.jstarcraft.rns.task.RatingTask;
 
@@ -53,7 +53,7 @@ public class PythonTestCase {
     @Test
     public void testRanking() throws Exception {
         ScriptContext context = new ScriptContext();
-        context.useClasses(Properties.class, Configurator.class, RankingTask.class, RatingTask.class, RandomGuessRecommender.class);
+        context.useClasses(Properties.class, Configurator.class, RankingTask.class, RatingTask.class, RandomGuessModel.class);
         ScriptScope scope = new ScriptScope();
         scope.createAttribute("loader", loader);
         scope.createAttribute("type", "ranking");
@@ -72,7 +72,7 @@ public class PythonTestCase {
     @Test
     public void testRating() throws Exception {
         ScriptContext context = new ScriptContext();
-        context.useClasses(Properties.class, Configurator.class, RankingTask.class, RatingTask.class, RandomGuessRecommender.class);
+        context.useClasses(Properties.class, Configurator.class, RankingTask.class, RatingTask.class, RandomGuessModel.class);
         ScriptScope scope = new ScriptScope();
         scope.createAttribute("loader", loader);
         scope.createAttribute("type", "rating");

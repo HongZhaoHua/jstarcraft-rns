@@ -20,7 +20,7 @@ import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.Integer2FloatKeyValue;
-import com.jstarcraft.rns.model.Recommender;
+import com.jstarcraft.rns.model.Model;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -35,11 +35,11 @@ import it.unimi.dsi.fastutil.ints.IntSet;
  */
 public class RankingTask extends AbstractTask<IntSet, IntList> {
 
-    public RankingTask(Recommender recommender, Configurator configuration) {
+    public RankingTask(Model recommender, Configurator configuration) {
         super(recommender, configuration);
     }
 
-    public RankingTask(Class<? extends Recommender> clazz, Configurator configuration) {
+    public RankingTask(Class<? extends Model> clazz, Configurator configuration) {
         super(clazz, configuration);
     }
 
@@ -68,7 +68,7 @@ public class RankingTask extends AbstractTask<IntSet, IntList> {
     }
 
     @Override
-    protected IntList recommend(Recommender recommender, int userIndex) {
+    protected IntList recommend(Model recommender, int userIndex) {
         ReferenceModule trainModule = trainModules[userIndex];
         ReferenceModule testModule = testModules[userIndex];
         IntSet itemSet = new IntOpenHashSet();

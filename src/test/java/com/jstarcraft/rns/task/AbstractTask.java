@@ -47,7 +47,7 @@ import com.jstarcraft.rns.data.separator.KFoldCrossValidationSeparator;
 import com.jstarcraft.rns.data.separator.LeaveOneCrossValidationSeparator;
 import com.jstarcraft.rns.data.separator.RandomSeparator;
 import com.jstarcraft.rns.data.separator.RatioSeparator;
-import com.jstarcraft.rns.model.Recommender;
+import com.jstarcraft.rns.model.Model;
 import com.jstarcraft.rns.model.exception.RecommendException;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
@@ -73,9 +73,9 @@ public abstract class AbstractTask<L, R> {
 
     protected DataModule dataMarker, trainMarker, testMarker;
 
-    protected Recommender recommender;
+    protected Model recommender;
 
-    protected AbstractTask(Recommender recommender, Configurator configurator) {
+    protected AbstractTask(Model recommender, Configurator configurator) {
         this.configurator = configurator;
         Long seed = configurator.getLong("recommender.random.seed");
         if (seed != null) {
@@ -84,24 +84,24 @@ public abstract class AbstractTask<L, R> {
         this.recommender = recommender;
     }
 
-    protected AbstractTask(Class<? extends Recommender> clazz, Configurator configurator) {
+    protected AbstractTask(Class<? extends Model> clazz, Configurator configurator) {
         this.configurator = configurator;
         Long seed = configurator.getLong("recommender.random.seed");
         if (seed != null) {
             RandomUtility.setSeed(seed);
         }
-        this.recommender = (Recommender) ReflectionUtility.getInstance(clazz);
+        this.recommender = (Model) ReflectionUtility.getInstance(clazz);
     }
 
     protected abstract Collection<Evaluator> getEvaluators(SparseMatrix featureMatrix);
 
     protected abstract L check(int userIndex);
 
-    protected abstract R recommend(Recommender recommender, int userIndex);
+    protected abstract R recommend(Model recommender, int userIndex);
 
     private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-    private Map<Class<? extends Evaluator>, Integer2FloatKeyValue> evaluate(Collection<Evaluator> evaluators, Recommender recommender) {
+    private Map<Class<? extends Evaluator>, Integer2FloatKeyValue> evaluate(Collection<Evaluator> evaluators, Model recommender) {
         Map<Class<? extends Evaluator>, Integer2FloatKeyValue[]> values = new HashMap<>();
         for (Evaluator evaluator : evaluators) {
             values.put(evaluator.getClass(), new Integer2FloatKeyValue[userSize]);
@@ -301,7 +301,7 @@ public abstract class AbstractTask<L, R> {
         return measures;
     }
 
-    public Recommender getRecommender() {
+    public Model getRecommender() {
         return recommender;
     }
 
