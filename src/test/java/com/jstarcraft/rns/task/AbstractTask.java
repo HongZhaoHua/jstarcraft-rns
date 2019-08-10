@@ -47,8 +47,8 @@ import com.jstarcraft.rns.data.separator.KFoldCrossValidationSeparator;
 import com.jstarcraft.rns.data.separator.LeaveOneCrossValidationSeparator;
 import com.jstarcraft.rns.data.separator.RandomSeparator;
 import com.jstarcraft.rns.data.separator.RatioSeparator;
-import com.jstarcraft.rns.recommend.Recommender;
-import com.jstarcraft.rns.recommend.exception.RecommendException;
+import com.jstarcraft.rns.model.Recommender;
+import com.jstarcraft.rns.model.exception.RecommendException;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
 
