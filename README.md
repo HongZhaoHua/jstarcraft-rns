@@ -22,10 +22,10 @@
 * [架构](#架构)
 * [概念](#概念)
 * [示例](#示例)
-    * [JStarCraft RNS与Groovy交互](#JStarCraft RNS与Groovy交互)
-    * [JStarCraft RNS与JS交互](#JStarCraft RNS与JS交互)
-    * [JStarCraft RNS与Lua交互](#JStarCraft RNS与Lua交互)
-    * [JStarCraft RNS与Python交互](#JStarCraft RNS与Python交互)
+    * [JStarCraft RNS与Groovy交互](#JStarCraft-RNS与Groovy交互)
+    * [JStarCraft RNS与JS交互](#JStarCraft-RNS与JS交互)
+    * [JStarCraft RNS与Lua交互](#JStarCraft-RNS与Lua交互)
+    * [JStarCraft RNS与Python交互](#JStarCraft-RNS与Python交互)
 * [对比](#对比)
 * [版本](#版本)
 * [参考](#参考)
@@ -166,7 +166,7 @@ Model model = task.getModel();
 
 ## 示例
 
-#### JStarCraft RNS与Groovy交互
+#### JStarCraft-RNS与Groovy交互
 
 ```java
 
@@ -176,7 +176,7 @@ Model model = task.getModel();
 
 ```
 
-#### JStarCraft RNS与JS交互
+#### JStarCraft-RNS与JS交互
 
 ```java
 
@@ -186,7 +186,7 @@ Model model = task.getModel();
 
 ```
 
-#### JStarCraft RNS与Lua交互
+#### JStarCraft-RNS与Lua交互
 
 ```java
 
@@ -196,7 +196,7 @@ Model model = task.getModel();
 
 ```
 
-#### JStarCraft RNS与Python交互
+#### JStarCraft-RNS与Python交互
 
 * 编写Python脚本训练与评估模型
 
