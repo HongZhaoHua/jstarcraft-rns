@@ -22,6 +22,10 @@
 * [架构](#架构)
 * [概念](#概念)
 * [示例](#示例)
+    * [JStarCraft RNS与Groovy交互](#JStarCraft RNS与Groovy交互)
+    * [JStarCraft RNS与JS交互](#JStarCraft RNS与JS交互)
+    * [JStarCraft RNS与Lua交互](#JStarCraft RNS与Lua交互)
+    * [JStarCraft RNS与Python交互](#JStarCraft RNS与Python交互)
 * [对比](#对比)
 * [版本](#版本)
 * [参考](#参考)
@@ -130,7 +134,7 @@ Configurator configurator = new Configurator(keyValues);
 ###### 构建排序任务
 
 ```java
-RankingTask task = new RankingTask(RandomGuessRecommender.class, configuration);
+RankingTask task = new RankingTask(RandomGuessModel.class, configurator);
 // 训练与评估排序模型
 task.execute();
 ```
@@ -138,7 +142,7 @@ task.execute();
 ###### 构建评分任务
 
 ```java
-RatingTask task = new RatingTask(RandomGuessRecommender.class, configuration);
+RatingTask task = new RatingTask(RandomGuessModel.class, configurator);
 // 训练与评估评分模型
 task.execute();
 ```
@@ -146,8 +150,8 @@ task.execute();
 #### 获取模型
 
 ```java
-// 获取排序推荐器
-Recommender recommender = task.getRecommender();
+// 获取模型
+Model model = task.getModel();
 ```
 
 ****
@@ -161,6 +165,89 @@ Recommender recommender = task.getRecommender();
 ****
 
 ## 示例
+
+#### JStarCraft RNS与Groovy交互
+
+```java
+
+```
+
+```groovy
+
+```
+
+#### JStarCraft RNS与JS交互
+
+```java
+
+```
+
+```js
+
+```
+
+#### JStarCraft RNS与Lua交互
+
+```java
+
+```
+
+```lua
+
+```
+
+#### JStarCraft RNS与Python交互
+
+* 编写Python脚本训练与评估模型
+
+```python
+# 构建配置
+keyValues = Properties()
+keyValues.load(loader.getResourceAsStream("data.properties"))
+keyValues.load(loader.getResourceAsStream("recommend/benchmark/randomguess-test.properties"))
+configurator = Configurator([keyValues])
+
+# 此对象会返回给Java程序
+_data = {}
+
+# 构建排序任务
+task = RankingTask(RandomGuessModel, configurator)
+# 训练与评估模型并获取排序指标
+measures = task.execute()
+_data['precision'] = measures.get(PrecisionEvaluator)
+_data['recall'] = measures.get(RecallEvaluator)
+
+# 构建评分任务
+task = RatingTask(RandomGuessModel, configurator)
+# 训练与评估模型并获取评分指标
+measures = task.execute()
+_data['mae'] = measures.get(MAEEvaluator)
+_data['mse'] = measures.get(MSEEvaluator)
+```
+
+* 使用JStarCraft引擎执行Python脚本
+
+```java
+// 设置Python环境变量
+System.setProperty("python.console.encoding", StringUtility.CHARSET.name());
+
+// 获取Python脚本
+File file = new File(PythonTestCase.class.getResource("Model.py").toURI());
+String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
+
+// 设置Python脚本使用到的Java类
+ScriptContext context = new ScriptContext();
+context.useClasses(Properties.class, Configurator.class);
+context.useClasses(RankingTask.class, RatingTask.class, RandomGuessModel.class);
+context.useClasses(Assert.class, PrecisionEvaluator.class, RecallEvaluator.class, MAEEvaluator.class, MSEEvaluator.class);
+// 设置Python脚本使用到的Java变量
+ScriptScope scope = new ScriptScope();
+scope.createAttribute("loader", loader);
+        
+// 执行Python脚本
+ScriptExpression expression = new PythonExpression(context, scope, script);
+Map<String, Double> data = expression.doWith(Map.class);
+```
 
 ****
 
