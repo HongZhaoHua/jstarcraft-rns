@@ -21,6 +21,11 @@
     * [获取模型](#获取模型)
 * [架构](#架构)
 * [概念](#概念)
+    * [为什么需要信息检索](#为什么需要信息检索)
+    * [搜索与推荐的异同](#搜索与推荐的异同)
+    * [JStarCraft RNS引擎解决什么问题](#JStarCraft-RNS引擎解决什么问题)
+    * [Ranking任务与Rating任务之间的区别](#Ranking任务与Rating任务之间的区别)
+    * [Rating算法能不能用于Ranking问题](#Rating算法能不能用于Ranking问题)
 * [示例](#示例)
     * [JStarCraft RNS引擎与Groovy脚本交互](#JStarCraft-RNS引擎与Groovy脚本交互)
     * [JStarCraft RNS引擎与JS脚本交互](#JStarCraft-RNS引擎与JS脚本交互)
@@ -29,6 +34,7 @@
 * [对比](#对比)
 * [版本](#版本)
 * [参考](#参考)
+    * [ JStarCraft RNS引擎支持的算法](# JStarCraft-RNS引擎支持的算法)
     * [数据集](#数据集)
 * [协议](#协议)
 * [作者](#作者)
@@ -162,6 +168,55 @@ Model model = task.getModel();
 
 ## 概念
 
+#### 为什么需要信息检索
+
+```
+随着信息技术和互联网的发展,人们逐渐从信息匮乏(Information Underload)的时代走入了信息过载(Information Overload)的时代.
+
+无论是信息消费者还是信息生产者都遇到了挑战:
+* 对于信息消费者,从海量信息中寻找信息,是一件非常困难的事情;
+* 对于信息生产者,从海量信息中暴露信息,也是一件非常困难的事情;
+
+信息检索的任务就是联系用户和信息,一方面帮助用户寻找对自己有价值的信息,另一方面帮助信息暴露给对它感兴趣的用户,从而实现信息消费者和信息生产者的双赢.
+```
+
+#### 搜索与推荐的异同
+
+```
+从信息检索的角度:
+* 搜索和推荐是获取信息的两种主要手段;
+* 搜索和推荐是获取信息的两种不同方式;
+    * 搜索(Search)是主动明确的;
+    * 推荐(Recommend)是被动模糊的;
+
+搜索和推荐是两个互补的工具.
+```
+
+#### JStarCraft-RNS引擎解决什么问题
+
+```
+JStarCraft-RNS引擎旨在解决推荐与搜索领域的两个核心任务:排序预测(Ranking)和评分预测(Rating).
+```
+
+#### Ranking任务与Rating任务之间的区别
+
+```
+根据解决基本问题的不同,将算法与评估指标划分为排序(Ranking)与评分(Rating).
+
+两者之间的根本区别在于目标函数的不同.
+通俗点的解释:
+Ranking算法基于隐式反馈数据,趋向于拟合用户的排序.(关注度)
+Rating算法基于显示反馈数据,趋向于拟合用户的评分.(满意度)
+```
+
+#### Rating算法能不能用于Ranking问题
+
+```
+关键在于具体场景中,关注度与满意度是否保持一致.
+通俗点的解释:
+人们关注的东西,并不一定是满意的东西.(例如:个人所得税)
+```
+
 ****
 
 ## 示例
@@ -260,6 +315,84 @@ Map<String, Double> data = expression.doWith(Map.class);
 ****
 
 ## 参考
+
+#### JStarCraft-RNS引擎支持的算法
+
+* 基准算法
+
+| 名称 | 问题 | 说明/论文 |
+| :----: | :----: | :----: |
+| RandomGuess | Ranking Rating | 随机猜测 |
+| MostPopular | Ranking| 最受欢迎 |
+| ConstantGuess | Rating  | 常量猜测 |
+| GlobalAverage | Rating  | 全局平均 |
+| ItemAverage | Rating  | 物品平均 |
+| ItemCluster | Rating  | 物品聚类 |
+| UserAverage | Rating  | 用户平均 |
+| UserCluster | Rating  | 用户聚类 |
+
+* 协同算法
+
+| 名称 | 问题 | 说明/论文 |
+| :----: | :----: | :----: |
+| AspectModel | Ranking Rating | Latent class models for collaborative filtering |
+| BHFree | Ranking Rating  | Balancing Prediction and Recommendation Accuracy: Hierarchical Latent Factors for Preference Data |
+| BUCM | Ranking Rating  | Modeling Item Selection and Relevance for Accurate Recommendations |
+| ItemKNN | Ranking Rating  | 基于物品的协同过滤 |
+| UserKNN | Ranking Rating  | 基于用户的协同过滤 |
+| AoBPR | Ranking | Improving pairwise learning for item recommendation from implicit feedback |
+| BPR | Ranking | BPR: Bayesian Personalized Ranking from Implicit Feedback |
+| CLiMF | Ranking | CLiMF: learning to maximize reciprocal rank with collaborative less-is-more filtering |
+| EALS | Ranking | Collaborative filtering for implicit feedback dataset |
+| FISM | Ranking | FISM: Factored Item Similarity Models for Top-N Recommender Systems |
+| GBPR | Ranking | GBPR: Group Preference Based Bayesian Personalized Ranking for One-Class Collaborative Filtering |
+| HMMForCF | Ranking | A Hidden Markov Model Purpose: A class for the model, including parameters |
+| ItemBigram | Ranking | Topic Modeling: Beyond Bag-of-Words |
+| LambdaFM | Ranking | LambdaFM: Learning Optimal Ranking with Factorization Machines Using Lambda Surrogates |
+| LDA | Ranking | Latent Dirichlet Allocation for implicit feedback |
+| ListwiseMF | Ranking | List-wise learning to rank with matrix factorization for collaborative filtering |
+| PLSA | Ranking | Latent semantic models for collaborative filtering |
+| RankALS | Ranking | Alternating Least Squares for Personalized Ranking |
+| RankSGD | Ranking | Collaborative Filtering Ensemble for Ranking |
+| SLIM | Ranking | SLIM: Sparse Linear Methods for Top-N Recommender Systems |
+| WBPR | Ranking | Bayesian Personalized Ranking for Non-Uniformly Sampled Items |
+| WRMF | Ranking | Collaborative filtering for implicit feedback datasets |
+| Rank-GeoFM | Ranking | Rank-GeoFM: A ranking based geographical factorization method for point of interest recommendation |
+| SBPR | Ranking | Leveraging Social Connections to Improve Personalized Ranking for Collaborative Filtering |
+| AssociationRule | Ranking | A Recommendation Algorithm Using Multi-Level Association Rules |
+| PRankD | Ranking | Personalised ranking with diversity |
+| AsymmetricSVD++ | Rating | Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model |
+| AutoRec | Rating | AutoRec: Autoencoders Meet Collaborative Filtering |
+| BPMF | Rating | Bayesian Probabilistic Matrix Factorization using Markov Chain Monte Carlo |
+| CCD | Rating | Large-Scale Parallel Collaborative Filtering for the Netflix Prize |
+| FFM | Rating | Field Aware Factorization Machines for CTR Prediction |
+| GPLSA | Rating | Collaborative Filtering via Gaussian Probabilistic Latent Semantic Analysis |
+| IRRG | Rating | Exploiting Implicit Item Relationships for Recommender Systems |
+| MFALS | Rating | Large-Scale Parallel Collaborative Filtering for the Netflix Prize |
+| NMF | Rating | Algorithms for Non-negative Matrix Factorization |
+| PMF | Rating | PMF: Probabilistic Matrix Factorization |
+| RBM | Rating | Restricted Boltzman Machines for Collaborative Filtering |
+| RF-Rec | Rating | RF-Rec: Fast and Accurate Computation of Recommendations based on Rating Frequencies |
+| SVD++ | Rating | Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model |
+| URP | Rating | User Rating Profile: a LDA model for rating prediction |
+| RSTE | Rating | Learning to Recommend with Social Trust Ensemble |
+| SocialMF | Rating | A matrix factorization technique with trust propagation for recommendation in social networks |
+| SoRec | Rating | SoRec: Social recommendation using probabilistic matrix factorization |
+| SoReg | Rating | Recommender systems with social regularization |
+| TimeSVD++ | Rating | Collaborative Filtering with Temporal Dynamics |
+| TrustMF | Rating | Social Collaborative Filtering by Trust |
+| TrustSVD | Rating | TrustSVD: Collaborative Filtering with Both the Explicit and Implicit Influence of User Trust and of Item Ratings |
+| PersonalityDiagnosis | Rating | A brief introduction to Personality Diagnosis |
+| SlopeOne | Rating | Slope One Predictors for Online Rating-Based Collaborative Filtering |
+
+* 内容算法
+
+| 名称 | 问题 | 说明/论文 |
+| :----: | :----: | :----: |
+| EFM | Ranking Rating  | Explicit factor models for explainable recommendation based on phrase-level sentiment analysis |
+| TF-IDF | Ranking | 词频-逆文档频率 |
+| HFT | Rating | Hidden factors and hidden topics: understanding rating dimensions with review text |
+| TopicMF | Rating | TopicMF: Simultaneously Exploiting Ratings and Reviews for Recommendation |
 
 #### 数据集
 
