@@ -7,6 +7,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.evaluate.ranking.AUCEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.MAPEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.MRREvaluator;
@@ -22,6 +23,8 @@ import com.jstarcraft.rns.model.benchmark.RandomGuessModel;
 import com.jstarcraft.rns.task.RankingTask;
 import com.jstarcraft.rns.task.RatingTask;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
+
 public class RandomGuessModelTestCase {
 
     @Test
@@ -31,14 +34,14 @@ public class RandomGuessModelTestCase {
         keyValues.load(this.getClass().getResourceAsStream("/recommend/benchmark/randomguess-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(RandomGuessModel.class, configuration);
-        Map<String, Float> measures = job.execute();
-        Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.5205948F));
-        Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.007114561F));
-        Assert.assertThat(measures.get(MRREvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.023391832F));
-        Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.012065685F));
-        Assert.assertThat(measures.get(NoveltyEvaluator.class.getSimpleName()), CoreMatchers.equalTo(91.31491F));
-        Assert.assertThat(measures.get(PrecisionEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.005825241F));
-        Assert.assertThat(measures.get(RecallEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.011579763F));
+        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
+        Assert.assertEquals(0.5205948F, measures.getFloat(AUCEvaluator.class), 0F);
+        Assert.assertEquals(0.007114561F, measures.getFloat(MAPEvaluator.class), 0F);
+        Assert.assertEquals(0.023391832F, measures.getFloat(MRREvaluator.class), 0F);
+        Assert.assertEquals(0.012065685F, measures.getFloat(NDCGEvaluator.class), 0F);
+        Assert.assertEquals(91.31491F, measures.getFloat(NoveltyEvaluator.class), 0F);
+        Assert.assertEquals(0.005825241F, measures.getFloat(PrecisionEvaluator.class), 0F);
+        Assert.assertEquals(0.011579763F, measures.getFloat(RecallEvaluator.class), 0F);
     }
 
     @Test
@@ -48,10 +51,10 @@ public class RandomGuessModelTestCase {
         keyValues.load(this.getClass().getResourceAsStream("/recommend/benchmark/randomguess-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(RandomGuessModel.class, configuration);
-        Map<String, Float> measures = job.execute();
-        Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(1.2708743F));
-        Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9947887F));
-        Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(2.425075F));
+        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
+        Assert.assertEquals(1.2708743F, measures.getFloat(MAEEvaluator.class), 0F);
+        Assert.assertEquals(0.9947887F, measures.getFloat(MPEEvaluator.class), 0F);
+        Assert.assertEquals(2.425075F, measures.getFloat(MSEEvaluator.class), 0F);
     }
 
 }

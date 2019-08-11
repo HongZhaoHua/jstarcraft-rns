@@ -7,6 +7,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.evaluate.ranking.AUCEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.MAPEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.MRREvaluator;
@@ -18,6 +19,8 @@ import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.collaborative.ranking.WARPMFModel;
 import com.jstarcraft.rns.task.RankingTask;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
+
 public class WARPMFModelTestCase {
 
     @Test
@@ -27,14 +30,14 @@ public class WARPMFModelTestCase {
         keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/ranking/warpmf-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(WARPMFModel.class, configuration);
-        Map<String, Float> measures = job.execute();
-        Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9119169F));
-        Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.4421523F));
-        Assert.assertThat(measures.get(MRREvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.6031782F));
-        Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.5340485F));
-        Assert.assertThat(measures.get(NoveltyEvaluator.class.getSimpleName()), CoreMatchers.equalTo(17.189053F));
-        Assert.assertThat(measures.get(PrecisionEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.34166747F));
-        Assert.assertThat(measures.get(RecallEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.586479F));
+        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
+        Assert.assertEquals(0.9119169F, measures.getFloat(AUCEvaluator.class), 0F);
+        Assert.assertEquals(0.4421523F, measures.getFloat(MAPEvaluator.class), 0F);
+        Assert.assertEquals(0.6031782F, measures.getFloat(MRREvaluator.class), 0F);
+        Assert.assertEquals(0.5340485F, measures.getFloat(NDCGEvaluator.class), 0F);
+        Assert.assertEquals(17.189053F, measures.getFloat(NoveltyEvaluator.class), 0F);
+        Assert.assertEquals(0.34166747F, measures.getFloat(PrecisionEvaluator.class), 0F);
+        Assert.assertEquals(0.586479F, measures.getFloat(RecallEvaluator.class), 0F);
     }
 
 }

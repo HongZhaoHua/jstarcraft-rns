@@ -7,12 +7,15 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.collaborative.rating.CCDModel;
 import com.jstarcraft.rns.task.RatingTask;
+
+import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
 
 public class CCDModelTestCase {
 
@@ -23,10 +26,10 @@ public class CCDModelTestCase {
         keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/rating/ccd-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(CCDModel.class, configuration);
-        Map<String, Float> measures = job.execute();
-        Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9645193F));
-        Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9366471F));
-        Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(1.6167855F));
+        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
+        Assert.assertEquals(0.9645193F, measures.getFloat(MAEEvaluator.class), 0F);
+        Assert.assertEquals(0.9366471F, measures.getFloat(MPEEvaluator.class), 0F);
+        Assert.assertEquals(1.6167855F, measures.getFloat(MSEEvaluator.class), 0F);
     }
 
 }

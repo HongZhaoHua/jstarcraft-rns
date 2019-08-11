@@ -7,12 +7,15 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.benchmark.rating.GlobalAverageModel;
 import com.jstarcraft.rns.task.RatingTask;
+
+import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
 
 public class GlobalAverageModelTestCase {
 
@@ -23,10 +26,10 @@ public class GlobalAverageModelTestCase {
         keyValues.load(this.getClass().getResourceAsStream("/recommend/benchmark/globalaverage-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(GlobalAverageModel.class, configuration);
-        Map<String, Float> measures = job.execute();
-        Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.70878226F));
-        Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.7722535F));
-        Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.8372423F));
+        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
+        Assert.assertEquals(0.70878226F, measures.getFloat(MAEEvaluator.class), 0F);
+        Assert.assertEquals(0.7722535F, measures.getFloat(MPEEvaluator.class), 0F);
+        Assert.assertEquals(0.8372423F, measures.getFloat(MSEEvaluator.class), 0F);
     }
 
 }

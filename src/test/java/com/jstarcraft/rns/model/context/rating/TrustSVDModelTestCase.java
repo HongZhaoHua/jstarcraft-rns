@@ -1,18 +1,19 @@
 package com.jstarcraft.rns.model.context.rating;
 
-import java.util.Map;
 import java.util.Properties;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.core.utility.Configurator;
-import com.jstarcraft.rns.model.context.rating.TrustSVDModel;
 import com.jstarcraft.rns.task.RatingTask;
+
+import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
 
 public class TrustSVDModelTestCase {
 
@@ -23,10 +24,10 @@ public class TrustSVDModelTestCase {
         keyValues.load(this.getClass().getResourceAsStream("/recommend/context/rating/trustsvd-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(TrustSVDModel.class, configuration);
-        Map<String, Float> measures = job.execute();
-        Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.6098742F));
-        Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.9860563F));
-        Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.6233134F));
+        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
+        Assert.assertEquals(0.6098742F, measures.getFloat(MAEEvaluator.class), 0F);
+        Assert.assertEquals(0.9860563F, measures.getFloat(MPEEvaluator.class), 0F);
+        Assert.assertEquals(0.6233134F, measures.getFloat(MSEEvaluator.class), 0F);
     }
 
 }

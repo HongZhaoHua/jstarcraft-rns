@@ -7,12 +7,15 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.benchmark.rating.ConstantGuessModel;
 import com.jstarcraft.rns.task.RatingTask;
+
+import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
 
 public class ConstantGuessModelTestCase {
 
@@ -23,10 +26,10 @@ public class ConstantGuessModelTestCase {
         keyValues.load(this.getClass().getResourceAsStream("/recommend/benchmark/constantguess-test.properties"));
         Configurator configuration = new Configurator(keyValues);
 		RatingTask job = new RatingTask(ConstantGuessModel.class, configuration);
-		Map<String, Float> measures = job.execute();
-		Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(1.0565493F));
-		Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(1.0F));
-		Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(1.4247535F));
+		Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
+		Assert.assertEquals(1.0565493F, measures.getFloat(MAEEvaluator.class), 0F);
+		Assert.assertEquals(1.0F, measures.getFloat(MPEEvaluator.class), 0F);
+		Assert.assertEquals(1.4247535F, measures.getFloat(MSEEvaluator.class), 0F);
 	}
 
 }

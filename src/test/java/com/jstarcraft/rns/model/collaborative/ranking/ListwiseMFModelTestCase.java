@@ -7,6 +7,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.evaluate.ranking.AUCEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.MAPEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.MRREvaluator;
@@ -18,23 +19,25 @@ import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.collaborative.ranking.ListwiseMFModel;
 import com.jstarcraft.rns.task.RankingTask;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
+
 public class ListwiseMFModelTestCase {
 
-	@Test
-	public void testRecommender() throws Exception {
-	    Properties keyValues = new Properties();
+    @Test
+    public void testRecommender() throws Exception {
+        Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/ranking/listwisemf-test.properties"));
         Configurator configuration = new Configurator(keyValues);
-		RankingTask job = new RankingTask(ListwiseMFModel.class, configuration);
-		Map<String, Float> measures = job.execute();
-		Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.93217415F));
-		Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.4474795F));
-		Assert.assertThat(measures.get(MRREvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.6106248F));
-		Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.5486047F));
-		Assert.assertThat(measures.get(NoveltyEvaluator.class.getSimpleName()), CoreMatchers.equalTo(12.843575F));
-		Assert.assertThat(measures.get(PrecisionEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.34943455F));
-		Assert.assertThat(measures.get(RecallEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.6237497F));
-	}
+        RankingTask job = new RankingTask(ListwiseMFModel.class, configuration);
+        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
+        Assert.assertEquals(0.93217415F, measures.getFloat(AUCEvaluator.class), 0F);
+        Assert.assertEquals(0.4474795F, measures.getFloat(MAPEvaluator.class), 0F);
+        Assert.assertEquals(0.6106248F, measures.getFloat(MRREvaluator.class), 0F);
+        Assert.assertEquals(0.5486047F, measures.getFloat(NDCGEvaluator.class), 0F);
+        Assert.assertEquals(12.843575F, measures.getFloat(NoveltyEvaluator.class), 0F);
+        Assert.assertEquals(0.34943455F, measures.getFloat(PrecisionEvaluator.class), 0F);
+        Assert.assertEquals(0.6237497F, measures.getFloat(RecallEvaluator.class), 0F);
+    }
 
 }

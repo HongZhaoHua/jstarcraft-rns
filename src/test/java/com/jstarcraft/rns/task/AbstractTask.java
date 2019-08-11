@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,6 +50,9 @@ import com.jstarcraft.rns.model.Model;
 import com.jstarcraft.rns.model.exception.RecommendException;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatRBTreeMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
 
 /**
  * 抽象任务
@@ -71,9 +73,9 @@ public abstract class AbstractTask<L, R> {
 
     protected ReferenceModule[] trainModules, testModules;
 
-    protected DataModule dataMarker, trainMarker, testMarker;
+    protected DataModule dataModule, trainMarker, testMarker;
 
-    protected Model recommender;
+    protected Model model;
 
     protected AbstractTask(Model recommender, Configurator configurator) {
         this.configurator = configurator;
@@ -81,7 +83,7 @@ public abstract class AbstractTask<L, R> {
         if (seed != null) {
             RandomUtility.setSeed(seed);
         }
-        this.recommender = recommender;
+        this.model = recommender;
     }
 
     protected AbstractTask(Class<? extends Model> clazz, Configurator configurator) {
@@ -90,7 +92,7 @@ public abstract class AbstractTask<L, R> {
         if (seed != null) {
             RandomUtility.setSeed(seed);
         }
-        this.recommender = (Model) ReflectionUtility.getInstance(clazz);
+        this.model = (Model) ReflectionUtility.getInstance(clazz);
     }
 
     protected abstract Collection<Evaluator> getEvaluators(SparseMatrix featureMatrix);
@@ -155,7 +157,7 @@ public abstract class AbstractTask<L, R> {
         return measures;
     }
 
-    public Map<String, Float> execute() throws Exception {
+    public Object2FloatSortedMap<Class<? extends Evaluator>> execute() throws Exception {
         userField = configurator.getString("data.model.fields.user", "user");
         itemField = configurator.getString("data.model.fields.item", "item");
         scoreField = configurator.getString("data.model.fields.score", "score");
@@ -207,9 +209,9 @@ public abstract class AbstractTask<L, R> {
 
         // TODO 数据切割器部分
         SeparatorConfigurer separatorConfigurer = JsonUtility.string2Object(configurator.getString("data.separator"), SeparatorConfigurer.class);
-        DataModule model = space.getModule(separatorConfigurer.getName());
-        int scoreDimension = model.getQuantityInner(scoreField);
-        for (DataInstance instance : model) {
+        DataModule module = space.getModule(separatorConfigurer.getName());
+        int scoreDimension = module.getQuantityInner(scoreField);
+        for (DataInstance instance : module) {
             // 将特征设置为标记
             instance.setQuantityMark(instance.getQuantityFeature(scoreDimension));
         }
@@ -217,31 +219,31 @@ public abstract class AbstractTask<L, R> {
         switch (separatorConfigurer.getType()) {
         case "kcv": {
             int size = configurator.getInteger("data.separator.kcv.number", 1);
-            separator = new KFoldCrossValidationSeparator(model, size);
+            separator = new KFoldCrossValidationSeparator(module, size);
             break;
         }
         case "loocv": {
-            separator = new LeaveOneCrossValidationSeparator(space, model, separatorConfigurer.getMatchField(), separatorConfigurer.getSortField());
+            separator = new LeaveOneCrossValidationSeparator(space, module, separatorConfigurer.getMatchField(), separatorConfigurer.getSortField());
             break;
         }
         case "testset": {
             int threshold = configurator.getInteger("data.separator.threshold");
-            separator = new GivenDataSeparator(model, threshold);
+            separator = new GivenDataSeparator(module, threshold);
             break;
         }
         case "givenn": {
             int number = configurator.getInteger("data.separator.given-number.number");
-            separator = new GivenNumberSeparator(space, model, separatorConfigurer.getMatchField(), separatorConfigurer.getSortField(), number);
+            separator = new GivenNumberSeparator(space, module, separatorConfigurer.getMatchField(), separatorConfigurer.getSortField(), number);
             break;
         }
         case "random": {
             float random = configurator.getFloat("data.separator.random.value", 0.8F);
-            separator = new RandomSeparator(space, model, separatorConfigurer.getMatchField(), random);
+            separator = new RandomSeparator(space, module, separatorConfigurer.getMatchField(), random);
             break;
         }
         case "ratio": {
             float ratio = configurator.getFloat("data.separator.ratio.value", 0.8F);
-            separator = new RatioSeparator(space, model, separatorConfigurer.getMatchField(), separatorConfigurer.getSortField(), ratio);
+            separator = new RatioSeparator(space, module, separatorConfigurer.getMatchField(), separatorConfigurer.getSortField(), ratio);
             break;
         }
         default: {
@@ -251,7 +253,9 @@ public abstract class AbstractTask<L, R> {
 
         // 评估部分
         Double binarize = configurator.getDouble("data.convert.binarize.threshold");
-        Map<String, Float> measures = new TreeMap<>();
+        Object2FloatSortedMap<Class<? extends Evaluator>> measures = new Object2FloatRBTreeMap<>((left, right) -> {
+            return left.getName().compareTo(right.getName());
+        });
 
         EnvironmentContext context = EnvironmentFactory.getContext();
         Future<?> task = context.doTask(() -> {
@@ -259,10 +263,10 @@ public abstract class AbstractTask<L, R> {
                 for (int index = 0; index < separator.getSize(); index++) {
                     trainMarker = separator.getTrainReference(index);
                     testMarker = separator.getTestReference(index);
-                    dataMarker = model;
+                    dataModule = module;
 
-                    userDimension = model.getQualityInner(userField);
-                    itemDimension = model.getQualityInner(itemField);
+                    userDimension = module.getQualityInner(userField);
+                    itemDimension = module.getQualityInner(itemField);
                     userSize = space.getQualityAttribute(userField).getSize();
                     itemSize = space.getQualityAttribute(itemField).getSize();
 
@@ -271,7 +275,7 @@ public abstract class AbstractTask<L, R> {
                     testModules = splitter.split(testMarker, userSize);
 
                     HashMatrix dataTable = new HashMatrix(true, userSize, itemSize, new Int2FloatRBTreeMap());
-                    for (DataInstance instance : dataMarker) {
+                    for (DataInstance instance : dataModule) {
                         int rowIndex = instance.getQualityFeature(userDimension);
                         int columnIndex = instance.getQualityFeature(itemDimension);
                         // TODO 处理冲突
@@ -279,11 +283,11 @@ public abstract class AbstractTask<L, R> {
                     }
                     SparseMatrix featureMatrix = SparseMatrix.valueOf(userSize, itemSize, dataTable);
 
-                    recommender.prepare(configurator, trainMarker, space);
-                    recommender.practice();
-                    for (Entry<Class<? extends Evaluator>, Integer2FloatKeyValue> measure : evaluate(getEvaluators(featureMatrix), recommender).entrySet()) {
+                    model.prepare(configurator, trainMarker, space);
+                    model.practice();
+                    for (Entry<Class<? extends Evaluator>, Integer2FloatKeyValue> measure : evaluate(getEvaluators(featureMatrix), model).entrySet()) {
                         Float value = measure.getValue().getValue() / measure.getValue().getKey();
-                        measures.put(measure.getKey().getSimpleName(), value);
+                        measures.put(measure.getKey(), value);
                     }
                 }
             } catch (Exception exception) {
@@ -292,21 +296,21 @@ public abstract class AbstractTask<L, R> {
         });
         task.get();
 
-        for (Entry<String, Float> term : measures.entrySet()) {
-            term.setValue(term.getValue() / separator.getSize());
+        for (Object2FloatMap.Entry<Class<? extends Evaluator>> term : measures.object2FloatEntrySet()) {
+            term.setValue(term.getFloatValue() / separator.getSize());
             if (logger.isInfoEnabled()) {
-                logger.info(StringUtility.format("measure of {} is {}", term.getKey(), term.getValue()));
+                logger.info(StringUtility.format("measure of {} is {}", term.getKey(), term.getFloatValue()));
             }
         }
         return measures;
     }
 
-    public Model getRecommender() {
-        return recommender;
+    public Model getModel() {
+        return model;
     }
 
-    public DataModule getDataMarker() {
-        return dataMarker;
+    public DataModule getDataModule() {
+        return dataModule;
     }
 
 }

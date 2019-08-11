@@ -7,6 +7,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.evaluate.ranking.AUCEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.MAPEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.MRREvaluator;
@@ -18,6 +19,8 @@ import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.neuralnetwork.DeepCrossModel;
 import com.jstarcraft.rns.task.RankingTask;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
+
 public class DeepCrossModelTestCase {
 
     @Test
@@ -27,14 +30,14 @@ public class DeepCrossModelTestCase {
         keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/ranking/deepcross-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(DeepCrossModel.class, configuration);
-        Map<String, Float> measures = job.execute();
-        Assert.assertThat(measures.get(AUCEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.93662477F));
-        Assert.assertThat(measures.get(MAPEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.4330167F));
-        Assert.assertThat(measures.get(MRREvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.5726203F));
-        Assert.assertThat(measures.get(NDCGEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.53728354F));
-        Assert.assertThat(measures.get(NoveltyEvaluator.class.getSimpleName()), CoreMatchers.equalTo(12.432615F));
-        Assert.assertThat(measures.get(PrecisionEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.34773567F));
-        Assert.assertThat(measures.get(RecallEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.6300728F));
+        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
+        Assert.assertEquals(0.93662477F, measures.getFloat(AUCEvaluator.class), 0F);
+        Assert.assertEquals(0.4330167F, measures.getFloat(MAPEvaluator.class), 0F);
+        Assert.assertEquals(0.5726203F, measures.getFloat(MRREvaluator.class), 0F);
+        Assert.assertEquals(0.53728354F, measures.getFloat(NDCGEvaluator.class), 0F);
+        Assert.assertEquals(12.432615F, measures.getFloat(NoveltyEvaluator.class), 0F);
+        Assert.assertEquals(0.34773567F, measures.getFloat(PrecisionEvaluator.class), 0F);
+        Assert.assertEquals(0.6300728F, measures.getFloat(RecallEvaluator.class), 0F);
     }
 
 }

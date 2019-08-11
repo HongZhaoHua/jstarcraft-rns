@@ -11,7 +11,7 @@ public abstract class ModelTestCase {
 
     public void testModem(AbstractTask job) {
         for (ModemCodec codec : ModemCodec.values()) {
-            Model oldModel = job.getRecommender();
+            Model oldModel = job.getModel();
             byte[] data = codec.encodeModel(oldModel);
             Model newModel = (Model) codec.decodeModel(data);
 //            Assert.assertThat(newModel.predict(new int[] { 0, 1 }, new float[] {}), CoreMatchers.equalTo(oldModel.predict(new int[] { 0, 1 }, new float[] {})));

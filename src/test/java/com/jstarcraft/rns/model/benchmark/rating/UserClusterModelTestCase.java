@@ -7,12 +7,15 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.benchmark.rating.UserClusterModel;
 import com.jstarcraft.rns.task.RatingTask;
+
+import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
 
 public class UserClusterModelTestCase {
 
@@ -23,10 +26,10 @@ public class UserClusterModelTestCase {
         keyValues.load(this.getClass().getResourceAsStream("/recommend/benchmark/usercluster-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(UserClusterModel.class, configuration);
-        Map<String, Float> measures = job.execute();
-        Assert.assertThat(measures.get(MAEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.70878255F));
-        Assert.assertThat(measures.get(MPEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.7722535F));
-        Assert.assertThat(measures.get(MSEEvaluator.class.getSimpleName()), CoreMatchers.equalTo(0.837242F));
+        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
+        Assert.assertEquals(0.70878255F, measures.getFloat(MAEEvaluator.class), 0F);
+        Assert.assertEquals(0.7722535F, measures.getFloat(MPEEvaluator.class), 0F);
+        Assert.assertEquals(0.837242F, measures.getFloat(MSEEvaluator.class), 0F);
     }
 
 }
