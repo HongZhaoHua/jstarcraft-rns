@@ -60,8 +60,7 @@
 * [2.串行与并行计算](https://github.com/HongZhaoHua/jstarcraft-ai)
 * [3.CPU与GPU硬件加速](https://github.com/HongZhaoHua/jstarcraft-ai)
 * [4.模型保存与装载](https://github.com/HongZhaoHua/jstarcraft-ai)
-* [5.丰富的推荐算法](https://github.com/HongZhaoHua/jstarcraft-rns/wiki/%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95)
-* 6.丰富的搜索算法
+* 5.丰富的推荐与搜索算法
 * 7.丰富的脚本支持
     * Groovy
     * JS
@@ -110,7 +109,7 @@ mvn install -Dmaven.test.skip=true
 
 #### 设置依赖
 
-###### 设置Maven依赖
+* 设置Maven依赖
 
 ```maven
 <dependency>
@@ -120,7 +119,7 @@ mvn install -Dmaven.test.skip=true
 </dependency>
 ```
 
-###### 设置Gradle依赖
+* 设置Gradle依赖
 
 ```gradle
 compile group: 'com.jstarcraft', name: 'rns', version: '1.0'
@@ -137,7 +136,7 @@ Configurator configurator = new Configurator(keyValues);
 
 #### 训练与评估模型
 
-###### 构建排序任务
+* 构建排序任务
 
 ```java
 RankingTask task = new RankingTask(RandomGuessModel.class, configurator);
@@ -145,7 +144,7 @@ RankingTask task = new RankingTask(RandomGuessModel.class, configurator);
 task.execute();
 ```
 
-###### 构建评分任务
+* 构建评分任务
 
 ```java
 RatingTask task = new RatingTask(RandomGuessModel.class, configurator);
