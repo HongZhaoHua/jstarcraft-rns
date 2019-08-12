@@ -13,6 +13,7 @@ import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
+import com.jstarcraft.core.script.GroovyExpression;
 import com.jstarcraft.core.script.JsExpression;
 import com.jstarcraft.core.script.LuaExpression;
 import com.jstarcraft.core.script.PythonExpression;
@@ -28,6 +29,35 @@ import com.jstarcraft.rns.task.RatingTask;
 public class ScriptTestCase {
 
     private static final ClassLoader loader = ScriptTestCase.class.getClassLoader();
+    
+    /**
+     * 使用Groovy脚本与JStarCraft框架交互
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testGroovy() throws Exception {
+        // 获取Groovy脚本
+        File file = new File(ScriptTestCase.class.getResource("Model.groovy").toURI());
+        String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
+
+        // 设置Groovy脚本使用到的Java类
+        ScriptContext context = new ScriptContext();
+        context.useClasses(Properties.class, Configurator.class);
+        context.useClasses(RankingTask.class, RatingTask.class, RandomGuessModel.class);
+        context.useClasses(Assert.class, PrecisionEvaluator.class, RecallEvaluator.class, MAEEvaluator.class, MSEEvaluator.class);
+        // 设置Groovy脚本使用到的Java变量
+        ScriptScope scope = new ScriptScope();
+        scope.createAttribute("loader", loader);
+
+        // 执行Groovy脚本
+        ScriptExpression expression = new GroovyExpression(context, scope, script);
+        Map<String, Float> data = expression.doWith(Map.class);
+        Assert.assertEquals(0.005825241F, data.get("precision"), 0F);
+        Assert.assertEquals(0.011579763F, data.get("recall"), 0F);
+        Assert.assertEquals(1.2708743F, data.get("mae"), 0F);
+        Assert.assertEquals(2.425075F, data.get("mse"), 0F);
+    }
 
     /**
      * 使用JS脚本与JStarCraft框架交互
