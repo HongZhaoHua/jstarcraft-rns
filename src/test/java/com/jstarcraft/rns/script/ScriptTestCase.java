@@ -9,10 +9,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.luaj.vm2.LuaTable;
 
-import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
-import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
-import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
-import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.core.script.GroovyExpression;
 import com.jstarcraft.core.script.JsExpression;
 import com.jstarcraft.core.script.LuaExpression;
@@ -22,14 +18,11 @@ import com.jstarcraft.core.script.ScriptExpression;
 import com.jstarcraft.core.script.ScriptScope;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.rns.model.benchmark.RandomGuessModel;
-import com.jstarcraft.rns.task.RankingTask;
-import com.jstarcraft.rns.task.RatingTask;
 
 public class ScriptTestCase {
 
     private static final ClassLoader loader = ScriptTestCase.class.getClassLoader();
-    
+
     /**
      * 使用Groovy脚本与JStarCraft框架交互
      * 
@@ -43,9 +36,10 @@ public class ScriptTestCase {
 
         // 设置Groovy脚本使用到的Java类
         ScriptContext context = new ScriptContext();
-        context.useClasses(Properties.class, Configurator.class);
-        context.useClasses(RankingTask.class, RatingTask.class, RandomGuessModel.class);
-        context.useClasses(Assert.class, PrecisionEvaluator.class, RecallEvaluator.class, MAEEvaluator.class, MSEEvaluator.class);
+        context.useClasses(Properties.class, Configurator.class, Assert.class);
+        context.useClasses("com.jstarcraft.ai.evaluate");
+        context.useClasses("com.jstarcraft.rns.task");
+        context.useClasses("com.jstarcraft.rns.model.benchmark");
         // 设置Groovy脚本使用到的Java变量
         ScriptScope scope = new ScriptScope();
         scope.createAttribute("loader", loader);
@@ -72,9 +66,10 @@ public class ScriptTestCase {
 
         // 设置JS脚本使用到的Java类
         ScriptContext context = new ScriptContext();
-        context.useClasses(Properties.class, Configurator.class);
-        context.useClasses(RankingTask.class, RatingTask.class, RandomGuessModel.class);
-        context.useClasses(Assert.class, PrecisionEvaluator.class, RecallEvaluator.class, MAEEvaluator.class, MSEEvaluator.class);
+        context.useClasses(Properties.class, Configurator.class, Assert.class);
+        context.useClasses("com.jstarcraft.ai.evaluate");
+        context.useClasses("com.jstarcraft.rns.task");
+        context.useClasses("com.jstarcraft.rns.model.benchmark");
         // 设置JS脚本使用到的Java变量
         ScriptScope scope = new ScriptScope();
         scope.createAttribute("loader", loader);
@@ -87,7 +82,7 @@ public class ScriptTestCase {
         Assert.assertEquals(1.2708743F, data.get("mae"), 0F);
         Assert.assertEquals(2.425075F, data.get("mse"), 0F);
     }
-    
+
     /**
      * 使用Lua脚本与JStarCraft框架交互
      * 
@@ -101,9 +96,10 @@ public class ScriptTestCase {
 
         // 设置Lua脚本使用到的Java类
         ScriptContext context = new ScriptContext();
-        context.useClasses(Properties.class, Configurator.class);
-        context.useClasses(RankingTask.class, RatingTask.class, RandomGuessModel.class);
-        context.useClasses(Assert.class, PrecisionEvaluator.class, RecallEvaluator.class, MAEEvaluator.class, MSEEvaluator.class);
+        context.useClasses(Properties.class, Configurator.class, Assert.class);
+        context.useClasses("com.jstarcraft.ai.evaluate");
+        context.useClasses("com.jstarcraft.rns.task");
+        context.useClasses("com.jstarcraft.rns.model.benchmark");
         // 设置Lua脚本使用到的Java变量
         ScriptScope scope = new ScriptScope();
         scope.createAttribute("loader", loader);
@@ -133,9 +129,10 @@ public class ScriptTestCase {
 
         // 设置Python脚本使用到的Java类
         ScriptContext context = new ScriptContext();
-        context.useClasses(Properties.class, Configurator.class);
-        context.useClasses(RankingTask.class, RatingTask.class, RandomGuessModel.class);
-        context.useClasses(Assert.class, PrecisionEvaluator.class, RecallEvaluator.class, MAEEvaluator.class, MSEEvaluator.class);
+        context.useClasses(Properties.class, Configurator.class, Assert.class);
+        context.useClasses("com.jstarcraft.ai.evaluate");
+        context.useClasses("com.jstarcraft.rns.task");
+        context.useClasses("com.jstarcraft.rns.model.benchmark");
         // 设置Python脚本使用到的Java变量
         ScriptScope scope = new ScriptScope();
         scope.createAttribute("loader", loader);
