@@ -77,13 +77,13 @@ public abstract class AbstractTask<L, R> {
 
     protected Model model;
 
-    protected AbstractTask(Model recommender, Configurator configurator) {
+    protected AbstractTask(Model model, Configurator configurator) {
         this.configurator = configurator;
         Long seed = configurator.getLong("recommender.random.seed");
         if (seed != null) {
             RandomUtility.setSeed(seed);
         }
-        this.model = recommender;
+        this.model = model;
     }
 
     protected AbstractTask(Class<? extends Model> clazz, Configurator configurator) {
