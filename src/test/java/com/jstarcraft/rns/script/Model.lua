@@ -7,8 +7,6 @@ local configurator = Configurator.new({ keyValues });
 
 -- 此对象会返回给Java程序
 local _data = {};
-local task;
-local measures;
 
 -- 构建排序任务
 task = RankingTask.new(RandomGuessModel, configurator);
