@@ -222,6 +222,8 @@ Rating算法基于显示反馈数据,趋向于拟合用户的评分.(满意度)
 
 #### JStarCraft-RNS引擎与Groovy脚本交互
 
+* [完整示例](#https://github.com/HongZhaoHua/jstarcraft-rns/tree/master/src/test/java/com/jstarcraft/rns/script)
+
 * 编写Groovy脚本训练与评估模型并保存到Model.groovy文件
 
 ```groovy
@@ -273,6 +275,8 @@ Map<String, Float> data = expression.doWith(Map.class);
 ```
 
 #### JStarCraft-RNS引擎与JS脚本交互
+
+* [完整示例](#https://github.com/HongZhaoHua/jstarcraft-rns/tree/master/src/test/java/com/jstarcraft/rns/script)
 
 * 编写JS脚本训练与评估模型并保存到Model.js文件
 
@@ -326,6 +330,8 @@ Map<String, Float> data = expression.doWith(Map.class);
 
 #### JStarCraft-RNS引擎与Lua脚本交互
 
+* [完整示例](#https://github.com/HongZhaoHua/jstarcraft-rns/tree/master/src/test/java/com/jstarcraft/rns/script)
+
 * 编写Lua脚本训练与评估模型并保存到Model.lua文件
 
 ```lua
@@ -378,6 +384,8 @@ LuaTable data = expression.doWith(LuaTable.class);
 ```
 
 #### JStarCraft-RNS引擎与Python脚本交互
+
+* [完整示例](#https://github.com/HongZhaoHua/jstarcraft-rns/tree/master/src/test/java/com/jstarcraft/rns/script)
 
 * 编写Python脚本训练与评估模型并保存到Model.py文件
 
