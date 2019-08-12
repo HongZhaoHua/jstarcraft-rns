@@ -252,7 +252,7 @@ Rating算法基于显示反馈数据,趋向于拟合用户的评分.(满意度)
 
 #### JStarCraft-RNS引擎与Python脚本交互
 
-* 编写Python脚本训练与评估模型
+* 编写Python脚本训练与评估模型并保存到Model.py文件
 
 ```python
 # 构建配置
@@ -279,7 +279,7 @@ _data['mae'] = measures.get(MAEEvaluator)
 _data['mse'] = measures.get(MSEEvaluator)
 ```
 
-* 使用JStarCraft引擎执行Python脚本
+* 使用JStarCraft框架从Model.py文件加载并执行Python脚本
 
 ```java
 // 设置Python环境变量
