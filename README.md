@@ -222,32 +222,159 @@ Rating算法基于显示反馈数据,趋向于拟合用户的评分.(满意度)
 
 #### JStarCraft-RNS引擎与Groovy脚本交互
 
-```java
-
-```
+* 编写Groovy脚本训练与评估模型并保存到Model.groovy文件
 
 ```groovy
+// 构建配置
+def keyValues = new Properties();
+keyValues.load(loader.getResourceAsStream("data.properties"));
+keyValues.load(loader.getResourceAsStream("recommend/benchmark/randomguess-test.properties"));
+def configurator = new Configurator(keyValues);
 
+// 此对象会返回给Java程序
+def _data = [:];
+
+// 构建排序任务
+task = new RankingTask(RandomGuessModel.class, configurator);
+// 训练与评估模型并获取排序指标
+measures = task.execute();
+_data.precision = measures.get(PrecisionEvaluator.class);
+_data.recall = measures.get(RecallEvaluator.class);
+
+// 构建评分任务
+task = new RatingTask(RandomGuessModel.class, configurator);
+// 训练与评估模型并获取评分指标
+measures = task.execute();
+_data.mae = measures.get(MAEEvaluator.class);
+_data.mse = measures.get(MSEEvaluator.class);
+
+_data;
+```
+
+* 使用JStarCraft框架从Model.groovy文件加载并执行Groovy脚本
+
+```java
+// 获取Groovy脚本
+File file = new File(ScriptTestCase.class.getResource("Model.groovy").toURI());
+String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
+
+// 设置Groovy脚本使用到的Java类
+ScriptContext context = new ScriptContext();
+context.useClasses(Properties.class, Configurator.class);
+context.useClasses(RankingTask.class, RatingTask.class, RandomGuessModel.class);
+context.useClasses(Assert.class, PrecisionEvaluator.class, RecallEvaluator.class, MAEEvaluator.class, MSEEvaluator.class);
+// 设置Groovy脚本使用到的Java变量
+ScriptScope scope = new ScriptScope();
+scope.createAttribute("loader", loader);
+
+// 执行Groovy脚本
+ScriptExpression expression = new GroovyExpression(context, scope, script);
+Map<String, Float> data = expression.doWith(Map.class);
 ```
 
 #### JStarCraft-RNS引擎与JS脚本交互
 
-```java
-
-```
+* 编写JS脚本训练与评估模型并保存到Model.js文件
 
 ```js
+// 构建配置
+var keyValues = new Properties();
+keyValues.load(loader.getResourceAsStream("data.properties"));
+keyValues.load(loader.getResourceAsStream("recommend/benchmark/randomguess-test.properties"));
+var configurator = new Configurator([keyValues]);
 
+// 此对象会返回给Java程序
+var _data = {};
+
+// 构建排序任务
+task = new RankingTask(RandomGuessModel.class, configurator);
+// 训练与评估模型并获取排序指标
+measures = task.execute();
+_data['precision'] = measures.get(PrecisionEvaluator.class);
+_data['recall'] = measures.get(RecallEvaluator.class);
+
+// 构建评分任务
+task = new RatingTask(RandomGuessModel.class, configurator);
+// 训练与评估模型并获取评分指标
+measures = task.execute();
+_data['mae'] = measures.get(MAEEvaluator.class);
+_data['mse'] = measures.get(MSEEvaluator.class);
+
+_data;
+```
+
+* 使用JStarCraft框架从Model.js文件加载并执行JS脚本
+
+```java
+// 获取JS脚本
+File file = new File(ScriptTestCase.class.getResource("Model.js").toURI());
+String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
+
+// 设置JS脚本使用到的Java类
+ScriptContext context = new ScriptContext();
+context.useClasses(Properties.class, Configurator.class);
+context.useClasses(RankingTask.class, RatingTask.class, RandomGuessModel.class);
+context.useClasses(Assert.class, PrecisionEvaluator.class, RecallEvaluator.class, MAEEvaluator.class, MSEEvaluator.class);
+// 设置JS脚本使用到的Java变量
+ScriptScope scope = new ScriptScope();
+scope.createAttribute("loader", loader);
+
+// 执行JS脚本
+ScriptExpression expression = new JsExpression(context, scope, script);
+Map<String, Float> data = expression.doWith(Map.class);
 ```
 
 #### JStarCraft-RNS引擎与Lua脚本交互
 
-```java
-
-```
+* 编写Lua脚本训练与评估模型并保存到Model.lua文件
 
 ```lua
+-- 构建配置
+local keyValues = Properties.new();
+keyValues:load(loader:getResourceAsStream("data.properties"));
 
+keyValues:load(loader:getResourceAsStream("recommend/benchmark/randomguess-test.properties"));
+local configurator = Configurator.new({ keyValues });
+
+-- 此对象会返回给Java程序
+local _data = {};
+
+-- 构建排序任务
+task = RankingTask.new(RandomGuessModel, configurator);
+-- 训练与评估模型并获取排序指标
+measures = task:execute();
+_data["precision"] = measures:get(PrecisionEvaluator);
+_data["recall"] = measures:get(RecallEvaluator);
+
+-- 构建评分任务
+task = RatingTask.new(RandomGuessModel, configurator);
+-- 训练与评估模型并获取评分指标
+measures = task:execute();
+_data["mae"] = measures:get(MAEEvaluator);
+_data["mse"] = measures:get(MSEEvaluator);
+
+return _data;
+```
+
+* 使用JStarCraft框架从Model.lua文件加载并执行Lua脚本
+
+```java
+// 获取Lua脚本
+File file = new File(ScriptTestCase.class.getResource("Model.lua").toURI());
+String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
+
+// 设置Lua脚本使用到的Java类
+ScriptContext context = new ScriptContext();
+context.useClasses(Properties.class, Configurator.class);
+context.useClasses(RankingTask.class, RatingTask.class, RandomGuessModel.class);
+context.useClasses(Assert.class, PrecisionEvaluator.class, RecallEvaluator.class, MAEEvaluator.class, MSEEvaluator.class);
+// 设置Lua脚本使用到的Java变量
+ScriptScope scope = new ScriptScope();
+scope.createAttribute("loader", loader);
+
+// 执行Lua脚本
+ScriptExpression expression = new LuaExpression(context, scope, script);
+LuaTable data = expression.doWith(LuaTable.class);
 ```
 
 #### JStarCraft-RNS引擎与Python脚本交互
