@@ -25,9 +25,9 @@ public class TrustMFModelTestCase {
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(TrustMFModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.62640375F, measures.getFloat(MAEEvaluator.class), 0F);
-        Assert.assertEquals(0.9905634F, measures.getFloat(MPEEvaluator.class), 0F);
-        Assert.assertEquals(0.66350585F, measures.getFloat(MSEEvaluator.class), 0F);
+        Assert.assertEquals(0.6266518F, measures.getFloat(MAEEvaluator.class), 0F);
+        Assert.assertEquals(0.988169F, measures.getFloat(MPEEvaluator.class), 0F);
+        Assert.assertEquals(0.67166716F, measures.getFloat(MSEEvaluator.class), 0F);
     }
 
 }

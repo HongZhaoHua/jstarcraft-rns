@@ -25,9 +25,9 @@ public class SocialMFModelTestCase {
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(SocialMFModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.63218725F, measures.getFloat(MAEEvaluator.class), 0F);
-        Assert.assertEquals(0.9905634F, measures.getFloat(MPEEvaluator.class), 0F);
-        Assert.assertEquals(0.6578219F, measures.getFloat(MSEEvaluator.class), 0F);
+        Assert.assertEquals(0.6361429F, measures.getFloat(MAEEvaluator.class), 0F);
+        Assert.assertEquals(0.99014086F, measures.getFloat(MPEEvaluator.class), 0F);
+        Assert.assertEquals(0.66250914F, measures.getFloat(MSEEvaluator.class), 0F);
     }
 
 }

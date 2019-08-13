@@ -25,9 +25,9 @@ public class TrustSVDModelTestCase {
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(TrustSVDModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.6098742F, measures.getFloat(MAEEvaluator.class), 0F);
-        Assert.assertEquals(0.9860563F, measures.getFloat(MPEEvaluator.class), 0F);
-        Assert.assertEquals(0.6233134F, measures.getFloat(MSEEvaluator.class), 0F);
+        Assert.assertEquals(0.60883725F, measures.getFloat(MAEEvaluator.class), 0F);
+        Assert.assertEquals(0.98704225F, measures.getFloat(MPEEvaluator.class), 0F);
+        Assert.assertEquals(0.62142915F, measures.getFloat(MSEEvaluator.class), 0F);
     }
 
 }

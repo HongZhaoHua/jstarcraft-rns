@@ -45,11 +45,9 @@ public abstract class SocialModel extends MatrixFactorizationModel {
         // TODO 此处是不是应该使用context.getSimilarity().getSimilarityMatrix();代替?
         DataModule socialModel = space.getModule("social");
         // TODO 此处需要重构,trusterDimension与trusteeDimension要配置
-        trusterField = configuration.getString("data.model.fields.truster");
-        trusteeField = configuration.getString("data.model.fields.trustee");
         coefficientField = configuration.getString("data.model.fields.coefficient");
-        trusterDimension = socialModel.getQualityInner(trusterField);
-        trusteeDimension = socialModel.getQualityInner(trusteeField);
+        trusterDimension = socialModel.getQualityInner(userField) + 0;
+        trusteeDimension = socialModel.getQualityInner(userField) + 1;
         coefficientDimension = socialModel.getQuantityInner(coefficientField);
         HashMatrix matrix = new HashMatrix(true, userSize, userSize, new Int2FloatAVLTreeMap());
         for (DataInstance instance : socialModel) {
