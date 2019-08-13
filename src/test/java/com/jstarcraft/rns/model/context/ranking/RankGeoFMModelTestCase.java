@@ -31,13 +31,13 @@ public class RankGeoFMModelTestCase {
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(RankGeoFMModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.7268527F, measures.getFloat(AUCEvaluator.class), 0F);
-        Assert.assertEquals(0.054826986F, measures.getFloat(MAPEvaluator.class), 0F);
-        Assert.assertEquals(0.23780268F, measures.getFloat(MRREvaluator.class), 0F);
-        Assert.assertEquals(0.110460475F, measures.getFloat(NDCGEvaluator.class), 0F);
-        Assert.assertEquals(37.376965F, measures.getFloat(NoveltyEvaluator.class), 0F);
+        Assert.assertEquals(0.7270785F, measures.getFloat(AUCEvaluator.class), 0F);
+        Assert.assertEquals(0.054851912F, measures.getFloat(MAPEvaluator.class), 0F);
+        Assert.assertEquals(0.2401193F, measures.getFloat(MRREvaluator.class), 0F);
+        Assert.assertEquals(0.110572465F, measures.getFloat(NDCGEvaluator.class), 0F);
+        Assert.assertEquals(37.500404F, measures.getFloat(NoveltyEvaluator.class), 0F);
         Assert.assertEquals(0.07865529F, measures.getFloat(PrecisionEvaluator.class), 0F);
-        Assert.assertEquals(0.08689054F, measures.getFloat(RecallEvaluator.class), 0F);
+        Assert.assertEquals(0.08640095F, measures.getFloat(RecallEvaluator.class), 0F);
     }
 
 }

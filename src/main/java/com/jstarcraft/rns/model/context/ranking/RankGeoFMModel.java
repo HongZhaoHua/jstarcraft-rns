@@ -54,6 +54,10 @@ public class RankGeoFMModel extends MatrixFactorizationModel {
 
     protected Float2FloatKeyValue[] itemLocations;
 
+    private String longitudeField, latitudeField;
+
+    private int longitudeDimension, latitudeDimension;
+
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
@@ -61,6 +65,13 @@ public class RankGeoFMModel extends MatrixFactorizationModel {
         radius = configuration.getFloat("recommender.regularization.radius", 1F);
         balance = configuration.getFloat("recommender.regularization.balance", 0.2F);
         knn = configuration.getInteger("recommender.item.nearest.neighbour.number", 300);
+
+        longitudeField = configuration.getString("data.model.fields.longitude");
+        latitudeField = configuration.getString("data.model.fields.latitude");
+
+        DataModule locationModel = space.getModule("location");
+        longitudeDimension = locationModel.getQuantityInner(longitudeField);
+        latitudeDimension = locationModel.getQuantityInner(latitudeField);
 
         geoInfluences = DenseMatrix.valueOf(itemSize, factorSize);
 
@@ -78,10 +89,11 @@ public class RankGeoFMModel extends MatrixFactorizationModel {
         });
 
         itemLocations = new Float2FloatKeyValue[itemSize];
-        DataModule locationModel = space.getModule("location");
+
+        int itemDimension = locationModel.getQualityInner(itemField);
         for (DataInstance instance : locationModel) {
-            int itemIndex = instance.getQualityFeature(0);
-            Float2FloatKeyValue itemLocation = new Float2FloatKeyValue(instance.getQuantityFeature(0), instance.getQuantityFeature(1));
+            int itemIndex = instance.getQualityFeature(itemDimension);
+            Float2FloatKeyValue itemLocation = new Float2FloatKeyValue(instance.getQuantityFeature(longitudeDimension), instance.getQuantityFeature(latitudeDimension));
             itemLocations[itemIndex] = itemLocation;
         }
         calculateNeighborWeightMatrix(knn);
