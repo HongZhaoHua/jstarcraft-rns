@@ -21,7 +21,7 @@ public class SocialMFModelTestCase {
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/context/rating/socialmf-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/context/rating/socialmf-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(SocialMFModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

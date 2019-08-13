@@ -32,7 +32,7 @@ public class EFMModelTestCase {
     public void testRecommenderByRanking() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/content/efmranking-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/content/efmranking-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(EFMRankingModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
@@ -49,7 +49,7 @@ public class EFMModelTestCase {
     public void testRecommenderByRating() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/content/efmrating-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/content/efmrating-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(EFMRatingModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

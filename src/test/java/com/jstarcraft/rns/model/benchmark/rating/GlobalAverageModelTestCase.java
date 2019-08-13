@@ -23,7 +23,7 @@ public class GlobalAverageModelTestCase {
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/benchmark/globalaverage-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/benchmark/globalaverage-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(GlobalAverageModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

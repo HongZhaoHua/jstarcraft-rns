@@ -21,7 +21,7 @@ public class SoRecModelTestCase {
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/context/rating/sorec-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/context/rating/sorec-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(SoRecModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

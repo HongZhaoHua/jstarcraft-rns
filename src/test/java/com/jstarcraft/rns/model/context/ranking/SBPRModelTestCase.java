@@ -27,7 +27,7 @@ public class SBPRModelTestCase {
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/context/ranking/sbpr-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/context/ranking/sbpr-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(SBPRModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

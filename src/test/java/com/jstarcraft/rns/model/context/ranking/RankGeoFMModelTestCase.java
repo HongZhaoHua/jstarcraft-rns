@@ -27,7 +27,7 @@ public class RankGeoFMModelTestCase {
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/context/ranking/rankgeofm-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/context/ranking/rankgeofm-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(RankGeoFMModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

@@ -23,7 +23,7 @@ public class AspectModelRatingModelTestCase {
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/rating/aspectmodelrating-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/rating/aspectmodelrating-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(AspectModelRatingModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

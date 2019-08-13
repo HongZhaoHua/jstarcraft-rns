@@ -23,7 +23,7 @@ public class FFMModelTestCase {
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/rating/ffm-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/rating/ffm-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(FFMModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

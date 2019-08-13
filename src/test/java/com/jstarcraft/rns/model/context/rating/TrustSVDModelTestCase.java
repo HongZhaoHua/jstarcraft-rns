@@ -21,7 +21,7 @@ public class TrustSVDModelTestCase {
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/context/rating/trustsvd-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/context/rating/trustsvd-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(TrustSVDModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

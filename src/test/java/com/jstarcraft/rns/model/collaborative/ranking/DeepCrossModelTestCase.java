@@ -27,7 +27,7 @@ public class DeepCrossModelTestCase {
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/ranking/deepcross-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/ranking/deepcross-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(DeepCrossModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

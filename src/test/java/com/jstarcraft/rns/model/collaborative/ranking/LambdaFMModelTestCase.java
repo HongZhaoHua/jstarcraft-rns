@@ -29,7 +29,7 @@ public class LambdaFMModelTestCase {
     public void testRecommenderByDynamic() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/ranking/lambdafmd-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/ranking/lambdafmd-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(LambdaFMDynamicModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
@@ -46,7 +46,7 @@ public class LambdaFMModelTestCase {
     public void testRecommenderByStatic() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/ranking/lambdafms-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/ranking/lambdafms-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(LambdaFMStaticModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
@@ -63,7 +63,7 @@ public class LambdaFMModelTestCase {
     public void testRecommenderByWeight() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/ranking/lambdafmw-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/ranking/lambdafmw-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(LambdaFMWeightModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

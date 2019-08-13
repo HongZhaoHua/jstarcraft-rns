@@ -25,7 +25,7 @@ public class AssociationRuleModelTestCase {
     public void testAssociationRuleRecommender() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/extend/associationrule-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/extend/associationrule-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(AssociationRuleModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

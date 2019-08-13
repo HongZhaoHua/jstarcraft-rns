@@ -27,7 +27,7 @@ public class BUCMRankingModelTestCase {
     public void testRecommenderRanking() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/bucmranking-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/bucmranking-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(BUCMRankingModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

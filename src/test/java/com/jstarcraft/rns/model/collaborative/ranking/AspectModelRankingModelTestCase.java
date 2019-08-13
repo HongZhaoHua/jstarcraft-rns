@@ -27,7 +27,7 @@ public class AspectModelRankingModelTestCase {
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/ranking/aspectmodelranking-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/ranking/aspectmodelranking-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(AspectModelRankingModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

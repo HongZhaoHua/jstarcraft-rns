@@ -31,7 +31,7 @@ public class RandomGuessModelTestCase {
     public void testRecommenderByRanking() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/benchmark/randomguess-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/benchmark/randomguess-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(RandomGuessModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
@@ -48,7 +48,7 @@ public class RandomGuessModelTestCase {
     public void testRecommenderByRating() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/benchmark/randomguess-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/benchmark/randomguess-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(RandomGuessModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

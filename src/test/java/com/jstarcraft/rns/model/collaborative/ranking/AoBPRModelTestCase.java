@@ -27,7 +27,7 @@ public class AoBPRModelTestCase {
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/ranking/aobpr-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/ranking/aobpr-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(AoBPRModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();

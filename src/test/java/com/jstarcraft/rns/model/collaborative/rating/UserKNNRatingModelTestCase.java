@@ -21,7 +21,7 @@ public class UserKNNRatingModelTestCase {
     public void testRecommenderRating() throws Exception {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/recommend/collaborative/userknnrating-test.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/userknnrating-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(UserKNNRatingModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
