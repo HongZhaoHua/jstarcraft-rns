@@ -551,15 +551,15 @@ Map<String, Double> data = expression.doWith(Map.class);
 
 ## 协议
 
-[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+JStarCraft Example遵循[Apache 2.0协议](https://www.apache.org/licenses/LICENSE-2.0.html),一切以其为基础的衍生作品均属于衍生作品的作者.
 
 ****
 
 ## 作者
 
-|作者|洪钊桦|
-|---|---
-|E-mail|110399057@qq.com, jstarcraft@gmail.com
+| 作者 | 洪钊桦 |
+| :----: | :----: |
+| E-mail | 110399057@qq.com, jstarcraft@gmail.com |
 
 ****
 
