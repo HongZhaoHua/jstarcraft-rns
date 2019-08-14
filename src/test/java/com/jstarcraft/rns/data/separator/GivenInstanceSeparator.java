@@ -7,12 +7,11 @@ import com.jstarcraft.ai.data.module.ReferenceModule;
 import com.jstarcraft.ai.data.processor.DataSelector;
 
 /**
- * 指定实例处理器
+ * 指定实例分割器
  * 
  * @author Birdy
  *
  */
-// TODO 准备改名为SpecificInstanceSplitter
 public class GivenInstanceSeparator implements DataSeparator {
 
     private DataModule dataModel;

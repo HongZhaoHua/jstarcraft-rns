@@ -3,12 +3,15 @@ package com.jstarcraft.rns.data.separator;
 import com.jstarcraft.ai.data.module.ReferenceModule;
 
 /**
- * 数据处理器
+ * 数据分割器
+ * 
+ * <pre>
+ * 数据模块分割为训练模块与测试模块.
+ * </pre>
  * 
  * @author Birdy
  *
  */
-// TODO 负责将行为模型调整为训练模型+标记,测试模型+标记.
 public interface DataSeparator {
 
     /**

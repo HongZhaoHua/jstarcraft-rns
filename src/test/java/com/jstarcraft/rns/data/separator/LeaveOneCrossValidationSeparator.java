@@ -12,7 +12,7 @@ import com.jstarcraft.rns.data.processor.QuantityFeatureDataSorter;
 import com.jstarcraft.rns.data.processor.RandomDataSorter;
 
 /**
- * 留一验证处理器
+ * 留一验证分割器
  * 
  * @author Bridy
  *

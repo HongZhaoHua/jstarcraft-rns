@@ -12,12 +12,11 @@ import com.jstarcraft.rns.data.processor.QuantityFeatureDataSorter;
 import com.jstarcraft.rns.data.processor.RandomDataSorter;
 
 /**
- * 指定数量处理器
+ * 指定数量分割器
  * 
  * @author Birdy
  *
  */
-// TODO 准备改名为SpecificNumberSplitter
 public class GivenNumberSeparator implements DataSeparator {
 
     private DataModule dataModel;

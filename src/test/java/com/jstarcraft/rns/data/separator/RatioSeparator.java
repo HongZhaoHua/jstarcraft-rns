@@ -12,7 +12,7 @@ import com.jstarcraft.rns.data.processor.QuantityFeatureDataSorter;
 import com.jstarcraft.rns.data.processor.RandomDataSorter;
 
 /**
- * 比率处理器
+ * 比率分割器
  * 
  * @author Birdy
  *
@@ -25,7 +25,7 @@ public class RatioSeparator implements DataSeparator {
 
     private IntegerArray testReference;
 
-    public RatioSeparator(DataSpace space, DataModule model, String matchField, String sortField, double ratio) {
+    public RatioSeparator(DataSpace space, DataModule model, String matchField, String sortField, float ratio) {
         dataModel = model;
         ReferenceModule[] modules;
         if (matchField == null) {
@@ -59,7 +59,7 @@ public class RatioSeparator implements DataSeparator {
         for (ReferenceModule module : modules) {
             int count = 0;
             int number = (int) ((module.getSize()) * ratio);
-            IntegerArray reference =  module.getReference();
+            IntegerArray reference = module.getReference();
             for (int cursor = 0, length = reference.getSize(); cursor < length; cursor++) {
                 if (count++ < number) {
                     trainReference.associateData(reference.getData(cursor));

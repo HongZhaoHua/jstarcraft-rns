@@ -9,7 +9,7 @@ import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
 
 /**
- * 随机处理器
+ * 随机分割器
  * 
  * @author Birdy
  *
@@ -36,7 +36,7 @@ public class RandomSeparator implements DataSeparator {
         trainReference = new IntegerArray();
         testReference = new IntegerArray();
         for (ReferenceModule module : modules) {
-            IntegerArray reference =  module.getReference();
+            IntegerArray reference = module.getReference();
             for (int cursor = 0, length = reference.getSize(); cursor < length; cursor++) {
                 if (RandomUtility.randomFloat(1F) < random) {
                     trainReference.associateData(reference.getData(cursor));

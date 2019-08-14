@@ -6,7 +6,7 @@ import com.jstarcraft.ai.data.module.ReferenceModule;
 import com.jstarcraft.core.utility.RandomUtility;
 
 /**
- * K折叠交叉验证处理器
+ * K折叠交叉分割器
  *
  * @author Birdy
  */

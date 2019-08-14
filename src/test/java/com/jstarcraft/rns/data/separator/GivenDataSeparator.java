@@ -5,12 +5,11 @@ import com.jstarcraft.ai.data.IntegerArray;
 import com.jstarcraft.ai.data.module.ReferenceModule;
 
 /**
- * 指定数据处理器
+ * 指定数据分割器
  * 
  * @author Birdy
  *
  */
-// TODO 准备改名为SpecificThresholdSplitter
 public class GivenDataSeparator implements DataSeparator {
 
     private DataModule dataModel;
