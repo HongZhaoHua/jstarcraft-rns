@@ -1,9 +1,7 @@
 package com.jstarcraft.rns.model.collaborative.ranking;
 
-import java.util.Map;
 import java.util.Properties;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,9 +14,6 @@ import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.core.utility.Configurator;
-import com.jstarcraft.rns.model.collaborative.ranking.LambdaFMDynamicModel;
-import com.jstarcraft.rns.model.collaborative.ranking.LambdaFMStaticModel;
-import com.jstarcraft.rns.model.collaborative.ranking.LambdaFMWeightModel;
 import com.jstarcraft.rns.task.RankingTask;
 
 import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
@@ -28,7 +23,7 @@ public class LambdaFMModelTestCase {
     @Test
     public void testRecommenderByDynamic() throws Exception {
         Properties keyValues = new Properties();
-        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/data/game.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/ranking/lambdafmd-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(LambdaFMDynamicModel.class, configuration);
@@ -45,7 +40,7 @@ public class LambdaFMModelTestCase {
     @Test
     public void testRecommenderByStatic() throws Exception {
         Properties keyValues = new Properties();
-        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/data/game.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/ranking/lambdafms-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(LambdaFMStaticModel.class, configuration);
@@ -62,7 +57,7 @@ public class LambdaFMModelTestCase {
     @Test
     public void testRecommenderByWeight() throws Exception {
         Properties keyValues = new Properties();
-        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/data/game.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/ranking/lambdafmw-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(LambdaFMWeightModel.class, configuration);

@@ -1,9 +1,7 @@
 package com.jstarcraft.rns.model.content;
 
-import java.util.Map;
 import java.util.Properties;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,7 +29,7 @@ public class EFMModelTestCase {
     @Test
     public void testRecommenderByRanking() throws Exception {
         Properties keyValues = new Properties();
-        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/data/dc_dense.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/content/efmranking-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(EFMRankingModel.class, configuration);
@@ -48,7 +46,7 @@ public class EFMModelTestCase {
     @Test
     public void testRecommenderByRating() throws Exception {
         Properties keyValues = new Properties();
-        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/data/dc_dense.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/content/efmrating-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(EFMRatingModel.class, configuration);

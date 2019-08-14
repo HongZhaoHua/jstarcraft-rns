@@ -1,9 +1,7 @@
 package com.jstarcraft.rns.model.collaborative.rating;
 
-import java.util.Map;
 import java.util.Properties;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,14 +20,14 @@ public class AutoRecModelTestCase {
     @Test
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
-        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/data/filmtrust.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/rating/autorec-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(AutoRecModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.65322536F, measures.getFloat(MAEEvaluator.class), 0F);
-        Assert.assertEquals(0.9887324F, measures.getFloat(MPEEvaluator.class), 0F);
-        Assert.assertEquals(0.7404784F, measures.getFloat(MSEEvaluator.class), 0F);
+        Assert.assertEquals(0.6861356F, measures.getFloat(MAEEvaluator.class), 0F);
+        Assert.assertEquals(0.97801197F, measures.getFloat(MPEEvaluator.class), 0F);
+        Assert.assertEquals(0.83574665F, measures.getFloat(MSEEvaluator.class), 0F);
     }
 
 }

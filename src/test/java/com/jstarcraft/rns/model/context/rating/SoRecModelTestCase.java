@@ -2,7 +2,6 @@ package com.jstarcraft.rns.model.context.rating;
 
 import java.util.Properties;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,14 +19,14 @@ public class SoRecModelTestCase {
     @Test
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
-        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/data/filmtrust.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/context/rating/sorec-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(SoRecModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.632198F, measures.getFloat(MAEEvaluator.class), 0F);
-        Assert.assertEquals(0.9902817F, measures.getFloat(MPEEvaluator.class), 0F);
-        Assert.assertEquals(0.6578093F, measures.getFloat(MSEEvaluator.class), 0F);
+        Assert.assertEquals(0.64304614F, measures.getFloat(MAEEvaluator.class), 0F);
+        Assert.assertEquals(0.9923237F, measures.getFloat(MPEEvaluator.class), 0F);
+        Assert.assertEquals(0.6777599F, measures.getFloat(MSEEvaluator.class), 0F);
     }
 
 }

@@ -1,9 +1,7 @@
 package com.jstarcraft.rns.model.content.ranking;
 
-import java.util.Map;
 import java.util.Properties;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,7 +14,6 @@ import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.core.utility.Configurator;
-import com.jstarcraft.rns.model.content.ranking.TFIDFModel;
 import com.jstarcraft.rns.task.RankingTask;
 
 import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
@@ -26,7 +23,7 @@ public class TFIDFModelTestCase {
     @Test
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
-        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/data/musical_instruments.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/content/tfidf-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(TFIDFModel.class, configuration);

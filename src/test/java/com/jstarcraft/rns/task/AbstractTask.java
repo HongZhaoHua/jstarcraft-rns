@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,7 @@ import com.jstarcraft.ai.data.processor.DataSplitter;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.environment.EnvironmentFactory;
 import com.jstarcraft.ai.evaluate.Evaluator;
+import com.jstarcraft.ai.evaluate.ranking.AUCEvaluator;
 import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.core.common.conversion.json.JsonUtility;
@@ -286,7 +288,7 @@ public abstract class AbstractTask<L, R> {
                     model.prepare(configurator, trainMarker, space);
                     model.practice();
                     for (Entry<Class<? extends Evaluator>, Integer2FloatKeyValue> measure : evaluate(getEvaluators(featureMatrix), model).entrySet()) {
-                        Float value = measure.getValue().getValue() / measure.getValue().getKey();
+                        float value = measure.getValue().getValue() / measure.getValue().getKey();
                         measures.put(measure.getKey(), value);
                     }
                 }
@@ -299,7 +301,7 @@ public abstract class AbstractTask<L, R> {
         for (Object2FloatMap.Entry<Class<? extends Evaluator>> term : measures.object2FloatEntrySet()) {
             term.setValue(term.getFloatValue() / separator.getSize());
             if (logger.isInfoEnabled()) {
-                logger.info(StringUtility.format("measure of {} is {}", term.getKey(), term.getFloatValue()));
+                logger.info(StringUtility.format("Assert.assertEquals({}F, measures.getFloat({}.class), 0F);", term.getFloatValue(), term.getKey().getSimpleName()));
             }
         }
         return measures;

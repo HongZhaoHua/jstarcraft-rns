@@ -2,7 +2,6 @@ package com.jstarcraft.rns.model.collaborative.ranking;
 
 import java.util.Properties;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,18 +23,18 @@ public class WRMFModelTestCase {
     @Test
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
-        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/data/filmtrust.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/ranking/wrmf-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(WRMFModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.93334574F, measures.getFloat(AUCEvaluator.class), 0F);
-        Assert.assertEquals(0.47451776F, measures.getFloat(MAPEvaluator.class), 0F);
-        Assert.assertEquals(0.6280845F, measures.getFloat(MRREvaluator.class), 0F);
-        Assert.assertEquals(0.5691779F, measures.getFloat(NDCGEvaluator.class), 0F);
-        Assert.assertEquals(15.35682F, measures.getFloat(NoveltyEvaluator.class), 0F);
-        Assert.assertEquals(0.3505674F, measures.getFloat(PrecisionEvaluator.class), 0F);
-        Assert.assertEquals(0.63372076F, measures.getFloat(RecallEvaluator.class), 0F);
+        Assert.assertEquals(0.90615845F, measures.getFloat(AUCEvaluator.class), 0F);
+        Assert.assertEquals(0.43277714F, measures.getFloat(MAPEvaluator.class), 0F);
+        Assert.assertEquals(0.5828448F, measures.getFloat(MRREvaluator.class), 0F);
+        Assert.assertEquals(0.5247985F, measures.getFloat(NDCGEvaluator.class), 0F);
+        Assert.assertEquals(15.179557F, measures.getFloat(NoveltyEvaluator.class), 0F);
+        Assert.assertEquals(0.32917875F, measures.getFloat(PrecisionEvaluator.class), 0F);
+        Assert.assertEquals(0.60779583F, measures.getFloat(RecallEvaluator.class), 0F);
     }
 
 }

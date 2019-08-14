@@ -3,7 +3,7 @@
 <Configuration status="FATAL" packages="com.jstarcraft.recommendation">
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d{HH:mm:ss} [%t] %p (%F:%L) - %m%n" />
+			<PatternLayout pattern="%m%n" />
 			<ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
 		</Console>
 	</Appenders>

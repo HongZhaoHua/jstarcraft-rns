@@ -1,6 +1,5 @@
 package com.jstarcraft.rns.model.collaborative.rating;
 
-import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -72,12 +71,20 @@ public class RFRecModel extends MatrixFactorizationModel {
 
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
             SparseVector userVector = scoreMatrix.getRowVector(userIndex);
-            userMeans.setValue(userIndex, userVector.getSum(false) / userVector.getElementSize());
+            if (userVector.getElementSize() == 0) {
+                userMeans.setValue(userIndex, meanScore);
+            } else {
+                userMeans.setValue(userIndex, userVector.getSum(false) / userVector.getElementSize());
+            }
             userWeights.setValue(userIndex, 0.6F + RandomUtility.randomFloat(0.01F));
         }
         for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
-            itemMeans.setValue(itemIndex, itemVector.getSum(false) / itemVector.getElementSize());
+            if (itemVector.getElementSize() == 0) {
+                itemMeans.setValue(itemIndex, meanScore);
+            } else {
+                itemMeans.setValue(itemIndex, itemVector.getSum(false) / itemVector.getElementSize());
+            }
             itemWeights.setValue(itemIndex, 0.4F + RandomUtility.randomFloat(0.01F));
         }
 
@@ -128,12 +135,12 @@ public class RFRecModel extends MatrixFactorizationModel {
     /**
      * Returns 1 if the rating is similar to the rounded average value
      *
-     * @param mean the average
+     * @param mean  the average
      * @param score the rating
      * @return 1 when the values are equal
      */
-    private int isMean(double mean, int score) {
-        return Math.round(mean) == score ? 1 : 0;
+    private float isMean(float mean, int score) {
+        return Math.round(mean) == score ? 1F : 0F;
     }
 
     @Override
@@ -154,13 +161,13 @@ public class RFRecModel extends MatrixFactorizationModel {
             for (int scoreIndex = 0, scoreSize = scoreIndexes.size(); scoreIndex < scoreSize; scoreIndex++) {
                 // user component
                 frequency = userScoreFrequencies.getValue(userIndex, scoreIndex);
-                frequency = frequency + 1 + isMean(userMean, scoreIndex);
+                frequency = frequency + 1F + isMean(userMean, scoreIndex);
                 numeratorUser += frequency * scoreIndex;
                 denominatorUser += frequency;
 
                 // item component
                 frequency = itemScoreFrequencies.getValue(itemIndex, scoreIndex);
-                frequency = frequency + 1 + isMean(itemMean, scoreIndex);
+                frequency = frequency + 1F + isMean(itemMean, scoreIndex);
                 numeratorItem += frequency * scoreIndex;
                 denominatorItem += frequency;
             }
@@ -187,13 +194,6 @@ public class RFRecModel extends MatrixFactorizationModel {
             }
         }
         return value;
-    }
-
-    @Override
-    public void predict(DataInstance instance) {
-        int userIndex = instance.getQualityFeature(userDimension);
-        int itemIndex = instance.getQualityFeature(itemDimension);
-        instance.setQuantityMark(predict(userIndex, itemIndex));
     }
 
 }

@@ -1,9 +1,7 @@
 package com.jstarcraft.rns.model.collaborative.ranking;
 
-import java.util.Map;
 import java.util.Properties;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,18 +24,18 @@ public class DeepFMModelTestCase {
     @Test
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
-        keyValues.load(this.getClass().getResourceAsStream("/data.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/data/filmtrust.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/ranking/deepfm-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(DeepFMModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.93622273F, measures.getFloat(AUCEvaluator.class), 0F);
-        Assert.assertEquals(0.4422394F, measures.getFloat(MAPEvaluator.class), 0F);
-        Assert.assertEquals(0.59108675F, measures.getFloat(MRREvaluator.class), 0F);
-        Assert.assertEquals(0.54500324F, measures.getFloat(NDCGEvaluator.class), 0F);
-        Assert.assertEquals(11.8950405F, measures.getFloat(NoveltyEvaluator.class), 0F);
-        Assert.assertEquals(0.35137644F, measures.getFloat(PrecisionEvaluator.class), 0F);
-        Assert.assertEquals(0.632124F, measures.getFloat(RecallEvaluator.class), 0F);
+        Assert.assertEquals(0.916794F, measures.getFloat(AUCEvaluator.class), 0F);
+        Assert.assertEquals(0.4057996F, measures.getFloat(MAPEvaluator.class), 0F);
+        Assert.assertEquals(0.5699482F, measures.getFloat(MRREvaluator.class), 0F);
+        Assert.assertEquals(0.509845F, measures.getFloat(NDCGEvaluator.class), 0F);
+        Assert.assertEquals(11.902421F, measures.getFloat(NoveltyEvaluator.class), 0F);
+        Assert.assertEquals(0.3271896F, measures.getFloat(PrecisionEvaluator.class), 0F);
+        Assert.assertEquals(0.6142564F, measures.getFloat(RecallEvaluator.class), 0F);
     }
 
 }
