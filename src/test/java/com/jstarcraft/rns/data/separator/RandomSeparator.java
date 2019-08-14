@@ -16,32 +16,32 @@ import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
  */
 public class RandomSeparator implements DataSeparator {
 
-    private DataModule dataModel;
+    private DataModule dataModule;
 
     private IntegerArray trainReference;
 
     private IntegerArray testReference;
 
-    public RandomSeparator(DataSpace space, DataModule model, String matchField, float random) {
-        dataModel = model;
+    public RandomSeparator(DataSpace space, DataModule dataModule, String matchField, float random) {
+        this.dataModule = dataModule;
         ReferenceModule[] modules;
         if (matchField == null) {
-            modules = new ReferenceModule[] { new ReferenceModule(model) };
+            modules = new ReferenceModule[] { new ReferenceModule(dataModule) };
         } else {
-            int matchDimension = model.getQualityInner(matchField);
+            int matchDimension = dataModule.getQualityInner(matchField);
             DataSplitter splitter = new QualityFeatureDataSplitter(matchDimension);
             int size = space.getQualityAttribute(matchField).getSize();
-            modules = splitter.split(model, size);
+            modules = splitter.split(dataModule, size);
         }
-        trainReference = new IntegerArray();
-        testReference = new IntegerArray();
+        this.trainReference = new IntegerArray();
+        this.testReference = new IntegerArray();
         for (ReferenceModule module : modules) {
             IntegerArray reference = module.getReference();
             for (int cursor = 0, length = reference.getSize(); cursor < length; cursor++) {
                 if (RandomUtility.randomFloat(1F) < random) {
-                    trainReference.associateData(reference.getData(cursor));
+                    this.trainReference.associateData(reference.getData(cursor));
                 } else {
-                    testReference.associateData(reference.getData(cursor));
+                    this.testReference.associateData(reference.getData(cursor));
                 }
             }
         }
@@ -54,12 +54,12 @@ public class RandomSeparator implements DataSeparator {
 
     @Override
     public ReferenceModule getTrainReference(int index) {
-        return new ReferenceModule(trainReference, dataModel);
+        return new ReferenceModule(trainReference, dataModule);
     }
 
     @Override
     public ReferenceModule getTestReference(int index) {
-        return new ReferenceModule(testReference, dataModel);
+        return new ReferenceModule(testReference, dataModule);
     }
 
 }

@@ -19,29 +19,29 @@ import com.jstarcraft.rns.data.processor.RandomDataSorter;
  */
 public class RatioSeparator implements DataSeparator {
 
-    private DataModule dataModel;
+    private DataModule dataModule;
 
     private IntegerArray trainReference;
 
     private IntegerArray testReference;
 
-    public RatioSeparator(DataSpace space, DataModule model, String matchField, String sortField, float ratio) {
-        dataModel = model;
+    public RatioSeparator(DataSpace space, DataModule dataModule, String matchField, String sortField, float ratio) {
+        this.dataModule = dataModule;
         ReferenceModule[] modules;
         if (matchField == null) {
-            modules = new ReferenceModule[] { new ReferenceModule(model) };
+            modules = new ReferenceModule[] { new ReferenceModule(dataModule) };
         } else {
-            int matchDimension = model.getQualityInner(matchField);
+            int matchDimension = dataModule.getQualityInner(matchField);
             DataSplitter splitter = new QualityFeatureDataSplitter(matchDimension);
             int size = space.getQualityAttribute(matchField).getSize();
-            modules = splitter.split(model, size);
+            modules = splitter.split(dataModule, size);
         }
         DataSorter sorter;
-        if (model.getQualityInner(sortField) >= 0) {
-            int sortDimension = model.getQualityInner(sortField);
+        if (dataModule.getQualityInner(sortField) >= 0) {
+            int sortDimension = dataModule.getQualityInner(sortField);
             sorter = new QualityFeatureDataSorter(sortDimension);
-        } else if (model.getQuantityInner(sortField) >= 0) {
-            int sortDimension = model.getQualityInner(sortField);
+        } else if (dataModule.getQuantityInner(sortField) >= 0) {
+            int sortDimension = dataModule.getQualityInner(sortField);
             sorter = new QuantityFeatureDataSorter(sortDimension);
         } else {
             sorter = new RandomDataSorter();
@@ -52,19 +52,19 @@ public class RatioSeparator implements DataSeparator {
             for (int cursor = 0, length = newReference.getSize(); cursor < length; cursor++) {
                 newReference.setData(cursor, oldReference.getData(newReference.getData(cursor)));
             }
-            modules[index] = new ReferenceModule(newReference, model);
+            modules[index] = new ReferenceModule(newReference, dataModule);
         }
-        trainReference = new IntegerArray();
-        testReference = new IntegerArray();
+        this.trainReference = new IntegerArray();
+        this.testReference = new IntegerArray();
         for (ReferenceModule module : modules) {
             int count = 0;
             int number = (int) ((module.getSize()) * ratio);
             IntegerArray reference = module.getReference();
             for (int cursor = 0, length = reference.getSize(); cursor < length; cursor++) {
                 if (count++ < number) {
-                    trainReference.associateData(reference.getData(cursor));
+                    this.trainReference.associateData(reference.getData(cursor));
                 } else {
-                    testReference.associateData(reference.getData(cursor));
+                    this.testReference.associateData(reference.getData(cursor));
                 }
             }
         }
@@ -77,12 +77,12 @@ public class RatioSeparator implements DataSeparator {
 
     @Override
     public ReferenceModule getTrainReference(int index) {
-        return new ReferenceModule(trainReference, dataModel);
+        return new ReferenceModule(trainReference, dataModule);
     }
 
     @Override
     public ReferenceModule getTestReference(int index) {
-        return new ReferenceModule(testReference, dataModel);
+        return new ReferenceModule(testReference, dataModule);
     }
 
 }

@@ -12,21 +12,21 @@ import com.jstarcraft.core.utility.RandomUtility;
  */
 public class KFoldCrossValidationSeparator implements DataSeparator {
 
-    private DataModule dataModel;
+    private DataModule dataModule;
 
     private Integer[] folds;
 
     private int number;
 
-    public KFoldCrossValidationSeparator(DataModule model, int number) {
-        dataModel = model;
+    public KFoldCrossValidationSeparator(DataModule dataModule, int number) {
+        this.dataModule = dataModule;
         this.number = number;
-        folds = new Integer[dataModel.getSize()];
-        for (int index = 0, size = folds.length; index < size; index++) {
-            folds[index] = index % number;
+        this.folds = new Integer[this.dataModule.getSize()];
+        for (int index = 0, size = this.folds.length; index < size; index++) {
+            this.folds[index] = index % number;
         }
         // 通过随机与交换的方式实现打乱排序的目的.
-        RandomUtility.shuffle(folds);
+        RandomUtility.shuffle(this.folds);
     }
 
     @Override
@@ -37,23 +37,23 @@ public class KFoldCrossValidationSeparator implements DataSeparator {
     @Override
     public ReferenceModule getTrainReference(int index) {
         IntegerArray reference = new IntegerArray();
-        for (int position = 0, size = dataModel.getSize(); position < size; position++) {
+        for (int position = 0, size = dataModule.getSize(); position < size; position++) {
             if (folds[position] != index) {
                 reference.associateData(position);
             }
         }
-        return new ReferenceModule(reference, dataModel);
+        return new ReferenceModule(reference, dataModule);
     }
 
     @Override
     public ReferenceModule getTestReference(int index) {
         IntegerArray reference = new IntegerArray();
-        for (int position = 0, size = dataModel.getSize(); position < size; position++) {
+        for (int position = 0, size = dataModule.getSize(); position < size; position++) {
             if (folds[position] == index) {
                 reference.associateData(position);
             }
         }
-        return new ReferenceModule(reference, dataModel);
+        return new ReferenceModule(reference, dataModule);
     }
 
 }

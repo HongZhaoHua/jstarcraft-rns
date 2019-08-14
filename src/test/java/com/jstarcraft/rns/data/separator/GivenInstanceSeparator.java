@@ -14,23 +14,23 @@ import com.jstarcraft.ai.data.processor.DataSelector;
  */
 public class GivenInstanceSeparator implements DataSeparator {
 
-    private DataModule dataModel;
+    private DataModule dataModule;
 
     private IntegerArray trainReference;
 
     private IntegerArray testReference;
 
-    public GivenInstanceSeparator(DataModule model, DataSelector selector) {
-        this.dataModel = model;
+    public GivenInstanceSeparator(DataModule dataModule, DataSelector selector) {
+        this.dataModule = dataModule;
 
         this.trainReference = new IntegerArray();
         this.testReference = new IntegerArray();
         int position = 0;
-        for (DataInstance instance : model) {
+        for (DataInstance instance : dataModule) {
             if (selector.select(instance)) {
-                testReference.associateData(position++);
+                this.testReference.associateData(position++);
             } else {
-                trainReference.associateData(position++);
+                this.trainReference.associateData(position++);
             }
         }
     }
@@ -42,12 +42,12 @@ public class GivenInstanceSeparator implements DataSeparator {
 
     @Override
     public ReferenceModule getTrainReference(int index) {
-        return new ReferenceModule(trainReference, dataModel);
+        return new ReferenceModule(trainReference, dataModule);
     }
 
     @Override
     public ReferenceModule getTestReference(int index) {
-        return new ReferenceModule(testReference, dataModel);
+        return new ReferenceModule(testReference, dataModule);
     }
 
 }
