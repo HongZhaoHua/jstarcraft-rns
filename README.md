@@ -34,7 +34,7 @@
 * [对比](#对比)
 * [版本](#版本)
 * [参考](#参考)
-    * [JStarCraft RNS引擎支持的算法](#JStarCraft-RNS引擎支持的算法)
+    * [个性化算法](#个性化算法)
     * [数据集](#数据集)
 * [协议](#协议)
 * [作者](#作者)
@@ -450,7 +450,7 @@ Map<String, Double> data = expression.doWith(Map.class);
 
 ## 参考
 
-#### JStarCraft-RNS引擎支持的算法
+#### 个性化算法
 
 * 基准算法
 
