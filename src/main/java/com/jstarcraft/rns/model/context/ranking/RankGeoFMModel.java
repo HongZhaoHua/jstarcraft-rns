@@ -298,19 +298,16 @@ public class RankGeoFMModel extends MatrixFactorizationModel {
         }
     }
 
-    private float getDistance(float lat1, float long1, float lat2, float long2) {
-        float a, b, R;
-        R = 6378137F;
-        lat1 = (float) (lat1 * Math.PI / 180F);
-        lat2 = (float) (lat2 * Math.PI / 180F);
-        a = lat1 - lat2;
-        b = (float) ((long1 - long2) * Math.PI / 180F);
-        float d;
-        float sa2, sb2;
-        sa2 = (float) Math.sin(a / 2F);
-        sb2 = (float) Math.sin(b / 2F);
-        d = (float) (2F * R * Math.asin(Math.sqrt(sa2 * sa2 + Math.cos(lat1) * Math.cos(lat2) * sb2 * sb2)));
-        return d / 1000F;
+    private float getDistance(float leftLatitude, float leftLongitude, float rightLatitude, float rightLongitude) {
+        float radius = 6378137F;
+        leftLatitude = (float) (leftLatitude * Math.PI / 180F);
+        rightLatitude = (float) (rightLatitude * Math.PI / 180F);
+        float latitude = leftLatitude - rightLatitude;
+        float longitude = (float) ((leftLongitude - rightLongitude) * Math.PI / 180F);
+        latitude = (float) Math.sin(latitude / 2F);
+        longitude = (float) Math.sin(longitude / 2F);
+        float distance = (float) (2F * radius * Math.asin(Math.sqrt(latitude * latitude + Math.cos(leftLatitude) * Math.cos(rightLatitude) * longitude * longitude)));
+        return distance / 1000F;
     }
 
     private boolean indicator(double left, double right) {
