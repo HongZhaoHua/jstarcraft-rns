@@ -2,6 +2,9 @@
 
 ****
 
+[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![Total lines](https://tokei.rs/b1/github/HongZhaoHua/jstarcraft-rns?category=lines)](https://tokei.rs/b1/github/HongZhaoHua/jstarcraft-rns?category=lines)
+
 希望路过的同学,顺手给JStarCraft框架点个Star,算是对作者的一种鼓励吧!
 
 ****
