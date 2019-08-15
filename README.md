@@ -551,7 +551,7 @@ Map<String, Double> data = expression.doWith(Map.class);
 
 ## 协议
 
-JStarCraft Example遵循[Apache 2.0协议](https://www.apache.org/licenses/LICENSE-2.0.html),一切以其为基础的衍生作品均属于衍生作品的作者.
+JStarCraft RNS遵循[Apache 2.0协议](https://www.apache.org/licenses/LICENSE-2.0.html),一切以其为基础的衍生作品均属于衍生作品的作者.
 
 ****
 
