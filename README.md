@@ -541,6 +541,7 @@ Map<String, Double> data = expression.doWith(Map.class);
 * [Eachmovie Dataset](https://grouplens.org/datasets/eachmovie/)
 * [Epinions Dataset](http://www.trustlet.org/epinions.html)
 * [Foursquare Dataset](https://sites.google.com/site/yangdingqi/home/foursquare-dataset)
+* [Gowalla Dataset](http://snap.stanford.edu/data/loc-gowalla.html)
 * [HetRec2011 Dataset](https://grouplens.org/datasets/hetrec-2011/)
 * [Jest Joker Dataset](https://grouplens.org/datasets/jester/)
 * [Large Movie Review Dataset](http://ai.stanford.edu/~amaas/data/sentiment/)
