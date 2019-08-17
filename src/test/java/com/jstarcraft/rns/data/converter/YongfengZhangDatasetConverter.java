@@ -41,6 +41,8 @@ public class YongfengZhangDatasetConverter extends AbstractConverter<InputStream
 
         private Int2FloatSortedMap quantityFeatures = new Int2FloatRBTreeMap();
 
+        private Int2ObjectOpenHashMap<Object> datas = new Int2ObjectOpenHashMap<>();
+
         private StringBuffer buffer = new StringBuffer();
 
         private int count;
@@ -50,7 +52,7 @@ public class YongfengZhangDatasetConverter extends AbstractConverter<InputStream
         }
 
         private void parseData(BufferedReader buffer) throws IOException {
-            Int2ObjectOpenHashMap<Object> datas = new Int2ObjectOpenHashMap<>();
+            datas.clear();
             String line = buffer.readLine();
             line = buffer.readLine();
             String[] strings = line.split("\t");
@@ -60,10 +62,8 @@ public class YongfengZhangDatasetConverter extends AbstractConverter<InputStream
             datas.put(1, item);
             Float score = Float.valueOf(strings[3]);
             datas.put(2, score);
-
             line = buffer.readLine();
             line = buffer.readLine();
-
             strings = line.split("\t");
             for (String string : strings) {
                 string = string.substring(1, string.length() - 1);

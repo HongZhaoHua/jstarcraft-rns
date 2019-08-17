@@ -53,7 +53,6 @@ public class AmazonProductDatasetConverter extends StreamConverter {
             datas.put(1, item);
             Number score = (Number) json.get("overall");
             datas.put(2, score);
-
             String[] words = ((String) json.get("summary")).split(" ");
             for (String word : words) {
                 int wordIndex = wordAttribute.convertData(word);

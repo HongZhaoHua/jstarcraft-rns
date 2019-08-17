@@ -9,19 +9,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.junit.Assert;
 import org.junit.Test;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.attribute.QualityAttribute;
 import com.jstarcraft.ai.data.converter.DataConverter;
 
+/**
+ * 演示如何自定义处理AmazonProduct数据集
+ * @author Birdy
+ *
+ */
 public class AmazonProductDatasetTestCase {
 
     @Test
@@ -45,7 +45,6 @@ public class AmazonProductDatasetTestCase {
                 handler.parseData(buffer);
             }
         }
-
         QualityAttribute<String> userAttribute = dataSpace.getQualityAttribute("user");
         QualityAttribute<String> itemAttribute = dataSpace.getQualityAttribute("item");
         QualityAttribute<String> wordAttribute = dataSpace.getQualityAttribute("word");
@@ -54,7 +53,7 @@ public class AmazonProductDatasetTestCase {
         Assert.assertEquals(8379, wordAttribute.getSize());
 
         // 定义数据模块
-        // 使用word属性大小作为sentiment特征维度
+        // 使用word属性大小作为feature特征维度
         TreeMap<Integer, String> configuration = new TreeMap<>();
         configuration.put(1, "user");
         configuration.put(2, "item");

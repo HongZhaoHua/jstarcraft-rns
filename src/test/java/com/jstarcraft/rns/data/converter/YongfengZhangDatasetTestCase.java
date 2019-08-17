@@ -21,7 +21,7 @@ import com.jstarcraft.ai.data.attribute.QualityAttribute;
 import com.jstarcraft.ai.data.converter.DataConverter;
 
 /**
- * 演示如何自定义处理数据集
+ * 演示如何自定义处理YongfengZhang数据集
  * 
  * @author Birdy
  *
@@ -52,7 +52,6 @@ public class YongfengZhangDatasetTestCase {
             sheetParser.setContentHandler(handler);
             sheetParser.parse(xmlSource);
         }
-
         QualityAttribute<String> userAttribute = dataSpace.getQualityAttribute("user");
         QualityAttribute<String> itemAttribute = dataSpace.getQualityAttribute("item");
         QualityAttribute<String> wordAttribute = dataSpace.getQualityAttribute("word");
