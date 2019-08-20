@@ -24,7 +24,7 @@ import com.jstarcraft.rns.model.MatrixFactorizationModel;
 import com.jstarcraft.rns.model.exception.RecommendException;
 import com.jstarcraft.rns.utility.LogisticUtility;
 
-import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 
 /**
  * 
@@ -241,7 +241,7 @@ public class RankGeoFMModel extends MatrixFactorizationModel {
      * @return
      */
     private void calculateNeighborWeightMatrix(Integer k_nearest) {
-        HashMatrix dataTable = new HashMatrix(true, itemSize, itemSize, new Int2FloatRBTreeMap());
+        HashMatrix dataTable = new HashMatrix(true, itemSize, itemSize, new Long2FloatRBTreeMap());
         for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
             List<KeyValue<Integer, Float>> locationNeighbors = new ArrayList<>(itemSize);
             Float2FloatKeyValue location = itemLocations[itemIndex];

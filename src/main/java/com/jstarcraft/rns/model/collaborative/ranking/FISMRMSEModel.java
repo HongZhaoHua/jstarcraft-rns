@@ -15,7 +15,7 @@ import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
 
-import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 
 /**
  * 
@@ -80,7 +80,7 @@ public class FISMRMSEModel extends MatrixFactorizationModel {
         DefaultScalar scalar = DefaultScalar.getInstance();
         int sampleSize = (int) (rho * numNeighbors);
         int totalSize = userSize * itemSize;
-        HashMatrix rateMatrix = new HashMatrix(true, userSize, itemSize, new Int2FloatRBTreeMap());
+        HashMatrix rateMatrix = new HashMatrix(true, userSize, itemSize, new Long2FloatRBTreeMap());
         for (MatrixScalar cell : scoreMatrix) {
             rateMatrix.setValue(cell.getRow(), cell.getColumn(), cell.getValue());
         }

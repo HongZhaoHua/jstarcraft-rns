@@ -18,8 +18,8 @@ import com.jstarcraft.rns.model.ProbabilisticGraphicalModel;
 import com.jstarcraft.rns.utility.GammaUtility;
 import com.jstarcraft.rns.utility.SampleUtility;
 
-import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
 import it.unimi.dsi.fastutil.ints.Int2IntRBTreeMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 
 /**
  * 
@@ -101,8 +101,8 @@ public class URPModel extends ProbabilisticGraphicalModel {
             learnMatrix = scoreMatrix;
             checkMatrix = null;
         } else {
-            HashMatrix learnTable = new HashMatrix(true, userSize, itemSize, new Int2FloatRBTreeMap());
-            HashMatrix checkTable = new HashMatrix(true, userSize, itemSize, new Int2FloatRBTreeMap());
+            HashMatrix learnTable = new HashMatrix(true, userSize, itemSize, new Long2FloatRBTreeMap());
+            HashMatrix checkTable = new HashMatrix(true, userSize, itemSize, new Long2FloatRBTreeMap());
             for (MatrixScalar term : scoreMatrix) {
                 int userIndex = term.getRow();
                 int itemIndex = term.getColumn();

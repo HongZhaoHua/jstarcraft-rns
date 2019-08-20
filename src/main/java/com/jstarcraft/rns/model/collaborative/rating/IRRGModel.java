@@ -26,7 +26,7 @@ import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
 import com.jstarcraft.rns.utility.LogisticUtility;
 
-import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 
 /**
  * 
@@ -348,7 +348,7 @@ public class IRRGModel extends MatrixFactorizationModel {
                 list = list.subList(0, neighborSize);
             }
 
-            HashMatrix groupTable = new HashMatrix(true, itemSize, itemSize, new Int2FloatRBTreeMap());
+            HashMatrix groupTable = new HashMatrix(true, itemSize, itemSize, new Long2FloatRBTreeMap());
             for (KeyValue<KeyValue<Integer, Integer>, Float> keyValue : list) {
                 int leftItemIndex = keyValue.getKey().getKey();
                 int rightItemIndex = keyValue.getKey().getValue();

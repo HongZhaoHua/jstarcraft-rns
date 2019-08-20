@@ -23,7 +23,7 @@ import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
 
-import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 
 /**
  * 
@@ -149,7 +149,7 @@ public abstract class EFMModel extends MatrixFactorizationModel {
 		float[] featureValues = new float[numberOfFeatures];
 
 		// compute UserFeatureAttention
-		HashMatrix userTable = new HashMatrix(true, userSize, numberOfFeatures, new Int2FloatRBTreeMap());
+		HashMatrix userTable = new HashMatrix(true, userSize, numberOfFeatures, new Long2FloatRBTreeMap());
 		for (Entry<Integer, StringBuilder> term : userDictionaries.entrySet()) {
 			int userIndex = term.getKey();
 			String[] words = term.getValue().toString().split(" ");
@@ -169,7 +169,7 @@ public abstract class EFMModel extends MatrixFactorizationModel {
 		}
 		userFeatures = SparseMatrix.valueOf(userSize, numberOfFeatures, userTable);
 		// compute ItemFeatureQuality
-		HashMatrix itemTable = new HashMatrix(true, itemSize, numberOfFeatures, new Int2FloatRBTreeMap());
+		HashMatrix itemTable = new HashMatrix(true, itemSize, numberOfFeatures, new Long2FloatRBTreeMap());
 		for (Entry<Integer, StringBuilder> term : itemDictionaries.entrySet()) {
 			int itemIndex = term.getKey();
 			String[] words = term.getValue().toString().split(" ");

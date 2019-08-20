@@ -18,7 +18,7 @@ import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.data.processor.AllFeatureDataSorter;
 import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
 
-import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 
 /**
  * 抽象推荐器
@@ -72,7 +72,7 @@ public abstract class AbstractModel implements Model {
             models[index] = sorter.sort(models[index]);
         }
 
-        HashMatrix dataTable = new HashMatrix(true, userSize, itemSize, new Int2FloatRBTreeMap());
+        HashMatrix dataTable = new HashMatrix(true, userSize, itemSize, new Long2FloatRBTreeMap());
         for (DataInstance instance : model) {
             int rowIndex = instance.getQualityFeature(userDimension);
             int columnIndex = instance.getQualityFeature(itemDimension);

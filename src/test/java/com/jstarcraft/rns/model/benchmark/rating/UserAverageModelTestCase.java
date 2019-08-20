@@ -24,9 +24,9 @@ public class UserAverageModelTestCase {
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(UserAverageModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.6347995F, measures.getFloat(MAEEvaluator.class), 0F);
-        Assert.assertEquals(0.97732395F, measures.getFloat(MPEEvaluator.class), 0F);
-        Assert.assertEquals(0.67883974F, measures.getFloat(MSEEvaluator.class), 0F);
+        Assert.assertEquals(0.6461777F, measures.getFloat(MAEEvaluator.class), 0F);
+        Assert.assertEquals(0.97241735F, measures.getFloat(MPEEvaluator.class), 0F);
+        Assert.assertEquals(0.70172423F, measures.getFloat(MSEEvaluator.class), 0F);
     }
 
 }

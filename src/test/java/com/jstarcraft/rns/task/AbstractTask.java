@@ -14,7 +14,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +28,6 @@ import com.jstarcraft.ai.data.processor.DataSplitter;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.environment.EnvironmentFactory;
 import com.jstarcraft.ai.evaluate.Evaluator;
-import com.jstarcraft.ai.evaluate.ranking.AUCEvaluator;
 import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.core.common.conversion.json.JsonUtility;
@@ -51,7 +49,7 @@ import com.jstarcraft.rns.data.separator.RatioSeparator;
 import com.jstarcraft.rns.model.Model;
 import com.jstarcraft.rns.model.exception.RecommendException;
 
-import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatRBTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
@@ -276,7 +274,7 @@ public abstract class AbstractTask<L, R> {
                     trainModules = splitter.split(trainMarker, userSize);
                     testModules = splitter.split(testMarker, userSize);
 
-                    HashMatrix dataTable = new HashMatrix(true, userSize, itemSize, new Int2FloatRBTreeMap());
+                    HashMatrix dataTable = new HashMatrix(true, userSize, itemSize, new Long2FloatRBTreeMap());
                     for (DataInstance instance : dataModule) {
                         int rowIndex = instance.getQualityFeature(userDimension);
                         int columnIndex = instance.getQualityFeature(itemDimension);

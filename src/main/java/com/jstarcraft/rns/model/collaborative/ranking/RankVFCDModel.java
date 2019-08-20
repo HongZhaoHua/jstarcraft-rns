@@ -15,7 +15,7 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
 
-import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 
 /**
  * 
@@ -82,7 +82,7 @@ public class RankVFCDModel extends MatrixFactorizationModel {
         int leftDimension = 0;
         int rightDimension = 1;
         int coefficientDimension = relationModel.getQuantityInner(coefficientField);
-        HashMatrix relationTable = new HashMatrix(true, itemSize, itemSize, new Int2FloatRBTreeMap());
+        HashMatrix relationTable = new HashMatrix(true, itemSize, itemSize, new Long2FloatRBTreeMap());
         for (DataInstance instance : relationModel) {
             int itemIndex = instance.getQualityFeature(leftDimension);
             int neighborIndex = instance.getQualityFeature(rightDimension);
@@ -94,7 +94,7 @@ public class RankVFCDModel extends MatrixFactorizationModel {
         // 特征矩阵
         float minimumValue = Float.MAX_VALUE;
         float maximumValue = Float.MIN_VALUE;
-        HashMatrix visualTable = new HashMatrix(true, numberOfFeatures, itemSize, new Int2FloatRBTreeMap());
+        HashMatrix visualTable = new HashMatrix(true, numberOfFeatures, itemSize, new Long2FloatRBTreeMap());
         DataModule featureModel = space.getModule("article");
         String articleField = configuration.getString("data.model.fields.article");
         String featureField = configuration.getString("data.model.fields.feature");

@@ -18,7 +18,7 @@ import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
 import com.jstarcraft.rns.utility.LogisticUtility;
 
-import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 
 /**
  * 
@@ -92,7 +92,7 @@ public class VBPRModel extends MatrixFactorizationModel {
 
         float minimumValue = Float.MAX_VALUE;
         float maximumValue = Float.MIN_VALUE;
-        featureTable = new HashMatrix(true, itemSize, numberOfFeatures, new Int2FloatRBTreeMap());
+        featureTable = new HashMatrix(true, itemSize, numberOfFeatures, new Long2FloatRBTreeMap());
         DataModule featureModel = space.getModule("article");
         String articleField = configuration.getString("data.model.fields.article");
         String featureField = configuration.getString("data.model.fields.feature");

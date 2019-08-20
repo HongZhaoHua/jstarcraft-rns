@@ -14,7 +14,7 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.FactorizationMachineModel;
 
-import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 
 /**
  * 
@@ -43,7 +43,7 @@ public class FMALSModel extends FactorizationMachineModel {
         actionFactors = DenseMatrix.valueOf(actionSize, factorSize);
 
         // construct training appender matrix
-        HashMatrix table = new HashMatrix(true, actionSize, featureSize, new Int2FloatRBTreeMap());
+        HashMatrix table = new HashMatrix(true, actionSize, featureSize, new Long2FloatRBTreeMap());
         int index = 0;
         int order = marker.getQualityOrder();
         for (DataInstance sample : model) {

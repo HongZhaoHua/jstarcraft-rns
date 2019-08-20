@@ -7,7 +7,7 @@ import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.core.utility.Configurator;
 
-import it.unimi.dsi.fastutil.ints.Int2FloatAVLTreeMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 
 /**
  * 社交推荐器
@@ -49,7 +49,7 @@ public abstract class SocialModel extends MatrixFactorizationModel {
         trusterDimension = socialModel.getQualityInner(userField) + 0;
         trusteeDimension = socialModel.getQualityInner(userField) + 1;
         coefficientDimension = socialModel.getQuantityInner(coefficientField);
-        HashMatrix matrix = new HashMatrix(true, userSize, userSize, new Int2FloatAVLTreeMap());
+        HashMatrix matrix = new HashMatrix(true, userSize, userSize, new Long2FloatRBTreeMap());
         for (DataInstance instance : socialModel) {
             matrix.setValue(instance.getQualityFeature(trusterDimension), instance.getQualityFeature(trusteeDimension), instance.getQuantityFeature(coefficientDimension));
         }

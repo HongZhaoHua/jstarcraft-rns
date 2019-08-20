@@ -15,7 +15,7 @@ import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 
 import it.unimi.dsi.fastutil.floats.Float2IntAVLTreeMap;
 import it.unimi.dsi.fastutil.floats.Float2IntSortedMap;
-import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 
 public class SearchUtilityTestCase {
 
@@ -29,7 +29,7 @@ public class SearchUtilityTestCase {
         EnvironmentContext context = EnvironmentFactory.getContext();
         Future<?> task = context.doTask(() -> {
             int dimension = 7;
-            HashMatrix table = new HashMatrix(true, dimension, dimension, new Int2FloatRBTreeMap());
+            HashMatrix table = new HashMatrix(true, dimension, dimension, new Long2FloatRBTreeMap());
             table.setValue(0, 1, 0.5F);
             table.setValue(0, 2, 0.5F);
 
