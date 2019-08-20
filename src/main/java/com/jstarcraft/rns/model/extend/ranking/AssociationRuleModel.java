@@ -49,10 +49,9 @@ public class AssociationRuleModel extends AbstractModel {
         for (int leftItemIndex = 0; leftItemIndex < itemSize; leftItemIndex++) {
             // all transactions for item itemIdx
             SparseVector leftVector = scoreMatrix.getColumnVector(leftItemIndex);
-            int size = leftVector.getElementSize();
-            for (int rightItemIndex = 0; rightItemIndex < itemSize; rightItemIndex++) {
+            for (int rightItemIndex = leftItemIndex + 1; rightItemIndex < itemSize; rightItemIndex++) {
                 SparseVector rightVector = scoreMatrix.getColumnVector(rightItemIndex);
-                int leftIndex = 0, rightIndex = 0, leftSize = size, rightSize = rightVector.getElementSize();
+                int leftIndex = 0, rightIndex = 0, leftSize = leftVector.getElementSize(), rightSize = rightVector.getElementSize();
                 if (leftSize != 0 && rightSize != 0) {
                     // compute confidence where containing item assoItemIdx
                     // among
@@ -86,8 +85,10 @@ public class AssociationRuleModel extends AbstractModel {
                             leftIndex++;
                         }
                     }
-                    float value = (count + 0F) / size;
-                    associationMatrix.setValue(leftItemIndex, rightItemIndex, value);
+                    float leftValue = (count + 0F) / leftVector.getElementSize();
+                    float rightValue = (count + 0F) / rightVector.getElementSize();
+                    associationMatrix.setValue(leftItemIndex, rightItemIndex, leftValue);
+                    associationMatrix.setValue(rightItemIndex, leftItemIndex, rightValue);
                 }
             }
         }
