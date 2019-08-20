@@ -28,7 +28,7 @@ import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.data.processor.AllFeatureDataSorter;
 import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
 import com.jstarcraft.rns.model.ProbabilisticGraphicalModel;
-import com.jstarcraft.rns.model.exception.RecommendException;
+import com.jstarcraft.rns.model.exception.ModelException;
 import com.jstarcraft.rns.utility.GammaUtility;
 
 /**
@@ -768,7 +768,7 @@ public class HMMModel extends ProbabilisticGraphicalModel {
                 try {
                     latch.await();
                 } catch (Exception exception) {
-                    throw new RecommendException(exception);
+                    throw new ModelException(exception);
                 }
             }
 
@@ -863,7 +863,7 @@ public class HMMModel extends ProbabilisticGraphicalModel {
         try {
             latch.await();
         } catch (Exception exception) {
-            throw new RecommendException(exception);
+            throw new ModelException(exception);
         }
     }
 
@@ -939,7 +939,7 @@ public class HMMModel extends ProbabilisticGraphicalModel {
             try {
                 latch.await();
             } catch (Exception exception) {
-                throw new RecommendException(exception);
+                throw new ModelException(exception);
             }
         }
 

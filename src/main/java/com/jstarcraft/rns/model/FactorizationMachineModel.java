@@ -18,7 +18,7 @@ import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.KeyValue;
-import com.jstarcraft.rns.model.exception.RecommendException;
+import com.jstarcraft.rns.model.exception.ModelException;
 
 /**
  * Factorization Machine Recommender
@@ -168,7 +168,7 @@ public abstract class FactorizationMachineModel extends EpocheModel {
      * @param featureVector the given vector to predict.
      *
      * @return predicted rating
-     * @throws RecommendException if error occurs
+     * @throws ModelException if error occurs
      */
     protected float predict(DefaultScalar scalar, MathVector featureVector) {
         float value = 0;

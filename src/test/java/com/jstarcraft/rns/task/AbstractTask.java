@@ -47,7 +47,7 @@ import com.jstarcraft.rns.data.separator.LeaveOneCrossValidationSeparator;
 import com.jstarcraft.rns.data.separator.RandomSeparator;
 import com.jstarcraft.rns.data.separator.RatioSeparator;
 import com.jstarcraft.rns.model.Model;
-import com.jstarcraft.rns.model.exception.RecommendException;
+import com.jstarcraft.rns.model.exception.ModelException;
 
 import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
@@ -139,7 +139,7 @@ public abstract class AbstractTask<L, R> {
         try {
             latch.await();
         } catch (Exception exception) {
-            throw new RecommendException(exception);
+            throw new ModelException(exception);
         }
 
         Map<Class<? extends Evaluator>, Integer2FloatKeyValue> measures = new HashMap<>();
@@ -197,7 +197,7 @@ public abstract class AbstractTask<L, R> {
                 break;
             }
             default: {
-                throw new RecommendException("不支持的转换格式");
+                throw new ModelException("不支持的转换格式");
             }
             }
             File file = new File(path);
@@ -247,7 +247,7 @@ public abstract class AbstractTask<L, R> {
             break;
         }
         default: {
-            throw new RecommendException("不支持的划分类型");
+            throw new ModelException("不支持的划分类型");
         }
         }
 

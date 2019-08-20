@@ -5,7 +5,7 @@ import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.rns.model.exception.RecommendException;
+import com.jstarcraft.rns.model.exception.ModelException;
 
 import it.unimi.dsi.fastutil.floats.Float2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.floats.FloatRBTreeSet;
@@ -47,7 +47,7 @@ public abstract class ProbabilisticGraphicalModel extends EpocheModel {
     /**
      * setup init member method
      *
-     * @throws RecommendException if error occurs during setting up
+     * @throws ModelException if error occurs during setting up
      */
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {

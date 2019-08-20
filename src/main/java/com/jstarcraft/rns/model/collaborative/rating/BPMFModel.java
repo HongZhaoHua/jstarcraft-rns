@@ -17,7 +17,7 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
-import com.jstarcraft.rns.model.exception.RecommendException;
+import com.jstarcraft.rns.model.exception.ModelException;
 import com.jstarcraft.rns.utility.MatrixUtility;
 
 /**
@@ -112,9 +112,9 @@ public class BPMFModel extends MatrixFactorizationModel {
          * @param normalBeta
          * @param wishartScale
          * @return
-         * @throws RecommendException
+         * @throws ModelException
          */
-        private void sampleParameter(QuantityProbability[] gammaDistributions, DenseMatrix factors, float normalMu, float normalBeta, float wishartScale) throws RecommendException {
+        private void sampleParameter(QuantityProbability[] gammaDistributions, DenseMatrix factors, float normalMu, float normalBeta, float wishartScale) throws ModelException {
             int rowSize = factors.getRowSize();
             int columnSize = factors.getColumnSize();
             // 重复利用内存.
@@ -165,9 +165,9 @@ public class BPMFModel extends MatrixFactorizationModel {
          * @param scoreVector
          * @param hyperParameter
          * @return
-         * @throws RecommendException
+         * @throws ModelException
          */
-        private void updateParameter(DenseMatrix factorMatrix, SparseVector scoreVector, DenseVector factorVector) throws RecommendException {
+        private void updateParameter(DenseMatrix factorMatrix, SparseVector scoreVector, DenseVector factorVector) throws ModelException {
             int size = scoreVector.getElementSize();
             // 重复利用内存.
             DenseMatrix factorCache = DenseMatrix.valueOf(size, factorSize, thisMatrixCache);

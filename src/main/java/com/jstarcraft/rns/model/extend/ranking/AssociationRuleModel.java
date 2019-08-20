@@ -12,7 +12,7 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.AbstractModel;
-import com.jstarcraft.rns.model.exception.RecommendException;
+import com.jstarcraft.rns.model.exception.ModelException;
 
 /**
  * 
@@ -36,7 +36,7 @@ public class AssociationRuleModel extends AbstractModel {
     /**
      * setup
      *
-     * @throws RecommendException if error occurs
+     * @throws ModelException if error occurs
      */
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
@@ -103,7 +103,7 @@ public class AssociationRuleModel extends AbstractModel {
             try {
                 semaphore.acquire(itemSize - leftItemIndex - 1);
             } catch (Exception exception) {
-                throw new RecommendException(exception);
+                throw new ModelException(exception);
             }
         }
     }
@@ -114,7 +114,7 @@ public class AssociationRuleModel extends AbstractModel {
      * @param userIndex user index
      * @param itemIndex item index
      * @return predictive rating for user userIdx on item itemIdx
-     * @throws RecommendException if error occurs
+     * @throws ModelException if error occurs
      */
     @Override
     public void predict(DataInstance instance) {

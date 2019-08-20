@@ -14,7 +14,7 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.ProbabilisticGraphicalModel;
-import com.jstarcraft.rns.model.exception.RecommendException;
+import com.jstarcraft.rns.model.exception.ModelException;
 import com.jstarcraft.rns.utility.GammaUtility;
 import com.jstarcraft.rns.utility.SampleUtility;
 
@@ -77,7 +77,7 @@ public class LDAModel extends ProbabilisticGraphicalModel {
     /**
      * setup init member method
      *
-     * @throws RecommendException if error occurs
+     * @throws ModelException if error occurs
      */
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {

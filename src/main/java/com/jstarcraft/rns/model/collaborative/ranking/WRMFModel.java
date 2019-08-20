@@ -14,7 +14,7 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
-import com.jstarcraft.rns.model.exception.RecommendException;
+import com.jstarcraft.rns.model.exception.ModelException;
 import com.jstarcraft.rns.utility.MatrixUtility;
 
 /**
@@ -139,7 +139,7 @@ public class WRMFModel extends MatrixFactorizationModel {
 			try {
 				userLatch.await();
 			} catch (Exception exception) {
-				throw new RecommendException(exception);
+				throw new ModelException(exception);
 			}
 
 			// Step 2: update item factors;
@@ -190,7 +190,7 @@ public class WRMFModel extends MatrixFactorizationModel {
 			try {
 				itemLatch.await();
 			} catch (Exception exception) {
-				throw new RecommendException(exception);
+				throw new ModelException(exception);
 			}
 
 			if (logger.isInfoEnabled()) {

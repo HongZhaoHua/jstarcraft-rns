@@ -22,7 +22,7 @@ import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.EpocheModel;
-import com.jstarcraft.rns.model.exception.RecommendException;
+import com.jstarcraft.rns.model.exception.ModelException;
 
 /**
  * 
@@ -81,7 +81,7 @@ public class SLIMModel extends EpocheModel {
     /**
      * initialization
      *
-     * @throws RecommendException if error occurs
+     * @throws ModelException if error occurs
      */
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
@@ -164,7 +164,7 @@ public class SLIMModel extends EpocheModel {
     /**
      * train model
      *
-     * @throws RecommendException if error occurs
+     * @throws ModelException if error occurs
      */
     @Override
     protected void doPractice() {
@@ -276,7 +276,7 @@ public class SLIMModel extends EpocheModel {
      * @param userIndex user index
      * @param itemIndex item index
      * @return predictive ranking score for user userIdx on item itemIdx
-     * @throws RecommendException if error occurs
+     * @throws ModelException if error occurs
      */
     @Override
     public void predict(DataInstance instance) {

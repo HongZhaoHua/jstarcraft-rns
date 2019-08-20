@@ -6,19 +6,19 @@ package com.jstarcraft.rns.model.exception;
  * @author Birdy
  *
  */
-public class RecommendException extends RuntimeException {
+public class ModelException extends RuntimeException {
 
 	private static final long serialVersionUID = 4072415788185880975L;
 
-	public RecommendException(String message) {
+	public ModelException(String message) {
 		super(message);
 	}
 
-	public RecommendException(Throwable exception) {
+	public ModelException(Throwable exception) {
 		super(exception);
 	}
 
-	public RecommendException(String message, Throwable exception) {
+	public ModelException(String message, Throwable exception) {
 		super(message, exception);
 	}
 

@@ -11,7 +11,7 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.SocialModel;
-import com.jstarcraft.rns.model.exception.RecommendException;
+import com.jstarcraft.rns.model.exception.ModelException;
 import com.jstarcraft.rns.utility.LogisticUtility;
 
 /**
@@ -96,7 +96,7 @@ public class TrustMFModel extends SocialModel {
     /**
      * Build TrusterMF model: Br*Vr
      *
-     * @throws RecommendException if error occurs
+     * @throws ModelException if error occurs
      */
     private void trainByTruster(DefaultScalar scalar) {
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {
@@ -175,7 +175,7 @@ public class TrustMFModel extends SocialModel {
     /**
      * Build TrusteeMF model: We*Ve
      *
-     * @throws RecommendException if error occurs
+     * @throws ModelException if error occurs
      */
     private void trainByTrustee(DefaultScalar scalar) {
         for (int epocheIndex = 0; epocheIndex < epocheSize; epocheIndex++) {

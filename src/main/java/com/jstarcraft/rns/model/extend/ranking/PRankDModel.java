@@ -15,7 +15,7 @@ import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.collaborative.ranking.RankSGDModel;
-import com.jstarcraft.rns.model.exception.RecommendException;
+import com.jstarcraft.rns.model.exception.ModelException;
 import com.jstarcraft.rns.utility.SampleUtility;
 
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -54,7 +54,7 @@ public class PRankDModel extends RankSGDModel {
 	/**
 	 * initialization
 	 *
-	 * @throws RecommendException
+	 * @throws ModelException
 	 *             if error occurs
 	 */
 	@Override
@@ -95,7 +95,7 @@ public class PRankDModel extends RankSGDModel {
 	/**
 	 * train model
 	 *
-	 * @throws RecommendException
+	 * @throws ModelException
 	 *             if error occurs
 	 */
 	@Override

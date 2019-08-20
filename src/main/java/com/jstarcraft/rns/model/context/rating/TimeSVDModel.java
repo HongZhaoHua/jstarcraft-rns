@@ -18,7 +18,7 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.collaborative.rating.BiasedMFModel;
-import com.jstarcraft.rns.model.exception.RecommendException;
+import com.jstarcraft.rns.model.exception.ModelException;
 
 /**
  * 
@@ -365,7 +365,7 @@ public class TimeSVDModel extends BiasedMFModel {
      * @param userIndex user index
      * @param itemIndex item index
      * @return predictive rating for user userIdx on item itemIdx
-     * @throws RecommendException if error occurs
+     * @throws ModelException if error occurs
      */
     @Override
     public void predict(DataInstance instance) {

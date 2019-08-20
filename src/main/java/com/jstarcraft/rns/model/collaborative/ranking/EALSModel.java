@@ -14,7 +14,7 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
-import com.jstarcraft.rns.model.exception.RecommendException;
+import com.jstarcraft.rns.model.exception.ModelException;
 
 /**
  * 
@@ -180,7 +180,7 @@ public class EALSModel extends MatrixFactorizationModel {
             try {
                 userLatch.await();
             } catch (Exception exception) {
-                throw new RecommendException(exception);
+                throw new ModelException(exception);
             }
 
             // Update the Sp cache
@@ -229,7 +229,7 @@ public class EALSModel extends MatrixFactorizationModel {
             try {
                 itemLatch.await();
             } catch (Exception exception) {
-                throw new RecommendException(exception);
+                throw new ModelException(exception);
             }
         }
     }

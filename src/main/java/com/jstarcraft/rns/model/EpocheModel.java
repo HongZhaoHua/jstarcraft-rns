@@ -5,7 +5,7 @@ import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.MathUtility;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.StringUtility;
-import com.jstarcraft.rns.model.exception.RecommendException;
+import com.jstarcraft.rns.model.exception.ModelException;
 import com.jstarcraft.rns.utility.LogisticUtility;
 
 /**
@@ -51,7 +51,7 @@ public abstract class EpocheModel extends AbstractModel {
             logger.info(message);
         }
         if (Float.isNaN(totalError) || Float.isInfinite(totalError)) {
-            throw new RecommendException("Loss = NaN or Infinity: current settings does not fit the recommender! Change the settings and try again!");
+            throw new ModelException("Loss = NaN or Infinity: current settings does not fit the recommender! Change the settings and try again!");
         }
         // check if converged
         boolean converged = Math.abs(deltaError) < MathUtility.EPSILON;
