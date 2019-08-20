@@ -37,7 +37,7 @@
 * [对比](#对比)
 * [版本](#版本)
 * [参考](#参考)
-    * [个性化算法](#个性化算法)
+    * [个性化模型](#个性化模型)
     * [数据集](#数据集)
 * [协议](#协议)
 * [作者](#作者)
@@ -453,9 +453,9 @@ Map<String, Double> data = expression.doWith(Map.class);
 
 ## 参考
 
-#### 个性化算法
+#### 个性化模型
 
-* 基准算法
+* 基准模型
 
 | 名称 | 问题 | 说明/论文 |
 | :----: | :----: | :----: |
@@ -468,7 +468,7 @@ Map<String, Double> data = expression.doWith(Map.class);
 | UserAverage | Rating  | 用户平均 |
 | UserCluster | Rating  | 用户聚类 |
 
-* 协同算法
+* 协同模型
 
 | 名称 | 问题 | 说明/论文 |
 | :----: | :----: | :----: |
@@ -522,7 +522,7 @@ Map<String, Double> data = expression.doWith(Map.class);
 | PersonalityDiagnosis | Rating | A brief introduction to Personality Diagnosis |
 | SlopeOne | Rating | Slope One Predictors for Online Rating-Based Collaborative Filtering |
 
-* 内容算法
+* 内容模型
 
 | 名称 | 问题 | 说明/论文 |
 | :----: | :----: | :----: |
