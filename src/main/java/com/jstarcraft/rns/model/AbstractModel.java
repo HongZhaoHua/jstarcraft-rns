@@ -53,7 +53,7 @@ public abstract class AbstractModel implements Model {
     /** 训练矩阵(TODO 准备改名为actionMatrix或者scoreMatrix) */
     protected SparseMatrix scoreMatrix;
 
-    protected DataModule[] models;
+    
 
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
@@ -66,7 +66,7 @@ public abstract class AbstractModel implements Model {
         itemSize = space.getQualityAttribute(itemField).getSize();
 
         DataSplitter splitter = new QualityFeatureDataSplitter(userDimension);
-        models = splitter.split(model, userSize);
+        DataModule[] models = splitter.split(model, userSize);
         DataSorter sorter = new AllFeatureDataSorter();
         for (int index = 0; index < userSize; index++) {
             models[index] = sorter.sort(models[index]);

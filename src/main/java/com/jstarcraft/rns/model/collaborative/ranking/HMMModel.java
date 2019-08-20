@@ -12,6 +12,8 @@ import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.attribute.MemoryQualityAttribute;
+import com.jstarcraft.ai.data.processor.DataSorter;
+import com.jstarcraft.ai.data.processor.DataSplitter;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
@@ -23,6 +25,8 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
+import com.jstarcraft.rns.data.processor.AllFeatureDataSorter;
+import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
 import com.jstarcraft.rns.model.ProbabilisticGraphicalModel;
 import com.jstarcraft.rns.model.exception.RecommendException;
 import com.jstarcraft.rns.utility.GammaUtility;
@@ -387,6 +391,13 @@ public class HMMModel extends ProbabilisticGraphicalModel {
         Table<Integer, Integer, Float> table = HashBasedTable.create();
         Table<Integer, Integer, Float> data = HashBasedTable.create();
 
+        DataSplitter splitter = new QualityFeatureDataSplitter(userDimension);
+        DataModule[] models = splitter.split(model, userSize);
+        DataSorter sorter = new AllFeatureDataSorter();
+        for (int index = 0; index < userSize; index++) {
+            models[index] = sorter.sort(models[index]);
+        }
+        
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
             DataModule module = models[userIndex];
             for (DataInstance instance : module) {

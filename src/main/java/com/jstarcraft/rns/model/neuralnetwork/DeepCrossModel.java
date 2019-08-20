@@ -9,6 +9,8 @@ import org.nd4j.linalg.factory.Nd4j;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
+import com.jstarcraft.ai.data.processor.DataSorter;
+import com.jstarcraft.ai.data.processor.DataSplitter;
 import com.jstarcraft.ai.math.structure.DenseCache;
 import com.jstarcraft.ai.math.structure.MathCache;
 import com.jstarcraft.ai.math.structure.MathCalculator;
@@ -39,6 +41,8 @@ import com.jstarcraft.ai.model.neuralnetwork.vertex.transformation.HorizontalAtt
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
+import com.jstarcraft.rns.data.processor.AllFeatureDataSorter;
+import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
 import com.jstarcraft.rns.model.EpocheModel;
 
 /**
@@ -80,9 +84,9 @@ public class DeepCrossModel extends EpocheModel {
      */
     protected Graph graph;
 
-    protected DataModule marker;
-
     protected int[] dimensionSizes;
+
+    protected DataModule marker;
 
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
@@ -187,6 +191,13 @@ public class DeepCrossModel extends EpocheModel {
 
     @Override
     protected void doPractice() {
+        DataSplitter splitter = new QualityFeatureDataSplitter(userDimension);
+        DataModule[] models = splitter.split(marker, userSize);
+        DataSorter sorter = new AllFeatureDataSorter();
+        for (int index = 0; index < userSize; index++) {
+            models[index] = sorter.sort(models[index]);
+        }
+
         DataInstance instance = marker.getInstance(0);
 
         int[] positiveKeys = new int[dimensionSizes.length], negativeKeys = new int[dimensionSizes.length];
