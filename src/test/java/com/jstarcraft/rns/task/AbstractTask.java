@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.commons.csv.CSVFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -193,7 +194,8 @@ public abstract class AbstractTask<L, R> {
                 break;
             }
             case "csv": {
-                convertor = ReflectionUtility.getInstance(CsvConverter.class, configurator.getCharacter("data.separator.delimiter", ' '), space.getQualityAttributes(), space.getQuantityAttributes());
+                CSVFormat format = CSVFormat.DEFAULT.withDelimiter(configurator.getCharacter("data.separator.delimiter", ' '));
+                convertor = ReflectionUtility.getInstance(CsvConverter.class, format, space.getQualityAttributes(), space.getQuantityAttributes());
                 break;
             }
             default: {
