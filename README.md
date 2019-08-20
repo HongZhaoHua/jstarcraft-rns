@@ -548,6 +548,7 @@ Map<String, Double> data = expression.doWith(Map.class);
 * [Large Movie Review Dataset](http://ai.stanford.edu/~amaas/data/sentiment/)
 * [Movielens Dataset](https://grouplens.org/datasets/movielens/)
 * [Newsgroups Dataset](http://qwone.com/~jason/20Newsgroups/)
+* [Stanford Large Network Dataset](http://snap.stanford.edu/data/)
 * [Serendipity 2018 Dataset](https://grouplens.org/datasets/serendipity-2018/)
 * [Wikilens Dataset](https://grouplens.org/datasets/wikilens/)
 * [Yelp Dataset](https://www.yelp.com/dataset)
