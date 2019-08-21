@@ -533,7 +533,7 @@ Map<String, Double> data = expression.doWith(Map.class);
 
 #### 数据集
 
-* [Amazon Product Dataset](http://jmcauley.ucsd.edu/data/amazon/)
+* [Amazon Dataset](http://jmcauley.ucsd.edu/data/amazon/)
 * [Bibsonomy Dataset](https://www.kde.cs.uni-kassel.de/wp-content/uploads/bibsonomy/)
 * [BookCrossing Dataset](https://grouplens.org/datasets/book-crossing/)
 * [Ciao Dataset](https://www.cse.msu.edu/~tangjili/datasetcode/truststudy.htm)
@@ -546,7 +546,7 @@ Map<String, Double> data = expression.doWith(Map.class);
 * [HetRec2011 Dataset](https://grouplens.org/datasets/hetrec-2011/)
 * [Jest Joker Dataset](https://grouplens.org/datasets/jester/)
 * [Large Movie Review Dataset](http://ai.stanford.edu/~amaas/data/sentiment/)
-* [Movielens Dataset](https://grouplens.org/datasets/movielens/)
+* [MovieLens Dataset](https://grouplens.org/datasets/movielens/)
 * [Newsgroups Dataset](http://qwone.com/~jason/20Newsgroups/)
 * [Stanford Large Network Dataset](http://snap.stanford.edu/data/)
 * [Serendipity 2018 Dataset](https://grouplens.org/datasets/serendipity-2018/)
