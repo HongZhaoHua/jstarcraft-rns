@@ -25,7 +25,7 @@ import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
  * VBPR推荐器
  * 
  * <pre>
- * Bayesian Personalized Ranking for Non-Uniformly Sampled Items
+ * VBPR: Visual Bayesian Personalized Randking from Implicit Feedback
  * 参考LibRec团队
  * </pre>
  * 
