@@ -1,6 +1,5 @@
 package com.jstarcraft.rns.model.collaborative.rating;
 
-import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
 
