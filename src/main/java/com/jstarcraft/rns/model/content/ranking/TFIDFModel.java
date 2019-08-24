@@ -6,7 +6,7 @@ import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.attribute.MemoryQualityAttribute;
-import com.jstarcraft.ai.math.algorithm.correlation.Similarity;
+import com.jstarcraft.ai.math.algorithm.correlation.Correlation;
 import com.jstarcraft.ai.math.algorithm.text.InverseDocumentFrequency;
 import com.jstarcraft.ai.math.algorithm.text.NaturalInverseDocumentFrequency;
 import com.jstarcraft.ai.math.algorithm.text.NaturalTermFrequency;
@@ -43,7 +43,7 @@ public class TFIDFModel extends MatrixFactorizationModel {
     protected RowArrayMatrix userMatrix;
     protected RowArrayMatrix itemMatrix;
 
-    protected Similarity similarity;
+    protected Correlation similarity;
 
     protected float scale;
 
@@ -174,7 +174,7 @@ public class TFIDFModel extends MatrixFactorizationModel {
         super.prepare(configuration, model, space);
 
         try {
-            Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("recommender.correlation.class"));
+            Class<Correlation> similarityClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
             similarity = ReflectionUtility.getInstance(similarityClass);
             scale = configuration.getFloat("recommender.correlation.shrinkage");
         } catch (Exception exception) {
@@ -227,7 +227,7 @@ public class TFIDFModel extends MatrixFactorizationModel {
     protected float predict(int userIndex, int itemIndex) {
         ArrayVector userVector = userMatrix.getRowVector(userIndex);
         ArrayVector itemVector = itemMatrix.getRowVector(itemIndex);
-        return similarity.getCorrelation(userVector, itemVector, scale);
+        return similarity.getCoefficient(userVector, itemVector, scale);
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
-import com.jstarcraft.ai.math.algorithm.correlation.Similarity;
+import com.jstarcraft.ai.math.algorithm.correlation.Correlation;
 import com.jstarcraft.ai.math.structure.matrix.SymmetryMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
@@ -76,9 +76,9 @@ public class PRankDModel extends RankSGDModel {
 		// compute item correlations by cosine similarity
 		// TODO 修改为配置枚举
 		try {
-			Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("recommender.correlation.class"));
-			Similarity similarity = ReflectionUtility.getInstance(similarityClass);
-			itemCorrelations = similarity.makeSimilarityMatrix(scoreMatrix, true, configuration.getFloat("recommender.correlation.shrinkage", 0F));
+			Class<Correlation> similarityClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
+			Correlation similarity = ReflectionUtility.getInstance(similarityClass);
+			itemCorrelations = similarity.makeCorrelationMatrix(scoreMatrix, true, configuration.getFloat("recommender.correlation.shrinkage", 0F));
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}

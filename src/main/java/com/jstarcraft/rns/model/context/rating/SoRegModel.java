@@ -2,7 +2,7 @@ package com.jstarcraft.rns.model.context.rating;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
-import com.jstarcraft.ai.math.algorithm.correlation.Similarity;
+import com.jstarcraft.ai.math.algorithm.correlation.Correlation;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
@@ -44,9 +44,9 @@ public class SoRegModel extends SocialModel {
 
         // TODO 修改为配置枚举
         try {
-            Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("recommender.correlation.class"));
-            Similarity similarity = ReflectionUtility.getInstance(similarityClass);
-            socialCorrelations = similarity.makeSimilarityMatrix(socialMatrix, false, configuration.getFloat("recommender.correlation.shrinkage", 0F));
+            Class<Correlation> similarityClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
+            Correlation similarity = ReflectionUtility.getInstance(similarityClass);
+            socialCorrelations = similarity.makeCorrelationMatrix(socialMatrix, false, configuration.getFloat("recommender.correlation.shrinkage", 0F));
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
