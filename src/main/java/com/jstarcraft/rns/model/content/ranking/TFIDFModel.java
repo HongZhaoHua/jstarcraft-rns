@@ -6,7 +6,7 @@ import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.attribute.MemoryQualityAttribute;
-import com.jstarcraft.ai.math.algorithm.similarity.Similarity;
+import com.jstarcraft.ai.math.algorithm.correlation.Similarity;
 import com.jstarcraft.ai.math.algorithm.text.InverseDocumentFrequency;
 import com.jstarcraft.ai.math.algorithm.text.NaturalInverseDocumentFrequency;
 import com.jstarcraft.ai.math.algorithm.text.NaturalTermFrequency;
@@ -174,9 +174,9 @@ public class TFIDFModel extends MatrixFactorizationModel {
         super.prepare(configuration, model, space);
 
         try {
-            Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("recommender.similarity.class"));
+            Class<Similarity> similarityClass = (Class<Similarity>) Class.forName(configuration.getString("recommender.correlation.class"));
             similarity = ReflectionUtility.getInstance(similarityClass);
-            scale = configuration.getFloat("recommender.similarity.shrinkage");
+            scale = configuration.getFloat("recommender.correlation.shrinkage");
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
