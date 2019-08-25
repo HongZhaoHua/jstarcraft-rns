@@ -63,9 +63,9 @@ public abstract class UserKNNModel extends AbstractModel {
 		neighborSize = configuration.getInteger("recommender.neighbors.knn.number");
 		// TODO 修改为配置枚举
 		try {
-			Class<Correlation> similarityClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
-			Correlation similarity = ReflectionUtility.getInstance(similarityClass);
-			similarityMatrix = similarity.makeCorrelationMatrix(scoreMatrix, false, configuration.getFloat("recommender.correlation.shrinkage", 0F));
+			Class<Correlation> correlationClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
+			Correlation correlation = ReflectionUtility.getInstance(correlationClass);
+			similarityMatrix = correlation.makeCorrelationMatrix(scoreMatrix, false, configuration.getFloat("recommender.correlation.shrinkage", 0F));
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}

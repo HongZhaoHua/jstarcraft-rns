@@ -76,9 +76,9 @@ public class PRankDModel extends RankSGDModel {
 		// compute item correlations by cosine similarity
 		// TODO 修改为配置枚举
 		try {
-			Class<Correlation> similarityClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
-			Correlation similarity = ReflectionUtility.getInstance(similarityClass);
-			itemCorrelations = similarity.makeCorrelationMatrix(scoreMatrix, true, configuration.getFloat("recommender.correlation.shrinkage", 0F));
+			Class<Correlation> correlationClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
+			Correlation correlation = ReflectionUtility.getInstance(correlationClass);
+			itemCorrelations = correlation.makeCorrelationMatrix(scoreMatrix, true, configuration.getFloat("recommender.correlation.shrinkage", 0F));
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}

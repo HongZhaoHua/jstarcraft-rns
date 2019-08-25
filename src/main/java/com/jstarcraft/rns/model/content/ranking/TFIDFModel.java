@@ -43,7 +43,7 @@ public class TFIDFModel extends MatrixFactorizationModel {
     protected RowArrayMatrix userMatrix;
     protected RowArrayMatrix itemMatrix;
 
-    protected Correlation similarity;
+    protected Correlation correlation;
 
     protected float scale;
 
@@ -175,7 +175,7 @@ public class TFIDFModel extends MatrixFactorizationModel {
 
         try {
             Class<Correlation> similarityClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
-            similarity = ReflectionUtility.getInstance(similarityClass);
+            correlation = ReflectionUtility.getInstance(similarityClass);
             scale = configuration.getFloat("recommender.correlation.shrinkage");
         } catch (Exception exception) {
             throw new RuntimeException(exception);
@@ -227,7 +227,7 @@ public class TFIDFModel extends MatrixFactorizationModel {
     protected float predict(int userIndex, int itemIndex) {
         ArrayVector userVector = userMatrix.getRowVector(userIndex);
         ArrayVector itemVector = itemMatrix.getRowVector(itemIndex);
-        return similarity.getCoefficient(userVector, itemVector, scale);
+        return correlation.getCoefficient(userVector, itemVector, scale);
     }
 
     @Override
