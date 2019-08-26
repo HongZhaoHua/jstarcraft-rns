@@ -33,26 +33,26 @@ public class ItemKNNRankingModel extends ItemKNNModel {
 
         float sum = 0F, absolute = 0F;
         int count = 0;
-        int leftIndex = 0, rightIndex = 0, leftSize = userVector.getElementSize(), rightSize = neighbors.length;
+        int leftCursor = 0, rightCursor = 0, leftSize = userVector.getElementSize(), rightSize = neighbors.length;
         Iterator<VectorScalar> iterator = userVector.iterator();
         VectorScalar term = iterator.next();
         // 判断两个有序数组中是否存在相同的数字
-        while (leftIndex < leftSize && rightIndex < rightSize) {
-            if (term.getIndex() == neighbors[rightIndex]) {
+        while (leftCursor < leftSize && rightCursor < rightSize) {
+            if (term.getIndex() == neighbors[rightCursor]) {
                 count++;
-                sum += similarityMatrix.getValue(itemIndex, neighbors[rightIndex]);
+                sum += similarityMatrix.getValue(itemIndex, neighbors[rightCursor]);
                 if (iterator.hasNext()) {
                     term = iterator.next();
                 }
-                leftIndex++;
-                rightIndex++;
-            } else if (term.getIndex() > neighbors[rightIndex]) {
-                rightIndex++;
-            } else if (term.getIndex() < neighbors[rightIndex]) {
+                leftCursor++;
+                rightCursor++;
+            } else if (term.getIndex() > neighbors[rightCursor]) {
+                rightCursor++;
+            } else if (term.getIndex() < neighbors[rightCursor]) {
                 if (iterator.hasNext()) {
                     term = iterator.next();
                 }
-                leftIndex++;
+                leftCursor++;
             }
         }
 

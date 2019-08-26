@@ -55,10 +55,10 @@ public class AssociationRuleModel extends AbstractModel {
             SparseVector leftVector = scoreMatrix.getColumnVector(leftItemIndex);
             for (int rightItemIndex = leftItemIndex + 1; rightItemIndex < itemSize; rightItemIndex++) {
                 SparseVector rightVector = scoreMatrix.getColumnVector(rightItemIndex);
-                int leftCursor = leftItemIndex;
-                int rightCursor = rightItemIndex;
+                int leftIndex = leftItemIndex;
+                int rightIndex = rightItemIndex;
                 context.doAlgorithmByAny(leftItemIndex * rightItemIndex, () -> {
-                    int leftIndex = 0, rightIndex = 0, leftSize = leftVector.getElementSize(), rightSize = rightVector.getElementSize();
+                    int leftCursor = 0, rightCursor = 0, leftSize = leftVector.getElementSize(), rightSize = rightVector.getElementSize();
                     if (leftSize != 0 && rightSize != 0) {
                         // compute confidence where containing item assoItemIdx
                         // among
@@ -69,7 +69,7 @@ public class AssociationRuleModel extends AbstractModel {
                         VectorScalar leftTerm = leftIterator.next();
                         VectorScalar rightTerm = rightIterator.next();
                         // 判断两个有序数组中是否存在相同的数字
-                        while (leftIndex < leftSize && rightIndex < rightSize) {
+                        while (leftCursor < leftSize && rightCursor < rightSize) {
                             if (leftTerm.getIndex() == rightTerm.getIndex()) {
                                 count++;
                                 if (leftIterator.hasNext()) {
@@ -78,24 +78,24 @@ public class AssociationRuleModel extends AbstractModel {
                                 if (rightIterator.hasNext()) {
                                     rightTerm = rightIterator.next();
                                 }
-                                leftIndex++;
-                                rightIndex++;
+                                leftCursor++;
+                                rightCursor++;
                             } else if (leftTerm.getIndex() > rightTerm.getIndex()) {
                                 if (rightIterator.hasNext()) {
                                     rightTerm = rightIterator.next();
                                 }
-                                rightIndex++;
+                                rightCursor++;
                             } else if (leftTerm.getIndex() < rightTerm.getIndex()) {
                                 if (leftIterator.hasNext()) {
                                     leftTerm = leftIterator.next();
                                 }
-                                leftIndex++;
+                                leftCursor++;
                             }
                         }
                         float leftValue = (count + 0F) / leftVector.getElementSize();
                         float rightValue = (count + 0F) / rightVector.getElementSize();
-                        associationMatrix.setValue(leftCursor, rightCursor, leftValue);
-                        associationMatrix.setValue(rightCursor, leftCursor, rightValue);
+                        associationMatrix.setValue(leftIndex, rightIndex, leftValue);
+                        associationMatrix.setValue(rightIndex, leftIndex, rightValue);
                     }
                     semaphore.release();
                 });

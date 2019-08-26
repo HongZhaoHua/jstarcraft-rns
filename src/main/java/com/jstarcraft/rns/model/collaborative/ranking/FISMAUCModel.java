@@ -117,14 +117,14 @@ public class FISMAUCModel extends MatrixFactorizationModel {
                         negativeIndexes.add(index, negativeItemIndex);
                     }
 
-                    int leftIndex = 0, rightIndex = 0, leftSize = rateVector.getElementSize(), rightSize = sampleSize;
+                    int leftCursor = 0, rightCursor = 0, leftSize = rateVector.getElementSize(), rightSize = sampleSize;
                     if (leftSize != 0 && rightSize != 0) {
                         Iterator<VectorScalar> leftIterator = rateVector.iterator();
                         Iterator<Integer> rightIterator = negativeIndexes.iterator();
                         VectorScalar leftTerm = leftIterator.next();
                         int negativeItemIndex = rightIterator.next();
                         // 判断两个有序数组中是否存在相同的数字
-                        while (leftIndex < leftSize && rightIndex < rightSize) {
+                        while (leftCursor < leftSize && rightCursor < rightSize) {
                             if (leftTerm.getIndex() == negativeItemIndex) {
                                 if (leftIterator.hasNext()) {
                                     leftTerm = leftIterator.next();
@@ -133,18 +133,18 @@ public class FISMAUCModel extends MatrixFactorizationModel {
                                 if (rightIterator.hasNext()) {
                                     negativeItemIndex = rightIterator.next();
                                 }
-                                leftIndex++;
-                                rightIndex++;
+                                leftCursor++;
+                                rightCursor++;
                             } else if (leftTerm.getIndex() > negativeItemIndex) {
                                 if (rightIterator.hasNext()) {
                                     negativeItemIndex = rightIterator.next();
                                 }
-                                rightIndex++;
+                                rightCursor++;
                             } else if (leftTerm.getIndex() < negativeItemIndex) {
                                 if (leftIterator.hasNext()) {
                                     leftTerm = leftIterator.next();
                                 }
-                                leftIndex++;
+                                leftCursor++;
                             }
                         }
                     }

@@ -87,14 +87,14 @@ public class PersonalityDiagnosisModel extends AbstractModel {
             float score = term.getValue();
             float probability = 1F;
             SparseVector leftUserVector = scoreMatrix.getRowVector(userIndex);
-            int leftIndex = 0, rightIndex = 0, leftSize = leftUserVector.getElementSize(), rightSize = rightUserVector.getElementSize();
+            int leftCursor = 0, rightCursor = 0, leftSize = leftUserVector.getElementSize(), rightSize = rightUserVector.getElementSize();
             if (leftSize != 0 && rightSize != 0) {
                 Iterator<VectorScalar> leftIterator = leftUserVector.iterator();
                 Iterator<VectorScalar> rightIterator = rightUserVector.iterator();
                 VectorScalar leftTerm = leftIterator.next();
                 VectorScalar rightTerm = rightIterator.next();
                 // 判断两个有序数组中是否存在相同的数字
-                while (leftIndex < leftSize && rightIndex < rightSize) {
+                while (leftCursor < leftSize && rightCursor < rightSize) {
                     if (leftTerm.getIndex() == rightTerm.getIndex()) {
                         probability *= gaussian(rightTerm.getValue(), leftTerm.getValue(), sigma);
                         if (leftIterator.hasNext()) {
@@ -103,18 +103,18 @@ public class PersonalityDiagnosisModel extends AbstractModel {
                         if (rightIterator.hasNext()) {
                             rightTerm = rightIterator.next();
                         }
-                        leftIndex++;
-                        rightIndex++;
+                        leftCursor++;
+                        rightCursor++;
                     } else if (leftTerm.getIndex() > rightTerm.getIndex()) {
                         if (rightIterator.hasNext()) {
                             rightTerm = rightIterator.next();
                         }
-                        rightIndex++;
+                        rightCursor++;
                     } else if (leftTerm.getIndex() < rightTerm.getIndex()) {
                         if (leftIterator.hasNext()) {
                             leftTerm = leftIterator.next();
                         }
-                        leftIndex++;
+                        leftCursor++;
                     }
                 }
             }

@@ -244,27 +244,27 @@ public class SLIMModel extends EpocheModel {
         if (userVector.getElementSize() == 0) {
             return value;
         }
-        int leftIndex = 0, rightIndex = 0, leftSize = userVector.getElementSize(), rightSize = neighbors.length;
+        int leftCursor = 0, rightCursor = 0, leftSize = userVector.getElementSize(), rightSize = neighbors.length;
         Iterator<VectorScalar> iterator = userVector.iterator();
         VectorScalar term = iterator.next();
         // 判断两个有序数组中是否存在相同的数字
-        while (leftIndex < leftSize && rightIndex < rightSize) {
-            if (term.getIndex() == neighbors[rightIndex]) {
-                if (neighbors[rightIndex] != currentIndex) {
-                    value += term.getValue() * coefficientMatrix.getValue(neighbors[rightIndex], itemIndex);
+        while (leftCursor < leftSize && rightCursor < rightSize) {
+            if (term.getIndex() == neighbors[rightCursor]) {
+                if (neighbors[rightCursor] != currentIndex) {
+                    value += term.getValue() * coefficientMatrix.getValue(neighbors[rightCursor], itemIndex);
                 }
                 if (iterator.hasNext()) {
                     term = iterator.next();
                 }
-                leftIndex++;
-                rightIndex++;
-            } else if (term.getIndex() > neighbors[rightIndex]) {
-                rightIndex++;
-            } else if (term.getIndex() < neighbors[rightIndex]) {
+                leftCursor++;
+                rightCursor++;
+            } else if (term.getIndex() > neighbors[rightCursor]) {
+                rightCursor++;
+            } else if (term.getIndex() < neighbors[rightCursor]) {
                 if (iterator.hasNext()) {
                     term = iterator.next();
                 }
-                leftIndex++;
+                leftCursor++;
             }
         }
         return value;
