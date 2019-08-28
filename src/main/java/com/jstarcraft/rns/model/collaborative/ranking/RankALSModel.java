@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
+import com.jstarcraft.ai.math.MatrixUtility;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
@@ -13,7 +14,6 @@ import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
-import com.jstarcraft.rns.utility.MatrixUtility;
 
 /**
  * 

@@ -1,12 +1,12 @@
 package com.jstarcraft.rns.model.collaborative.rating;
 
+import com.jstarcraft.ai.math.MatrixUtility;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
-import com.jstarcraft.rns.utility.MatrixUtility;
 
 /**
  * 

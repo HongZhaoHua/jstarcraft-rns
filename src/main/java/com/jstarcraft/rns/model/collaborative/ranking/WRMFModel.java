@@ -6,6 +6,7 @@ import java.util.concurrent.CountDownLatch;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.environment.EnvironmentContext;
+import com.jstarcraft.ai.math.MatrixUtility;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
@@ -15,7 +16,6 @@ import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
 import com.jstarcraft.rns.model.exception.ModelException;
-import com.jstarcraft.rns.utility.MatrixUtility;
 
 /**
  * 
