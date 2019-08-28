@@ -41,3 +41,6 @@ http://blog.csdn.net/nanjunxiao/article/details/8976195
 
 随机采样和随机模拟:吉布斯采样Gibbs Sampling
 http://blog.csdn.net/pipisorry/article/details/51373090
+
+推荐系统遇上深度学习:
+https://www.jianshu.com/c/e12d7195a9ff
