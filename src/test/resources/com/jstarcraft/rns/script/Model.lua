@@ -2,7 +2,7 @@
 local keyValues = Properties.new();
 keyValues:load(loader:getResourceAsStream("data.properties"));
 
-keyValues:load(loader:getResourceAsStream("recommend/benchmark/randomguess-test.properties"));
+keyValues:load(loader:getResourceAsStream("model/benchmark/randomguess-test.properties"));
 local configurator = Configurator.new({ keyValues });
 
 -- 此对象会返回给Java程序
