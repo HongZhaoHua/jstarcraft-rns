@@ -11,14 +11,14 @@ import com.jstarcraft.rns.model.neuralnetwork.AutoRecLossFunction;
 
 public class AutoRecLossFunctionTestCase extends LossFunctionTestCase {
 
-	@Override
-	protected ILossFunction getOldFunction(INDArray masks) {
-		return new AutoRecLearner(masks);
-	}
+    @Override
+    protected ILossFunction getOldFunction(INDArray masks) {
+        return new AutoRecLearner(masks);
+    }
 
-	@Override
-	protected LossFunction getNewFunction(INDArray masks, ActivationFunction function) {
-		return new AutoRecLossFunction(new Nd4jMatrix(masks));
-	}
+    @Override
+    protected LossFunction getNewFunction(INDArray masks, ActivationFunction function) {
+        return new AutoRecLossFunction(new Nd4jMatrix(masks));
+    }
 
 }

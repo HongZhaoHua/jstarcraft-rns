@@ -125,7 +125,7 @@ public class LDAModel extends ProbabilisticGraphicalModel {
             int times = (int) (term.getValue());
             for (int time = 0; time < times; time++) {
                 int topicIndex = RandomUtility.randomInteger(factorSize); // 0
-                                                                               // ~
+                                                                          // ~
                 // k-1
 
                 // assign a topic t to pair (u, i)

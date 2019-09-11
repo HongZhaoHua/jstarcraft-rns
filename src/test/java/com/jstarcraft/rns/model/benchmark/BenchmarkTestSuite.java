@@ -14,22 +14,22 @@ import com.jstarcraft.rns.model.benchmark.rating.UserClusterModelTestCase;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-		// 推荐器测试集
-		ConstantGuessModelTestCase.class,
+        // 推荐器测试集
+        ConstantGuessModelTestCase.class,
 
-		GlobalAverageModelTestCase.class,
+        GlobalAverageModelTestCase.class,
 
-		ItemAverageModelTestCase.class,
+        ItemAverageModelTestCase.class,
 
-		ItemClusterModelTestCase.class,
+        ItemClusterModelTestCase.class,
 
-		MostPopularModelTestCase.class,
+        MostPopularModelTestCase.class,
 
-		RandomGuessModelTestCase.class,
+        RandomGuessModelTestCase.class,
 
-		UserAverageModelTestCase.class,
+        UserAverageModelTestCase.class,
 
-		UserClusterModelTestCase.class })
+        UserClusterModelTestCase.class })
 public class BenchmarkTestSuite {
 
 }

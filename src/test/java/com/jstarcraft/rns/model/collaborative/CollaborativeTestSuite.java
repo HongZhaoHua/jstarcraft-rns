@@ -9,12 +9,12 @@ import com.jstarcraft.rns.model.collaborative.rating.CollaborativeRatingTestSuit
 
 @RunWith(Suite.class)
 @SuiteClasses({
-		// 推荐器测试集
-		// recommender.cf.ranking
-		CollaborativeRankingTestSuite.class,
+        // 推荐器测试集
+        // recommender.cf.ranking
+        CollaborativeRankingTestSuite.class,
 
-		// recommender.cf.rating
-		CollaborativeRatingTestSuite.class, })
+        // recommender.cf.rating
+        CollaborativeRatingTestSuite.class, })
 public class CollaborativeTestSuite {
 
 }

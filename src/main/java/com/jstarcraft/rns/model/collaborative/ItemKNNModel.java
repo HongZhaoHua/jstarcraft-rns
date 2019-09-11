@@ -31,107 +31,107 @@ import com.jstarcraft.rns.model.AbstractModel;
  */
 public abstract class ItemKNNModel extends AbstractModel {
 
-	/** 邻居数量 */
-	private int neighborSize;
+    /** 邻居数量 */
+    private int neighborSize;
 
-	protected SymmetryMatrix similarityMatrix;
+    protected SymmetryMatrix similarityMatrix;
 
-	protected DenseVector itemMeans;
+    protected DenseVector itemMeans;
 
-	/**
-	 * item's nearest neighbors for kNN > 0
-	 */
-	protected int[][] itemNeighbors;
+    /**
+     * item's nearest neighbors for kNN > 0
+     */
+    protected int[][] itemNeighbors;
 
-	protected SparseVector[] userVectors;
+    protected SparseVector[] userVectors;
 
-	protected SparseVector[] itemVectors;
+    protected SparseVector[] itemVectors;
 
-	private Comparator<Entry<Integer, Double>> comparator = new Comparator<Entry<Integer, Double>>() {
-		public int compare(Entry<Integer, Double> left, Entry<Integer, Double> right) {
-			int value = -(left.getValue().compareTo(right.getValue()));
-			if (value == 0) {
-				value = left.getKey().compareTo(right.getKey());
-			}
-			return value;
-		}
-	};
+    private Comparator<Entry<Integer, Double>> comparator = new Comparator<Entry<Integer, Double>>() {
+        public int compare(Entry<Integer, Double> left, Entry<Integer, Double> right) {
+            int value = -(left.getValue().compareTo(right.getValue()));
+            if (value == 0) {
+                value = left.getKey().compareTo(right.getKey());
+            }
+            return value;
+        }
+    };
 
-	@Override
-	public void prepare(Configurator configuration, DataModule model, DataSpace space) {
-		super.prepare(configuration, model, space);
-		neighborSize = configuration.getInteger("recommender.neighbors.knn.number", 50);
-		// TODO 修改为配置枚举
-		try {
-			Class<Correlation> correlationClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
-			Correlation correlation = ReflectionUtility.getInstance(correlationClass);
-			similarityMatrix = correlation.makeCorrelationMatrix(scoreMatrix, true, configuration.getFloat("recommender.correlation.shrinkage", 0F));
-		} catch (Exception exception) {
-			throw new RuntimeException(exception);
-		}
-		itemMeans = DenseVector.valueOf(itemSize);
+    @Override
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+        super.prepare(configuration, model, space);
+        neighborSize = configuration.getInteger("recommender.neighbors.knn.number", 50);
+        // TODO 修改为配置枚举
+        try {
+            Class<Correlation> correlationClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
+            Correlation correlation = ReflectionUtility.getInstance(correlationClass);
+            similarityMatrix = correlation.makeCorrelationMatrix(scoreMatrix, true, configuration.getFloat("recommender.correlation.shrinkage", 0F));
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+        itemMeans = DenseVector.valueOf(itemSize);
 
-		// TODO 设置容量
-		itemNeighbors = new int[itemSize][];
-		HashMap<Integer, TreeSet<Entry<Integer, Double>>> itemNNs = new HashMap<>();
-		for (MatrixScalar term : similarityMatrix) {
-			int row = term.getRow();
-			int column = term.getColumn();
-			double value = term.getValue();
-			if (row == column) {
-				continue;
-			}
-			// 忽略相似度为0的物品
-			if (value == 0D) {
-				continue;
-			}
-			TreeSet<Entry<Integer, Double>> neighbors = itemNNs.get(row);
-			if (neighbors == null) {
-				neighbors = new TreeSet<>(comparator);
-				itemNNs.put(row, neighbors);
-			}
-			neighbors.add(new SimpleImmutableEntry<>(column, value));
-			neighbors = itemNNs.get(column);
-			if (neighbors == null) {
-				neighbors = new TreeSet<>(comparator);
-				itemNNs.put(column, neighbors);
-			}
-			neighbors.add(new SimpleImmutableEntry<>(row, value));
-		}
+        // TODO 设置容量
+        itemNeighbors = new int[itemSize][];
+        HashMap<Integer, TreeSet<Entry<Integer, Double>>> itemNNs = new HashMap<>();
+        for (MatrixScalar term : similarityMatrix) {
+            int row = term.getRow();
+            int column = term.getColumn();
+            double value = term.getValue();
+            if (row == column) {
+                continue;
+            }
+            // 忽略相似度为0的物品
+            if (value == 0D) {
+                continue;
+            }
+            TreeSet<Entry<Integer, Double>> neighbors = itemNNs.get(row);
+            if (neighbors == null) {
+                neighbors = new TreeSet<>(comparator);
+                itemNNs.put(row, neighbors);
+            }
+            neighbors.add(new SimpleImmutableEntry<>(column, value));
+            neighbors = itemNNs.get(column);
+            if (neighbors == null) {
+                neighbors = new TreeSet<>(comparator);
+                itemNNs.put(column, neighbors);
+            }
+            neighbors.add(new SimpleImmutableEntry<>(row, value));
+        }
 
-		// 构建用户邻居映射
-		for (Entry<Integer, TreeSet<Entry<Integer, Double>>> term : itemNNs.entrySet()) {
-			TreeSet<Entry<Integer, Double>> neighbors = term.getValue();
-			int[] value = new int[neighbors.size() < neighborSize ? neighbors.size() : neighborSize];
-			int index = 0;
-			for (Entry<Integer, Double> neighbor : neighbors) {
-				value[index++] = neighbor.getKey();
-				if (index >= neighborSize) {
-					break;
-				}
-			}
-			Arrays.sort(value);
-			itemNeighbors[term.getKey()] = value;
-		}
+        // 构建用户邻居映射
+        for (Entry<Integer, TreeSet<Entry<Integer, Double>>> term : itemNNs.entrySet()) {
+            TreeSet<Entry<Integer, Double>> neighbors = term.getValue();
+            int[] value = new int[neighbors.size() < neighborSize ? neighbors.size() : neighborSize];
+            int index = 0;
+            for (Entry<Integer, Double> neighbor : neighbors) {
+                value[index++] = neighbor.getKey();
+                if (index >= neighborSize) {
+                    break;
+                }
+            }
+            Arrays.sort(value);
+            itemNeighbors[term.getKey()] = value;
+        }
 
-		userVectors = new SparseVector[userSize];
-		for (int userIndex = 0; userIndex < userSize; userIndex++) {
-			userVectors[userIndex] = scoreMatrix.getRowVector(userIndex);
-		}
+        userVectors = new SparseVector[userSize];
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
+            userVectors[userIndex] = scoreMatrix.getRowVector(userIndex);
+        }
 
-		itemVectors = new SparseVector[itemSize];
-		for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
-			itemVectors[itemIndex] = scoreMatrix.getColumnVector(itemIndex);
-		}
-	}
+        itemVectors = new SparseVector[itemSize];
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
+            itemVectors[itemIndex] = scoreMatrix.getColumnVector(itemIndex);
+        }
+    }
 
-	@Override
-	protected void doPractice() {
-		meanScore = scoreMatrix.getSum(false) / scoreMatrix.getElementSize();
-		for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
-			SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
-			itemMeans.setValue(itemIndex, itemVector.getElementSize() > 0 ? itemVector.getSum(false) / itemVector.getElementSize() : meanScore);
-		}
-	}
+    @Override
+    protected void doPractice() {
+        meanScore = scoreMatrix.getSum(false) / scoreMatrix.getElementSize();
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
+            SparseVector itemVector = scoreMatrix.getColumnVector(itemIndex);
+            itemMeans.setValue(itemIndex, itemVector.getElementSize() > 0 ? itemVector.getSum(false) / itemVector.getElementSize() : meanScore);
+        }
+    }
 
 }

@@ -11,16 +11,16 @@ import com.jstarcraft.rns.model.content.rating.TopicMFMTModelTestCase;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-		// 推荐器测试集
-		EFMModelTestCase.class,
+        // 推荐器测试集
+        EFMModelTestCase.class,
 
-		HFTModelTestCase.class,
+        HFTModelTestCase.class,
 
-		TFIDFModelTestCase.class,
+        TFIDFModelTestCase.class,
 
-		TopicMFATModelTestCase.class,
+        TopicMFATModelTestCase.class,
 
-		TopicMFMTModelTestCase.class })
+        TopicMFMTModelTestCase.class })
 public class ContentTestSuite {
 
 }

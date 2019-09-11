@@ -23,52 +23,52 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 @Deprecated
 public class DeepFMProductConfiguration extends GraphVertex {
 
-	public DeepFMProductConfiguration() {
-	}
+    public DeepFMProductConfiguration() {
+    }
 
-	@Override
-	public DeepFMProductConfiguration clone() {
-		return new DeepFMProductConfiguration();
-	}
+    @Override
+    public DeepFMProductConfiguration clone() {
+        return new DeepFMProductConfiguration();
+    }
 
-	@Override
-	public boolean equals(Object other) {
-		return other instanceof DeepFMProductConfiguration;
-	}
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof DeepFMProductConfiguration;
+    }
 
-	@Override
-	public int hashCode() {
-		return DeepFMProductConfiguration.class.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return DeepFMProductConfiguration.class.hashCode();
+    }
 
-	@Override
-	public long numParams(boolean backprop) {
-		return 0;
-	}
+    @Override
+    public long numParams(boolean backprop) {
+        return 0;
+    }
 
-	@Override
-	public int minVertexInputs() {
-		return 2;
-	}
+    @Override
+    public int minVertexInputs() {
+        return 2;
+    }
 
-	@Override
-	public int maxVertexInputs() {
-		return 2;
-	}
+    @Override
+    public int maxVertexInputs() {
+        return 2;
+    }
 
-	@Override
-	public DeepFMProductVertex instantiate(ComputationGraph graph, String name, int vertexIndex, INDArray paramsView, boolean initializeParams) {
-		return new DeepFMProductVertex(graph, name, vertexIndex);
-	}
+    @Override
+    public DeepFMProductVertex instantiate(ComputationGraph graph, String name, int vertexIndex, INDArray paramsView, boolean initializeParams) {
+        return new DeepFMProductVertex(graph, name, vertexIndex);
+    }
 
-	@Override
-	public InputType getOutputType(int layerIndex, InputType... vertexInputs) throws InvalidInputTypeException {
-		return InputType.feedForward(1);
-	}
+    @Override
+    public InputType getOutputType(int layerIndex, InputType... vertexInputs) throws InvalidInputTypeException {
+        return InputType.feedForward(1);
+    }
 
-	@Override
-	public MemoryReport getMemoryReport(InputType... inputTypes) {
-		// No working memory in addition to output activations
-		return new LayerMemoryReport.Builder(null, DeepFMProductConfiguration.class, inputTypes[0], inputTypes[0]).standardMemory(0, 0).workingMemory(0, 0, 0, 0).cacheMemory(0, 0).build();
-	}
+    @Override
+    public MemoryReport getMemoryReport(InputType... inputTypes) {
+        // No working memory in addition to output activations
+        return new LayerMemoryReport.Builder(null, DeepFMProductConfiguration.class, inputTypes[0], inputTypes[0]).standardMemory(0, 0).workingMemory(0, 0, 0, 0).cacheMemory(0, 0).build();
+    }
 }

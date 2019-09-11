@@ -27,7 +27,8 @@ public class MostPopularModelTestCase {
         keyValues.load(this.getClass().getResourceAsStream("/model/benchmark/mostpopular-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(MostPopularModel.class, configuration);
-        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();Assert.assertEquals(0.9207961F, measures.getFloat(AUCEvaluator.class), 0F);
+        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
+        Assert.assertEquals(0.9207961F, measures.getFloat(AUCEvaluator.class), 0F);
         Assert.assertEquals(0.4124602F, measures.getFloat(MAPEvaluator.class), 0F);
         Assert.assertEquals(0.571964F, measures.getFloat(MRREvaluator.class), 0F);
         Assert.assertEquals(0.5158319F, measures.getFloat(NDCGEvaluator.class), 0F);

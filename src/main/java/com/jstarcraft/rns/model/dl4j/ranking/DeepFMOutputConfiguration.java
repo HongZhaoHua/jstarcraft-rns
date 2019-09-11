@@ -28,45 +28,45 @@ import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 @Deprecated
 public class DeepFMOutputConfiguration extends BaseOutputLayer {
 
-	DeepFMOutputConfiguration() {
-	}
+    DeepFMOutputConfiguration() {
+    }
 
-	protected DeepFMOutputConfiguration(Builder builder) {
-		super(builder);
-	}
+    protected DeepFMOutputConfiguration(Builder builder) {
+        super(builder);
+    }
 
-	@Override
-	public ParamInitializer initializer() {
-		return DefaultParamInitializer.getInstance();
-	}
+    @Override
+    public ParamInitializer initializer() {
+        return DefaultParamInitializer.getInstance();
+    }
 
-	@Override
-	public Layer instantiate(NeuralNetConfiguration configuration, Collection<TrainingListener> monitors, int layerIndex, INDArray parameters, boolean initialize) {
-		DeepFMOutputLayer layer = new DeepFMOutputLayer(configuration);
-		layer.setListeners(monitors);
-		layer.setIndex(layerIndex);
-		layer.setParamsViewArray(parameters);
-		Map<String, INDArray> table = initializer().init(configuration, parameters, initialize);
-		layer.setParamTable(table);
-		layer.setConf(configuration);
-		return layer;
-	}
+    @Override
+    public Layer instantiate(NeuralNetConfiguration configuration, Collection<TrainingListener> monitors, int layerIndex, INDArray parameters, boolean initialize) {
+        DeepFMOutputLayer layer = new DeepFMOutputLayer(configuration);
+        layer.setListeners(monitors);
+        layer.setIndex(layerIndex);
+        layer.setParamsViewArray(parameters);
+        Map<String, INDArray> table = initializer().init(configuration, parameters, initialize);
+        layer.setParamTable(table);
+        layer.setConf(configuration);
+        return layer;
+    }
 
-	public static class Builder extends BaseOutputLayer.Builder<Builder> {
+    public static class Builder extends BaseOutputLayer.Builder<Builder> {
 
-		public Builder(LossFunction lossFunction) {
-			super.lossFunction(lossFunction);
-		}
+        public Builder(LossFunction lossFunction) {
+            super.lossFunction(lossFunction);
+        }
 
-		public Builder(ILossFunction lossFunction) {
-			this.lossFn = lossFunction;
-		}
+        public Builder(ILossFunction lossFunction) {
+            this.lossFn = lossFunction;
+        }
 
-		@Override
-		public DeepFMOutputConfiguration build() {
-			return new DeepFMOutputConfiguration(this);
-		}
+        @Override
+        public DeepFMOutputConfiguration build() {
+            return new DeepFMOutputConfiguration(this);
+        }
 
-	}
+    }
 
 }

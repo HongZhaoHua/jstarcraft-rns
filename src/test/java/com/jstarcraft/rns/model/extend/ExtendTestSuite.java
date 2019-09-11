@@ -11,14 +11,14 @@ import com.jstarcraft.rns.model.extend.rating.SlopeOneModelTestCase;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-		// 推荐器测试集
-		AssociationRuleModelTestCase.class,
+        // 推荐器测试集
+        AssociationRuleModelTestCase.class,
 
-		PersonalityDiagnosisModelTestCase.class,
+        PersonalityDiagnosisModelTestCase.class,
 
-		PRankDModelTestCase.class,
+        PRankDModelTestCase.class,
 
-		SlopeOneModelTestCase.class })
+        SlopeOneModelTestCase.class })
 public class ExtendTestSuite {
 
 }

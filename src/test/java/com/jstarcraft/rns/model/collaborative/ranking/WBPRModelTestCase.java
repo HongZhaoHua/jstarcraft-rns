@@ -20,21 +20,21 @@ import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
 
 public class WBPRModelTestCase {
 
-	@Test
-	public void testRecommender() throws Exception {
-	    Properties keyValues = new Properties();
+    @Test
+    public void testRecommender() throws Exception {
+        Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data/filmtrust.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/ranking/wbpr-test.properties"));
         Configurator configuration = new Configurator(keyValues);
-		RankingTask job = new RankingTask(WBPRModel.class, configuration);
-		Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-		Assert.assertEquals(0.78071666F, measures.getFloat(AUCEvaluator.class), 0F);
-		Assert.assertEquals(0.24647275F, measures.getFloat(MAPEvaluator.class), 0F);
-		Assert.assertEquals(0.3337322F, measures.getFloat(MRREvaluator.class), 0F);
-		Assert.assertEquals(0.30442417F, measures.getFloat(NDCGEvaluator.class), 0F);
-		Assert.assertEquals(17.18609F, measures.getFloat(NoveltyEvaluator.class), 0F);
-		Assert.assertEquals(0.25000066F, measures.getFloat(PrecisionEvaluator.class), 0F);
-		Assert.assertEquals(0.35516423F, measures.getFloat(RecallEvaluator.class), 0F);
+        RankingTask job = new RankingTask(WBPRModel.class, configuration);
+        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
+        Assert.assertEquals(0.78071666F, measures.getFloat(AUCEvaluator.class), 0F);
+        Assert.assertEquals(0.24647275F, measures.getFloat(MAPEvaluator.class), 0F);
+        Assert.assertEquals(0.3337322F, measures.getFloat(MRREvaluator.class), 0F);
+        Assert.assertEquals(0.30442417F, measures.getFloat(NDCGEvaluator.class), 0F);
+        Assert.assertEquals(17.18609F, measures.getFloat(NoveltyEvaluator.class), 0F);
+        Assert.assertEquals(0.25000066F, measures.getFloat(PrecisionEvaluator.class), 0F);
+        Assert.assertEquals(0.35516423F, measures.getFloat(RecallEvaluator.class), 0F);
     }
 
 }

@@ -19,6 +19,7 @@ import com.jstarcraft.ai.data.converter.DataConverter;
 
 /**
  * 演示如何自定义处理AmazonProduct数据集
+ * 
  * @author Birdy
  *
  */

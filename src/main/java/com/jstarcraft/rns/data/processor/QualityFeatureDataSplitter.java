@@ -10,7 +10,7 @@ public class QualityFeatureDataSplitter implements DataSplitter {
     public QualityFeatureDataSplitter(int dimension) {
         this.dimension = dimension;
     }
-    
+
     @Override
     public int split(DataInstance instance) {
         return instance.getQualityFeature(dimension);

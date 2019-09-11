@@ -63,8 +63,8 @@ public class BiasedMFModel extends MatrixFactorizationModel {
                 int userIndex = term.getRow(); // user userIdx
                 int itemIndex = term.getColumn(); // item itemIdx
                 float score = term.getValue(); // real rating on item
-                                              // itemIdx rated by user
-                                              // userIdx
+                                               // itemIdx rated by user
+                                               // userIdx
                 float predict = predict(userIndex, itemIndex);
                 float error = score - predict;
                 totalError += error * error;

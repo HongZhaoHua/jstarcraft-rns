@@ -16,27 +16,27 @@ import com.jstarcraft.rns.model.context.rating.TrustSVDModelTestCase;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-		// 推荐器测试集
+        // 推荐器测试集
 
-		// recommender.context.ranking
-		RankGeoFMModelTestCase.class,
+        // recommender.context.ranking
+        RankGeoFMModelTestCase.class,
 
-		SBPRModelTestCase.class,
+        SBPRModelTestCase.class,
 
-		// recommender.context.rating
-		RSTEModelTestCase.class,
+        // recommender.context.rating
+        RSTEModelTestCase.class,
 
-		SocialMFModelTestCase.class,
+        SocialMFModelTestCase.class,
 
-		SoRecModelTestCase.class,
+        SoRecModelTestCase.class,
 
-		SoRegModelTestCase.class,
+        SoRegModelTestCase.class,
 
-		TimeSVDModelTestCase.class,
+        TimeSVDModelTestCase.class,
 
-		TrustMFModelTestCase.class,
+        TrustMFModelTestCase.class,
 
-		TrustSVDModelTestCase.class })
+        TrustSVDModelTestCase.class })
 public class ContextTestSuite {
 
 }

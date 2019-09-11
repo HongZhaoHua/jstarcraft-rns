@@ -20,33 +20,33 @@ import com.jstarcraft.core.utility.Configurator;
  */
 public interface Model {
 
-	/**
-	 * 准备
-	 * 
-	 * @param configurator
-	 */
-	void prepare(Configurator configurator, DataModule module, DataSpace space);
-	// void prepare(Configuration configuration, SparseTensor trainTensor,
-	// SparseTensor testTensor, DataSpace storage);
+    /**
+     * 准备
+     * 
+     * @param configurator
+     */
+    void prepare(Configurator configurator, DataModule module, DataSpace space);
+    // void prepare(Configuration configuration, SparseTensor trainTensor,
+    // SparseTensor testTensor, DataSpace storage);
 
-	/**
-	 * 训练
-	 * 
-	 * @param trainTensor
-	 * @param testTensor
-	 * @param contextModels
-	 */
-	void practice();
+    /**
+     * 训练
+     * 
+     * @param trainTensor
+     * @param testTensor
+     * @param contextModels
+     */
+    void practice();
 
-	/**
-	 * 预测
-	 * 
-	 * @param userIndex
-	 * @param itemIndex
-	 * @param featureIndexes
-	 * @return
-	 */
-	void predict(DataInstance instance);
-	// double predict(int userIndex, int itemIndex, int... featureIndexes);
+    /**
+     * 预测
+     * 
+     * @param userIndex
+     * @param itemIndex
+     * @param featureIndexes
+     * @return
+     */
+    void predict(DataInstance instance);
+    // double predict(int userIndex, int itemIndex, int... featureIndexes);
 
 }

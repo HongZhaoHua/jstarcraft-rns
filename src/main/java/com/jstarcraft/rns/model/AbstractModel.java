@@ -53,8 +53,6 @@ public abstract class AbstractModel implements Model {
     /** 训练矩阵(TODO 准备改名为actionMatrix或者scoreMatrix) */
     protected SparseMatrix scoreMatrix;
 
-    
-
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         userField = configuration.getString("data.model.fields.user", "user");

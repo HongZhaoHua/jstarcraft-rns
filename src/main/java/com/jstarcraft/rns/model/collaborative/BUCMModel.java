@@ -133,7 +133,7 @@ public abstract class BUCMModel extends ProbabilisticGraphicalModel {
             int itemIndex = term.getColumn();
             float score = term.getValue();
             int scoreIndex = scoreIndexes.get(score); // rating level 0 ~
-                                                    // numLevels
+                                                      // numLevels
             int topicIndex = RandomUtility.randomInteger(factorSize); // 0 ~
             // k-1
 
@@ -166,7 +166,7 @@ public abstract class BUCMModel extends ProbabilisticGraphicalModel {
             int itemIndex = term.getColumn();
             float score = term.getValue();
             int scoreIndex = scoreIndexes.get(score); // rating level 0 ~
-                                                    // numLevels
+                                                      // numLevels
             int topicIndex = topicAssignments.get(userIndex * itemSize + itemIndex);
 
             // for user

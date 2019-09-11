@@ -16,18 +16,18 @@ import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
 
 public class ConstantGuessModelTestCase {
 
-	@Test
-	public void testRecommender() throws Exception {
-	    Properties keyValues = new Properties();
+    @Test
+    public void testRecommender() throws Exception {
+        Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data/filmtrust.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/benchmark/constantguess-test.properties"));
         Configurator configuration = new Configurator(keyValues);
-		RatingTask job = new RatingTask(ConstantGuessModel.class, configuration);
-		Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-		Assert.assertEquals(1.0560759F, measures.getFloat(MAEEvaluator.class), 0F);
-		Assert.assertEquals(1.0F, measures.getFloat(MPEEvaluator.class), 0F);
-		Assert.assertEquals(1.4230907F, measures.getFloat(MSEEvaluator.class), 0F);
+        RatingTask job = new RatingTask(ConstantGuessModel.class, configuration);
+        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
+        Assert.assertEquals(1.0560759F, measures.getFloat(MAEEvaluator.class), 0F);
+        Assert.assertEquals(1.0F, measures.getFloat(MPEEvaluator.class), 0F);
+        Assert.assertEquals(1.4230907F, measures.getFloat(MSEEvaluator.class), 0F);
 
-	}
+    }
 
 }

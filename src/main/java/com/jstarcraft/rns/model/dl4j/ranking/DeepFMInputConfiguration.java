@@ -28,58 +28,58 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 @Deprecated
 public class DeepFMInputConfiguration extends FeedForwardLayer {
 
-	private int[] dimensionSizes;
+    private int[] dimensionSizes;
 
-	private DeepFMParameter deepFMParameter;
+    private DeepFMParameter deepFMParameter;
 
-	@Override
-	public ParamInitializer initializer() {
-		return new DeepFMParameter(dimensionSizes);
-	}
+    @Override
+    public ParamInitializer initializer() {
+        return new DeepFMParameter(dimensionSizes);
+    }
 
-	public DeepFMInputConfiguration(int[] dimensionSizes) {
-		this.deepFMParameter = new DeepFMParameter(dimensionSizes);
-		this.dimensionSizes = dimensionSizes;
-	}
+    public DeepFMInputConfiguration(int[] dimensionSizes) {
+        this.deepFMParameter = new DeepFMParameter(dimensionSizes);
+        this.dimensionSizes = dimensionSizes;
+    }
 
-	private DeepFMInputConfiguration(Builder builder) {
-		super(builder);
-		this.deepFMParameter = new DeepFMParameter(builder.dimensionSizes);
-		this.dimensionSizes = builder.dimensionSizes;
-	}
+    private DeepFMInputConfiguration(Builder builder) {
+        super(builder);
+        this.deepFMParameter = new DeepFMParameter(builder.dimensionSizes);
+        this.dimensionSizes = builder.dimensionSizes;
+    }
 
-	@Override
-	public Layer instantiate(NeuralNetConfiguration configuration, Collection<TrainingListener> monitors, int layerIndex, INDArray parameters, boolean initialize) {
-		DeepFMInputLayer layer = new DeepFMInputLayer(configuration, dimensionSizes);
-		layer.setListeners(monitors);
-		layer.setIndex(layerIndex);
-		layer.setParamsViewArray(parameters);
-		Map<String, INDArray> table = initializer().init(configuration, parameters, initialize);
-		layer.setParamTable(table);
-		layer.setConf(configuration);
-		return layer;
-	}
+    @Override
+    public Layer instantiate(NeuralNetConfiguration configuration, Collection<TrainingListener> monitors, int layerIndex, INDArray parameters, boolean initialize) {
+        DeepFMInputLayer layer = new DeepFMInputLayer(configuration, dimensionSizes);
+        layer.setListeners(monitors);
+        layer.setIndex(layerIndex);
+        layer.setParamsViewArray(parameters);
+        Map<String, INDArray> table = initializer().init(configuration, parameters, initialize);
+        layer.setParamTable(table);
+        layer.setConf(configuration);
+        return layer;
+    }
 
-	public static class Builder extends FeedForwardLayer.Builder<Builder> {
+    public static class Builder extends FeedForwardLayer.Builder<Builder> {
 
-		private int[] dimensionSizes;
+        private int[] dimensionSizes;
 
-		public Builder(int[] dimensionSizes) {
-			this.dimensionSizes = dimensionSizes;
-		}
+        public Builder(int[] dimensionSizes) {
+            this.dimensionSizes = dimensionSizes;
+        }
 
-		@Override
-		public DeepFMInputConfiguration build() {
-			return new DeepFMInputConfiguration(this);
-		}
+        @Override
+        public DeepFMInputConfiguration build() {
+            return new DeepFMInputConfiguration(this);
+        }
 
-	}
+    }
 
-	@Override
-	public LayerMemoryReport getMemoryReport(InputType inputType) {
-		LayerMemoryReport.Builder builder = new LayerMemoryReport.Builder(layerName, DeepFMInputConfiguration.class, inputType, inputType);
-		builder.standardMemory(0, 0).workingMemory(0, 0, 0, 0).cacheMemory(MemoryReport.CACHE_MODE_ALL_ZEROS, MemoryReport.CACHE_MODE_ALL_ZEROS);
-		return builder.build();
-	}
+    @Override
+    public LayerMemoryReport getMemoryReport(InputType inputType) {
+        LayerMemoryReport.Builder builder = new LayerMemoryReport.Builder(layerName, DeepFMInputConfiguration.class, inputType, inputType);
+        builder.standardMemory(0, 0).workingMemory(0, 0, 0, 0).cacheMemory(MemoryReport.CACHE_MODE_ALL_ZEROS, MemoryReport.CACHE_MODE_ALL_ZEROS);
+        return builder.build();
+    }
 
 }

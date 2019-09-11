@@ -27,58 +27,58 @@ import org.nd4j.linalg.indexing.NDArrayIndex;
 @Deprecated
 class CDAEParameter extends DefaultParamInitializer {
 
-	public static final String USER_KEY = "u";
+    public static final String USER_KEY = "u";
 
-	public int numberOfUsers;
+    public int numberOfUsers;
 
-	public CDAEParameter(int numberOfUsers) {
-		this.numberOfUsers = numberOfUsers;
-	}
+    public CDAEParameter(int numberOfUsers) {
+        this.numberOfUsers = numberOfUsers;
+    }
 
-	@Override
-	public long numParams(NeuralNetConfiguration conf) {
-		FeedForwardLayer layerConf = (FeedForwardLayer) conf.getLayer();
-		return super.numParams(conf) + numberOfUsers * layerConf.getNOut(); // add
-		// another
-		// user
-		// weight
-		// matrix
-	}
+    @Override
+    public long numParams(NeuralNetConfiguration conf) {
+        FeedForwardLayer layerConf = (FeedForwardLayer) conf.getLayer();
+        return super.numParams(conf) + numberOfUsers * layerConf.getNOut(); // add
+        // another
+        // user
+        // weight
+        // matrix
+    }
 
-	private INDArray createUserWeightMatrix(NeuralNetConfiguration conf, INDArray weightParamView, boolean initializeParameters) {
-		FeedForwardLayer layerConf = (FeedForwardLayer) conf.getLayer();
-		if (initializeParameters) {
-			Distribution dist = Distributions.createDistribution(layerConf.getDist());
-			return createWeightMatrix(numberOfUsers, layerConf.getNOut(), layerConf.getWeightInit(), dist, weightParamView, true);
-		} else {
-			return createWeightMatrix(numberOfUsers, layerConf.getNOut(), null, null, weightParamView, false);
-		}
-	}
+    private INDArray createUserWeightMatrix(NeuralNetConfiguration conf, INDArray weightParamView, boolean initializeParameters) {
+        FeedForwardLayer layerConf = (FeedForwardLayer) conf.getLayer();
+        if (initializeParameters) {
+            Distribution dist = Distributions.createDistribution(layerConf.getDist());
+            return createWeightMatrix(numberOfUsers, layerConf.getNOut(), layerConf.getWeightInit(), dist, weightParamView, true);
+        } else {
+            return createWeightMatrix(numberOfUsers, layerConf.getNOut(), null, null, weightParamView, false);
+        }
+    }
 
-	@Override
-	public Map<String, INDArray> init(NeuralNetConfiguration conf, INDArray paramsView, boolean initializeParams) {
-		Map<String, INDArray> params = super.init(conf, paramsView, initializeParams);
-		FeedForwardLayer layerConf = (FeedForwardLayer) conf.getLayer();
-		long nIn = layerConf.getNIn();
-		long nOut = layerConf.getNOut();
-		long nWeightParams = nIn * nOut;
-		long nUserWeightParams = numberOfUsers * nOut;
-		INDArray userWeightView = paramsView.get(new INDArrayIndex[] { NDArrayIndex.point(0), NDArrayIndex.interval(nWeightParams + nOut, nWeightParams + nOut + nUserWeightParams) });
-		params.put(USER_KEY, this.createUserWeightMatrix(conf, userWeightView, initializeParams));
-		conf.addVariable(USER_KEY);
-		return params;
-	}
+    @Override
+    public Map<String, INDArray> init(NeuralNetConfiguration conf, INDArray paramsView, boolean initializeParams) {
+        Map<String, INDArray> params = super.init(conf, paramsView, initializeParams);
+        FeedForwardLayer layerConf = (FeedForwardLayer) conf.getLayer();
+        long nIn = layerConf.getNIn();
+        long nOut = layerConf.getNOut();
+        long nWeightParams = nIn * nOut;
+        long nUserWeightParams = numberOfUsers * nOut;
+        INDArray userWeightView = paramsView.get(new INDArrayIndex[] { NDArrayIndex.point(0), NDArrayIndex.interval(nWeightParams + nOut, nWeightParams + nOut + nUserWeightParams) });
+        params.put(USER_KEY, this.createUserWeightMatrix(conf, userWeightView, initializeParams));
+        conf.addVariable(USER_KEY);
+        return params;
+    }
 
-	@Override
-	public Map<String, INDArray> getGradientsFromFlattened(NeuralNetConfiguration conf, INDArray gradientView) {
-		Map<String, INDArray> out = super.getGradientsFromFlattened(conf, gradientView);
-		FeedForwardLayer layerConf = (FeedForwardLayer) conf.getLayer();
-		long nIn = layerConf.getNIn();
-		long nOut = layerConf.getNOut();
-		long nWeightParams = nIn * nOut;
-		long nUserWeightParams = numberOfUsers * nOut;
-		INDArray userWeightGradientView = gradientView.get(NDArrayIndex.point(0), NDArrayIndex.interval(nWeightParams + nOut, nWeightParams + nOut + nUserWeightParams)).reshape('f', numberOfUsers, nOut);
-		out.put(USER_KEY, userWeightGradientView);
-		return out;
-	}
+    @Override
+    public Map<String, INDArray> getGradientsFromFlattened(NeuralNetConfiguration conf, INDArray gradientView) {
+        Map<String, INDArray> out = super.getGradientsFromFlattened(conf, gradientView);
+        FeedForwardLayer layerConf = (FeedForwardLayer) conf.getLayer();
+        long nIn = layerConf.getNIn();
+        long nOut = layerConf.getNOut();
+        long nWeightParams = nIn * nOut;
+        long nUserWeightParams = numberOfUsers * nOut;
+        INDArray userWeightGradientView = gradientView.get(NDArrayIndex.point(0), NDArrayIndex.interval(nWeightParams + nOut, nWeightParams + nOut + nUserWeightParams)).reshape('f', numberOfUsers, nOut);
+        out.put(USER_KEY, userWeightGradientView);
+        return out;
+    }
 }

@@ -57,7 +57,7 @@ public class GivenNumberSeparator implements DataSeparator {
         this.trainReference = new IntegerArray();
         this.testReference = new IntegerArray();
         for (ReferenceModule module : modules) {
-            IntegerArray reference =  module.getReference();
+            IntegerArray reference = module.getReference();
             for (int cursor = 0, length = reference.getSize(); cursor < length; cursor++) {
                 if (cursor < number) {
                     this.trainReference.associateData(reference.getData(cursor));

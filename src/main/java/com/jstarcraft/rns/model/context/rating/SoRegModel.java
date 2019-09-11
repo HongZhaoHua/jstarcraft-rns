@@ -136,7 +136,7 @@ public class SoRegModel extends SocialModel {
             currentError = totalError;
         }
     }
-    
+
     @Override
     protected float predict(int userIndex, int itemIndex) {
         float score = super.predict(userIndex, itemIndex);

@@ -397,7 +397,7 @@ public class HMMModel extends ProbabilisticGraphicalModel {
         for (int index = 0; index < userSize; index++) {
             models[index] = sorter.sort(models[index]);
         }
-        
+
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
             DataModule module = models[userIndex];
             for (DataInstance instance : module) {

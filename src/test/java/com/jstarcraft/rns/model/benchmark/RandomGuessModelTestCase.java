@@ -34,7 +34,8 @@ public class RandomGuessModelTestCase {
         keyValues.load(this.getClass().getResourceAsStream("/model/benchmark/randomguess-test.properties"));
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(RandomGuessModel.class, configuration);
-        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();Assert.assertEquals(0.5192176F, measures.getFloat(AUCEvaluator.class), 0F);
+        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
+        Assert.assertEquals(0.5192176F, measures.getFloat(AUCEvaluator.class), 0F);
         Assert.assertEquals(0.006268634F, measures.getFloat(MAPEvaluator.class), 0F);
         Assert.assertEquals(0.021699615F, measures.getFloat(MRREvaluator.class), 0F);
         Assert.assertEquals(0.01120969F, measures.getFloat(NDCGEvaluator.class), 0F);
