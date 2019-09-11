@@ -76,7 +76,7 @@ public class CDAEModel extends NeuralNetworkModel {
     public void predict(DataInstance instance) {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
-        instance.setQuantityMark(outputData.getFloat(itemIndex, userIndex));
+        instance.setQuantityMark(outputData.getFloat(userIndex, itemIndex));
     }
 
 }
