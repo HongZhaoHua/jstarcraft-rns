@@ -6,9 +6,11 @@ import org.deeplearning4j.nn.gradient.Gradient;
 import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.graph.vertex.BaseGraphVertex;
 import org.deeplearning4j.nn.graph.vertex.VertexIndices;
+import org.deeplearning4j.nn.workspace.ArrayType;
 import org.deeplearning4j.nn.workspace.LayerWorkspaceMgr;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.api.ops.impl.transforms.Or;
+import org.nd4j.linalg.api.shape.Shape;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.primitives.Pair;
 
@@ -59,14 +61,14 @@ public class DeepFMProductVertex extends BaseGraphVertex {
         INDArray left = inputs[0];
         INDArray right = inputs[1];
         long size = inputs[0].shape()[0];
-        INDArray value = Nd4j.create(size);
+        INDArray value = workspaceMgr.createUninitialized(ArrayType.ACTIVATIONS, size);
         // 求两个行向量的点积
         for (int index = 0; index < size; index++) {
             INDArray product = left.getRow(index).mmul(right.getRow(index).transpose());
             value.put(index, product);
         }
         // outputs[index] => {batchSize, 1}
-        return value.transpose();
+        return Shape.newShapeNoCopy(value, new long[] { value.length(), 1L }, value.ordering() == 'f');
     }
 
     @Override
@@ -77,8 +79,8 @@ public class DeepFMProductVertex extends BaseGraphVertex {
 
         // epsilons[index] => {batchSize, numberOfEmbeds}
         INDArray[] epsilons = new INDArray[inputs.length];
-        epsilons[0] = Nd4j.zeros(inputs[0].shape());
-        epsilons[1] = Nd4j.zeros(inputs[1].shape());
+        epsilons[0] = workspaceMgr.dup(ArrayType.ACTIVATION_GRAD, inputs[0]);
+        epsilons[1] = workspaceMgr.dup(ArrayType.ACTIVATION_GRAD, inputs[1]);
         // epsilon => {batchSize, 1}
         // inputs[index] => {batchSize, numberOfEmbeds}
         // TODO 如何通过inputs[index]与epsilon求导epsilons[index]

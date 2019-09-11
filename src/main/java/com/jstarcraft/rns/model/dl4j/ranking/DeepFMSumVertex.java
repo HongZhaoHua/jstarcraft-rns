@@ -6,6 +6,7 @@ import org.deeplearning4j.nn.gradient.Gradient;
 import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.graph.vertex.BaseGraphVertex;
 import org.deeplearning4j.nn.graph.vertex.VertexIndices;
+import org.deeplearning4j.nn.workspace.ArrayType;
 import org.deeplearning4j.nn.workspace.LayerWorkspaceMgr;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.api.ops.impl.transforms.Or;
@@ -63,7 +64,7 @@ public class DeepFMSumVertex extends BaseGraphVertex {
             output.addi(inputs[index].sum(1));
         }
         // output => {batchSize, 1}
-        return output;
+        return workspaceMgr.dup(ArrayType.ACTIVATIONS, output);
     }
 
     @Override
@@ -78,7 +79,8 @@ public class DeepFMSumVertex extends BaseGraphVertex {
         // TODO 如何通过inputs[index]与epsilon求导epsilons[index]
         INDArray output = doForward(true, workspaceMgr);
         for (int index = 0; index < inputs.length; index++) {
-            epsilons[index] = inputs[index].mulColumnVector(epsilon).diviColumnVector(output);
+            epsilons[index] = workspaceMgr.dup(ArrayType.ACTIVATION_GRAD, inputs[index]);
+            epsilons[index].muliColumnVector(epsilon).diviColumnVector(output);
         }
         return new Pair<>(null, epsilons);
     }

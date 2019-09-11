@@ -65,11 +65,6 @@ public class CDAELayer extends BaseLayer<CDAEConfiguration> {
     }
 
     @Override
-    public boolean isPretrainLayer() {
-        return false;
-    }
-
-    @Override
     public Pair<Gradient, INDArray> backpropGradient(INDArray epsilon, LayerWorkspaceMgr workspaceMgr) {
         assertInputSet(true);
         // If this layer is layer L, then epsilon is (w^(L+1)*(d^(L+1))^T) (or
@@ -105,7 +100,6 @@ public class CDAELayer extends BaseLayer<CDAEConfiguration> {
         }
 
         INDArray W = getParamWithNoise(DefaultParamInitializer.WEIGHT_KEY, true, workspaceMgr);
-
         INDArray epsilonNext = workspaceMgr.createUninitialized(ArrayType.ACTIVATION_GRAD, new long[] { W.size(0), delta.size(0) }, 'f');
         epsilonNext = W.mmuli(delta.transpose(), epsilonNext).transpose(); // W.mmul(delta.transpose()).transpose();
 
@@ -113,6 +107,11 @@ public class CDAELayer extends BaseLayer<CDAEConfiguration> {
 
         epsilonNext = backpropDropOutIfPresent(epsilonNext);
         return new Pair<>(ret, epsilonNext);
+    }
+
+    @Override
+    public boolean isPretrainLayer() {
+        return false;
     }
 
 }
