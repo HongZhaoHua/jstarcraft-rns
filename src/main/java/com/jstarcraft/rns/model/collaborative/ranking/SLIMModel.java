@@ -1,11 +1,8 @@
 package com.jstarcraft.rns.model.collaborative.ranking;
 
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.TreeSet;
 
 import com.jstarcraft.ai.data.DataInstance;
@@ -20,9 +17,13 @@ import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.utility.Configurator;
+import com.jstarcraft.core.utility.Integer2FloatKeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.EpocheModel;
 import com.jstarcraft.rns.model.exception.ModelException;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 /**
  * 
@@ -68,11 +69,11 @@ public class SLIMModel extends EpocheModel {
 
     private ArrayVector[] itemVectors;
 
-    private Comparator<Entry<Integer, Double>> comparator = new Comparator<Entry<Integer, Double>>() {
-        public int compare(Entry<Integer, Double> left, Entry<Integer, Double> right) {
-            int value = -(left.getValue().compareTo(right.getValue()));
+    private Comparator<Integer2FloatKeyValue> comparator = new Comparator<Integer2FloatKeyValue>() {
+        public int compare(Integer2FloatKeyValue left, Integer2FloatKeyValue right) {
+            int value = -(Float.compare(left.getValue(), right.getValue()));
             if (value == 0) {
-                value = left.getKey().compareTo(right.getKey());
+                value = Integer.compare(left.getKey(), right.getKey());
             }
             return value;
         }
@@ -105,49 +106,52 @@ public class SLIMModel extends EpocheModel {
         try {
             Class<Correlation> correlationClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
             Correlation correlation = ReflectionUtility.getInstance(correlationClass);
-            similarityMatrix = correlation.makeCorrelationMatrix(scoreMatrix, true, configuration.getFloat("recommender.correlation.shrinkage", 0F));
+            similarityMatrix = correlation.makeCorrelationMatrix(scoreMatrix, true);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
 
         // TODO 设置容量
         itemNeighbors = new int[itemSize][];
-        HashMap<Integer, TreeSet<Entry<Integer, Double>>> itemNNs = new HashMap<>();
+        Int2ObjectMap<TreeSet<Integer2FloatKeyValue>> itemNNs = new Int2ObjectOpenHashMap<>();
         for (MatrixScalar term : similarityMatrix) {
             int row = term.getRow();
             int column = term.getColumn();
-            double value = term.getValue();
-            // 忽略相似度为0的物品
-            if (value == 0D) {
+            if (row == column) {
                 continue;
             }
-            TreeSet<Entry<Integer, Double>> neighbors = itemNNs.get(row);
+            float value = term.getValue();
+            // 忽略相似度为0的物品
+            if (value == 0F) {
+                continue;
+            }
+            TreeSet<Integer2FloatKeyValue> neighbors = itemNNs.get(row);
             if (neighbors == null) {
                 neighbors = new TreeSet<>(comparator);
                 itemNNs.put(row, neighbors);
             }
-            neighbors.add(new SimpleImmutableEntry<>(column, value));
+            neighbors.add(new Integer2FloatKeyValue(column, value));
             neighbors = itemNNs.get(column);
             if (neighbors == null) {
                 neighbors = new TreeSet<>(comparator);
                 itemNNs.put(column, neighbors);
             }
-            neighbors.add(new SimpleImmutableEntry<>(row, value));
+            neighbors.add(new Integer2FloatKeyValue(row, value));
         }
 
         // 构建物品邻居映射
-        for (Entry<Integer, TreeSet<Entry<Integer, Double>>> term : itemNNs.entrySet()) {
-            TreeSet<Entry<Integer, Double>> neighbors = term.getValue();
+        for (Int2ObjectMap.Entry<TreeSet<Integer2FloatKeyValue>> term : itemNNs.int2ObjectEntrySet()) {
+            TreeSet<Integer2FloatKeyValue> neighbors = term.getValue();
             int[] value = new int[neighbors.size() < neighborSize ? neighbors.size() : neighborSize];
             int index = 0;
-            for (Entry<Integer, Double> neighbor : neighbors) {
+            for (Integer2FloatKeyValue neighbor : neighbors) {
                 value[index++] = neighbor.getKey();
                 if (index >= neighborSize) {
                     break;
                 }
             }
             Arrays.sort(value);
-            itemNeighbors[term.getKey()] = value;
+            itemNeighbors[term.getIntKey()] = value;
         }
 
         userVectors = new ArrayVector[userSize];

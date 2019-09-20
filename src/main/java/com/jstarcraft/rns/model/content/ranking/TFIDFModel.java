@@ -45,8 +45,6 @@ public class TFIDFModel extends MatrixFactorizationModel {
 
     protected Correlation correlation;
 
-    protected float scale;
-
     private class DocumentIterator implements Iterator<TermFrequency> {
 
         private Iterator<DataInstance> iterator;
@@ -176,7 +174,6 @@ public class TFIDFModel extends MatrixFactorizationModel {
         try {
             Class<Correlation> similarityClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
             correlation = ReflectionUtility.getInstance(similarityClass);
-            scale = configuration.getFloat("recommender.correlation.shrinkage");
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
@@ -227,7 +224,7 @@ public class TFIDFModel extends MatrixFactorizationModel {
     protected float predict(int userIndex, int itemIndex) {
         ArrayVector userVector = userMatrix.getRowVector(userIndex);
         ArrayVector itemVector = itemMatrix.getRowVector(itemIndex);
-        return correlation.getCoefficient(userVector, itemVector, scale);
+        return correlation.getCoefficient(userVector, itemVector);
     }
 
     @Override

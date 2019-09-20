@@ -24,9 +24,9 @@ public class ItemKNNRatingModelTestCase {
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(ItemKNNRatingModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.6210838F, measures.getFloat(MAEEvaluator.class), 0F);
-        Assert.assertEquals(0.9488681F, measures.getFloat(MPEEvaluator.class), 0F);
-        Assert.assertEquals(0.6732633F, measures.getFloat(MSEEvaluator.class), 0F);
+        Assert.assertEquals(0.62341166F, measures.getFloat(MAEEvaluator.class), 0F);
+        Assert.assertEquals(0.95394224F, measures.getFloat(MPEEvaluator.class), 0F);
+        Assert.assertEquals(0.6731172F, measures.getFloat(MSEEvaluator.class), 0F);
     }
 
 }

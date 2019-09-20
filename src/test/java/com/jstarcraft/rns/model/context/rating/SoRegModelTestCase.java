@@ -24,9 +24,9 @@ public class SoRegModelTestCase {
         Configurator configuration = new Configurator(keyValues);
         RatingTask job = new RatingTask(SoRegModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.65939784F, measures.getFloat(MAEEvaluator.class), 0F);
-        Assert.assertEquals(0.9674733F, measures.getFloat(MPEEvaluator.class), 0F);
-        Assert.assertEquals(0.7275409F, measures.getFloat(MSEEvaluator.class), 0F);
+        Assert.assertEquals(0.6594284F, measures.getFloat(MAEEvaluator.class), 0F);
+        Assert.assertEquals(0.9673432F, measures.getFloat(MPEEvaluator.class), 0F);
+        Assert.assertEquals(0.72760236F, measures.getFloat(MSEEvaluator.class), 0F);
     }
 
 }

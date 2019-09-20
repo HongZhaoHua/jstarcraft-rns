@@ -28,13 +28,13 @@ public class TFIDFModelTestCase {
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(TFIDFModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.5128588F, measures.getFloat(AUCEvaluator.class), 0F);
-        Assert.assertEquals(0.003790126F, measures.getFloat(MAPEvaluator.class), 0F);
-        Assert.assertEquals(0.007245251F, measures.getFloat(MRREvaluator.class), 0F);
-        Assert.assertEquals(0.007090965F, measures.getFloat(NDCGEvaluator.class), 0F);
-        Assert.assertEquals(77.49009F, measures.getFloat(NoveltyEvaluator.class), 0F);
-        Assert.assertEquals(0.002662993F, measures.getFloat(PrecisionEvaluator.class), 0F);
-        Assert.assertEquals(0.01318743F, measures.getFloat(RecallEvaluator.class), 0F);
+        Assert.assertEquals(0.52755725F, measures.getFloat(AUCEvaluator.class), 0F);
+        Assert.assertEquals(0.010667085F, measures.getFloat(MAPEvaluator.class), 0F);
+        Assert.assertEquals(0.019169327F, measures.getFloat(MRREvaluator.class), 0F);
+        Assert.assertEquals(0.01772937F, measures.getFloat(NDCGEvaluator.class), 0F);
+        Assert.assertEquals(72.71228F, measures.getFloat(NoveltyEvaluator.class), 0F);
+        Assert.assertEquals(0.005876948F, measures.getFloat(PrecisionEvaluator.class), 0F);
+        Assert.assertEquals(0.03102854F, measures.getFloat(RecallEvaluator.class), 0F);
     }
 
 }

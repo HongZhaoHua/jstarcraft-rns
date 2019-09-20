@@ -28,13 +28,14 @@ public class SLIMModelTestCase {
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(SLIMModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.91682404F, measures.getFloat(AUCEvaluator.class), 0F);
-        Assert.assertEquals(0.44686502F, measures.getFloat(MAPEvaluator.class), 0F);
-        Assert.assertEquals(0.61242646F, measures.getFloat(MRREvaluator.class), 0F);
-        Assert.assertEquals(0.5438974F, measures.getFloat(NDCGEvaluator.class), 0F);
-        Assert.assertEquals(17.50183F, measures.getFloat(NoveltyEvaluator.class), 0F);
-        Assert.assertEquals(0.33879432F, measures.getFloat(PrecisionEvaluator.class), 0F);
-        Assert.assertEquals(0.62723833F, measures.getFloat(RecallEvaluator.class), 0F);
+        Assert.assertEquals(0.91848505F, measures.getFloat(AUCEvaluator.class), 0F);
+        Assert.assertEquals(0.44851264F, measures.getFloat(MAPEvaluator.class), 0F);
+        Assert.assertEquals(0.6108289F, measures.getFloat(MRREvaluator.class), 0F);
+        Assert.assertEquals(0.5455681F, measures.getFloat(NDCGEvaluator.class), 0F);
+        Assert.assertEquals(16.679905F, measures.getFloat(NoveltyEvaluator.class), 0F);
+        Assert.assertEquals(0.34018686F, measures.getFloat(PrecisionEvaluator.class), 0F);
+        Assert.assertEquals(0.6302096F, measures.getFloat(RecallEvaluator.class), 0F);
+        Assert.assertEquals(0.9137425F, measures.getFloat(AUCEvaluator.class), 0F);
     }
 
 }

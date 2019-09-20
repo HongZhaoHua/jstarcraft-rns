@@ -65,7 +65,7 @@ public abstract class UserKNNModel extends AbstractModel {
         try {
             Class<Correlation> correlationClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
             Correlation correlation = ReflectionUtility.getInstance(correlationClass);
-            similarityMatrix = correlation.makeCorrelationMatrix(scoreMatrix, false, configuration.getFloat("recommender.correlation.shrinkage", 0F));
+            similarityMatrix = correlation.makeCorrelationMatrix(scoreMatrix, false);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
