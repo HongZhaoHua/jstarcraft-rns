@@ -3,6 +3,7 @@ package com.jstarcraft.rns.model.collaborative.ranking;
 import java.util.Iterator;
 
 import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.rns.model.collaborative.UserKNNModel;
@@ -25,7 +26,7 @@ public class UserKNNRankingModel extends UserKNNModel {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         SparseVector itemVector = itemVectors[itemIndex];
-        int[] neighbors = userNeighbors[userIndex];
+        MathVector neighbors = userNeighbors[userIndex];
         if (itemVector.getElementSize() == 0 || neighbors == null) {
             instance.setQuantityMark(0F);
             return;
@@ -33,24 +34,32 @@ public class UserKNNRankingModel extends UserKNNModel {
 
         float sum = 0F, absolute = 0F;
         int count = 0;
-        int leftCursor = 0, rightCursor = 0, leftSize = itemVector.getElementSize(), rightSize = neighbors.length;
-        Iterator<VectorScalar> iterator = itemVector.iterator();
-        VectorScalar term = iterator.next();
+        int leftCursor = 0, rightCursor = 0, leftSize = itemVector.getElementSize(), rightSize = neighbors.getElementSize();
+        Iterator<VectorScalar> leftIterator = itemVector.iterator();
+        VectorScalar leftTerm = leftIterator.next();
+        Iterator<VectorScalar> rightIterator = neighbors.iterator();
+        VectorScalar rightTerm = rightIterator.next();
         // 判断两个有序数组中是否存在相同的数字
         while (leftCursor < leftSize && rightCursor < rightSize) {
-            if (term.getIndex() == neighbors[rightCursor]) {
+            if (leftTerm.getIndex() == rightTerm.getIndex()) {
                 count++;
-                sum += symmetryMatrix.getValue(userIndex, neighbors[rightCursor]);
-                if (iterator.hasNext()) {
-                    term = iterator.next();
+                sum += rightTerm.getValue();
+                if (leftIterator.hasNext()) {
+                    leftTerm = leftIterator.next();
+                }
+                if (rightIterator.hasNext()) {
+                    rightTerm = rightIterator.next();
                 }
                 leftCursor++;
                 rightCursor++;
-            } else if (term.getIndex() > neighbors[rightCursor]) {
+            } else if (leftTerm.getIndex() > rightTerm.getIndex()) {
+                if (rightIterator.hasNext()) {
+                    rightTerm = rightIterator.next();
+                }
                 rightCursor++;
-            } else if (term.getIndex() < neighbors[rightCursor]) {
-                if (iterator.hasNext()) {
-                    term = iterator.next();
+            } else if (leftTerm.getIndex() < rightTerm.getIndex()) {
+                if (leftIterator.hasNext()) {
+                    leftTerm = leftIterator.next();
                 }
                 leftCursor++;
             }

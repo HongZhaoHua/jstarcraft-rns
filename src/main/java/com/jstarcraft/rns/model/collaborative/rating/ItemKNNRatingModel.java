@@ -3,6 +3,7 @@ package com.jstarcraft.rns.model.collaborative.rating;
 import java.util.Iterator;
 
 import com.jstarcraft.ai.data.DataInstance;
+import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.rns.model.collaborative.ItemKNNModel;
@@ -25,7 +26,7 @@ public class ItemKNNRatingModel extends ItemKNNModel {
         int userIndex = instance.getQualityFeature(userDimension);
         int itemIndex = instance.getQualityFeature(itemDimension);
         SparseVector userVector = userVectors[userIndex];
-        int[] neighbors = itemNeighbors[itemIndex];
+        MathVector neighbors = itemNeighbors[itemIndex];
         if (userVector.getElementSize() == 0 || neighbors == null) {
             instance.setQuantityMark(meanScore);
             return;
@@ -33,27 +34,35 @@ public class ItemKNNRatingModel extends ItemKNNModel {
 
         float sum = 0F, absolute = 0F;
         int count = 0;
-        int leftCursor = 0, rightCursor = 0, leftSize = userVector.getElementSize(), rightSize = neighbors.length;
-        Iterator<VectorScalar> iterator = userVector.iterator();
-        VectorScalar term = iterator.next();
+        int leftCursor = 0, rightCursor = 0, leftSize = userVector.getElementSize(), rightSize = neighbors.getElementSize();
+        Iterator<VectorScalar> leftIterator = userVector.iterator();
+        VectorScalar leftTerm = leftIterator.next();
+        Iterator<VectorScalar> rightIterator = neighbors.iterator();
+        VectorScalar rightTerm = rightIterator.next();
         // 判断两个有序数组中是否存在相同的数字
         while (leftCursor < leftSize && rightCursor < rightSize) {
-            if (term.getIndex() == neighbors[rightCursor]) {
+            if (leftTerm.getIndex() == rightTerm.getIndex()) {
                 count++;
-                double similarity = symmetryMatrix.getValue(itemIndex, neighbors[rightCursor]);
-                double score = term.getValue();
-                sum += similarity * (score - itemMeans.getValue(neighbors[rightCursor]));
-                absolute += Math.abs(similarity);
-                if (iterator.hasNext()) {
-                    term = iterator.next();
+                float correlation = rightTerm.getValue();
+                float score = leftTerm.getValue();
+                sum += correlation * (score - itemMeans.getValue(rightTerm.getIndex()));
+                absolute += Math.abs(correlation);
+                if (leftIterator.hasNext()) {
+                    leftTerm = leftIterator.next();
+                }
+                if (rightIterator.hasNext()) {
+                    rightTerm = rightIterator.next();
                 }
                 leftCursor++;
                 rightCursor++;
-            } else if (term.getIndex() > neighbors[rightCursor]) {
+            } else if (leftTerm.getIndex() > rightTerm.getIndex()) {
+                if (rightIterator.hasNext()) {
+                    rightTerm = rightIterator.next();
+                }
                 rightCursor++;
-            } else if (term.getIndex() < neighbors[rightCursor]) {
-                if (iterator.hasNext()) {
-                    term = iterator.next();
+            } else if (leftTerm.getIndex() < rightTerm.getIndex()) {
+                if (leftIterator.hasNext()) {
+                    leftTerm = leftIterator.next();
                 }
                 leftCursor++;
             }

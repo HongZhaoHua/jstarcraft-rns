@@ -1,10 +1,7 @@
 package com.jstarcraft.rns.model.collaborative;
 
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.TreeSet;
 
 import com.jstarcraft.ai.data.DataModule;
@@ -12,7 +9,9 @@ import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.algorithm.correlation.Correlation;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SymmetryMatrix;
+import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
+import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.utility.Configurator;
@@ -45,7 +44,7 @@ public abstract class ItemKNNModel extends AbstractModel {
     /**
      * item's nearest neighbors for kNN > 0
      */
-    protected int[][] itemNeighbors;
+    protected MathVector[] itemNeighbors;
 
     protected SparseVector[] userVectors;
 
@@ -80,7 +79,7 @@ public abstract class ItemKNNModel extends AbstractModel {
         itemMeans = DenseVector.valueOf(itemSize);
 
         // TODO 设置容量
-        itemNeighbors = new int[itemSize][];
+        itemNeighbors = new MathVector[itemSize];
         Int2ObjectMap<TreeSet<Integer2FloatKeyValue>> itemNNs = new Int2ObjectOpenHashMap<>();
         for (MatrixScalar term : symmetryMatrix) {
             int row = term.getRow();
@@ -110,16 +109,21 @@ public abstract class ItemKNNModel extends AbstractModel {
         // 构建物品邻居映射
         for (Int2ObjectMap.Entry<TreeSet<Integer2FloatKeyValue>> term : itemNNs.int2ObjectEntrySet()) {
             TreeSet<Integer2FloatKeyValue> neighbors = term.getValue();
-            int[] value = new int[neighbors.size() < neighborSize ? neighbors.size() : neighborSize];
+            int size = neighbors.size() < neighborSize ? neighbors.size() : neighborSize;
+            int[] indexes = new int[size];
+            float[] values = new float[size];
             int index = 0;
             for (Integer2FloatKeyValue neighbor : neighbors) {
-                value[index++] = neighbor.getKey();
+                indexes[index++] = neighbor.getKey();
                 if (index >= neighborSize) {
                     break;
                 }
             }
-            Arrays.sort(value);
-            itemNeighbors[term.getIntKey()] = value;
+            Arrays.sort(indexes);
+            for (int cursor = 0; cursor < size; cursor++) {
+                values[cursor] = symmetryMatrix.getValue(term.getIntKey(), indexes[cursor]);
+            }
+            itemNeighbors[term.getIntKey()] = new ArrayVector(size, indexes, values);
         }
 
         userVectors = new SparseVector[userSize];
