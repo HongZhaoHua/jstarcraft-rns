@@ -63,7 +63,7 @@ public class SLIMModel extends EpocheModel {
     /**
      * item similarity matrix
      */
-    private SymmetryMatrix similarityMatrix;
+    private SymmetryMatrix symmetryMatrix;
 
     private ArrayVector[] userVectors;
 
@@ -106,7 +106,8 @@ public class SLIMModel extends EpocheModel {
         try {
             Class<Correlation> correlationClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
             Correlation correlation = ReflectionUtility.getInstance(correlationClass);
-            similarityMatrix = correlation.calculateCoefficients(scoreMatrix, true);
+            symmetryMatrix = new SymmetryMatrix(scoreMatrix.getColumnSize());
+            correlation.calculateCoefficients(scoreMatrix, true, symmetryMatrix::setValue);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
@@ -114,7 +115,7 @@ public class SLIMModel extends EpocheModel {
         // TODO 设置容量
         itemNeighbors = new int[itemSize][];
         Int2ObjectMap<TreeSet<Integer2FloatKeyValue>> itemNNs = new Int2ObjectOpenHashMap<>();
-        for (MatrixScalar term : similarityMatrix) {
+        for (MatrixScalar term : symmetryMatrix) {
             int row = term.getRow();
             int column = term.getColumn();
             if (row == column) {

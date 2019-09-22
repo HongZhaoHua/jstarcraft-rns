@@ -74,7 +74,8 @@ public class PRankDModel extends RankSGDModel {
         try {
             Class<Correlation> correlationClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
             Correlation correlation = ReflectionUtility.getInstance(correlationClass);
-            itemCorrelations = correlation.calculateCoefficients(scoreMatrix, true);
+            itemCorrelations = new SymmetryMatrix(scoreMatrix.getColumnSize());
+            correlation.calculateCoefficients(scoreMatrix, true, itemCorrelations::setValue);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }

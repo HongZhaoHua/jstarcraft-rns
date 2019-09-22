@@ -40,7 +40,7 @@ public class UserKNNRankingModel extends UserKNNModel {
         while (leftCursor < leftSize && rightCursor < rightSize) {
             if (term.getIndex() == neighbors[rightCursor]) {
                 count++;
-                sum += similarityMatrix.getValue(userIndex, neighbors[rightCursor]);
+                sum += symmetryMatrix.getValue(userIndex, neighbors[rightCursor]);
                 if (iterator.hasNext()) {
                     term = iterator.next();
                 }

@@ -40,7 +40,7 @@ public class ItemKNNRatingModel extends ItemKNNModel {
         while (leftCursor < leftSize && rightCursor < rightSize) {
             if (term.getIndex() == neighbors[rightCursor]) {
                 count++;
-                double similarity = similarityMatrix.getValue(itemIndex, neighbors[rightCursor]);
+                double similarity = symmetryMatrix.getValue(itemIndex, neighbors[rightCursor]);
                 double score = term.getValue();
                 sum += similarity * (score - itemMeans.getValue(neighbors[rightCursor]));
                 absolute += Math.abs(similarity);

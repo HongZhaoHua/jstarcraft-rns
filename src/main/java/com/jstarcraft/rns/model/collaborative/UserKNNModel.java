@@ -34,7 +34,7 @@ public abstract class UserKNNModel extends AbstractModel {
     /** 邻居数量 */
     private int neighborSize;
 
-    protected SymmetryMatrix similarityMatrix;
+    protected SymmetryMatrix symmetryMatrix;
 
     protected DenseVector userMeans;
 
@@ -65,7 +65,8 @@ public abstract class UserKNNModel extends AbstractModel {
         try {
             Class<Correlation> correlationClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
             Correlation correlation = ReflectionUtility.getInstance(correlationClass);
-            similarityMatrix = correlation.calculateCoefficients(scoreMatrix, false);
+            symmetryMatrix = new SymmetryMatrix(scoreMatrix.getRowSize());
+            correlation.calculateCoefficients(scoreMatrix, false, symmetryMatrix::setValue);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
@@ -74,7 +75,7 @@ public abstract class UserKNNModel extends AbstractModel {
         // TODO 设置容量
         userNeighbors = new int[userSize][];
         HashMap<Integer, TreeSet<Entry<Integer, Double>>> userNNs = new HashMap<>();
-        for (MatrixScalar term : similarityMatrix) {
+        for (MatrixScalar term : symmetryMatrix) {
             int row = term.getRow();
             int column = term.getColumn();
             double value = term.getValue();
