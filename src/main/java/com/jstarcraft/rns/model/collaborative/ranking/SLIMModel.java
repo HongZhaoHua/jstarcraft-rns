@@ -70,6 +70,8 @@ public class SLIMModel extends EpocheModel {
     private ArrayVector[] itemVectors;
 
     private Comparator<Integer2FloatKeyValue> comparator = new Comparator<Integer2FloatKeyValue>() {
+
+        @Override
         public int compare(Integer2FloatKeyValue left, Integer2FloatKeyValue right) {
             int value = -(Float.compare(left.getValue(), right.getValue()));
             if (value == 0) {
@@ -77,6 +79,7 @@ public class SLIMModel extends EpocheModel {
             }
             return value;
         }
+
     };
 
     /**
