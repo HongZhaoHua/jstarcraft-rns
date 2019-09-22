@@ -106,7 +106,7 @@ public class SLIMModel extends EpocheModel {
         try {
             Class<Correlation> correlationClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
             Correlation correlation = ReflectionUtility.getInstance(correlationClass);
-            similarityMatrix = correlation.makeCorrelationMatrix(scoreMatrix, true);
+            similarityMatrix = correlation.calculateCoefficients(scoreMatrix, true);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }

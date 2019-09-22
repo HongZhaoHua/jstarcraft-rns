@@ -46,7 +46,7 @@ public class SoRegModel extends SocialModel {
         try {
             Class<Correlation> correlationClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
             Correlation correlation = ReflectionUtility.getInstance(correlationClass);
-            socialCorrelations = correlation.makeCorrelationMatrix(socialMatrix, false);
+            socialCorrelations = correlation.calculateCoefficients(socialMatrix, false);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
