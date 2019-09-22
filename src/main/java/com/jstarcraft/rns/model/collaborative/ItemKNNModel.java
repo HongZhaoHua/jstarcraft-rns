@@ -16,7 +16,11 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.utility.Configurator;
+import com.jstarcraft.core.utility.Integer2FloatKeyValue;
 import com.jstarcraft.rns.model.AbstractModel;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 /**
  * 
@@ -47,14 +51,17 @@ public abstract class ItemKNNModel extends AbstractModel {
 
     protected SparseVector[] itemVectors;
 
-    private Comparator<Entry<Integer, Double>> comparator = new Comparator<Entry<Integer, Double>>() {
-        public int compare(Entry<Integer, Double> left, Entry<Integer, Double> right) {
-            int value = -(left.getValue().compareTo(right.getValue()));
+    private Comparator<Integer2FloatKeyValue> comparator = new Comparator<Integer2FloatKeyValue>() {
+
+        @Override
+        public int compare(Integer2FloatKeyValue left, Integer2FloatKeyValue right) {
+            int value = -(Float.compare(left.getValue(), right.getValue()));
             if (value == 0) {
-                value = left.getKey().compareTo(right.getKey());
+                value = Integer.compare(left.getKey(), right.getKey());
             }
             return value;
         }
+
     };
 
     @Override
@@ -74,45 +81,45 @@ public abstract class ItemKNNModel extends AbstractModel {
 
         // TODO 设置容量
         itemNeighbors = new int[itemSize][];
-        HashMap<Integer, TreeSet<Entry<Integer, Double>>> itemNNs = new HashMap<>();
+        Int2ObjectMap<TreeSet<Integer2FloatKeyValue>> itemNNs = new Int2ObjectOpenHashMap<>();
         for (MatrixScalar term : symmetryMatrix) {
             int row = term.getRow();
             int column = term.getColumn();
-            double value = term.getValue();
+            float value = term.getValue();
             if (row == column) {
                 continue;
             }
             // 忽略相似度为0的物品
-            if (value == 0D) {
+            if (value == 0F) {
                 continue;
             }
-            TreeSet<Entry<Integer, Double>> neighbors = itemNNs.get(row);
+            TreeSet<Integer2FloatKeyValue> neighbors = itemNNs.get(row);
             if (neighbors == null) {
                 neighbors = new TreeSet<>(comparator);
                 itemNNs.put(row, neighbors);
             }
-            neighbors.add(new SimpleImmutableEntry<>(column, value));
+            neighbors.add(new Integer2FloatKeyValue(column, value));
             neighbors = itemNNs.get(column);
             if (neighbors == null) {
                 neighbors = new TreeSet<>(comparator);
                 itemNNs.put(column, neighbors);
             }
-            neighbors.add(new SimpleImmutableEntry<>(row, value));
+            neighbors.add(new Integer2FloatKeyValue(row, value));
         }
 
-        // 构建用户邻居映射
-        for (Entry<Integer, TreeSet<Entry<Integer, Double>>> term : itemNNs.entrySet()) {
-            TreeSet<Entry<Integer, Double>> neighbors = term.getValue();
+        // 构建物品邻居映射
+        for (Int2ObjectMap.Entry<TreeSet<Integer2FloatKeyValue>> term : itemNNs.int2ObjectEntrySet()) {
+            TreeSet<Integer2FloatKeyValue> neighbors = term.getValue();
             int[] value = new int[neighbors.size() < neighborSize ? neighbors.size() : neighborSize];
             int index = 0;
-            for (Entry<Integer, Double> neighbor : neighbors) {
+            for (Integer2FloatKeyValue neighbor : neighbors) {
                 value[index++] = neighbor.getKey();
                 if (index >= neighborSize) {
                     break;
                 }
             }
             Arrays.sort(value);
-            itemNeighbors[term.getKey()] = value;
+            itemNeighbors[term.getIntKey()] = value;
         }
 
         userVectors = new SparseVector[userSize];
