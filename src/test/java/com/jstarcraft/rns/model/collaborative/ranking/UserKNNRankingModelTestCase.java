@@ -28,13 +28,13 @@ public class UserKNNRankingModelTestCase {
         Configurator configuration = new Configurator(keyValues);
         RankingTask job = new RankingTask(UserKNNRankingModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.9137425F, measures.getFloat(AUCEvaluator.class), 0F);
-        Assert.assertEquals(0.4202813F, measures.getFloat(MAPEvaluator.class), 0F);
-        Assert.assertEquals(0.57688016F, measures.getFloat(MRREvaluator.class), 0F);
-        Assert.assertEquals(0.5173292F, measures.getFloat(NDCGEvaluator.class), 0F);
-        Assert.assertEquals(13.214673F, measures.getFloat(NoveltyEvaluator.class), 0F);
-        Assert.assertEquals(0.3236085F, measures.getFloat(PrecisionEvaluator.class), 0F);
-        Assert.assertEquals(0.6062542F, measures.getFloat(RecallEvaluator.class), 0F);
+        Assert.assertEquals(0.90752447F, measures.getFloat(AUCEvaluator.class), 0F);
+        Assert.assertEquals(0.41615525F, measures.getFloat(MAPEvaluator.class), 0F);
+        Assert.assertEquals(0.57524806F, measures.getFloat(MRREvaluator.class), 0F);
+        Assert.assertEquals(0.51393044F, measures.getFloat(NDCGEvaluator.class), 0F);
+        Assert.assertEquals(12.909212F, measures.getFloat(NoveltyEvaluator.class), 0F);
+        Assert.assertEquals(0.32891354F, measures.getFloat(PrecisionEvaluator.class), 0F);
+        Assert.assertEquals(0.601523F, measures.getFloat(RecallEvaluator.class), 0F);
     }
 
 }

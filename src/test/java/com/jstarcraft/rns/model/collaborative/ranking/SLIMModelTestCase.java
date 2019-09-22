@@ -35,7 +35,6 @@ public class SLIMModelTestCase {
         Assert.assertEquals(16.679905F, measures.getFloat(NoveltyEvaluator.class), 0F);
         Assert.assertEquals(0.34018686F, measures.getFloat(PrecisionEvaluator.class), 0F);
         Assert.assertEquals(0.6302096F, measures.getFloat(RecallEvaluator.class), 0F);
-        Assert.assertEquals(0.9137425F, measures.getFloat(AUCEvaluator.class), 0F);
     }
 
 }
