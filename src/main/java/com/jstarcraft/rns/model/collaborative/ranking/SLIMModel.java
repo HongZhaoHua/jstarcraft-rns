@@ -73,11 +73,11 @@ public class SLIMModel extends EpocheModel {
 
         @Override
         public int compare(Integer2FloatKeyValue left, Integer2FloatKeyValue right) {
-            int value = -(Float.compare(left.getValue(), right.getValue()));
-            if (value == 0) {
-                value = Integer.compare(left.getKey(), right.getKey());
+            int compare = -(Float.compare(left.getValue(), right.getValue()));
+            if (compare == 0) {
+                compare = Integer.compare(left.getKey(), right.getKey());
             }
-            return value;
+            return compare;
         }
 
     };

@@ -29,7 +29,7 @@ class Digamma {
         float y = 0F;
         float r = 0F;
 
-        if (Double.isInfinite(x) || Double.isNaN(x)) {
+        if (Float.isInfinite(x) || Float.isNaN(x)) {
             return 0F / 0F;
         }
 

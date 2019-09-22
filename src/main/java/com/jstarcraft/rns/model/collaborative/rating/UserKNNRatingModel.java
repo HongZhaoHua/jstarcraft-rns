@@ -27,7 +27,7 @@ public class UserKNNRatingModel extends UserKNNModel {
         int itemIndex = instance.getQualityFeature(itemDimension);
         SparseVector itemVector = itemVectors[itemIndex];
         MathVector neighbors = userNeighbors[userIndex];
-        if (itemVector.getElementSize() == 0 || neighbors == null) {
+        if (itemVector.getElementSize() == 0 || neighbors.getElementSize() == 0) {
             instance.setQuantityMark(meanScore);
             return;
         }

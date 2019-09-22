@@ -14,10 +14,10 @@ public class GammaUtilityTestCase {
     @Test
     public void testGamma() {
         // logGamma遇到负数会变为NaN或者无穷.
-        Assert.assertTrue(Double.isNaN(GammaUtility.logGamma(0F)) == Double.isNaN(Gamma.logGamma(0D)));
-        Assert.assertTrue(Double.isNaN(GammaUtility.logGamma(-0F)) == Double.isNaN(Gamma.logGamma(-0D)));
-        Assert.assertTrue(Double.isNaN(GammaUtility.logGamma(-0.5F)) == Double.isNaN(Gamma.logGamma(-0.5D)));
-        Assert.assertTrue(Double.isNaN(GammaUtility.logGamma(-1F)) == Double.isNaN(Gamma.logGamma(-1D)));
+        Assert.assertTrue(Float.isNaN(GammaUtility.logGamma(0F)) == Double.isNaN(Gamma.logGamma(0D)));
+        Assert.assertTrue(Float.isNaN(GammaUtility.logGamma(-0F)) == Double.isNaN(Gamma.logGamma(-0D)));
+        Assert.assertTrue(Float.isNaN(GammaUtility.logGamma(-0.5F)) == Double.isNaN(Gamma.logGamma(-0.5D)));
+        Assert.assertTrue(Float.isNaN(GammaUtility.logGamma(-1F)) == Double.isNaN(Gamma.logGamma(-1D)));
 
         Assert.assertTrue(MathUtility.equal(GammaUtility.logGamma(0.1F), (float) Gamma.logGamma(0.1D)));
         Assert.assertTrue(MathUtility.equal(GammaUtility.logGamma(0.5f), (float) Gamma.logGamma(0.5D)));
@@ -38,9 +38,9 @@ public class GammaUtilityTestCase {
     // TODO 通过https://www.wolframalpha.com/input验证,Apache比较准确.
     public void testDigamma() {
         // digamma遇到负整数会变为NaN或者无穷.
-        Assert.assertTrue(Double.isNaN(GammaUtility.digamma(0F)) == Double.isNaN(Gamma.digamma(0D)));
-        Assert.assertTrue(Double.isNaN(GammaUtility.digamma(-0F)) == Double.isNaN(Gamma.digamma(-0D)));
-        Assert.assertTrue(Double.isNaN(GammaUtility.digamma(-1F)) == Double.isNaN(Gamma.digamma(-1D)));
+        Assert.assertTrue(Float.isNaN(GammaUtility.digamma(0F)) == Double.isNaN(Gamma.digamma(0D)));
+        Assert.assertTrue(Float.isNaN(GammaUtility.digamma(-0F)) == Double.isNaN(Gamma.digamma(-0D)));
+        Assert.assertTrue(Float.isNaN(GammaUtility.digamma(-1F)) == Double.isNaN(Gamma.digamma(-1D)));
 
         Assert.assertTrue(MathUtility.equal(GammaUtility.digamma(0.1F), (float) Gamma.digamma(0.1D)));
         Assert.assertTrue(MathUtility.equal(GammaUtility.inverse(GammaUtility.digamma(0.1F), 5), 0.1F));
@@ -65,9 +65,9 @@ public class GammaUtilityTestCase {
     // TODO 通过https://www.wolframalpha.com/input验证,Apache比较准确.
     public void testTrigamma() {
         // trigamma遇到负整数会变为NaN或者无穷.
-        Assert.assertTrue(Double.isNaN(GammaUtility.trigamma(0F)) == Double.isNaN(Gamma.trigamma(0D)));
-        Assert.assertTrue(Double.isNaN(GammaUtility.trigamma(-0F)) == Double.isNaN(Gamma.trigamma(-0D)));
-        Assert.assertTrue(Double.isNaN(GammaUtility.trigamma(-1F)) == Double.isNaN(Gamma.trigamma(-1D)));
+        Assert.assertTrue(Float.isNaN(GammaUtility.trigamma(0F)) == Double.isNaN(Gamma.trigamma(0D)));
+        Assert.assertTrue(Float.isNaN(GammaUtility.trigamma(-0F)) == Double.isNaN(Gamma.trigamma(-0D)));
+        Assert.assertTrue(Float.isNaN(GammaUtility.trigamma(-1F)) == Double.isNaN(Gamma.trigamma(-1D)));
 
         Assert.assertTrue(MathUtility.equal(GammaUtility.trigamma(0.1F), (float) Gamma.trigamma(0.1D)));
         Assert.assertTrue(MathUtility.equal(GammaUtility.trigamma(0.5F), (float) Gamma.trigamma(0.5D)));

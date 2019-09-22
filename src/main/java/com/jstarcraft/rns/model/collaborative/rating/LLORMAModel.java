@@ -124,7 +124,7 @@ public class LLORMAModel extends MatrixFactorizationModel {
         DenseVector leftUserVector = globalUserFactors.getRowVector(leftUserIndex);
         DenseVector rightUserVector = globalUserFactors.getRowVector(rightUserIndex);
         similarity = (float) (1 - 2F / Math.PI * Math.acos(scalar.dotProduct(leftUserVector, rightUserVector).getValue() / (Math.sqrt(scalar.dotProduct(leftUserVector, leftUserVector).getValue()) * Math.sqrt(scalar.dotProduct(rightUserVector, rightUserVector).getValue()))));
-        if (Double.isNaN(similarity)) {
+        if (Float.isNaN(similarity)) {
             similarity = 0F;
         }
         return similarity;
@@ -143,7 +143,7 @@ public class LLORMAModel extends MatrixFactorizationModel {
         DenseVector leftItemVector = globalItemFactors.getRowVector(leftItemIndex);
         DenseVector rightItemVector = globalItemFactors.getRowVector(rightItemIndex);
         similarity = (float) (1 - 2D / Math.PI * Math.acos(scalar.dotProduct(leftItemVector, rightItemVector).getValue() / (Math.sqrt(scalar.dotProduct(leftItemVector, leftItemVector).getValue()) * Math.sqrt(scalar.dotProduct(rightItemVector, rightItemVector).getValue()))));
-        if (Double.isNaN(similarity)) {
+        if (Float.isNaN(similarity)) {
             similarity = 0F;
         }
         return similarity;

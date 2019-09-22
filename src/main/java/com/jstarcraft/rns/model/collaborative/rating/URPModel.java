@@ -323,7 +323,7 @@ public class URPModel extends ProbabilisticGraphicalModel {
             int itemIndex = term.getColumn();
             float score = term.getValue();
             float predict = predict(userIndex, itemIndex);
-            if (Double.isNaN(predict)) {
+            if (Float.isNaN(predict)) {
                 continue;
             }
             float error = score - predict;

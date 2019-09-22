@@ -112,7 +112,7 @@ public class ASVDPlusPlusModel extends BiasedMFModel {
             float scale = term.getValue() - meanScore - userBiases.getValue(userIndex) - itemBiases.getValue(itemIndex);
             value += scalar.dotProduct(negativeVector, itemVector).getValue() * scale / squareRoot;
         }
-        if (Double.isNaN(value)) {
+        if (Float.isNaN(value)) {
             value = meanScore;
         }
         return value;
