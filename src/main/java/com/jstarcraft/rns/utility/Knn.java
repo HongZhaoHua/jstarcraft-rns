@@ -55,7 +55,6 @@ public class Knn {
      * @return
      */
     public MathVector getNeighbors() {
-        System.out.println(neighbors);
         int size = neighbors.size();
         int[] indexes = new int[size];
         float[] values = new float[size];
