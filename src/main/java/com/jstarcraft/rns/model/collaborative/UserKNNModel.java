@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
-import com.jstarcraft.ai.math.algorithm.correlation.Correlation;
+import com.jstarcraft.ai.math.algorithm.correlation.MathCorrelation;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
@@ -66,8 +66,8 @@ public abstract class UserKNNModel extends AbstractModel {
         }
         // TODO 修改为配置枚举
         try {
-            Class<Correlation> correlationClass = (Class<Correlation>) Class.forName(configuration.getString("recommender.correlation.class"));
-            Correlation correlation = ReflectionUtility.getInstance(correlationClass);
+            Class<MathCorrelation> correlationClass = (Class<MathCorrelation>) Class.forName(configuration.getString("recommender.correlation.class"));
+            MathCorrelation correlation = ReflectionUtility.getInstance(correlationClass);
             correlation.calculateCoefficients(scoreMatrix, false, (leftIndex, rightIndex, coefficient) -> {
                 if (leftIndex == rightIndex) {
                     return;
