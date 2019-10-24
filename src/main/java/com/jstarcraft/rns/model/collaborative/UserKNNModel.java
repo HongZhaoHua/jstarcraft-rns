@@ -10,10 +10,10 @@ import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
-import com.jstarcraft.ai.model.knn.Knn;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.Integer2FloatKeyValue;
+import com.jstarcraft.core.utility.Neighborhood;
 import com.jstarcraft.rns.model.AbstractModel;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatMap;
@@ -83,9 +83,9 @@ public abstract class UserKNNModel extends AbstractModel {
         neighborSize = configuration.getInteger("recommender.neighbors.knn.number");
         // TODO 设置容量
         userNeighbors = new MathVector[userSize];
-        Knn<Integer2FloatKeyValue>[] knns = new Knn[userSize];
+        Neighborhood<Integer2FloatKeyValue>[] knns = new Neighborhood[userSize];
         for (int userIndex = 0; userIndex < userSize; userIndex++) {
-            knns[userIndex] = new Knn<Integer2FloatKeyValue>(neighborSize, comparator);
+            knns[userIndex] = new Neighborhood<Integer2FloatKeyValue>(neighborSize, comparator);
         }
         // TODO 修改为配置枚举
         try {
