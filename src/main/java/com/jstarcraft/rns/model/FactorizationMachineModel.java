@@ -123,10 +123,15 @@ public abstract class FactorizationMachineModel extends EpocheModel {
         actionSize = marker.getSize();
         // initialize the parameters of FM
         // TODO 此处需要重构,外部索引与内部索引的映射转换
-        for (int orderIndex = 0, orderSize = marker.getQualityOrder(); orderIndex < orderSize; orderIndex++) {
+        for (int orderIndex = 0, orderSize = marker.getQualityOrder() + marker.getQuantityOrder(); orderIndex < orderSize; orderIndex++) {
             Entry<Integer, KeyValue<String, Boolean>> term = marker.getOuterKeyValue(orderIndex);
-            dimensionSizes[marker.getQualityInner(term.getValue().getKey())] = space.getQualityAttribute(term.getValue().getKey()).getSize();
-            featureSize += dimensionSizes[marker.getQualityInner(term.getValue().getKey())];
+            if (term.getValue().getValue()) {
+                // 处理离散维度
+                dimensionSizes[marker.getQualityInner(term.getValue().getKey())] = space.getQualityAttribute(term.getValue().getKey()).getSize();
+                featureSize += dimensionSizes[marker.getQualityInner(term.getValue().getKey())];
+            } else {
+                // 处理连续维度
+            }
         }
         weightVector = DenseVector.valueOf(featureSize);
         distribution = new QuantityProbability(JDKRandomGenerator.class, 0, NormalDistribution.class, initMean, initStd);
