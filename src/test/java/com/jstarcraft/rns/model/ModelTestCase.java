@@ -1,10 +1,6 @@
 package com.jstarcraft.rns.model;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-
 import com.jstarcraft.ai.modem.ModemCodec;
-import com.jstarcraft.rns.model.Model;
 import com.jstarcraft.rns.task.AbstractTask;
 
 public abstract class ModelTestCase {

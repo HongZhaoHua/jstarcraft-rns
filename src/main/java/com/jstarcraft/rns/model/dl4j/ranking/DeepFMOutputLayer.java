@@ -34,18 +34,19 @@ public class DeepFMOutputLayer extends BaseOutputLayer<DeepFMOutputConfiguration
     private Pair<Gradient, INDArray> getGradientsAndDelta(INDArray preOut, LayerWorkspaceMgr workspaceMgr) {
         ILossFunction lossFunction = layerConf().getLossFn();
         INDArray labels2d = getLabels2d(workspaceMgr, ArrayType.BP_WORKING_MEM);
-        //INDArray delta = lossFunction.computeGradient(labels2d, preOut, layerConf().getActivationFunction(), maskArray);
+        // INDArray delta = lossFunction.computeGradient(labels2d, preOut,
+        // layerConf().getActivationFunction(), maskArray);
         INDArray delta = lossFunction.computeGradient(labels2d, preOut, layerConf().getActivationFn(), maskArray);
 
         Gradient gradient = new DefaultGradient();
 
         INDArray weightGradView = gradientViews.get(DefaultParamInitializer.WEIGHT_KEY);
-        Nd4j.gemm(input, delta, weightGradView, true, false, 1.0, 0.0); //Equivalent to:  weightGradView.assign(input.transpose().mmul(delta));
+        Nd4j.gemm(input, delta, weightGradView, true, false, 1.0, 0.0); // Equivalent to: weightGradView.assign(input.transpose().mmul(delta));
         gradient.gradientForVariable().put(DefaultParamInitializer.WEIGHT_KEY, weightGradView);
 
-        if(hasBias()){
+        if (hasBias()) {
             INDArray biasGradView = gradientViews.get(DefaultParamInitializer.BIAS_KEY);
-            delta.sum(biasGradView, 0); //biasGradView is initialized/zeroed first in sum op
+            delta.sum(biasGradView, 0); // biasGradView is initialized/zeroed first in sum op
             gradient.gradientForVariable().put(DefaultParamInitializer.BIAS_KEY, biasGradView);
         }
 
@@ -56,14 +57,15 @@ public class DeepFMOutputLayer extends BaseOutputLayer<DeepFMOutputConfiguration
     @Override
     public Pair<Gradient, INDArray> backpropGradient(INDArray previous, LayerWorkspaceMgr workspaceMgr) {
         assertInputSet(true);
-        Pair<Gradient, INDArray> pair = getGradientsAndDelta(preOutput2d(true, workspaceMgr), workspaceMgr); //Returns Gradient and delta^(this), not Gradient and epsilon^(this-1)
+        Pair<Gradient, INDArray> pair = getGradientsAndDelta(preOutput2d(true, workspaceMgr), workspaceMgr); // Returns Gradient and delta^(this), not Gradient and epsilon^(this-1)
         INDArray delta = pair.getSecond();
 
         INDArray w = getParamWithNoise(DefaultParamInitializer.WEIGHT_KEY, true, workspaceMgr);
-        INDArray epsilonNext = workspaceMgr.createUninitialized(ArrayType.ACTIVATION_GRAD, new long[]{w.size(0), delta.size(0)}, 'f');
+        INDArray epsilonNext = workspaceMgr.createUninitialized(ArrayType.ACTIVATION_GRAD, new long[] { w.size(0), delta.size(0) }, 'f');
         epsilonNext = w.mmuli(delta.transpose(), epsilonNext).transpose();
 
-        //Normally we would clear weightNoiseParams here - but we want to reuse them for forward + backward + score
+        // Normally we would clear weightNoiseParams here - but we want to reuse them
+        // for forward + backward + score
         // So this is instead done in MultiLayerNetwork/CompGraph backprop methods
 
         epsilonNext = backpropDropOutIfPresent(epsilonNext);

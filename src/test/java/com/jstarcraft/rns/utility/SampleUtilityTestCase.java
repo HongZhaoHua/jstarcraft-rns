@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.jstarcraft.ai.math.structure.vector.ArrayVector;
-import com.jstarcraft.rns.utility.SampleUtility;
 
 public class SampleUtilityTestCase {
 

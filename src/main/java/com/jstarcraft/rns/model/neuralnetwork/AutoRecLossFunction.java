@@ -2,9 +2,7 @@ package com.jstarcraft.rns.model.neuralnetwork;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.ops.transforms.Transforms;
 
 import com.jstarcraft.ai.math.structure.matrix.MathMatrix;
 import com.jstarcraft.ai.math.structure.matrix.Nd4jMatrix;

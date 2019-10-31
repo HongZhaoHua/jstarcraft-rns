@@ -59,7 +59,7 @@ public abstract class ItemKNNModel extends AbstractModel {
         }
 
     };
-    
+
     protected MathVector getNeighborVector(Collection<Integer2FloatKeyValue> neighbors) {
         int size = neighbors.size();
         int[] indexes = new int[size];

@@ -1,7 +1,5 @@
 package com.jstarcraft.rns.model.extend.ranking;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.jstarcraft.ai.data.DataModule;

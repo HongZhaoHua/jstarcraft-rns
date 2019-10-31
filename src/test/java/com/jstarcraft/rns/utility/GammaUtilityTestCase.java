@@ -5,7 +5,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.jstarcraft.ai.math.MathUtility;
-import com.jstarcraft.rns.utility.GammaUtility;
 
 import net.sourceforge.jdistlib.math.PolyGamma;
 

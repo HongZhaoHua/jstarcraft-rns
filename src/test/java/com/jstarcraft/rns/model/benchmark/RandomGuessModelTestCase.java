@@ -1,9 +1,7 @@
 package com.jstarcraft.rns.model.benchmark;
 
-import java.util.Map;
 import java.util.Properties;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,7 +17,6 @@ import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.core.utility.Configurator;
-import com.jstarcraft.rns.model.benchmark.RandomGuessModel;
 import com.jstarcraft.rns.task.RankingTask;
 import com.jstarcraft.rns.task.RatingTask;
 

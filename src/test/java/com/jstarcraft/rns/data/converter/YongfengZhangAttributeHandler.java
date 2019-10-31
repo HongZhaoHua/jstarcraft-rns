@@ -3,27 +3,15 @@ package com.jstarcraft.rns.data.converter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Map.Entry;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.attribute.QualityAttribute;
 import com.jstarcraft.ai.data.attribute.QuantityAttribute;
 import com.jstarcraft.ai.data.exception.DataException;
-import com.jstarcraft.core.common.conversion.csv.ConversionUtility;
-import com.jstarcraft.core.utility.KeyValue;
-
-import it.unimi.dsi.fastutil.ints.Int2FloatRBTreeMap;
-import it.unimi.dsi.fastutil.ints.Int2FloatSortedMap;
-import it.unimi.dsi.fastutil.ints.Int2IntRBTreeMap;
-import it.unimi.dsi.fastutil.ints.Int2IntSortedMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public class YongfengZhangAttributeHandler extends DefaultHandler {
 

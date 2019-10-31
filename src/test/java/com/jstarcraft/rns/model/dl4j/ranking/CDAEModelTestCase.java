@@ -14,7 +14,6 @@ import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.core.utility.Configurator;
-import com.jstarcraft.rns.model.dl4j.ranking.CDAEModel;
 import com.jstarcraft.rns.task.RankingTask;
 
 import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
