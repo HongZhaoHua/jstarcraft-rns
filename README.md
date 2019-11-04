@@ -64,13 +64,13 @@
 * [3.CPU与GPU硬件加速](https://github.com/HongZhaoHua/jstarcraft-ai)
 * [4.模型保存与装载](https://github.com/HongZhaoHua/jstarcraft-ai)
 * 5.丰富的推荐与搜索算法
-* 7.丰富的脚本支持
+* 6.丰富的脚本支持
     * Groovy
     * JS
     * Lua
     * MVEL
     * Python
-* [8.丰富的评估指标](#评估指标)
+* [7.丰富的评估指标](#评估指标)
     * [排序指标](#排序指标)
     * [评分指标](#评分指标)
 
