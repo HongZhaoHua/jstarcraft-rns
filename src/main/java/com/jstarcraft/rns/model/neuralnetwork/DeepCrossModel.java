@@ -46,7 +46,11 @@ import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
 import com.jstarcraft.rns.model.EpocheModel;
 
 /**
- * Created by zhhy on 2018/8/6.
+ * DCN推荐器
+ * 
+ * <pre>
+ * DCN——Deep & Cross Network for Ad Click Prediction
+ * </pre>
  */
 public class DeepCrossModel extends EpocheModel {
     /**
