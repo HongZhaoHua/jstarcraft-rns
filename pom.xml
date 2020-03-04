@@ -38,23 +38,17 @@
         <!-- JStarCraft框架依赖 -->
         <dependency>
             <groupId>com.jstarcraft</groupId>
-            <artifactId>jstarcraft-core-resource</artifactId>
+            <artifactId>jstarcraft-core-script</artifactId>
             <version>1.0</version>
         </dependency>
 
-        <!-- 机器学习框架依赖 -->
         <dependency>
             <groupId>com.jstarcraft</groupId>
             <artifactId>jstarcraft-ai-model</artifactId>
             <version>1.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.jstarcraft</groupId>
-            <artifactId>jstarcraft-ai-evaluate</artifactId>
-            <version>1.0</version>
-        </dependency>
-
+        <!-- 搜索与推荐框架依赖 -->
         <dependency>
             <groupId>ch.obermuhlner</groupId>
             <artifactId>big-math</artifactId>

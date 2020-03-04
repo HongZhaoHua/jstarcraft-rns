@@ -11,8 +11,6 @@ import com.jstarcraft.ai.data.processor.DataSplitter;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
-import com.jstarcraft.core.resource.annotation.ResourceConfiguration;
-import com.jstarcraft.core.resource.annotation.ResourceId;
 import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.data.processor.AllFeatureDataSorter;
@@ -26,12 +24,10 @@ import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
  * @author Birdy
  *
  */
-@ResourceConfiguration
 public abstract class AbstractModel implements Model {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @ResourceId
     protected String id;
 
     // 参数部分
