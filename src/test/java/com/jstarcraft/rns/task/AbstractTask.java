@@ -284,12 +284,21 @@ public abstract class AbstractTask<L, R> {
                         dataTable.setValue(rowIndex, columnIndex, instance.getQuantityMark());
                     }
                     SparseMatrix featureMatrix = SparseMatrix.valueOf(userSize, itemSize, dataTable);
-
-                    model.prepare(configurator, trainMarker, space);
-                    model.practice();
-                    for (Entry<Class<? extends Evaluator>, Integer2FloatKeyValue> measure : evaluate(getEvaluators(featureMatrix), model).entrySet()) {
-                        float value = measure.getValue().getValue() / measure.getValue().getKey();
-                        measures.put(measure.getKey(), value);
+                    {
+                        long current = System.currentTimeMillis();
+                        model.prepare(configurator, trainMarker, space);
+                        model.practice();
+                        String message = StringUtility.format("训练耗时:{}毫秒", System.currentTimeMillis() - current);
+                        logger.info(message);
+                    }
+                    {
+                        long current = System.currentTimeMillis();
+                        for (Entry<Class<? extends Evaluator>, Integer2FloatKeyValue> measure : evaluate(getEvaluators(featureMatrix), model).entrySet()) {
+                            float value = measure.getValue().getValue() / measure.getValue().getKey();
+                            measures.put(measure.getKey(), value);
+                        }
+                        String message = StringUtility.format("评估耗时:{}毫秒", System.currentTimeMillis() - current);
+                        logger.info(message);
                     }
                 }
             } catch (Exception exception) {
