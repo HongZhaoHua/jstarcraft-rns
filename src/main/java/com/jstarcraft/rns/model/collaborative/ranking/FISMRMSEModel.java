@@ -34,7 +34,7 @@ public class FISMRMSEModel extends MatrixFactorizationModel {
 
     private int numNeighbors;
 
-    private float rho, alpha, beta, gamma;
+    private float rho, alpha, beta, itemRegularization, userRegularization;
 
     /**
      * bias regularization
@@ -71,7 +71,8 @@ public class FISMRMSEModel extends MatrixFactorizationModel {
         rho = configuration.getFloat("recommender.fismrmse.rho");// 3-15
         alpha = configuration.getFloat("recommender.fismrmse.alpha", 0.5F);
         beta = configuration.getFloat("recommender.fismrmse.beta", 0.6F);
-        gamma = configuration.getFloat("recommender.fismrmse.gamma", 0.1F);
+        itemRegularization = configuration.getFloat("recommender.fismrmse.gamma", 0.1F);
+        userRegularization = configuration.getFloat("recommender.fismrmse.gamma", 0.1F);
         learnRatio = configuration.getFloat("recommender.fismrmse.lrate", 0.0001F);
     }
 
@@ -127,12 +128,16 @@ public class FISMRMSEModel extends MatrixFactorizationModel {
                 // for efficiency, use the below code to predict rui instead of
                 // simply using "predict(u,j)"
                 float itemBias = itemBiases.getValue(itemIndex);
-                float predict = itemBias + scalar.dotProduct(itemFactors.getRowVector(itemIndex), userVector).getValue();
+                float userBias = userBiases.getValue(userIndex);
+                float predict = itemBias + userBias + scalar.dotProduct(itemFactors.getRowVector(itemIndex), userVector).getValue();
                 float error = score - predict;
                 totalError += error * error;
                 // update bi
-                itemBiases.shiftValue(itemIndex, learnRatio * (error - gamma * itemBias));
-                totalError += gamma * itemBias * itemBias;
+                itemBiases.shiftValue(itemIndex, learnRatio * (error - itemRegularization * itemBias));
+                totalError += itemRegularization * itemBias * itemBias;
+                // update bu
+                userBiases.shiftValue(userIndex, learnRatio * (error - userRegularization * userBias));
+                totalError += userRegularization * userBias * userBias;
 
                 DenseVector factorVector = itemFactors.getRowVector(itemIndex);
                 factorVector.iterateElement(MathCalculator.SERIAL, (element) -> {
