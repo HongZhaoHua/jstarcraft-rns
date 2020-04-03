@@ -17,6 +17,7 @@ import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.configuration.MapConfigurator;
 import com.jstarcraft.rns.task.RankingTask;
 import com.jstarcraft.rns.task.RatingTask;
 
@@ -29,7 +30,7 @@ public class RandomGuessModelTestCase {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data/filmtrust.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/benchmark/randomguess-test.properties"));
-        Configurator configuration = new Configurator(keyValues);
+        Configurator configuration = new MapConfigurator(keyValues);
         RankingTask job = new RankingTask(RandomGuessModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
         Assert.assertEquals(0.5192176F, measures.getFloat(AUCEvaluator.class), 0F);
@@ -46,7 +47,7 @@ public class RandomGuessModelTestCase {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data/filmtrust.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/benchmark/randomguess-test.properties"));
-        Configurator configuration = new Configurator(keyValues);
+        Configurator configuration = new MapConfigurator(keyValues);
         RatingTask job = new RatingTask(RandomGuessModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
         Assert.assertEquals(1.2862209F, measures.getFloat(MAEEvaluator.class), 0F);

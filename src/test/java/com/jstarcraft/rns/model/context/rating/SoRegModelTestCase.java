@@ -10,6 +10,7 @@ import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.configuration.MapConfigurator;
 import com.jstarcraft.rns.task.RatingTask;
 
 import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
@@ -21,7 +22,7 @@ public class SoRegModelTestCase {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data/filmtrust.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/context/rating/soreg-test.properties"));
-        Configurator configuration = new Configurator(keyValues);
+        Configurator configuration = new MapConfigurator(keyValues);
         RatingTask job = new RatingTask(SoRegModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
         Assert.assertEquals(0.6594284F, measures.getFloat(MAEEvaluator.class), 0F);

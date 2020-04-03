@@ -14,6 +14,7 @@ import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.configuration.MapConfigurator;
 import com.jstarcraft.rns.task.RankingTask;
 
 import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
@@ -25,7 +26,7 @@ public class HMMModelTestCase {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data/game.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/ranking/hmm-test.properties"));
-        Configurator configuration = new Configurator(keyValues);
+        Configurator configuration = new MapConfigurator(keyValues);
         RankingTask job = new RankingTask(HMMModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
         Assert.assertEquals(0.8055914F, measures.getFloat(AUCEvaluator.class), 0F);
