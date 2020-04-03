@@ -11,7 +11,7 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.utility.Configurator;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.rns.model.FactorizationMachineModel;
 
 import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;

@@ -35,7 +35,7 @@ import com.jstarcraft.ai.model.neuralnetwork.schedule.Schedule;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.LayerVertex;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.accumulation.InnerProductVertex;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.transformation.HorizontalAttachVertex;
-import com.jstarcraft.core.utility.Configurator;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.data.processor.AllFeatureDataSorter;

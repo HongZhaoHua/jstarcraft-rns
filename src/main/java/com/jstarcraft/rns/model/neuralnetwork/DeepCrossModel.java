@@ -38,7 +38,7 @@ import com.jstarcraft.ai.model.neuralnetwork.vertex.accumulation.OuterProductVer
 import com.jstarcraft.ai.model.neuralnetwork.vertex.operation.PlusVertex;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.operation.ShiftVertex;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.transformation.HorizontalAttachVertex;
-import com.jstarcraft.core.utility.Configurator;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.data.processor.AllFeatureDataSorter;

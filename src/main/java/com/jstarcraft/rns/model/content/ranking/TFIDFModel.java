@@ -14,8 +14,8 @@ import com.jstarcraft.ai.math.algorithm.text.TermFrequency;
 import com.jstarcraft.ai.math.structure.matrix.RowArrayMatrix;
 import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
-import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatAVLTreeMap;

@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.luaj.vm2.LuaTable;
 
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.script.GroovyExpression;
 import com.jstarcraft.core.script.JsExpression;
 import com.jstarcraft.core.script.LuaExpression;
@@ -16,7 +17,6 @@ import com.jstarcraft.core.script.PythonExpression;
 import com.jstarcraft.core.script.ScriptContext;
 import com.jstarcraft.core.script.ScriptExpression;
 import com.jstarcraft.core.script.ScriptScope;
-import com.jstarcraft.core.utility.Configurator;
 import com.jstarcraft.core.utility.StringUtility;
 
 public class ScriptTestCase {

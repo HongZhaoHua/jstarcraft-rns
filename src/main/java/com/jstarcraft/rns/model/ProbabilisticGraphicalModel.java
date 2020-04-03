@@ -3,7 +3,7 @@ package com.jstarcraft.rns.model;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
-import com.jstarcraft.core.utility.Configurator;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.model.exception.ModelException;
 
