@@ -34,6 +34,7 @@
     * [JStarCraft RNS引擎与JS脚本交互](#JStarCraft-RNS引擎与JS脚本交互)
     * [JStarCraft RNS引擎与Lua脚本交互](#JStarCraft-RNS引擎与Lua脚本交互)
     * [JStarCraft RNS引擎与Python脚本交互](#JStarCraft-RNS引擎与Python脚本交互)
+    * [JStarCraft RNS引擎与Ruby脚本交互](#JStarCraft-RNS引擎与Ruby脚本交互)
 * [对比](#对比)
 * [版本](#版本)
 * [参考](#参考)
@@ -265,9 +266,11 @@ String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
 
 // 设置Groovy脚本使用到的Java类
 ScriptContext context = new ScriptContext();
-context.useClasses(Properties.class, Configurator.class);
-context.useClasses(RankingTask.class, RatingTask.class, RandomGuessModel.class);
-context.useClasses(Assert.class, PrecisionEvaluator.class, RecallEvaluator.class, MAEEvaluator.class, MSEEvaluator.class);
+context.useClasses(Properties.class, Assert.class);
+context.useClass("Configurator", MapConfigurator.class);
+context.useClasses("com.jstarcraft.ai.evaluate");
+context.useClasses("com.jstarcraft.rns.task");
+context.useClasses("com.jstarcraft.rns.model.benchmark");
 // 设置Groovy脚本使用到的Java变量
 ScriptScope scope = new ScriptScope();
 scope.createAttribute("loader", loader);
@@ -319,9 +322,11 @@ String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
 
 // 设置JS脚本使用到的Java类
 ScriptContext context = new ScriptContext();
-context.useClasses(Properties.class, Configurator.class);
-context.useClasses(RankingTask.class, RatingTask.class, RandomGuessModel.class);
-context.useClasses(Assert.class, PrecisionEvaluator.class, RecallEvaluator.class, MAEEvaluator.class, MSEEvaluator.class);
+context.useClasses(Properties.class, Assert.class);
+context.useClass("Configurator", MapConfigurator.class);
+context.useClasses("com.jstarcraft.ai.evaluate");
+context.useClasses("com.jstarcraft.rns.task");
+context.useClasses("com.jstarcraft.rns.model.benchmark");
 // 设置JS脚本使用到的Java变量
 ScriptScope scope = new ScriptScope();
 scope.createAttribute("loader", loader);
@@ -374,9 +379,11 @@ String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
 
 // 设置Lua脚本使用到的Java类
 ScriptContext context = new ScriptContext();
-context.useClasses(Properties.class, Configurator.class);
-context.useClasses(RankingTask.class, RatingTask.class, RandomGuessModel.class);
-context.useClasses(Assert.class, PrecisionEvaluator.class, RecallEvaluator.class, MAEEvaluator.class, MSEEvaluator.class);
+context.useClasses(Properties.class, Assert.class);
+context.useClass("Configurator", MapConfigurator.class);
+context.useClasses("com.jstarcraft.ai.evaluate");
+context.useClasses("com.jstarcraft.rns.task");
+context.useClasses("com.jstarcraft.rns.model.benchmark");
 // 设置Lua脚本使用到的Java变量
 ScriptScope scope = new ScriptScope();
 scope.createAttribute("loader", loader);
@@ -429,16 +436,78 @@ String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
 
 // 设置Python脚本使用到的Java类
 ScriptContext context = new ScriptContext();
-context.useClasses(Properties.class, Configurator.class);
-context.useClasses(RankingTask.class, RatingTask.class, RandomGuessModel.class);
-context.useClasses(Assert.class, PrecisionEvaluator.class, RecallEvaluator.class, MAEEvaluator.class, MSEEvaluator.class);
+context.useClasses(Properties.class, Assert.class);
+context.useClass("Configurator", MapConfigurator.class);
+context.useClasses("com.jstarcraft.ai.evaluate");
+context.useClasses("com.jstarcraft.rns.task");
+context.useClasses("com.jstarcraft.rns.model.benchmark");
 // 设置Python脚本使用到的Java变量
 ScriptScope scope = new ScriptScope();
 scope.createAttribute("loader", loader);
-        
+
 // 执行Python脚本
 ScriptExpression expression = new PythonExpression(context, scope, script);
 Map<String, Double> data = expression.doWith(Map.class);
+```
+
+#### JStarCraft-Ruby
+
+* [完整示例](https://github.com/HongZhaoHua/jstarcraft-rns/tree/master/src/test/java/com/jstarcraft/rns/script)
+
+* 编写Ruby脚本训练与评估模型并保存到Model.rb文件
+
+```ruby
+# 构建配置
+keyValues = Properties.new()
+keyValues.load($loader.getResourceAsStream("data.properties"))
+keyValues.load($loader.getResourceAsStream("model/benchmark/randomguess-test.properties"))
+configurator = Configurator.new(keyValues)
+
+# 此对象会返回给Java程序
+_data = Hash.new()
+
+# 构建排序任务
+task = RankingTask.new(RandomGuessModel.java_class, configurator)
+# 训练与评估模型并获取排序指标
+measures = task.execute()
+_data['precision'] = measures.get(PrecisionEvaluator.java_class)
+_data['recall'] = measures.get(RecallEvaluator.java_class)
+
+# 构建评分任务
+task = RatingTask.new(RandomGuessModel.java_class, configurator)
+# 训练与评估模型并获取评分指标
+measures = task.execute()
+_data['mae'] = measures.get(MAEEvaluator.java_class)
+_data['mse'] = measures.get(MSEEvaluator.java_class)
+
+_data;
+```
+
+* 使用JStarCraft框架从Model.rb文件加载并执行Ruby脚本
+
+```java
+// 获取Ruby脚本
+File file = new File(ScriptTestCase.class.getResource("Model.rb").toURI());
+String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
+
+// 设置Ruby脚本使用到的Java类
+ScriptContext context = new ScriptContext();
+context.useClasses(Properties.class, Assert.class);
+context.useClass("Configurator", MapConfigurator.class);
+context.useClasses("com.jstarcraft.ai.evaluate");
+context.useClasses("com.jstarcraft.rns.task");
+context.useClasses("com.jstarcraft.rns.model.benchmark");
+// 设置Ruby脚本使用到的Java变量
+ScriptScope scope = new ScriptScope();
+scope.createAttribute("loader", loader);
+
+// 执行Ruby脚本
+ScriptExpression expression = new RubyExpression(context, scope, script);
+Map<String, Double> data = expression.doWith(Map.class);
+Assert.assertEquals(0.005825241096317768D, data.get("precision"), 0D);
+Assert.assertEquals(0.011579763144254684D, data.get("recall"), 0D);
+Assert.assertEquals(1.270874261856079D, data.get("mae"), 0D);
+Assert.assertEquals(2.425075054168701D, data.get("mse"), 0D);
 ```
 
 ****
