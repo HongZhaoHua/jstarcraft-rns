@@ -9,11 +9,12 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.luaj.vm2.LuaTable;
 
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.configuration.MapConfigurator;
 import com.jstarcraft.core.script.GroovyExpression;
 import com.jstarcraft.core.script.JsExpression;
 import com.jstarcraft.core.script.LuaExpression;
 import com.jstarcraft.core.script.PythonExpression;
+import com.jstarcraft.core.script.RubyExpression;
 import com.jstarcraft.core.script.ScriptContext;
 import com.jstarcraft.core.script.ScriptExpression;
 import com.jstarcraft.core.script.ScriptScope;
@@ -36,7 +37,8 @@ public class ScriptTestCase {
 
         // 设置Groovy脚本使用到的Java类
         ScriptContext context = new ScriptContext();
-        context.useClasses(Properties.class, Configurator.class, Assert.class);
+        context.useClasses(Properties.class, Assert.class);
+        context.useClass("Configurator", MapConfigurator.class);
         context.useClasses("com.jstarcraft.ai.evaluate");
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
@@ -66,7 +68,8 @@ public class ScriptTestCase {
 
         // 设置JS脚本使用到的Java类
         ScriptContext context = new ScriptContext();
-        context.useClasses(Properties.class, Configurator.class, Assert.class);
+        context.useClasses(Properties.class, Assert.class);
+        context.useClass("Configurator", MapConfigurator.class);
         context.useClasses("com.jstarcraft.ai.evaluate");
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
@@ -96,7 +99,8 @@ public class ScriptTestCase {
 
         // 设置Lua脚本使用到的Java类
         ScriptContext context = new ScriptContext();
-        context.useClasses(Properties.class, Configurator.class, Assert.class);
+        context.useClasses(Properties.class, Assert.class);
+        context.useClass("Configurator", MapConfigurator.class);
         context.useClasses("com.jstarcraft.ai.evaluate");
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
@@ -129,7 +133,8 @@ public class ScriptTestCase {
 
         // 设置Python脚本使用到的Java类
         ScriptContext context = new ScriptContext();
-        context.useClasses(Properties.class, Configurator.class, Assert.class);
+        context.useClasses(Properties.class, Assert.class);
+        context.useClass("Configurator", MapConfigurator.class);
         context.useClasses("com.jstarcraft.ai.evaluate");
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
@@ -139,6 +144,37 @@ public class ScriptTestCase {
 
         // 执行Python脚本
         ScriptExpression expression = new PythonExpression(context, scope, script);
+        Map<String, Double> data = expression.doWith(Map.class);
+        Assert.assertEquals(0.005825241096317768D, data.get("precision"), 0D);
+        Assert.assertEquals(0.011579763144254684D, data.get("recall"), 0D);
+        Assert.assertEquals(1.270874261856079D, data.get("mae"), 0D);
+        Assert.assertEquals(2.425075054168701D, data.get("mse"), 0D);
+    }
+
+    /**
+     * 使用Ruby脚本与JStarCraft框架交互
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testRuby() throws Exception {
+        // 获取Ruby脚本
+        File file = new File(ScriptTestCase.class.getResource("Model.rb").toURI());
+        String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
+
+        // 设置Ruby脚本使用到的Java类
+        ScriptContext context = new ScriptContext();
+        context.useClasses(Properties.class, Assert.class);
+        context.useClass("Configurator", MapConfigurator.class);
+        context.useClasses("com.jstarcraft.ai.evaluate");
+        context.useClasses("com.jstarcraft.rns.task");
+        context.useClasses("com.jstarcraft.rns.model.benchmark");
+        // 设置Ruby脚本使用到的Java变量
+        ScriptScope scope = new ScriptScope();
+        scope.createAttribute("loader", loader);
+
+        // 执行Ruby脚本
+        ScriptExpression expression = new RubyExpression(context, scope, script);
         Map<String, Double> data = expression.doWith(Map.class);
         Assert.assertEquals(0.005825241096317768D, data.get("precision"), 0D);
         Assert.assertEquals(0.011579763144254684D, data.get("recall"), 0D);
