@@ -2,7 +2,7 @@
 <!-- Configuration的2个属性status和monitorInterval,分别是状态日志级别以及重新刷新配置文件间隔 -->
 <Configuration status="FATAL">
     <Properties>
-        <Property name="PATTERN" value="%d{HH:mm:ss} [%t] %p %C.%M():%L - %m%n" />
+        <Property name="PATTERN" value="%m%n" />
         <Property name="MODULE" value="rns" />
     </Properties>
 
