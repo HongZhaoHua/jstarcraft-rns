@@ -298,7 +298,9 @@ public abstract class AbstractTask<L, R> {
                         }
                         message += StringUtility.format("评估耗时:{}毫秒", System.currentTimeMillis() - current);
                     }
-                    logger.info(message);
+                    if (logger.isInfoEnabled()) {
+                        logger.info(message);
+                    }
                 }
             } catch (Exception exception) {
                 logger.error("任务异常", exception);
@@ -308,8 +310,8 @@ public abstract class AbstractTask<L, R> {
 
         for (Object2FloatMap.Entry<Class<? extends Evaluator>> term : measures.object2FloatEntrySet()) {
             term.setValue(term.getFloatValue() / separator.getSize());
-            if (logger.isInfoEnabled()) {
-                logger.info(StringUtility.format("Assert.assertEquals({}F, measures.getFloat({}.class), 0F);", term.getFloatValue(), term.getKey().getSimpleName()));
+            if (logger.isDebugEnabled()) {
+                logger.debug(StringUtility.format("Assert.assertEquals({}F, measures.getFloat({}.class), 0F);", term.getFloatValue(), term.getKey().getSimpleName()));
             }
         }
         return measures;
