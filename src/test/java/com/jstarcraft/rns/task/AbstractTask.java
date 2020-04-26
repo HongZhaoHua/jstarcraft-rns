@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -259,6 +260,7 @@ public abstract class AbstractTask<L, R> {
         });
 
         EnvironmentContext context = EnvironmentFactory.getContext();
+        StringBuffer message = new StringBuffer();
         Future<?> task = context.doTask(() -> {
             try {
                 for (int index = 0; index < separator.getSize(); index++) {
@@ -283,12 +285,12 @@ public abstract class AbstractTask<L, R> {
                         dataTable.setValue(rowIndex, columnIndex, instance.getQuantityMark());
                     }
                     SparseMatrix featureMatrix = SparseMatrix.valueOf(userSize, itemSize, dataTable);
-                    String message = StringUtility.format("{}模型", model.getClass().getSimpleName());
+                    message.append(StringUtility.format("| {} |", model.getClass().getSimpleName()));
                     {
                         long current = System.currentTimeMillis();
                         model.prepare(configurator, trainMarker, space);
                         model.practice();
-                        message += StringUtility.format("训练耗时:{}毫秒", System.currentTimeMillis() - current);
+                        message.append(StringUtility.format(" {} |", System.currentTimeMillis() - current));
                     }
                     {
                         long current = System.currentTimeMillis();
@@ -296,10 +298,7 @@ public abstract class AbstractTask<L, R> {
                             float value = measure.getValue().getValue() / measure.getValue().getKey();
                             measures.put(measure.getKey(), value);
                         }
-                        message += StringUtility.format("评估耗时:{}毫秒", System.currentTimeMillis() - current);
-                    }
-                    if (logger.isInfoEnabled()) {
-                        logger.info(message);
+                        message.append(StringUtility.format(" {} |", System.currentTimeMillis() - current));
                     }
                 }
             } catch (Exception exception) {
@@ -313,9 +312,16 @@ public abstract class AbstractTask<L, R> {
             if (logger.isDebugEnabled()) {
                 logger.debug(StringUtility.format("Assert.assertEquals({}F, measures.getFloat({}.class), 0F);", term.getFloatValue(), term.getKey().getSimpleName()));
             }
+            message.append(StringUtility.format(" {} |", format.format(term.getFloatValue())));
+        }
+
+        if (logger.isInfoEnabled()) {
+            logger.info(message.toString());
         }
         return measures;
     }
+
+    private DecimalFormat format = new DecimalFormat("####0.00000");
 
     public Model getModel() {
         return model;
