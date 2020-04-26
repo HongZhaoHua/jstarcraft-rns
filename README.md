@@ -36,10 +36,11 @@
     * [JStarCraft RNS引擎与Python脚本交互](#JStarCraft-RNS引擎与Python脚本交互)
     * [JStarCraft RNS引擎与Ruby脚本交互](#JStarCraft-RNS引擎与Ruby脚本交互)
 * [对比](#对比)
+    * [个性化模型对比](#个性化模型对比)
 * [版本](#版本)
 * [参考](#参考)
-    * [个性化模型](#个性化模型)
-    * [数据集](#数据集)
+    * [个性化模型说明](#个性化模型说明)
+    * [数据集说明](#数据集说明)
 * [协议](#协议)
 * [作者](#作者)
 * [致谢](#致谢)
@@ -515,16 +516,16 @@ Assert.assertEquals(2.425075054168701D, data.get("mse"), 0D);
 
 ## 对比
 
-#### 个性化模型
+#### 个性化模型对比
 
 * 基准模型
 
-| 名称 | 数据集 | 训练 | 预测 | AUC | MAP | MRR | NDCG | Novelty | Precision | Recall |
+| 名称 | 数据集 | 训练 (毫秒) | 预测 (毫秒) | AUC | MAP | MRR | NDCG | Novelty | Precision | Recall |
 | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: |
 | MostPopular | filmtrust | 43 | 273 | 0.92080 | 0.41246 | 0.57196 | 0.51583 | 11.79295 | 0.33230 | 0.62385 |
 | RandomGuess | filmtrust | 38 | 391 | 0.51922 | 0.00627 | 0.02170 | 0.01121 | 91.94900 | 0.00550 | 0.01262 |
 
-| 名称 | 数据集 | 训练 | 预测 | MAE | MPE | MSE |
+| 名称 | 数据集 | 训练 (毫秒) | 预测 (毫秒) | MAE | MPE | MSE |
 | :----: | :----: | :----: | :----: | :----: | :----: | :----: |
 | ConstantGuess | filmtrust | 137 | 45 | 1.05608 | 1.00000 | 1.42309 |
 | GlobalAverage | filmtrust | 60 | 13 | 0.71977 | 0.77908 | 0.85199 |
@@ -536,7 +537,7 @@ Assert.assertEquals(2.425075054168701D, data.get("mse"), 0D);
 
 * 协同模型
 
-| 名称 | 数据集 | 训练 | 预测 | AUC | MAP | MRR | NDCG | Novelty | Precision | Recall |
+| 名称 | 数据集 | 训练 (毫秒) | 预测 (毫秒) | AUC | MAP | MRR | NDCG | Novelty | Precision | Recall |
 | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: |
 | AoBPR | filmtrust | 12448 | 253 | 0.89324 | 0.38967 | 0.53990 | 0.48338 | 21.13004 | 0.32295 | 0.56864 |
 | AspectRanking | filmtrust | 177 | 58 | 0.85130 | 0.15498 | 0.42480 | 0.26012 | 37.36273 | 0.13302 | 0.31292 |
@@ -571,7 +572,7 @@ Assert.assertEquals(2.425075054168701D, data.get("mse"), 0D);
 | RankGeoFM | FourSquare | 368436 | 1093 | 0.72708 | 0.05485 | 0.24012 | 0.11057 | 37.50040 | 0.07866 | 0.08640 |
 | SBPR | filmtrust | 41481 | 247 | 0.91010 | 0.41189 | 0.56480 | 0.50726 | 15.67905 | 0.32440 | 0.59699 |
 
-| 名称 | 数据集 | 训练 | 预测 | MAE | MPE | MSE |
+| 名称 | 数据集 | 训练 (毫秒) | 预测 (毫秒) | MAE | MPE | MSE |
 | :----: | :----: | :----: | :----: | :----: | :----: | :----: |
 | AspectRating | filmtrust | 220 | 5 | 0.65754 | 0.97918 | 0.71809 |
 | ASVDPlusPlus | filmtrust | 5631 | 8 | 0.71975 | 0.77921 | 0.85196 |
@@ -610,12 +611,12 @@ Assert.assertEquals(2.425075054168701D, data.get("mse"), 0D);
 
 * 内容模型
 
-| 名称 | 数据集 | 训练 | 预测 | AUC | MAP | MRR | NDCG | Novelty | Precision | Recall |
+| 名称 | 数据集 | 训练 (毫秒) | 预测 (毫秒) | AUC | MAP | MRR | NDCG | Novelty | Precision | Recall |
 | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: |
 | EFMRanking | dc_dense | 2066 | 2276 | 0.61271 | 0.01611 | 0.04631 | 0.04045 | 53.26140 | 0.02387 | 0.07357 |
 | TFIDF | musical_instruments | 942 | 1085 | 0.52756 | 0.01067 | 0.01917 | 0.01773 | 72.71228 | 0.00588 | 0.03103 |
 
-| 名称 | 数据集 | 训练 | 预测 | MAE | MPE | MSE |
+| 名称 | 数据集 | 训练 (毫秒) | 预测 (毫秒) | MAE | MPE | MSE |
 | :----: | :----: | :----: | :----: | :----: | :----: | :----: |
 | EFMRating | dc_dense | 659 | 8 | 0.61546 | 0.85364 | 0.78279 |
 | HFT | musical_instruments | 162753 | 13 | 0.64272 | 0.94886 | 0.81393 |
@@ -630,7 +631,7 @@ Assert.assertEquals(2.425075054168701D, data.get("mse"), 0D);
 
 ## 参考
 
-#### 个性化模型
+#### 个性化模型说明
 
 * 基准模型
 
@@ -708,7 +709,7 @@ Assert.assertEquals(2.425075054168701D, data.get("mse"), 0D);
 | HFT | Rating | Hidden factors and hidden topics: understanding rating dimensions with review text |
 | TopicMF | Rating | TopicMF: Simultaneously Exploiting Ratings and Reviews for Recommendation |
 
-#### 数据集
+#### 数据集说明
 
 * [Amazon Dataset](http://jmcauley.ucsd.edu/data/amazon/)
 * [Bibsonomy Dataset](https://www.kde.cs.uni-kassel.de/wp-content/uploads/bibsonomy/)
