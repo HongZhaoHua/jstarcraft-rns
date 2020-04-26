@@ -134,7 +134,6 @@ public abstract class AbstractTask<L, R> {
                 } finally {
                     latch.countDown();
                 }
-
             });
         }
         try {
@@ -284,12 +283,12 @@ public abstract class AbstractTask<L, R> {
                         dataTable.setValue(rowIndex, columnIndex, instance.getQuantityMark());
                     }
                     SparseMatrix featureMatrix = SparseMatrix.valueOf(userSize, itemSize, dataTable);
+                    String message = StringUtility.format("{}模型", model.getClass().getSimpleName());
                     {
                         long current = System.currentTimeMillis();
                         model.prepare(configurator, trainMarker, space);
                         model.practice();
-                        String message = StringUtility.format("训练耗时:{}毫秒", System.currentTimeMillis() - current);
-                        logger.info(message);
+                        message += StringUtility.format("训练耗时:{}毫秒", System.currentTimeMillis() - current);
                     }
                     {
                         long current = System.currentTimeMillis();
@@ -297,9 +296,9 @@ public abstract class AbstractTask<L, R> {
                             float value = measure.getValue().getValue() / measure.getValue().getKey();
                             measures.put(measure.getKey(), value);
                         }
-                        String message = StringUtility.format("评估耗时:{}毫秒", System.currentTimeMillis() - current);
-                        logger.info(message);
+                        message += StringUtility.format("评估耗时:{}毫秒", System.currentTimeMillis() - current);
                     }
+                    logger.info(message);
                 }
             } catch (Exception exception) {
                 logger.error("任务异常", exception);
