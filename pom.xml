@@ -26,7 +26,7 @@
     </build>
 
     <dependencies>
-        <!-- 兼容JDK11 -->
+        <!-- 兼容Java 11 -->
         <dependency>
             <groupId>jdk.tools</groupId>
             <artifactId>jdk.tools</artifactId>
