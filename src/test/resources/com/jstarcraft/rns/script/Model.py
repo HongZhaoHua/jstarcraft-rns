@@ -2,7 +2,7 @@
 keyValues = Properties()
 keyValues.load(loader.getResourceAsStream("data.properties"))
 keyValues.load(loader.getResourceAsStream("model/benchmark/randomguess-test.properties"))
-configurator = Configurator([keyValues])
+configurator = Configurator(keyValues)
 
 # 此对象会返回给Java程序
 _data = {}

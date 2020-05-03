@@ -79,15 +79,21 @@ public class ScriptTestCase {
 
         // 执行JS脚本
         ScriptExpression expression = new JsExpression(context, scope, script);
-        Map<String, Float> data = expression.doWith(Map.class);
-        Assert.assertEquals(0.005825241F, data.get("precision"), 0F);
-        Assert.assertEquals(0.011579763F, data.get("recall"), 0F);
-        Assert.assertEquals(1.2708743F, data.get("mae"), 0F);
-        Assert.assertEquals(2.425075F, data.get("mse"), 0F);
+        Map<String, Double> data = expression.doWith(Map.class);
+        Assert.assertEquals(0.005825241096317768D, data.get("precision"), 0D);
+        Assert.assertEquals(0.011579763144254684D, data.get("recall"), 0D);
+        Assert.assertEquals(1.270874261856079D, data.get("mae"), 0D);
+        Assert.assertEquals(2.425075054168701D, data.get("mse"), 0D);
     }
 
     /**
      * 使用Lua脚本与JStarCraft框架交互
+     * 
+     * <pre>
+     * Java 11执行单元测试会抛<b>Unable to make {member} accessible: module {A} does not '{operation} {package}' to {B}</b>异常
+     * 是由于Java 9模块化导致
+     * 需要使用JVM参数:--add-exports java.base/jdk.internal.loader=ALL-UNNAMED
+     * </pre>
      * 
      * @throws Exception
      */

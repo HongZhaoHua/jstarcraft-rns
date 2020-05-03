@@ -2,7 +2,7 @@
 var keyValues = new Properties();
 keyValues.load(loader.getResourceAsStream("data.properties"));
 keyValues.load(loader.getResourceAsStream("model/benchmark/randomguess-test.properties"));
-var configurator = new Configurator([keyValues]);
+var configurator = new Configurator(keyValues);
 
 // 此对象会返回给Java程序
 var _data = {};
