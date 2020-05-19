@@ -45,6 +45,7 @@
 * [协议](#协议)
 * [作者](#作者)
 * [致谢](#致谢)
+* [捐赠](#捐赠)
 
 ****
 
@@ -762,6 +763,12 @@ JStarCraft RNS遵循[Apache 2.0协议](https://www.apache.org/licenses/LICENSE-2
 特别感谢[LibRec团队](https://github.com/guoguibing/librec)与**推荐系统QQ群**(274750470)在推荐方面提供的支持与帮助.
 
 特别感谢[陆徐刚](https://github.com/luxugang/Lucene-7.5.0)在搜索方面提供的支持与帮助.
+
+****
+
+## 捐赠
+
+特别感谢[杭州橙子信息科技有限公司](http://www.haitao.top)对JStarCraft项目的捐赠.
 
 ****
 
