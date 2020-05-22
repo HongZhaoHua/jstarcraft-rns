@@ -1,0 +1,5 @@
+Science Concierge: A Fast Content-Based Recommendation System for Scientific Publications:
+https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0158423
+
+a Python repository for content-based recommendation based on Latent semantic analysis (LSA) topic distance and Rocchio Algorithm, see the implementation interactively on http://www.scholarfy.net:
+https://github.com/titipata/science_concierge
