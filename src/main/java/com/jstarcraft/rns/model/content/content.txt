@@ -1,3 +1,6 @@
+基于内容的推荐(Content-based Recommendations):
+http://breezedeus.github.io/2012/04/10/breezedeus-content-based-rec.html
+
 Science Concierge: A Fast Content-Based Recommendation System for Scientific Publications:
 https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0158423
 
