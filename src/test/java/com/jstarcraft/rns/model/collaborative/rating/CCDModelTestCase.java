@@ -17,17 +17,17 @@ import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
 
 public class CCDModelTestCase {
 
-    @Test
-    public void testRecommender() throws Exception {
-        Properties keyValues = new Properties();
-        keyValues.load(this.getClass().getResourceAsStream("/data/product.properties"));
-        keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/rating/ccd-test.properties"));
-        Configurator configuration = new MapConfigurator(keyValues);
-        RatingTask job = new RatingTask(CCDModel.class, configuration);
-        Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.96670085F, measures.getFloat(MAEEvaluator.class), 0F);
-        Assert.assertEquals(0.93946785F, measures.getFloat(MPEEvaluator.class), 0F);
-        Assert.assertEquals(1.6214504F, measures.getFloat(MSEEvaluator.class), 0F);
-    }
+	@Test
+	public void testRecommender() throws Exception {
+		Properties keyValues = new Properties();
+		keyValues.load(this.getClass().getResourceAsStream("/data/product.properties"));
+		keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/rating/ccd-test.properties"));
+		Configurator configuration = new MapConfigurator(keyValues);
+		RatingTask job = new RatingTask(CCDModel.class, configuration);
+		Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
+		Assert.assertEquals(0.9645193F, measures.getFloat(MAEEvaluator.class), 0F);
+		Assert.assertEquals(0.9366471F, measures.getFloat(MPEEvaluator.class), 0F);
+		Assert.assertEquals(1.6167855F, measures.getFloat(MSEEvaluator.class), 0F);
+	}
 
 }
