@@ -29,13 +29,13 @@ public class RankCDModelTestCase {
         Configurator configuration = new MapConfigurator(keyValues);
         RankingTask job = new RankingTask(RankCDModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.5627095F, measures.getFloat(AUCEvaluator.class), 0F);
-        Assert.assertEquals(0.012531294F, measures.getFloat(MAPEvaluator.class), 0F);
-        Assert.assertEquals(0.04618105F, measures.getFloat(MRREvaluator.class), 0F);
-        Assert.assertEquals(0.026821574F, measures.getFloat(NDCGEvaluator.class), 0F);
-        Assert.assertEquals(55.42019F, measures.getFloat(NoveltyEvaluator.class), 0F);
-        Assert.assertEquals(0.015480171F, measures.getFloat(PrecisionEvaluator.class), 0F);
-        Assert.assertEquals(0.0351956F, measures.getFloat(RecallEvaluator.class), 0F);
+        Assert.assertEquals(0.5614361F, measures.getFloat(AUCEvaluator.class), 0F);
+        Assert.assertEquals(0.012605725F, measures.getFloat(MAPEvaluator.class), 0F);
+        Assert.assertEquals(0.046074353F, measures.getFloat(MRREvaluator.class), 0F);
+        Assert.assertEquals(0.026806315F, measures.getFloat(NDCGEvaluator.class), 0F);
+        Assert.assertEquals(55.43044F, measures.getFloat(NoveltyEvaluator.class), 0F);
+        Assert.assertEquals(0.015423674F, measures.getFloat(PrecisionEvaluator.class), 0F);
+        Assert.assertEquals(0.035282508F, measures.getFloat(RecallEvaluator.class), 0F);
     }
 
 }

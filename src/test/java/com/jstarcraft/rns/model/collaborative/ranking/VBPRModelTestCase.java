@@ -29,13 +29,13 @@ public class VBPRModelTestCase {
         Configurator configuration = new MapConfigurator(keyValues);
         RankingTask job = new RankingTask(VBPRModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.5433601F, measures.getFloat(AUCEvaluator.class), 0F);
-        Assert.assertEquals(0.009196905F, measures.getFloat(MAPEvaluator.class), 0F);
-        Assert.assertEquals(0.035224203F, measures.getFloat(MRREvaluator.class), 0F);
-        Assert.assertEquals(0.018830495F, measures.getFloat(NDCGEvaluator.class), 0F);
-        Assert.assertEquals(45.051006F, measures.getFloat(NoveltyEvaluator.class), 0F);
-        Assert.assertEquals(0.010367238F, measures.getFloat(PrecisionEvaluator.class), 0F);
-        Assert.assertEquals(0.02266414F, measures.getFloat(RecallEvaluator.class), 0F);
+        Assert.assertEquals(0.54307634F, measures.getFloat(AUCEvaluator.class), 0F);
+        Assert.assertEquals(0.009206047F, measures.getFloat(MAPEvaluator.class), 0F);
+        Assert.assertEquals(0.035549607F, measures.getFloat(MRREvaluator.class), 0F);
+        Assert.assertEquals(0.018847404F, measures.getFloat(NDCGEvaluator.class), 0F);
+        Assert.assertEquals(45.42393F, measures.getFloat(NoveltyEvaluator.class), 0F);
+        Assert.assertEquals(0.010338988F, measures.getFloat(PrecisionEvaluator.class), 0F);
+        Assert.assertEquals(0.022509828F, measures.getFloat(RecallEvaluator.class), 0F);
     }
 
 }
