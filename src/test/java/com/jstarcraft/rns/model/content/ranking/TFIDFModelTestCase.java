@@ -24,18 +24,18 @@ public class TFIDFModelTestCase {
     @Test
     public void testRecommender() throws Exception {
         Properties keyValues = new Properties();
-        keyValues.load(this.getClass().getResourceAsStream("/data/musical_instruments.properties"));
+        keyValues.load(this.getClass().getResourceAsStream("/data/product.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/content/tfidf-test.properties"));
         Configurator configuration = new MapConfigurator(keyValues);
         RankingTask job = new RankingTask(TFIDFModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.52755725F, measures.getFloat(AUCEvaluator.class), 0F);
-        Assert.assertEquals(0.010667085F, measures.getFloat(MAPEvaluator.class), 0F);
-        Assert.assertEquals(0.019169327F, measures.getFloat(MRREvaluator.class), 0F);
-        Assert.assertEquals(0.01772937F, measures.getFloat(NDCGEvaluator.class), 0F);
-        Assert.assertEquals(72.71228F, measures.getFloat(NoveltyEvaluator.class), 0F);
-        Assert.assertEquals(0.005876948F, measures.getFloat(PrecisionEvaluator.class), 0F);
-        Assert.assertEquals(0.03102854F, measures.getFloat(RecallEvaluator.class), 0F);
+        Assert.assertEquals(0.52697396F, measures.getFloat(AUCEvaluator.class), 0F);
+        Assert.assertEquals(0.0023915104F, measures.getFloat(MAPEvaluator.class), 0F);
+        Assert.assertEquals(0.009450714F, measures.getFloat(MRREvaluator.class), 0F);
+        Assert.assertEquals(0.007273365F, measures.getFloat(NDCGEvaluator.class), 0F);
+        Assert.assertEquals(66.749245F, measures.getFloat(NoveltyEvaluator.class), 0F);
+        Assert.assertEquals(0.0060734567F, measures.getFloat(PrecisionEvaluator.class), 0F);
+        Assert.assertEquals(0.012156871F, measures.getFloat(RecallEvaluator.class), 0F);
     }
 
 }

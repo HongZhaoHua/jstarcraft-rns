@@ -1,168 +1,89 @@
 package com.jstarcraft.rns.model.content.ranking;
 
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
-import com.jstarcraft.ai.data.attribute.MemoryQualityAttribute;
-import com.jstarcraft.ai.math.algorithm.correlation.MathCorrelation;
+import com.jstarcraft.ai.math.algorithm.text.AbstractTermFrequency;
 import com.jstarcraft.ai.math.algorithm.text.InverseDocumentFrequency;
 import com.jstarcraft.ai.math.algorithm.text.NaturalInverseDocumentFrequency;
-import com.jstarcraft.ai.math.algorithm.text.NaturalTermFrequency;
 import com.jstarcraft.ai.math.algorithm.text.TermFrequency;
-import com.jstarcraft.ai.math.structure.matrix.RowArrayMatrix;
+import com.jstarcraft.ai.math.structure.DefaultScalar;
+import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
+import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.math.structure.vector.ArrayVector;
+import com.jstarcraft.ai.math.structure.vector.HashVector;
+import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
 import com.jstarcraft.core.common.configuration.Configurator;
-import com.jstarcraft.core.common.reflection.ReflectionUtility;
+import com.jstarcraft.core.utility.Integer2FloatKeyValue;
+import com.jstarcraft.core.utility.Neighborhood;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatAVLTreeMap;
-import it.unimi.dsi.fastutil.ints.Int2FloatMap;
 import it.unimi.dsi.fastutil.ints.Int2FloatSortedMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatAVLTreeMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 
 /**
  * 
- * TF IDF推荐器
- * 
- * <pre>
- * 参考LibRec团队
- * </pre>
+ * TF-IDF推荐器
  * 
  * @author Birdy
  *
  */
 public class TFIDFModel extends MatrixFactorizationModel {
 
+    private Comparator<Integer2FloatKeyValue> comparator = new Comparator<Integer2FloatKeyValue>() {
+
+        @Override
+        public int compare(Integer2FloatKeyValue left, Integer2FloatKeyValue right) {
+            int compare = -(Float.compare(left.getValue(), right.getValue()));
+            if (compare == 0) {
+                compare = Integer.compare(left.getKey(), right.getKey());
+            }
+            return compare;
+        }
+
+    };
+
     protected String commentField;
     protected int commentDimension;
 
-    protected RowArrayMatrix userMatrix;
-    protected RowArrayMatrix itemMatrix;
+    protected ArrayVector[] userVectors;
+    protected SparseMatrix itemVectors;
 
-    protected MathCorrelation correlation;
+//	protected MathCorrelation correlation;
+
+    private class VectorTermFrequency extends AbstractTermFrequency {
+
+        public VectorTermFrequency(MathVector vector) {
+            super(new Int2FloatAVLTreeMap(), vector.getElementSize());
+
+            for (VectorScalar scalar : vector) {
+                keyValues.put(scalar.getIndex(), scalar.getValue());
+            }
+        }
+
+    }
 
     private class DocumentIterator implements Iterator<TermFrequency> {
 
-        private Iterator<DataInstance> iterator;
-
-        private Object[] documentValues;
-
-        private Object2IntMap<String> worldIndexes = new Object2IntOpenHashMap<>();
-        private Int2FloatSortedMap keyValues = new Int2FloatAVLTreeMap();
-        private Int2FloatSortedMap factors = new Int2FloatAVLTreeMap();
-        private int[] userCounts = new int[userSize];
-        private int[] itemCounts = new int[itemSize];
-        private ArrayVector[] userVectors = new ArrayVector[userSize];
-        private ArrayVector[] itemVectors = new ArrayVector[itemSize];
-
-        private DocumentIterator(Iterator<DataInstance> iterator, Object[] documentValues) {
-            this.iterator = iterator;
-            this.documentValues = documentValues;
-        }
+        private int index = 0;
 
         @Override
         public boolean hasNext() {
-            return iterator.hasNext();
+            return index < itemVectors.getRowSize();
         }
 
         @Override
         public TermFrequency next() {
-            DataInstance sample = iterator.next();
-            int contentIndex = sample.getQualityFeature(commentDimension);
-            String data = (String) documentValues[contentIndex];
-            String[] words = data.isEmpty() ? new String[0] : data.split(":");
-            int[] document = new int[words.length];
-            int cursor = 0;
-            for (String word : words) {
-                int wordIndex = worldIndexes.getOrDefault(word, -1);
-                if (wordIndex == -1) {
-                    wordIndex = worldIndexes.size();
-                    worldIndexes.put(word, wordIndex);
-                }
-                document[cursor++] = wordIndex;
-            }
-            keyValues.clear();
-            NaturalTermFrequency termFrequency = new NaturalTermFrequency(keyValues, document);
-
-            int userIndex = sample.getQualityFeature(userDimension);
-            int itemIndex = sample.getQualityFeature(itemDimension);
-            userCounts[userIndex]++;
-            itemCounts[itemIndex]++;
-
-            {
-                ArrayVector userVector = userVectors[userIndex];
-                if (userVector != null) {
-                    for (VectorScalar term : userVector) {
-                        float value = factors.getOrDefault(term.getIndex(), 0F);
-                        factors.put(term.getIndex(), value + term.getValue());
-                    }
-                }
-                for (Int2FloatMap.Entry term : keyValues.int2FloatEntrySet()) {
-                    float value = factors.getOrDefault(term.getIntKey(), 0F);
-                    factors.put(term.getIntKey(), value + term.getFloatValue());
-                }
-                int capacity = factors.size();
-                int[] indexes = new int[capacity];
-                float[] values = new float[capacity];
-                int position = 0;
-                for (Int2FloatMap.Entry term : factors.int2FloatEntrySet()) {
-                    indexes[position] = term.getIntKey();
-                    values[position] = term.getFloatValue();
-                    position++;
-                }
-                userVectors[userIndex] = new ArrayVector(capacity, indexes, values);
-                factors.clear();
-            }
-            {
-                ArrayVector itemVector = itemVectors[itemIndex];
-                if (itemVector != null) {
-                    for (VectorScalar term : itemVector) {
-                        float value = factors.getOrDefault(term.getIndex(), 0F);
-                        factors.put(term.getIndex(), value + term.getValue());
-                    }
-                }
-                for (Int2FloatMap.Entry term : keyValues.int2FloatEntrySet()) {
-                    float value = factors.getOrDefault(term.getIntKey(), 0F);
-                    factors.put(term.getIntKey(), value + term.getFloatValue());
-                }
-                int capacity = factors.size();
-                int[] indexes = new int[capacity];
-                float[] values = new float[capacity];
-                int position = 0;
-                for (Int2FloatMap.Entry term : factors.int2FloatEntrySet()) {
-                    indexes[position] = term.getIntKey();
-                    values[position] = term.getFloatValue();
-                    position++;
-                }
-                itemVectors[itemIndex] = new ArrayVector(capacity, indexes, values);
-                factors.clear();
-            }
-
+            MathVector vector = itemVectors.getRowVector(index++);
+            VectorTermFrequency termFrequency = new VectorTermFrequency(vector);
             return termFrequency;
-        }
-
-        public int[] getUserCounts() {
-            return userCounts;
-        }
-
-        public int[] getItemCounts() {
-            return itemCounts;
-        }
-
-        public ArrayVector[] getUserVectors() {
-            return userVectors;
-        }
-
-        public ArrayVector[] getItemVectors() {
-            return itemVectors;
-        }
-
-        public int getNumberOfWords() {
-            return worldIndexes.size();
         }
 
     }
@@ -170,50 +91,77 @@ public class TFIDFModel extends MatrixFactorizationModel {
     @Override
     public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
+        int numberOfFeatures = 4096;
 
-        try {
-            Class<MathCorrelation> similarityClass = (Class<MathCorrelation>) Class.forName(configuration.getString("recommender.correlation.class"));
-            correlation = ReflectionUtility.getInstance(similarityClass);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
+        // 特征矩阵
+        HashMatrix featureMatrix = new HashMatrix(true, itemSize, numberOfFeatures, new Long2FloatRBTreeMap());
+        DataModule featureModel = space.getModule("article");
+        String articleField = configuration.getString("data.model.fields.article");
+        String featureField = configuration.getString("data.model.fields.feature");
+        String degreeField = configuration.getString("data.model.fields.degree");
+        int articleDimension = featureModel.getQualityInner(articleField);
+        int featureDimension = featureModel.getQualityInner(featureField);
+        int degreeDimension = featureModel.getQuantityInner(degreeField);
+        for (DataInstance instance : featureModel) {
+            int itemIndex = instance.getQualityFeature(articleDimension);
+            int featureIndex = instance.getQualityFeature(featureDimension);
+            float featureValue = instance.getQuantityFeature(degreeDimension);
+            featureMatrix.setValue(itemIndex, featureIndex, featureValue);
         }
 
-        commentField = configuration.getString("data.model.fields.comment");
-        commentDimension = model.getQualityInner(commentField);
-        MemoryQualityAttribute attribute = (MemoryQualityAttribute) space.getQualityAttribute(commentField);
-        Object[] documentValues = attribute.getDatas();
-
-        DocumentIterator iterator = new DocumentIterator(model.iterator(), documentValues);
+        // 物品矩阵
+        itemVectors = SparseMatrix.valueOf(itemSize, numberOfFeatures, featureMatrix);
+        DocumentIterator iterator = new DocumentIterator();
         Int2FloatSortedMap keyValues = new Int2FloatAVLTreeMap();
         InverseDocumentFrequency inverseDocumentFrequency = new NaturalInverseDocumentFrequency(keyValues, iterator);
-
-        int[] userCounts = iterator.getUserCounts();
-        int[] itemCounts = iterator.getItemCounts();
-        ArrayVector[] userVectors = iterator.getUserVectors();
-        ArrayVector[] itemVectors = iterator.getItemVectors();
-        ArrayVector emptyVector = new ArrayVector(0, new int[] {}, new float[] {});
-        for (int userIndex = 0; userIndex < userSize; userIndex++) {
-            ArrayVector userVector = userVectors[userIndex];
-            if (userVector == null) {
-                userVectors[userIndex] = emptyVector;
-            } else {
-                for (VectorScalar term : userVector) {
-                    term.scaleValue(inverseDocumentFrequency.getValue(term.getIndex()) / userCounts[userIndex]);
-                }
-            }
-        }
+        /** k控制着词频饱和度,值越小饱和度变化越快,值越大饱和度变化越慢 */
+        float k = 1.2F;
+        /** b控制着词频归一化所起的作用,0.0会完全禁用归一化,1.0会完全启用归一化 */
+        float b = 0.75F;
+        float avgdl = 0F;
         for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
-            ArrayVector itemVector = itemVectors[itemIndex];
-            if (itemVector == null) {
-                itemVectors[itemIndex] = emptyVector;
-            } else {
-                for (VectorScalar term : itemVector) {
-                    term.scaleValue(inverseDocumentFrequency.getValue(term.getIndex()) / itemCounts[itemIndex]);
-                }
+            MathVector itemVector = itemVectors.getRowVector(itemIndex);
+            avgdl += itemVector.getElementSize();
+        }
+        avgdl /= itemSize;
+        for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
+            MathVector itemVector = itemVectors.getRowVector(itemIndex);
+            float l = itemVector.getElementSize() / avgdl;
+            for (VectorScalar scalar : itemVector) {
+                float tf = scalar.getValue();
+                float idf = inverseDocumentFrequency.getValue(scalar.getIndex());
+                // use BM25
+//                scalar.setValue((idf * (k + 1F) * tf) / (k * (1F - b + b * l) + tf));
+                // use TF-IDF
+                scalar.setValue((idf * tf));
             }
         }
-        userMatrix = RowArrayMatrix.valueOf(iterator.getNumberOfWords(), userVectors);
-        itemMatrix = RowArrayMatrix.valueOf(iterator.getNumberOfWords(), itemVectors);
+
+        // 用户矩阵
+        userVectors = new ArrayVector[userSize];
+        for (int userIndex = 0; userIndex < userSize; userIndex++) {
+            MathVector rowVector = scoreMatrix.getRowVector(userIndex);
+            HashVector userVector = new HashVector(0L, numberOfFeatures, new Long2FloatAVLTreeMap());
+            for (VectorScalar scalar : rowVector) {
+                int itemIndex = scalar.getIndex();
+                MathVector itemVector = itemVectors.getRowVector(itemIndex);
+                for (int position = 0; position < itemVector.getElementSize(); position++) {
+                    float value = userVector.getValue(itemVector.getIndex(position));
+                    userVector.setValue(itemVector.getIndex(position), Float.isNaN(value) ? itemVector.getValue(position) : value + itemVector.getValue(position));
+                }
+            }
+            userVector.scaleValues(1F / rowVector.getElementSize());
+            Neighborhood<Integer2FloatKeyValue> knn = new Neighborhood<Integer2FloatKeyValue>(50, comparator);
+            for (int position = 0; position < userVector.getElementSize(); position++) {
+                knn.updateNeighbor(new Integer2FloatKeyValue(userVector.getIndex(position), userVector.getValue(position)));
+            }
+            userVector = new HashVector(0L, numberOfFeatures, new Long2FloatAVLTreeMap());
+            Collection<Integer2FloatKeyValue> neighbors = knn.getNeighbors();
+            for (Integer2FloatKeyValue neighbor : neighbors) {
+                userVector.setValue(neighbor.getKey(), neighbor.getValue());
+            }
+            userVectors[userIndex] = new ArrayVector(userVector);
+        }
     }
 
     @Override
@@ -222,9 +170,9 @@ public class TFIDFModel extends MatrixFactorizationModel {
 
     @Override
     protected float predict(int userIndex, int itemIndex) {
-        ArrayVector userVector = userMatrix.getRowVector(userIndex);
-        ArrayVector itemVector = itemMatrix.getRowVector(itemIndex);
-        return correlation.getCoefficient(userVector, itemVector);
+        MathVector userVector = userVectors[userIndex];
+        MathVector itemVector = itemVectors.getRowVector(itemIndex);
+        return DefaultScalar.getInstance().dotProduct(userVector, itemVector).getValue();
     }
 
     @Override
