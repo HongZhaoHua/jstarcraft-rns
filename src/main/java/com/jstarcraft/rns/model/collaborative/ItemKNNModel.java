@@ -85,7 +85,7 @@ public abstract class ItemKNNModel extends AbstractModel {
         itemNeighbors = new MathVector[itemSize];
         Neighborhood<Integer2FloatKeyValue>[] knns = new Neighborhood[itemSize];
         for (int itemIndex = 0; itemIndex < itemSize; itemIndex++) {
-            knns[itemIndex] = new Neighborhood<Integer2FloatKeyValue>(neighborSize, comparator);
+            knns[itemIndex] = new Neighborhood<>(neighborSize, comparator);
         }
         // TODO 修改为配置枚举
         try {
