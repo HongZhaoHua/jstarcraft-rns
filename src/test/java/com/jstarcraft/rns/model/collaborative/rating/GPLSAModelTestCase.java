@@ -25,9 +25,9 @@ public class GPLSAModelTestCase {
         Configurator configuration = new MapConfigurator(keyValues);
         RatingTask job = new RatingTask(GPLSAModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
-        Assert.assertEquals(0.67310524F, measures.getFloat(MAEEvaluator.class), 0F);
-        Assert.assertEquals(0.9897216F, measures.getFloat(MPEEvaluator.class), 0F);
-        Assert.assertEquals(0.79883236F, measures.getFloat(MSEEvaluator.class), 0F);
+        Assert.assertEquals(0.67359F, measures.getFloat(MAEEvaluator.class), 0F);
+        Assert.assertEquals(0.98907F, measures.getFloat(MPEEvaluator.class), 0F);
+        Assert.assertEquals(0.79879F, measures.getFloat(MSEEvaluator.class), 0F);
     }
 
 }
