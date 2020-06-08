@@ -336,9 +336,9 @@ public abstract class EFMModel extends MatrixFactorizationModel {
                 totalError += (real - pred) * (real - pred);
             }
 
-            totalError += explicitRegularization * (Math.pow(userExplicitFactors.getNorm(2), 2) + Math.pow(itemExplicitFactors.getNorm(2), 2));
-            totalError += implicitRegularization * (Math.pow(userImplicitFactors.getNorm(2), 2) + Math.pow(itemImplicitFactors.getNorm(2), 2));
-            totalError += featureRegularization * Math.pow(featureFactors.getNorm(2), 2);
+            totalError += explicitRegularization * (userExplicitFactors.getNorm(2F, false) + itemExplicitFactors.getNorm(2F, false));
+            totalError += implicitRegularization * (userImplicitFactors.getNorm(2F, false) + itemImplicitFactors.getNorm(2F, false));
+            totalError += featureRegularization * featureFactors.getNorm(2F, false);
 
             logger.info("iter:" + epocheIndex + ", loss:" + totalError);
         }

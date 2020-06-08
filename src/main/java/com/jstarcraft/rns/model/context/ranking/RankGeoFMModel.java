@@ -185,25 +185,25 @@ public class RankGeoFMModel extends MatrixFactorizationModel {
                             negativeItemVector.setValue(factorIndex, negativeItemVector.getValue(factorIndex) - itemDelta);
                         }
 
-                        float explicitUserDelta = explicitUserVector.getNorm(2);
+                        float explicitUserDelta = explicitUserVector.getNorm(2, true);
                         if (explicitUserDelta > radius) {
                             explicitUserDelta = radius / explicitUserDelta;
                         } else {
                             explicitUserDelta = 1F;
                         }
-                        float implicitUserDelta = implicitUserVector.getNorm(2);
+                        float implicitUserDelta = implicitUserVector.getNorm(2F, true);
                         if (implicitUserDelta > balance * radius) {
                             implicitUserDelta = balance * radius / implicitUserDelta;
                         } else {
                             implicitUserDelta = 1F;
                         }
-                        float positiveItemDelta = positiveItemVector.getNorm(2);
+                        float positiveItemDelta = positiveItemVector.getNorm(2, true);
                         if (positiveItemDelta > radius) {
                             positiveItemDelta = radius / positiveItemDelta;
                         } else {
                             positiveItemDelta = 1F;
                         }
-                        float negativeItemDelta = negativeItemVector.getNorm(2);
+                        float negativeItemDelta = negativeItemVector.getNorm(2, true);
                         if (negativeItemDelta > radius) {
                             negativeItemDelta = radius / negativeItemDelta;
                         } else {

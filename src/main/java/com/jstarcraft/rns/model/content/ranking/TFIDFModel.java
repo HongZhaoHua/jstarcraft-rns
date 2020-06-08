@@ -136,7 +136,7 @@ public class TFIDFModel extends MatrixFactorizationModel {
                 scalar.setValue((idf * tf));
             }
             // 归一化
-            itemVector.scaleValues(1F / itemVector.getNorm(2F));
+            itemVector.scaleValues(1F / itemVector.getNorm(2F, true));
         }
 
         // 用户矩阵
