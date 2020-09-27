@@ -31,6 +31,7 @@
     * [Ranking任务与Rating任务之间的区别](#Ranking任务与Rating任务之间的区别)
     * [Rating算法能不能用于Ranking问题](#Rating算法能不能用于Ranking问题)
 * [示例](#示例)
+    * [JStarCraft RNS引擎与BeanShell脚本交互](#JStarCraft-RNS引擎与BeanShell脚本交互)
     * [JStarCraft RNS引擎与Groovy脚本交互](#JStarCraft-RNS引擎与Groovy脚本交互)
     * [JStarCraft RNS引擎与JS脚本交互](#JStarCraft-RNS引擎与JS脚本交互)
     * [JStarCraft RNS引擎与Lua脚本交互](#JStarCraft-RNS引擎与Lua脚本交互)
@@ -228,6 +229,66 @@ Rating算法基于显示反馈数据,趋向于拟合用户的评分.(满意度)
 ****
 
 ## 示例
+
+#### JStarCraft-RNS引擎与BeanShell脚本交互
+
+* [完整示例](https://github.com/HongZhaoHua/jstarcraft-rns/tree/master/src/test/java/com/jstarcraft/rns/script)
+
+* 编写BeanShell脚本训练与评估模型并保存到Model.bsh文件
+
+```beanshell
+// 构建配置
+keyValues = new Properties();
+keyValues.load(loader.getResourceAsStream("data.properties"));
+keyValues.load(loader.getResourceAsStream("model/benchmark/randomguess-test.properties"));
+configurator = new Configurator(keyValues);
+
+// 此对象会返回给Java程序
+_data = new HashMap();
+
+// 构建排序任务
+task = new RankingTask(RandomGuessModel.class, configurator);
+// 训练与评估模型并获取排序指标
+measures = task.execute();
+_data.put("precision", measures.get(PrecisionEvaluator.class));
+_data.put("recall", measures.get(RecallEvaluator.class));
+
+// 构建评分任务
+task = new RatingTask(RandomGuessModel.class, configurator);
+// 训练与评估模型并获取评分指标
+measures = task.execute();
+_data.put("mae", measures.get(MAEEvaluator.class));
+_data.put("mse", measures.get(MSEEvaluator.class));
+
+_data;
+```
+
+* 使用JStarCraft框架从Model.bsh文件加载并执行BeanShell脚本
+
+```java
+ // 获取BeanShell脚本
+File file = new File(ScriptTestCase.class.getResource("Model.bsh").toURI());
+String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
+
+// 设置BeanShell脚本使用到的Java类
+ScriptContext context = new ScriptContext();
+context.useClasses(Properties.class, Assert.class);
+context.useClass("Configurator", MapConfigurator.class);
+context.useClasses("com.jstarcraft.ai.evaluate");
+context.useClasses("com.jstarcraft.rns.task");
+context.useClasses("com.jstarcraft.rns.model.benchmark");
+// 设置BeanShell脚本使用到的Java变量
+ScriptScope scope = new ScriptScope();
+scope.createAttribute("loader", loader);
+
+// 执行BeanShell脚本
+ScriptExpression expression = new GroovyExpression(context, scope, script);
+Map<String, Float> data = expression.doWith(Map.class);
+Assert.assertEquals(0.005825241F, data.get("precision"), 0F);
+Assert.assertEquals(0.011579763F, data.get("recall"), 0F);
+Assert.assertEquals(1.2708743F, data.get("mae"), 0F);
+Assert.assertEquals(2.425075F, data.get("mse"), 0F);
+```
 
 #### JStarCraft-RNS引擎与Groovy脚本交互
 

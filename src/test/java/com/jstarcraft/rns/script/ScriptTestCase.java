@@ -25,6 +25,37 @@ public class ScriptTestCase {
     private static final ClassLoader loader = ScriptTestCase.class.getClassLoader();
 
     /**
+     * 使用BeanShell脚本与JStarCraft框架交互
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testBeanShell() throws Exception {
+        // 获取BeanShell脚本
+        File file = new File(ScriptTestCase.class.getResource("Model.bsh").toURI());
+        String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
+
+        // 设置BeanShell脚本使用到的Java类
+        ScriptContext context = new ScriptContext();
+        context.useClasses(Properties.class, Assert.class);
+        context.useClass("Configurator", MapConfigurator.class);
+        context.useClasses("com.jstarcraft.ai.evaluate");
+        context.useClasses("com.jstarcraft.rns.task");
+        context.useClasses("com.jstarcraft.rns.model.benchmark");
+        // 设置BeanShell脚本使用到的Java变量
+        ScriptScope scope = new ScriptScope();
+        scope.createAttribute("loader", loader);
+
+        // 执行BeanShell脚本
+        ScriptExpression expression = new GroovyExpression(context, scope, script);
+        Map<String, Float> data = expression.doWith(Map.class);
+        Assert.assertEquals(0.005825241F, data.get("precision"), 0F);
+        Assert.assertEquals(0.011579763F, data.get("recall"), 0F);
+        Assert.assertEquals(1.2708743F, data.get("mae"), 0F);
+        Assert.assertEquals(2.425075F, data.get("mse"), 0F);
+    }
+
+    /**
      * 使用Groovy脚本与JStarCraft框架交互
      * 
      * @throws Exception
@@ -79,11 +110,11 @@ public class ScriptTestCase {
 
         // 执行JS脚本
         ScriptExpression expression = new JsExpression(context, scope, script);
-        Map<String, Double> data = expression.doWith(Map.class);
-        Assert.assertEquals(0.005825241096317768D, data.get("precision"), 0D);
-        Assert.assertEquals(0.011579763144254684D, data.get("recall"), 0D);
-        Assert.assertEquals(1.270874261856079D, data.get("mae"), 0D);
-        Assert.assertEquals(2.425075054168701D, data.get("mse"), 0D);
+        Map<String, Float> data = expression.doWith(Map.class);
+        Assert.assertEquals(0.005825241096317768F, data.get("precision"), 0D);
+        Assert.assertEquals(0.011579763144254684F, data.get("recall"), 0D);
+        Assert.assertEquals(1.270874261856079F, data.get("mae"), 0D);
+        Assert.assertEquals(2.425075054168701F, data.get("mse"), 0D);
     }
 
     /**
