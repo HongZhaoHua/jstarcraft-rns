@@ -23,7 +23,7 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.data.processor.AllFeatureDataSorter;
 import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
@@ -367,7 +367,7 @@ public class HMMModel extends ProbabilisticGraphicalModel {
     }
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // 上下文维度
         contextField = configuration.getString("data.model.fields.context");

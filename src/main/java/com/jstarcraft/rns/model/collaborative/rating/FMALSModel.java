@@ -11,7 +11,7 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.rns.model.FactorizationMachineModel;
 
 import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
@@ -36,7 +36,7 @@ public class FMALSModel extends FactorizationMachineModel {
     private SparseMatrix featureMatrix;
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // init Q
         // TODO 此处为rateFactors

@@ -10,7 +10,7 @@ import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
 
@@ -30,7 +30,7 @@ import com.jstarcraft.rns.model.MatrixFactorizationModel;
 public class CCDModel extends MatrixFactorizationModel {
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         userFactors = DenseMatrix.valueOf(userSize, factorSize);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {

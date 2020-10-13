@@ -9,8 +9,8 @@ import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
-import com.jstarcraft.core.common.configuration.Configurator;
-import com.jstarcraft.core.common.configuration.MapConfigurator;
+import com.jstarcraft.core.common.option.MapOption;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.rns.model.neuralnetwork.AutoRecModel;
 import com.jstarcraft.rns.task.RatingTask;
 
@@ -23,7 +23,7 @@ public class AutoRecModelTestCase {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data/filmtrust.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/rating/autorec-test.properties"));
-        Configurator configuration = new MapConfigurator(keyValues);
+        Option configuration = new MapOption(keyValues);
         RatingTask job = new RatingTask(AutoRecModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
         Assert.assertEquals(0.6861356F, measures.getFloat(MAEEvaluator.class), 0F);

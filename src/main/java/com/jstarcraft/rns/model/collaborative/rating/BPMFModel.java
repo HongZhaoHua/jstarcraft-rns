@@ -16,7 +16,7 @@ import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
 import com.jstarcraft.rns.model.exception.ModelException;
 
@@ -210,7 +210,7 @@ public class BPMFModel extends MatrixFactorizationModel {
     }
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         userMean = configuration.getFloat("recommender.recommender.user.mu", 0F);
         userBeta = configuration.getFloat("recommender.recommender.user.beta", 1F);

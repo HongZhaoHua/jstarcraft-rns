@@ -16,7 +16,7 @@ import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.core.utility.Float2FloatKeyValue;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
@@ -59,7 +59,7 @@ public class RankGeoFMModel extends MatrixFactorizationModel {
     private int longitudeDimension, latitudeDimension;
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         margin = configuration.getFloat("recommender.ranking.margin", 0.3F);
         radius = configuration.getFloat("recommender.regularization.radius", 1F);

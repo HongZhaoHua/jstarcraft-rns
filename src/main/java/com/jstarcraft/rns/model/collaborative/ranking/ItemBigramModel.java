@@ -16,7 +16,7 @@ import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.StringUtility;
@@ -101,7 +101,7 @@ public class ItemBigramModel extends ProbabilisticGraphicalModel {
     private DenseVector randomProbabilities;
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         initAlpha = configuration.getFloat("recommender.user.dirichlet.prior", 0.01F);
         initBeta = configuration.getFloat("recommender.topic.dirichlet.prior", 0.01F);

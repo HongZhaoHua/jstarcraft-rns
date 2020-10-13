@@ -3,7 +3,7 @@ package com.jstarcraft.rns.model;
 import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 
 /**
  * 推荐器
@@ -25,7 +25,7 @@ public interface Model {
      * 
      * @param configurator
      */
-    void prepare(Configurator configurator, DataModule module, DataSpace space);
+    void prepare(Option configurator, DataModule module, DataSpace space);
     // void prepare(Configuration configuration, SparseTensor trainTensor,
     // SparseTensor testTensor, DataSpace storage);
 

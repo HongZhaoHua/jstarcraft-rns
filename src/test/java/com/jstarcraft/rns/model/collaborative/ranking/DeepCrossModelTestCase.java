@@ -13,8 +13,8 @@ import com.jstarcraft.ai.evaluate.ranking.NDCGEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
-import com.jstarcraft.core.common.configuration.Configurator;
-import com.jstarcraft.core.common.configuration.MapConfigurator;
+import com.jstarcraft.core.common.option.MapOption;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.rns.model.neuralnetwork.DeepCrossModel;
 import com.jstarcraft.rns.task.RankingTask;
 
@@ -27,7 +27,7 @@ public class DeepCrossModelTestCase {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data/filmtrust.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/ranking/deepcross-test.properties"));
-        Configurator configuration = new MapConfigurator(keyValues);
+        Option configuration = new MapOption(keyValues);
         RankingTask job = new RankingTask(DeepCrossModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
         Assert.assertEquals(0.91646796F, measures.getFloat(AUCEvaluator.class), 0F);

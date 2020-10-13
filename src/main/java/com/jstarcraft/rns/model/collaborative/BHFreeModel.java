@@ -9,7 +9,7 @@ import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.table.SparseTable;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.ProbabilisticGraphicalModel;
 import com.jstarcraft.rns.utility.SampleUtility;
@@ -114,7 +114,7 @@ public abstract class BHFreeModel extends ProbabilisticGraphicalModel {
     private DenseVector itemProbabilities;
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         userTopicSize = configuration.getInteger("recommender.bhfree.user.topic.number", 10);
         itemTopicSize = configuration.getInteger("recommender.bhfree.item.topic.number", 10);

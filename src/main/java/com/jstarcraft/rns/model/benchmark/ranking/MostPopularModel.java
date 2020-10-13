@@ -4,7 +4,7 @@ import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.modem.ModemDefinition;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.rns.model.AbstractModel;
 
 /**
@@ -24,7 +24,7 @@ public class MostPopularModel extends AbstractModel {
     private int[] populars;
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         populars = new int[itemSize];
     }

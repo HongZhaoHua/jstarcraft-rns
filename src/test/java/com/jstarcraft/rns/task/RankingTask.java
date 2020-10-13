@@ -18,7 +18,7 @@ import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.core.utility.Integer2FloatKeyValue;
 import com.jstarcraft.rns.model.Model;
 
@@ -35,11 +35,11 @@ import it.unimi.dsi.fastutil.ints.IntSet;
  */
 public class RankingTask extends AbstractTask<IntSet, IntList> {
 
-    public RankingTask(Model recommender, Configurator configuration) {
+    public RankingTask(Model recommender, Option configuration) {
         super(recommender, configuration);
     }
 
-    public RankingTask(Class<? extends Model> clazz, Configurator configuration) {
+    public RankingTask(Class<? extends Model> clazz, Option configuration) {
         super(clazz, configuration);
     }
 

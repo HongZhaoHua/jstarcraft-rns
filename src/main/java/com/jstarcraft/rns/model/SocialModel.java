@@ -5,7 +5,7 @@ import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 
 import it.unimi.dsi.fastutil.longs.Long2FloatRBTreeMap;
 
@@ -37,7 +37,7 @@ public abstract class SocialModel extends MatrixFactorizationModel {
     protected float socialRegularization;
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
         socialRegularization = configuration.getFloat("recommender.social.regularization", 0.01f);

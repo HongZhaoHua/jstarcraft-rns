@@ -15,7 +15,7 @@ import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.ProbabilisticGraphicalModel;
 
@@ -61,7 +61,7 @@ public class RBMModel extends ProbabilisticGraphicalModel {
     private PredictionType predictionType;
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // TODO 此处可以重构
         epocheSize = configuration.getInteger("recommender.iterator.maximum", 10);

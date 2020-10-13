@@ -10,7 +10,7 @@ import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.rns.model.SocialModel;
 import com.jstarcraft.rns.model.exception.ModelException;
 
@@ -74,7 +74,7 @@ public class TrustSVDModel extends SocialModel {
      * @throws ModelException if error occurs
      */
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // trusterFactors.init(1.0);
         // itemExplicitFactors.init(1.0);

@@ -11,7 +11,7 @@ import com.jstarcraft.ai.data.processor.DataSplitter;
 import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.data.processor.AllFeatureDataSorter;
 import com.jstarcraft.rns.data.processor.QualityFeatureDataSplitter;
@@ -50,7 +50,7 @@ public abstract class AbstractModel implements Model {
     protected SparseMatrix scoreMatrix;
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         userField = configuration.getString("data.model.fields.user", "user");
         itemField = configuration.getString("data.model.fields.item", "item");
 

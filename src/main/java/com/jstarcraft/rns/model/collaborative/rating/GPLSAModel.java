@@ -11,7 +11,7 @@ import com.jstarcraft.ai.math.structure.table.SparseTable;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.core.utility.Float2FloatKeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.ProbabilisticGraphicalModel;
@@ -63,7 +63,7 @@ public class GPLSAModel extends ProbabilisticGraphicalModel {
     protected static float smallValue = MathUtility.EPSILON;
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // Initialize users' conditional probabilities
         userTopicProbabilities = DenseMatrix.valueOf(userSize, factorSize);

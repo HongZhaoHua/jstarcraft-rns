@@ -8,7 +8,7 @@ import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 
 /**
  * 
@@ -39,7 +39,7 @@ public class SVDPlusPlusModel extends BiasedMFModel {
      * @see net.librecommender.recommender.AbstractRecommender#setup()
      */
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         regImpItem = configuration.getFloat("recommender.impItem.regularization", 0.015F);
         factorMatrix = DenseMatrix.valueOf(itemSize, factorSize);

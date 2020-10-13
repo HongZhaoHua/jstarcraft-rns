@@ -12,7 +12,7 @@ import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.ProbabilisticGraphicalModel;
 import com.jstarcraft.rns.utility.GammaUtility;
@@ -93,7 +93,7 @@ public class URPModel extends ProbabilisticGraphicalModel {
     private SparseMatrix learnMatrix, checkMatrix;
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
         float checkRatio = configuration.getFloat("recommender.urp.chech.ratio", 0F);

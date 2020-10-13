@@ -16,7 +16,7 @@ import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.model.exception.ModelException;
 
@@ -90,7 +90,7 @@ public abstract class FactorizationMachineModel extends EpocheModel {
     protected int[] dimensionSizes;
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
         isLearned = configuration.getBoolean("recommender.learnrate.bolddriver", false);

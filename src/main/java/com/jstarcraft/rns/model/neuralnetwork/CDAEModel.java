@@ -28,7 +28,7 @@ import com.jstarcraft.ai.model.neuralnetwork.optimization.StochasticGradientOpti
 import com.jstarcraft.ai.model.neuralnetwork.parameter.XavierParameterFactory;
 import com.jstarcraft.ai.model.neuralnetwork.schedule.ConstantSchedule;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.LayerVertex;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.EpocheModel;
 
@@ -105,7 +105,7 @@ public class CDAEModel extends EpocheModel {
     }
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         inputDimension = getInputDimension();
         hiddenDimension = configuration.getInteger("recommender.hidden.dimension");

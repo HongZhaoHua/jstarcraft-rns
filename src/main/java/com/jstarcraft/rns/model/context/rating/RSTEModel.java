@@ -9,7 +9,7 @@ import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.SocialModel;
 import com.jstarcraft.rns.utility.LogisticUtility;
@@ -30,7 +30,7 @@ public class RSTEModel extends SocialModel {
     private float userSocialRatio;
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         userFactors = DenseMatrix.valueOf(userSize, factorSize);
         userFactors.iterateElement(MathCalculator.SERIAL, (scalar) -> {

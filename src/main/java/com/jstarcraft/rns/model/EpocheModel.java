@@ -3,7 +3,7 @@ package com.jstarcraft.rns.model;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.MathUtility;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.model.exception.ModelException;
 import com.jstarcraft.rns.utility.LogisticUtility;
@@ -30,7 +30,7 @@ public abstract class EpocheModel extends AbstractModel {
     protected float totalError, currentError;
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // 参数部分
         epocheSize = configuration.getInteger("recommender.iterator.maximum", 100);

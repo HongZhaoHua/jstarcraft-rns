@@ -12,7 +12,7 @@ import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.utility.LogisticUtility;
 import com.jstarcraft.rns.utility.SampleUtility;
@@ -42,7 +42,7 @@ public class LambdaFMDynamicModel extends LambdaFMModel {
     private Integer[] orderIndexes;
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         dynamicRho = configuration.getFloat("recommender.item.distribution.parameter");
         numberOfOrders = configuration.getInteger("recommender.number.orders", 10);

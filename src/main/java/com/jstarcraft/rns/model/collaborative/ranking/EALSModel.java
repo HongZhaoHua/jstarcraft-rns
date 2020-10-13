@@ -12,7 +12,7 @@ import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.option.Option;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
 import com.jstarcraft.rns.model.exception.ModelException;
 
@@ -61,7 +61,7 @@ public class EALSModel extends MatrixFactorizationModel {
     private SparseMatrix weights;
 
     @Override
-    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
+    public void prepare(Option configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         weightCoefficient = configuration.getFloat("recommender.wrmf.weight.coefficient", 4.0f);
         ratio = configuration.getFloat("recommender.eals.ratio", 0.4f);
