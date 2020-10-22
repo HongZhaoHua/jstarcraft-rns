@@ -34,6 +34,7 @@
     * [JStarCraft RNS引擎与BeanShell脚本交互](#JStarCraft-RNS引擎与BeanShell脚本交互)
     * [JStarCraft RNS引擎与Groovy脚本交互](#JStarCraft-RNS引擎与Groovy脚本交互)
     * [JStarCraft RNS引擎与JS脚本交互](#JStarCraft-RNS引擎与JS脚本交互)
+    * [JStarCraft RNS引擎与Kotlin脚本交互](#JStarCraft-RNS引擎与Kotlin脚本交互)
     * [JStarCraft RNS引擎与Lua脚本交互](#JStarCraft-RNS引擎与Lua脚本交互)
     * [JStarCraft RNS引擎与Python脚本交互](#JStarCraft-RNS引擎与Python脚本交互)
     * [JStarCraft RNS引擎与Ruby脚本交互](#JStarCraft-RNS引擎与Ruby脚本交互)
@@ -399,6 +400,63 @@ scope.createAttribute("loader", loader);
 
 // 执行JS脚本
 ScriptExpression expression = new JsExpression(context, scope, script);
+Map<String, Float> data = expression.doWith(Map.class);
+```
+
+#### JStarCraft-RNS引擎与Kotlin脚本交互
+
+* [完整示例](https://github.com/HongZhaoHua/jstarcraft-rns/tree/master/src/test/java/com/jstarcraft/rns/script)
+
+* 编写Kotlin脚本训练与评估模型并保存到Model.kt文件
+
+```js
+// 构建配置
+var keyValues = Properties();
+var loader = bindings["loader"] as ClassLoader;
+keyValues.load(loader.getResourceAsStream("data.properties"));
+keyValues.load(loader.getResourceAsStream("model/benchmark/randomguess-test.properties"));
+var option = Option(keyValues);
+
+// 此对象会返回给Java程序
+var _data = mutableMapOf<String, Float>();
+
+// 构建排序任务
+var rankingTask = RankingTask(RandomGuessModel::class.java, option);
+// 训练与评估模型并获取排序指标
+val rankingMeasures = rankingTask.execute();
+_data["precision"] = rankingMeasures.getFloat(PrecisionEvaluator::class.java);
+_data["recall"] = rankingMeasures.getFloat(RecallEvaluator::class.java);
+
+// 构建评分任务
+var ratingTask = RatingTask(RandomGuessModel::class.java, option);
+// 训练与评估模型并获取评分指标
+var ratingMeasures = ratingTask.execute();
+_data["mae"] = ratingMeasures.getFloat(MAEEvaluator::class.java);
+_data["mse"] = ratingMeasures.getFloat(MSEEvaluator::class.java);
+
+_data;
+```
+
+* 使用JStarCraft框架从Model.kt文件加载并执行Kotlin脚本
+
+```java
+// 获取Kotlin脚本
+File file = new File(ScriptTestCase.class.getResource("Model.kt").toURI());
+String script = FileUtils.readFileToString(file, StringUtility.CHARSET);
+
+// 设置Kotlin脚本使用到的Java类
+ScriptContext context = new ScriptContext();
+context.useClasses(Properties.class, Assert.class);
+context.useClass("Option", MapOption.class);
+context.useClasses("com.jstarcraft.ai.evaluate");
+context.useClasses("com.jstarcraft.rns.task");
+context.useClasses("com.jstarcraft.rns.model.benchmark");
+// 设置Kotlin脚本使用到的Java变量
+ScriptScope scope = new ScriptScope();
+scope.createAttribute("loader", loader);
+
+// 执行Kotlin脚本
+ScriptExpression expression = new KotlinExpression(context, scope, script);
 Map<String, Float> data = expression.doWith(Map.class);
 ```
 
