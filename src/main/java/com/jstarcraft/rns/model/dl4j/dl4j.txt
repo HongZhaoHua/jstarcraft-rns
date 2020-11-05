@@ -3,5 +3,8 @@ https://github.com/IceS2388/paper-recommender
 Next RecSys Library:
 https://github.com/wubinzzu/NeuRec
 
+A unified, comprehensive and efficient recommendation library:
+https://github.com/RUCAIBox/RecBole
+
 Easy-to-use,Modular and Extendible package of deep-learning based CTR models:
 https://github.com/shenweichen/DeepCTR
