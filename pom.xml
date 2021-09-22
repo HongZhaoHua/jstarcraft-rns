@@ -102,5 +102,55 @@
             <version>2.11.2</version>
             <scope>test</scope>
         </dependency>
+
+
+        <dependency>
+            <groupId>org.apache-extras.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+            <version>2.0b6</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.4.16</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-scripting-jsr223</artifactId>
+            <version>1.4.21</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.luaj</groupId>
+            <artifactId>luaj-jse</artifactId>
+            <version>3.0.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mvel</groupId>
+            <artifactId>mvel2</artifactId>
+            <version>2.4.4.Final</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.python</groupId>
+            <artifactId>jython-standalone</artifactId>
+            <version>2.7.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>jruby-complete</artifactId>
+            <version>9.2.11.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
