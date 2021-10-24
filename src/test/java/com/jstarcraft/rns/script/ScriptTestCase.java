@@ -1,6 +1,7 @@
 package com.jstarcraft.rns.script;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -12,7 +13,6 @@ import org.luaj.vm2.LuaTable;
 import com.jstarcraft.core.common.option.MapOption;
 import com.jstarcraft.core.script.ScriptContext;
 import com.jstarcraft.core.script.ScriptExpression;
-import com.jstarcraft.core.script.ScriptScope;
 import com.jstarcraft.core.script.groovy.GroovyExpression;
 import com.jstarcraft.core.script.js.JsExpression;
 import com.jstarcraft.core.script.kotlin.KotlinExpression;
@@ -44,12 +44,12 @@ public class ScriptTestCase {
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
         // 设置BeanShell脚本使用到的Java变量
-        ScriptScope scope = new ScriptScope();
-        scope.createAttribute("loader", loader);
+        Map<String, Object> scope = new HashMap<>();
+        scope.put("loader", loader);
 
         // 执行BeanShell脚本
-        ScriptExpression expression = new GroovyExpression(context, scope, script);
-        Map<String, Float> data = expression.doWith(Map.class);
+        ScriptExpression expression = new GroovyExpression(context, script);
+        Map<String, Float> data = expression.doWith(Map.class, scope);
         Assert.assertEquals(0.005825241F, data.get("precision"), 0F);
         Assert.assertEquals(0.011579763F, data.get("recall"), 0F);
         Assert.assertEquals(1.2708743F, data.get("mae"), 0F);
@@ -75,12 +75,12 @@ public class ScriptTestCase {
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
         // 设置Groovy脚本使用到的Java变量
-        ScriptScope scope = new ScriptScope();
-        scope.createAttribute("loader", loader);
+        Map<String, Object> scope = new HashMap<>();
+        scope.put("loader", loader);
 
         // 执行Groovy脚本
-        ScriptExpression expression = new GroovyExpression(context, scope, script);
-        Map<String, Float> data = expression.doWith(Map.class);
+        ScriptExpression expression = new GroovyExpression(context, script);
+        Map<String, Float> data = expression.doWith(Map.class, scope);
         Assert.assertEquals(0.005825241F, data.get("precision"), 0F);
         Assert.assertEquals(0.011579763F, data.get("recall"), 0F);
         Assert.assertEquals(1.2708743F, data.get("mae"), 0F);
@@ -106,12 +106,12 @@ public class ScriptTestCase {
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
         // 设置JS脚本使用到的Java变量
-        ScriptScope scope = new ScriptScope();
-        scope.createAttribute("loader", loader);
+        Map<String, Object> scope = new HashMap<>();
+        scope.put("loader", loader);
 
         // 执行JS脚本
-        ScriptExpression expression = new JsExpression(context, scope, script);
-        Map<String, Float> data = expression.doWith(Map.class);
+        ScriptExpression expression = new JsExpression(context, script);
+        Map<String, Float> data = expression.doWith(Map.class, scope);
         Assert.assertEquals(0.005825241096317768F, data.get("precision"), 0F);
         Assert.assertEquals(0.011579763144254684F, data.get("recall"), 0F);
         Assert.assertEquals(1.270874261856079F, data.get("mae"), 0F);
@@ -137,12 +137,12 @@ public class ScriptTestCase {
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
         // 设置Kotlin脚本使用到的Java变量
-        ScriptScope scope = new ScriptScope();
-        scope.createAttribute("loader", loader);
+        Map<String, Object> scope = new HashMap<>();
+        scope.put("loader", loader);
 
         // 执行Kotlin脚本
-        ScriptExpression expression = new KotlinExpression(context, scope, script);
-        Map<String, Float> data = expression.doWith(Map.class);
+        ScriptExpression expression = new KotlinExpression(context, script);
+        Map<String, Float> data = expression.doWith(Map.class, scope);
         Assert.assertEquals(0.005825241096317768F, data.get("precision"), 0F);
         Assert.assertEquals(0.011579763144254684F, data.get("recall"), 0F);
         Assert.assertEquals(1.270874261856079F, data.get("mae"), 0F);
@@ -174,12 +174,12 @@ public class ScriptTestCase {
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
         // 设置Lua脚本使用到的Java变量
-        ScriptScope scope = new ScriptScope();
-        scope.createAttribute("loader", loader);
+        Map<String, Object> scope = new HashMap<>();
+        scope.put("loader", loader);
 
         // 执行Lua脚本
-        ScriptExpression expression = new LuaExpression(context, scope, script);
-        LuaTable data = expression.doWith(LuaTable.class);
+        ScriptExpression expression = new LuaExpression(context, script);
+        LuaTable data = expression.doWith(LuaTable.class, scope);
         Assert.assertEquals(0.005825241F, data.get("precision").tofloat(), 0F);
         Assert.assertEquals(0.011579763F, data.get("recall").tofloat(), 0F);
         Assert.assertEquals(1.2708743F, data.get("mae").tofloat(), 0F);
@@ -208,12 +208,12 @@ public class ScriptTestCase {
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
         // 设置Python脚本使用到的Java变量
-        ScriptScope scope = new ScriptScope();
-        scope.createAttribute("loader", loader);
+        Map<String, Object> scope = new HashMap<>();
+        scope.put("loader", loader);
 
         // 执行Python脚本
-        ScriptExpression expression = new PythonExpression(context, scope, script);
-        Map<String, Double> data = expression.doWith(Map.class);
+        ScriptExpression expression = new PythonExpression(context, script);
+        Map<String, Double> data = expression.doWith(Map.class, scope);
         Assert.assertEquals(0.005825241096317768D, data.get("precision"), 0D);
         Assert.assertEquals(0.011579763144254684D, data.get("recall"), 0D);
         Assert.assertEquals(1.270874261856079D, data.get("mae"), 0D);
@@ -239,12 +239,12 @@ public class ScriptTestCase {
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
         // 设置Ruby脚本使用到的Java变量
-        ScriptScope scope = new ScriptScope();
-        scope.createAttribute("loader", loader);
+        Map<String, Object> scope = new HashMap<>();
+        scope.put("loader", loader);
 
         // 执行Ruby脚本
-        ScriptExpression expression = new RubyExpression(context, scope, script);
-        Map<String, Double> data = expression.doWith(Map.class);
+        ScriptExpression expression = new RubyExpression(context, script);
+        Map<String, Double> data = expression.doWith(Map.class, scope);
         Assert.assertEquals(0.005825241096317768D, data.get("precision"), 0D);
         Assert.assertEquals(0.011579763144254684D, data.get("recall"), 0D);
         Assert.assertEquals(1.270874261856079D, data.get("mae"), 0D);
