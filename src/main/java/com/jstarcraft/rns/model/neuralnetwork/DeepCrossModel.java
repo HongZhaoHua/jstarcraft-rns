@@ -38,7 +38,7 @@ import com.jstarcraft.ai.model.neuralnetwork.vertex.accumulation.OuterProductVer
 import com.jstarcraft.ai.model.neuralnetwork.vertex.operation.PlusVertex;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.operation.ShiftVertex;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.transformation.HorizontalAttachVertex;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.data.processor.AllFeatureDataSorter;
@@ -93,7 +93,7 @@ public class DeepCrossModel extends EpocheModel {
     protected DataModule marker;
 
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         learnRatio = configuration.getFloat("recommender.iterator.learnrate");
         momentum = configuration.getFloat("recommender.iterator.momentum");

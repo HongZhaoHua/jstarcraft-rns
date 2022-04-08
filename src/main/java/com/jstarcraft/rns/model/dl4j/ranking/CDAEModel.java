@@ -14,7 +14,7 @@ import com.jstarcraft.ai.data.DataInstance;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.rns.model.NeuralNetworkModel;
 
 /**
@@ -57,7 +57,7 @@ public class CDAEModel extends NeuralNetworkModel {
     }
 
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         binarie = configuration.getFloat("recommender.binarize.threshold");
         // transform the sparse matrix to INDArray

@@ -17,7 +17,7 @@ import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.model.neuralnetwork.activation.ActivationFunction;
 import com.jstarcraft.ai.model.neuralnetwork.activation.SoftMaxActivationFunction;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
 import com.jstarcraft.rns.utility.SampleUtility;
@@ -126,7 +126,7 @@ public class HFTModel extends MatrixFactorizationModel {
     protected ActivationFunction function;
 
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
         commentField = configuration.getString("data.model.fields.comment");

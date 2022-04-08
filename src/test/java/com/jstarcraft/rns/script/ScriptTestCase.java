@@ -10,7 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.luaj.vm2.LuaTable;
 
-import com.jstarcraft.core.common.configuration.MapOption;
+import com.jstarcraft.core.common.configuration.string.MapConfigurator;
 import com.jstarcraft.core.script.ScriptContext;
 import com.jstarcraft.core.script.ScriptExpression;
 import com.jstarcraft.core.script.groovy.GroovyExpression;
@@ -39,7 +39,7 @@ public class ScriptTestCase {
         // 设置BeanShell脚本使用到的Java类
         ScriptContext context = new ScriptContext();
         context.useClasses(Properties.class, Assert.class);
-        context.useClass("Option", MapOption.class);
+        context.useClass("Option", MapConfigurator.class);
         context.useClasses("com.jstarcraft.ai.evaluate");
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
@@ -70,7 +70,7 @@ public class ScriptTestCase {
         // 设置Groovy脚本使用到的Java类
         ScriptContext context = new ScriptContext();
         context.useClasses(Properties.class, Assert.class);
-        context.useClass("Option", MapOption.class);
+        context.useClass("Option", MapConfigurator.class);
         context.useClasses("com.jstarcraft.ai.evaluate");
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
@@ -101,7 +101,7 @@ public class ScriptTestCase {
         // 设置JS脚本使用到的Java类
         ScriptContext context = new ScriptContext();
         context.useClasses(Properties.class, Assert.class);
-        context.useClass("Option", MapOption.class);
+        context.useClass("Option", MapConfigurator.class);
         context.useClasses("com.jstarcraft.ai.evaluate");
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
@@ -132,7 +132,7 @@ public class ScriptTestCase {
         // 设置Kotlin脚本使用到的Java类
         ScriptContext context = new ScriptContext();
         context.useClasses(Properties.class, Assert.class);
-        context.useClass("Option", MapOption.class);
+        context.useClass("Option", MapConfigurator.class);
         context.useClasses("com.jstarcraft.ai.evaluate");
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
@@ -169,7 +169,7 @@ public class ScriptTestCase {
         // 设置Lua脚本使用到的Java类
         ScriptContext context = new ScriptContext();
         context.useClasses(Properties.class, Assert.class);
-        context.useClass("Option", MapOption.class);
+        context.useClass("Option", MapConfigurator.class);
         context.useClasses("com.jstarcraft.ai.evaluate");
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
@@ -203,7 +203,7 @@ public class ScriptTestCase {
         // 设置Python脚本使用到的Java类
         ScriptContext context = new ScriptContext();
         context.useClasses(Properties.class, Assert.class);
-        context.useClass("Option", MapOption.class);
+        context.useClass("Option", MapConfigurator.class);
         context.useClasses("com.jstarcraft.ai.evaluate");
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");
@@ -234,7 +234,7 @@ public class ScriptTestCase {
         // 设置Ruby脚本使用到的Java类
         ScriptContext context = new ScriptContext();
         context.useClasses(Properties.class, Assert.class);
-        context.useClass("Option", MapOption.class);
+        context.useClass("Option", MapConfigurator.class);
         context.useClasses("com.jstarcraft.ai.evaluate");
         context.useClasses("com.jstarcraft.rns.task");
         context.useClasses("com.jstarcraft.rns.model.benchmark");

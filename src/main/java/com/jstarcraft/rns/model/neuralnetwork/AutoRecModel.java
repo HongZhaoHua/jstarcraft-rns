@@ -26,7 +26,7 @@ import com.jstarcraft.ai.model.neuralnetwork.optimization.StochasticGradientOpti
 import com.jstarcraft.ai.model.neuralnetwork.parameter.XavierUniformParameterFactory;
 import com.jstarcraft.ai.model.neuralnetwork.schedule.ConstantSchedule;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.LayerVertex;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.rns.model.EpocheModel;
 
 /**
@@ -100,7 +100,7 @@ public class AutoRecModel extends EpocheModel {
     }
 
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         inputDimension = getInputDimension();
         hiddenDimension = configuration.getInteger("recommender.hidden.dimension");

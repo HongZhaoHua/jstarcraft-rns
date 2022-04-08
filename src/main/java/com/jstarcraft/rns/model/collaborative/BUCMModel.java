@@ -7,7 +7,7 @@ import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.ProbabilisticGraphicalModel;
 import com.jstarcraft.rns.utility.GammaUtility;
@@ -97,7 +97,7 @@ public abstract class BUCMModel extends ProbabilisticGraphicalModel {
     private DenseVector probabilities;
 
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // cumulative parameters
         // TODO 考虑重构

@@ -8,7 +8,7 @@ import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.rns.model.FactorizationMachineModel;
 
 /**
@@ -31,7 +31,7 @@ public class FFMModel extends FactorizationMachineModel {
     private int[] featureOrders;
 
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
         // Matrix for p * (factor * filed)

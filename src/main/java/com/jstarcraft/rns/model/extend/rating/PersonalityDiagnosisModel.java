@@ -8,7 +8,7 @@ import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.rns.model.AbstractModel;
 import com.jstarcraft.rns.model.exception.ModelException;
 
@@ -48,7 +48,7 @@ public class PersonalityDiagnosisModel extends AbstractModel {
      * @throws ModelException if error occurs
      */
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         prior = 1F / userSize;
         sigma = configuration.getFloat("recommender.PersonalityDiagnosis.sigma");

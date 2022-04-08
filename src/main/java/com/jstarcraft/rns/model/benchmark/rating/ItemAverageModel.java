@@ -5,7 +5,7 @@ import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.modem.ModemDefinition;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.rns.model.AbstractModel;
 
 /**
@@ -26,7 +26,7 @@ public class ItemAverageModel extends AbstractModel {
     private float[] itemMeans;
 
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         itemMeans = new float[itemSize];
     }

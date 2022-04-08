@@ -9,7 +9,7 @@ import com.jstarcraft.ai.math.structure.matrix.SymmetryMatrix;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.collaborative.ranking.RankSGDModel;
@@ -52,7 +52,7 @@ public class PRankDModel extends RankSGDModel {
      * @throws ModelException if error occurs
      */
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         similarityFilter = configuration.getFloat("recommender.sim.filter", 4F);
         float denominator = 0F;

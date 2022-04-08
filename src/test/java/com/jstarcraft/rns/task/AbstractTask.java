@@ -32,7 +32,7 @@ import com.jstarcraft.ai.environment.EnvironmentFactory;
 import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.math.structure.matrix.HashMatrix;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.common.conversion.json.JsonUtility;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.common.reflection.TypeUtility;
@@ -67,7 +67,7 @@ public abstract class AbstractTask<L, R> {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    protected Option configurator;
+    protected Configurator configurator;
 
     protected String userField, itemField, scoreField;
 
@@ -79,7 +79,7 @@ public abstract class AbstractTask<L, R> {
 
     protected Model model;
 
-    protected AbstractTask(Model model, Option configurator) {
+    protected AbstractTask(Model model, Configurator configurator) {
         this.configurator = configurator;
         Long seed = configurator.getLong("recommender.random.seed");
         if (seed != null) {
@@ -88,7 +88,7 @@ public abstract class AbstractTask<L, R> {
         this.model = model;
     }
 
-    protected AbstractTask(Class<? extends Model> clazz, Option configurator) {
+    protected AbstractTask(Class<? extends Model> clazz, Configurator configurator) {
         this.configurator = configurator;
         Long seed = configurator.getLong("recommender.random.seed");
         if (seed != null) {

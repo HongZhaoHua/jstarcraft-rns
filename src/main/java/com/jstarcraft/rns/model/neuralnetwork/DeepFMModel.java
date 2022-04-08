@@ -35,7 +35,7 @@ import com.jstarcraft.ai.model.neuralnetwork.schedule.Schedule;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.LayerVertex;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.accumulation.InnerProductVertex;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.transformation.HorizontalAttachVertex;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.data.processor.AllFeatureDataSorter;
@@ -95,7 +95,7 @@ public class DeepFMModel extends EpocheModel {
     protected DataModule marker;
 
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         learnRatio = configuration.getFloat("recommender.iterator.learnrate");
         momentum = configuration.getFloat("recommender.iterator.momentum");

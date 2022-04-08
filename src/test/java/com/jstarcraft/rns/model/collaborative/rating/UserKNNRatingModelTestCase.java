@@ -9,8 +9,8 @@ import com.jstarcraft.ai.evaluate.Evaluator;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
-import com.jstarcraft.core.common.configuration.MapOption;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.configuration.string.MapConfigurator;
 import com.jstarcraft.rns.task.RatingTask;
 
 import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
@@ -22,7 +22,7 @@ public class UserKNNRatingModelTestCase {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data/filmtrust.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/collaborative/userknnrating-test.properties"));
-        Option configuration = new MapOption(keyValues);
+        Configurator configuration = new MapConfigurator(keyValues);
         RatingTask job = new RatingTask(UserKNNRatingModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
         Assert.assertEquals(0.63933104F, measures.getFloat(MAEEvaluator.class), 0F);

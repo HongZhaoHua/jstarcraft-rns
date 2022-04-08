@@ -10,7 +10,7 @@ import com.jstarcraft.ai.environment.EnvironmentContext;
 import com.jstarcraft.ai.math.structure.matrix.DenseMatrix;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.rns.model.AbstractModel;
 import com.jstarcraft.rns.model.exception.ModelException;
 
@@ -39,7 +39,7 @@ public class AssociationRuleModel extends AbstractModel {
      * @throws ModelException if error occurs
      */
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         associationMatrix = DenseMatrix.valueOf(itemSize, itemSize);
     }

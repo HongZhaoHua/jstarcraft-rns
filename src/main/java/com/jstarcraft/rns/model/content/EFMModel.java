@@ -18,7 +18,7 @@ import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
@@ -59,7 +59,7 @@ public abstract class EFMModel extends MatrixFactorizationModel {
     protected float featureRegularization;
 
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
         commentField = configuration.getString("data.model.fields.comment");

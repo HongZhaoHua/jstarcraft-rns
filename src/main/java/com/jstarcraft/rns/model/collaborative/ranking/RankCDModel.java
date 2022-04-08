@@ -10,7 +10,7 @@ import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
 
 /**
@@ -33,7 +33,7 @@ public class RankCDModel extends MatrixFactorizationModel {
     private SparseMatrix weightMatrix;
 
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
 
         // TODO 此处代码可以消除(使用常量Marker代替或者使用binarize.threshold)

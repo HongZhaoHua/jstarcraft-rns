@@ -16,8 +16,8 @@ import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
-import com.jstarcraft.core.common.configuration.MapOption;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
+import com.jstarcraft.core.common.configuration.string.MapConfigurator;
 import com.jstarcraft.rns.model.content.ranking.EFMRankingModel;
 import com.jstarcraft.rns.model.content.rating.EFMRatingModel;
 import com.jstarcraft.rns.task.RankingTask;
@@ -32,7 +32,7 @@ public class EFMModelTestCase {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data/dc_dense.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/content/efmranking-test.properties"));
-        Option configuration = new MapOption(keyValues);
+        Configurator configuration = new MapConfigurator(keyValues);
         RankingTask job = new RankingTask(EFMRankingModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
         Assert.assertEquals(0.6127146F, measures.getFloat(AUCEvaluator.class), 0F);
@@ -49,7 +49,7 @@ public class EFMModelTestCase {
         Properties keyValues = new Properties();
         keyValues.load(this.getClass().getResourceAsStream("/data/dc_dense.properties"));
         keyValues.load(this.getClass().getResourceAsStream("/model/content/efmrating-test.properties"));
-        Option configuration = new MapOption(keyValues);
+        Configurator configuration = new MapConfigurator(keyValues);
         RatingTask job = new RatingTask(EFMRatingModel.class, configuration);
         Object2FloatSortedMap<Class<? extends Evaluator>> measures = job.execute();
         Assert.assertEquals(0.6154602F, measures.getFloat(MAEEvaluator.class), 0F);

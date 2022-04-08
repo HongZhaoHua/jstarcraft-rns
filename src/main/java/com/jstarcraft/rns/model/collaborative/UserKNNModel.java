@@ -10,7 +10,7 @@ import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.utility.Integer2FloatKeyValue;
 import com.jstarcraft.core.utility.Neighborhood;
@@ -78,7 +78,7 @@ public abstract class UserKNNModel extends AbstractModel {
     }
 
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         neighborSize = configuration.getInteger("recommender.neighbors.knn.number");
         // TODO 设置容量

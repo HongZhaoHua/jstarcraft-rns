@@ -3,7 +3,7 @@ package com.jstarcraft.rns.model;
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.utility.StringUtility;
 import com.jstarcraft.rns.model.exception.ModelException;
 
@@ -50,7 +50,7 @@ public abstract class ProbabilisticGraphicalModel extends EpocheModel {
      * @throws ModelException if error occurs during setting up
      */
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         factorSize = configuration.getInteger("recommender.topic.number", 10);
         burnIn = configuration.getInteger("recommender.pgm.burnin", 100);

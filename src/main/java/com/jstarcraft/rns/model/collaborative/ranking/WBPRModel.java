@@ -12,7 +12,7 @@ import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
@@ -61,7 +61,7 @@ public class WBPRModel extends MatrixFactorizationModel {
     // protected static String cacheSpec;
 
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         biasRegularization = configuration.getFloat("recommender.bias.regularization", 0.01F);
 

@@ -18,7 +18,7 @@ import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.HashVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.utility.Integer2FloatKeyValue;
 import com.jstarcraft.core.utility.Neighborhood;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
@@ -89,7 +89,7 @@ public class TFIDFModel extends MatrixFactorizationModel {
     }
 
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         int numberOfFeatures = 4096;
 

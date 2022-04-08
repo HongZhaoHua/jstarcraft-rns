@@ -6,7 +6,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 
 /**
  * 神经网络推荐器
@@ -68,7 +68,7 @@ public abstract class NeuralNetworkModel extends EpocheModel {
     protected abstract MultiLayerConfiguration getNetworkConfiguration();
 
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         inputDimension = getInputDimension();
         hiddenDimension = configuration.getInteger("recommender.hidden.dimension");

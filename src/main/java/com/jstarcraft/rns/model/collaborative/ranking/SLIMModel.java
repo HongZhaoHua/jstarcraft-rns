@@ -15,7 +15,7 @@ import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.matrix.SymmetryMatrix;
 import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.common.reflection.ReflectionUtility;
 import com.jstarcraft.core.utility.Integer2FloatKeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
@@ -88,7 +88,7 @@ public class SLIMModel extends EpocheModel {
      * @throws ModelException if error occurs
      */
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         neighborSize = configuration.getInteger("recommender.neighbors.knn.number", 50);
         regL1Norm = configuration.getFloat("recommender.slim.regularization.l1", 1.0F);

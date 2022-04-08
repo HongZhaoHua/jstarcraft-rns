@@ -8,7 +8,7 @@ import com.jstarcraft.ai.math.structure.DefaultScalar;
 import com.jstarcraft.ai.math.structure.MathCalculator;
 import com.jstarcraft.ai.math.structure.matrix.MatrixScalar;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
-import com.jstarcraft.core.common.configuration.Option;
+import com.jstarcraft.core.common.configuration.Configurator;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;
 import com.jstarcraft.rns.utility.SampleUtility;
@@ -33,7 +33,7 @@ public class RankSGDModel extends MatrixFactorizationModel {
     protected DenseVector itemProbabilities;
 
     @Override
-    public void prepare(Option configuration, DataModule model, DataSpace space) {
+    public void prepare(Configurator configuration, DataModule model, DataSpace space) {
         super.prepare(configuration, model, space);
         // compute item sampling probability
         DefaultScalar sum = DefaultScalar.getInstance();
