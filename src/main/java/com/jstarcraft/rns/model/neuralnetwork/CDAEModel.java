@@ -28,7 +28,7 @@ import com.jstarcraft.ai.model.neuralnetwork.optimization.StochasticGradientOpti
 import com.jstarcraft.ai.model.neuralnetwork.parameter.XavierParameterFactory;
 import com.jstarcraft.ai.model.neuralnetwork.schedule.ConstantSchedule;
 import com.jstarcraft.ai.model.neuralnetwork.vertex.LayerVertex;
-import com.jstarcraft.core.common.option.Option;
+import com.jstarcraft.core.common.configuration.Option;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.model.EpocheModel;
 

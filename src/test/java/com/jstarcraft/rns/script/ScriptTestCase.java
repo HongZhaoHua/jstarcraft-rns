@@ -10,7 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.luaj.vm2.LuaTable;
 
-import com.jstarcraft.core.common.option.MapOption;
+import com.jstarcraft.core.common.configuration.MapOption;
 import com.jstarcraft.core.script.ScriptContext;
 import com.jstarcraft.core.script.ScriptExpression;
 import com.jstarcraft.core.script.groovy.GroovyExpression;

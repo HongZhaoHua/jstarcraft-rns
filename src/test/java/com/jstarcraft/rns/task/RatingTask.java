@@ -13,7 +13,7 @@ import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
 import com.jstarcraft.ai.math.structure.matrix.SparseMatrix;
-import com.jstarcraft.core.common.option.Option;
+import com.jstarcraft.core.common.configuration.Option;
 import com.jstarcraft.core.utility.Integer2FloatKeyValue;
 import com.jstarcraft.rns.model.Model;
 

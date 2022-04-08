@@ -16,7 +16,7 @@ import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.DenseVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.option.Option;
+import com.jstarcraft.core.common.configuration.Option;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.rns.model.exception.ModelException;
 

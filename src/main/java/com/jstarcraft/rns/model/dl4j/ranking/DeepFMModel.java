@@ -23,7 +23,7 @@ import com.jstarcraft.ai.data.DataSpace;
 import com.jstarcraft.ai.data.processor.DataSorter;
 import com.jstarcraft.ai.data.processor.DataSplitter;
 import com.jstarcraft.ai.math.structure.vector.SparseVector;
-import com.jstarcraft.core.common.option.Option;
+import com.jstarcraft.core.common.configuration.Option;
 import com.jstarcraft.core.utility.KeyValue;
 import com.jstarcraft.core.utility.RandomUtility;
 import com.jstarcraft.rns.data.processor.AllFeatureDataSorter;

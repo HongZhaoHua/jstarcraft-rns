@@ -6,7 +6,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 
 import com.jstarcraft.ai.data.DataModule;
 import com.jstarcraft.ai.data.DataSpace;
-import com.jstarcraft.core.common.option.Option;
+import com.jstarcraft.core.common.configuration.Option;
 
 /**
  * 神经网络推荐器

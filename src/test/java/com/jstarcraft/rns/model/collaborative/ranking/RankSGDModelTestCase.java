@@ -13,8 +13,8 @@ import com.jstarcraft.ai.evaluate.ranking.NDCGEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.NoveltyEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.PrecisionEvaluator;
 import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
-import com.jstarcraft.core.common.option.MapOption;
-import com.jstarcraft.core.common.option.Option;
+import com.jstarcraft.core.common.configuration.MapOption;
+import com.jstarcraft.core.common.configuration.Option;
 import com.jstarcraft.rns.task.RankingTask;
 
 import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;

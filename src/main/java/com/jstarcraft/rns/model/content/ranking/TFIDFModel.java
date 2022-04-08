@@ -18,7 +18,7 @@ import com.jstarcraft.ai.math.structure.vector.ArrayVector;
 import com.jstarcraft.ai.math.structure.vector.HashVector;
 import com.jstarcraft.ai.math.structure.vector.MathVector;
 import com.jstarcraft.ai.math.structure.vector.VectorScalar;
-import com.jstarcraft.core.common.option.Option;
+import com.jstarcraft.core.common.configuration.Option;
 import com.jstarcraft.core.utility.Integer2FloatKeyValue;
 import com.jstarcraft.core.utility.Neighborhood;
 import com.jstarcraft.rns.model.MatrixFactorizationModel;

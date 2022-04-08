@@ -16,8 +16,8 @@ import com.jstarcraft.ai.evaluate.ranking.RecallEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MAEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MPEEvaluator;
 import com.jstarcraft.ai.evaluate.rating.MSEEvaluator;
-import com.jstarcraft.core.common.option.MapOption;
-import com.jstarcraft.core.common.option.Option;
+import com.jstarcraft.core.common.configuration.MapOption;
+import com.jstarcraft.core.common.configuration.Option;
 import com.jstarcraft.rns.task.RankingTask;
 import com.jstarcraft.rns.task.RatingTask;
 
