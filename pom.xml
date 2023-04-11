@@ -48,6 +48,12 @@
             <artifactId>jstarcraft-ai-model</artifactId>
             <version>1.0</version>
         </dependency>
+        
+         <dependency>
+            <groupId>com.jstarcraft</groupId>
+            <artifactId>jstarcraft-nlp</artifactId>
+            <version>1.0</version>
+        </dependency>
 
         <!-- 搜索与推荐框架依赖 -->
         <dependency>
